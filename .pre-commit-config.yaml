@@ -1,0 +1,26 @@
+# Pre-commit hooks — governance + hygiene. Install: `pre-commit install`
+# The restricted-data guard is the non-negotiable one (CLAUDE.md §5).
+repos:
+  - repo: local
+    hooks:
+      - id: block-restricted-data
+        name: Block restricted / bulk data (CLAUDE.md §5)
+        entry: python pipelines/validate/check_no_restricted_data.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.10
+    hooks:
+      - id: ruff
+      - id: ruff-format

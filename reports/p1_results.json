@@ -1,0 +1,422 @@
+{
+  "presidential": {
+    "baseline_backtest": {
+      "n": 204,
+      "mae": 0.02603587601487621,
+      "rmse": 0.032172943989358306,
+      "naive_persistence_mae": 0.026525798496293936,
+      "winner_accuracy": 0.9362745098039216,
+      "features": [
+        "lag_dem_share",
+        "national_dem_share"
+      ]
+    },
+    "demographics_backtest": {
+      "n": 204,
+      "mae": 0.02478611398487244,
+      "rmse": 0.03106371614271565,
+      "naive_persistence_mae": 0.026525798496293936,
+      "winner_accuracy": 0.9313725490196079,
+      "features": [
+        "lag_dem_share",
+        "national_dem_share",
+        "college_share"
+      ]
+    },
+    "baseline_eval": {
+      "n": 204,
+      "mae_vote_share": 0.02603587601487621,
+      "rmse_vote_share": 0.032172943989358306,
+      "brier": 0.05069031464964011,
+      "log_score": 0.1750410315903779,
+      "ece": 0.04111546562387724,
+      "coverage_90": 0.8529411764705882,
+      "coverage_95": 0.9215686274509803,
+      "calibration_curve": [
+        {
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "n": 81,
+          "mean_pred": 0.009147229097917596,
+          "observed_freq": 0.0
+        },
+        {
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "n": 13,
+          "mean_pred": 0.14210372882682615,
+          "observed_freq": 0.07692307692307693
+        },
+        {
+          "bin_low": 0.2,
+          "bin_high": 0.30000000000000004,
+          "n": 8,
+          "mean_pred": 0.24406582683377803,
+          "observed_freq": 0.125
+        },
+        {
+          "bin_low": 0.30000000000000004,
+          "bin_high": 0.4,
+          "n": 5,
+          "mean_pred": 0.3460093345195647,
+          "observed_freq": 0.2
+        },
+        {
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "n": 4,
+          "mean_pred": 0.43401047545306704,
+          "observed_freq": 0.5
+        },
+        {
+          "bin_low": 0.5,
+          "bin_high": 0.6000000000000001,
+          "n": 5,
+          "mean_pred": 0.5420235948125429,
+          "observed_freq": 0.4
+        },
+        {
+          "bin_low": 0.6000000000000001,
+          "bin_high": 0.7000000000000001,
+          "n": 4,
+          "mean_pred": 0.6287229040732071,
+          "observed_freq": 1.0
+        },
+        {
+          "bin_low": 0.7000000000000001,
+          "bin_high": 0.8,
+          "n": 6,
+          "mean_pred": 0.7584072264565137,
+          "observed_freq": 0.8333333333333334
+        },
+        {
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "n": 6,
+          "mean_pred": 0.8476522410818066,
+          "observed_freq": 0.8333333333333334
+        },
+        {
+          "bin_low": 0.9,
+          "bin_high": 1.0,
+          "n": 72,
+          "mean_pred": 0.9878062933974093,
+          "observed_freq": 0.9583333333333334
+        }
+      ]
+    },
+    "demographics_eval": {
+      "n": 204,
+      "mae_vote_share": 0.02478611398487244,
+      "rmse_vote_share": 0.03106371614271565,
+      "brier": 0.054763545763537605,
+      "log_score": 0.17695793290822684,
+      "ece": 0.043852129800348444,
+      "coverage_90": 0.8627450980392157,
+      "coverage_95": 0.9264705882352942,
+      "calibration_curve": [
+        {
+          "bin_low": 0.0,
+          "bin_high": 0.1,
+          "n": 81,
+          "mean_pred": 0.006873044135363411,
+          "observed_freq": 0.0
+        },
+        {
+          "bin_low": 0.1,
+          "bin_high": 0.2,
+          "n": 10,
+          "mean_pred": 0.14516314174046013,
+          "observed_freq": 0.1
+        },
+        {
+          "bin_low": 0.2,
+          "bin_high": 0.30000000000000004,
+          "n": 9,
+          "mean_pred": 0.241685519601172,
+          "observed_freq": 0.2222222222222222
+        },
+        {
+          "bin_low": 0.30000000000000004,
+          "bin_high": 0.4,
+          "n": 8,
+          "mean_pred": 0.35789513562796954,
+          "observed_freq": 0.125
+        },
+        {
+          "bin_low": 0.4,
+          "bin_high": 0.5,
+          "n": 4,
+          "mean_pred": 0.46009273816872226,
+          "observed_freq": 0.5
+        },
+        {
+          "bin_low": 0.5,
+          "bin_high": 0.6000000000000001,
+          "n": 5,
+          "mean_pred": 0.539170302264215,
+          "observed_freq": 0.8
+        },
+        {
+          "bin_low": 0.6000000000000001,
+          "bin_high": 0.7000000000000001,
+          "n": 3,
+          "mean_pred": 0.6329192153852338,
+          "observed_freq": 0.3333333333333333
+        },
+        {
+          "bin_low": 0.7000000000000001,
+          "bin_high": 0.8,
+          "n": 8,
+          "mean_pred": 0.7465255844501106,
+          "observed_freq": 0.875
+        },
+        {
+          "bin_low": 0.8,
+          "bin_high": 0.9,
+          "n": 4,
+          "mean_pred": 0.8578003878725836,
+          "observed_freq": 0.5
+        },
+        {
+          "bin_low": 0.9,
+          "bin_high": 1.0,
+          "n": 72,
+          "mean_pred": 0.9871892176030355,
+          "observed_freq": 0.9722222222222222
+        }
+      ]
+    },
+    "simulation": {
+      "win_probabilities": [
+        {
+          "unit": "AK",
+          "dem_win_prob": 0.0079
+        },
+        {
+          "unit": "AL",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "AR",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "AZ",
+          "dem_win_prob": 0.3856
+        },
+        {
+          "unit": "CA",
+          "dem_win_prob": 1.0
+        },
+        {
+          "unit": "CO",
+          "dem_win_prob": 0.9905
+        },
+        {
+          "unit": "CT",
+          "dem_win_prob": 0.9988
+        },
+        {
+          "unit": "DC",
+          "dem_win_prob": 1.0
+        },
+        {
+          "unit": "DE",
+          "dem_win_prob": 0.9929
+        },
+        {
+          "unit": "FL",
+          "dem_win_prob": 0.2634
+        },
+        {
+          "unit": "GA",
+          "dem_win_prob": 0.6096
+        },
+        {
+          "unit": "HI",
+          "dem_win_prob": 1.0
+        },
+        {
+          "unit": "IA",
+          "dem_win_prob": 0.0047
+        },
+        {
+          "unit": "ID",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "IL",
+          "dem_win_prob": 0.9973
+        },
+        {
+          "unit": "IN",
+          "dem_win_prob": 0.0002
+        },
+        {
+          "unit": "KS",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "KY",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "LA",
+          "dem_win_prob": 0.0021
+        },
+        {
+          "unit": "MA",
+          "dem_win_prob": 1.0
+        },
+        {
+          "unit": "MD",
+          "dem_win_prob": 1.0
+        },
+        {
+          "unit": "ME",
+          "dem_win_prob": 0.9018
+        },
+        {
+          "unit": "MI",
+          "dem_win_prob": 0.358
+        },
+        {
+          "unit": "MN",
+          "dem_win_prob": 0.8086
+        },
+        {
+          "unit": "MO",
+          "dem_win_prob": 0.0005
+        },
+        {
+          "unit": "MS",
+          "dem_win_prob": 0.0092
+        },
+        {
+          "unit": "MT",
+          "dem_win_prob": 0.0011
+        },
+        {
+          "unit": "NC",
+          "dem_win_prob": 0.1136
+        },
+        {
+          "unit": "ND",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "NE",
+          "dem_win_prob": 0.0006
+        },
+        {
+          "unit": "NH",
+          "dem_win_prob": 0.3281
+        },
+        {
+          "unit": "NJ",
+          "dem_win_prob": 0.9726
+        },
+        {
+          "unit": "NM",
+          "dem_win_prob": 0.7469
+        },
+        {
+          "unit": "NV",
+          "dem_win_prob": 0.1134
+        },
+        {
+          "unit": "NY",
+          "dem_win_prob": 0.9997
+        },
+        {
+          "unit": "OH",
+          "dem_win_prob": 0.2097
+        },
+        {
+          "unit": "OK",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "OR",
+          "dem_win_prob": 0.9965
+        },
+        {
+          "unit": "PA",
+          "dem_win_prob": 0.3377
+        },
+        {
+          "unit": "RI",
+          "dem_win_prob": 0.9985
+        },
+        {
+          "unit": "SC",
+          "dem_win_prob": 0.1551
+        },
+        {
+          "unit": "SD",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "TN",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "TX",
+          "dem_win_prob": 0.035
+        },
+        {
+          "unit": "UT",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "VA",
+          "dem_win_prob": 0.868
+        },
+        {
+          "unit": "VT",
+          "dem_win_prob": 1.0
+        },
+        {
+          "unit": "WA",
+          "dem_win_prob": 0.9993
+        },
+        {
+          "unit": "WI",
+          "dem_win_prob": 0.2072
+        },
+        {
+          "unit": "WV",
+          "dem_win_prob": 0.0
+        },
+        {
+          "unit": "WY",
+          "dem_win_prob": 0.0
+        }
+      ],
+      "electoral_college": {
+        "mean_dem_ev": 263.6338,
+        "median_dem_ev": 255.0,
+        "p_dem_majority": 0.3989,
+        "ev_5th": 199.0,
+        "ev_95th": 357.0
+      }
+    }
+  },
+  "house": {
+    "n_districts_scored": 172,
+    "seat_simulation": {
+      "n_units": 172,
+      "mean_dem_seats": 80.1866,
+      "median_dem_seats": 79.0,
+      "p_dem_control": 0.3845,
+      "seats_5th": 45.0,
+      "seats_95th": 119.0
+    }
+  },
+  "data_mode": {
+    "president": "synthetic",
+    "us_senate": "synthetic",
+    "us_house": "synthetic"
+  }
+}

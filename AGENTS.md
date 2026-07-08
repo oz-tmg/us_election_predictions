@@ -1,0 +1,1 @@
+/Users/alexoswald/projects/ai/agent-context-file-models/verticals/elections/us_election_prediction/AGENTS.md

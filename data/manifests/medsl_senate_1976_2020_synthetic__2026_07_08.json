@@ -1,0 +1,35 @@
+{
+  "acquired_at": "2026-07-08T09:27:45+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "0a5596ae2a20e013dcbec1f00ef2374526df9e17743bc9494f21adc0d9ef8eb4",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "MEDSL U.S. Senate 1976-2020 [SYNTHETIC FIXTURE]",
+  "election_cycle": "1976-2020",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state"
+  ],
+  "known_caveats": "SYNTHETIC fictional data \u2014 not real returns.",
+  "license_or_terms": "MEDSL data are released for research use; cite MIT Election Data and Science Lab.",
+  "office_coverage": [
+    "us_senate"
+  ],
+  "owner": "project-owner (data steward)",
+  "permitted_use": "Public nonpartisan research, aggregate reporting with citation.",
+  "privacy_tier": 0,
+  "prohibited_use": "No repurposing for solicitation, targeting, or partisan advantage.",
+  "raw_path": "data/raw/source=medsl/dataset=us_senate/snapshot=2026-07-08/SYNTHETIC_1976-2020-senate.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "MIT Election Data and Science Lab (MEDSL), Harvard Dataverse.",
+  "review_date": "2027-07-08",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-07-08",
+  "source_id": "medsl_senate_1976_2020_synthetic",
+  "source_owner": "MIT Election Data and Science Lab",
+  "source_url": "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/PEJ5QU",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

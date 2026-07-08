@@ -1,0 +1,86 @@
+# ---------------------------------------------------------------------------
+# US Election Prediction — .gitignore
+# Governance: CLAUDE.md §4/§5, docs/data-governance-and-privacy.md
+# The repo is PUBLIC. Restricted (Tier 3-5) data MUST NEVER be committed.
+# ---------------------------------------------------------------------------
+
+# --- Data lake payloads (kept out of Git; tracked via manifests only) -------
+# Raw/bronze/silver/gold hold data snapshots. We version *manifests* and code,
+# not the bulk data. Keep the directory structure via .gitkeep.
+data/raw/**
+data/bronze/**
+data/silver/**
+data/gold/**
+!data/**/.gitkeep
+
+# Manifests ARE committed (lineage), but never manifests that describe
+# restricted vendor/campaign sources — those live in a private store.
+data/manifests/**/restricted_*.json
+data/manifests/**/*tier3*.json
+data/manifests/**/*tier4*.json
+data/manifests/**/*tier5*.json
+
+# --- Test fixtures ARE allowed (synthetic only) -----------------------------
+!tests/**/fixtures/**
+
+# --- Hard-blocked restricted data (Tier 3-5) — belt and suspenders ----------
+# Voter files, licensed national files, CRM/VAN exports, respondent records,
+# and derived person/household-level scores must never enter this repo.
+*voter_file*
+*voterfile*
+*voter-file*
+*l2_*
+*targetsmart*
+*catalist*
+*datatrust*
+*van_export*
+*crm_export*
+*canvass*
+*respondent*
+*person_scores*
+*household_scores*
+*.van
+*.pii
+secrets.*
+.env
+.env.*
+*credentials*.json
+*api_key*
+*.pem
+*.key
+
+# --- Large binary geo/data formats (should live in the data lake) -----------
+*.parquet
+*.geoparquet
+*.shp
+*.shx
+*.dbf
+*.gpkg
+*.zip
+*.gz
+*.7z
+# ...but allow small synthetic fixtures explicitly committed
+!tests/**/*.parquet
+
+# --- Python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# --- OS / editor ------------------------------------------------------------
+.DS_Store
+.idea/
+.vscode/
+*.swp
