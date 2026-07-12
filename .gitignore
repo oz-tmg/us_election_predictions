@@ -84,3 +84,9 @@ htmlcov/
 .idea/
 .vscode/
 *.swp
+
+# --- Context Engineering files ----------------------------------------------
+*AGENTS.md
+*CLAUDE.md
+*COMPANY_CONTEXT.md
+*PROJECT_CONTEXT.md
