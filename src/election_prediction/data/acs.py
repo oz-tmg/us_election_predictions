@@ -5,23 +5,27 @@ derives modeling rates (college share, median income, median age, race/ethnicity
 shares, urbanicity proxy), carries margins of error, and joins to the canonical
 geography spine by GEOID (docs/ingestion-playbook.md, Census ACS section).
 
-Live acquisition uses the public Census API (no key required for light use, though
-a key is recommended). When outbound access is unavailable the caller falls back to
-``build_synthetic_acs`` — a fixture whose columns match the API response and whose
-demographics are correlated with the synthetic partisan lean, so downstream feature
-joins and demographic models are exercised. Tier 0 (public aggregate).
+Live acquisition uses the Census API, which now **requires an API key**: a keyless
+request returns HTTP 200 with an HTML "Missing Key" page rather than an error status,
+so the response body is validated before it is allowed to land in ``data/raw/``.
+Supply the key via ``CENSUS_API_KEY`` or the ``api_key`` argument.
+
+When outbound access is unavailable the caller falls back to ``build_synthetic_acs``
+— a fixture whose columns match the API response and whose demographics are
+correlated with the synthetic partisan lean, so downstream feature joins and
+demographic models are exercised. Tier 0 (public aggregate).
 """
 from __future__ import annotations
 
 import json
-import urllib.error
-import urllib.request
+import os
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from ..geography import reference as ref
+from . import acquire
 from .privacy import PrivacyTier
 from .synthetic import STATE_BASE_DEM_LEAN
 
@@ -30,6 +34,13 @@ ATTRIBUTION = "U.S. Census Bureau, American Community Survey 5-Year Estimates."
 LICENSE = "Public domain (U.S. Census Bureau); cite table IDs and vintage."
 
 CENSUS_API = "https://api.census.gov/data"
+CENSUS_KEY_ENV = "CENSUS_API_KEY"
+CENSUS_KEY_SIGNUP = "https://api.census.gov/data/key_signup.html"
+
+# ACS 5-year vintage to pull by default. 5-year estimates are preferred for small
+# geographies (docs/ingestion-playbook.md, Census ACS section); never mix 1-year and
+# 5-year products without an explicit reason.
+DEFAULT_ACS_VINTAGE = 2023
 
 # ACS detailed-table variables we ingest. `E` = estimate, `M` = margin of error.
 # Chosen to cover CLAUDE.md feature F-006 (age, race/ethnicity, education, income).
@@ -57,29 +68,32 @@ ACS_FEATURE_COLUMNS = [
 
 
 # ---------------------------------------------------------------- acquisition
-def download_acs_states(vintage: int, raw_dir: str | Path, *, timeout: int = 60,
-                        api_key: str | None = None) -> Path:
+def resolve_api_key(api_key: str | None = None) -> str:
+    """Return the Census API key, or raise with signup instructions."""
+    key = api_key or os.environ.get(CENSUS_KEY_ENV, "").strip()
+    if not key:
+        raise acquire.CredentialRequired(
+            "The Census API requires a key: keyless requests return an HTML "
+            '"Missing Key" page with HTTP 200, not usable data.',
+            env_var=CENSUS_KEY_ENV, signup_url=CENSUS_KEY_SIGNUP,
+        )
+    return key
+
+
+def download_acs_states(vintage: int = DEFAULT_ACS_VINTAGE, raw_dir: str | Path = "data/raw",
+                        *, timeout: int = 60, api_key: str | None = None) -> Path:
     """Download state-level ACS 5-year estimates for ``vintage`` to a raw snapshot.
 
-    Returns the raw JSON path. Raises RuntimeError if the network is unavailable.
+    Returns the raw JSON path. Raises ``acquire.CredentialRequired`` when no API key
+    is configured, ``acquire.NetworkUnavailable`` when offline, and
+    ``acquire.InvalidResponse`` if the API answers with an HTML error page.
     """
+    key = resolve_api_key(api_key)
     get = "NAME," + ",".join(ACS_VARIABLES)
-    url = f"{CENSUS_API}/{vintage}/acs/acs5?get={get}&for=state:*"
-    if api_key:
-        url += f"&key={api_key}"
+    url = f"{CENSUS_API}/{vintage}/acs/acs5?get={get}&for=state:*&key={key}"
     out_dir = Path(raw_dir) / f"source=census_acs/dataset=acs5_state/vintage={vintage}"
-    out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"acs5_state_{vintage}.json"
-    req = urllib.request.Request(url, headers={"User-Agent": "election-prediction/0.0.1"})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp, open(out_path, "wb") as fh:
-            fh.write(resp.read())
-    except (urllib.error.URLError, TimeoutError, OSError) as e:
-        raise RuntimeError(
-            f"Live Census ACS download failed ({url}): {e}. "
-            "No outbound access — fall back to synthetic ACS fixture."
-        ) from e
-    return out_path
+    return acquire.fetch(url, out_path, expect="json", timeout=timeout)
 
 
 # ----------------------------------------------------------------- transforms

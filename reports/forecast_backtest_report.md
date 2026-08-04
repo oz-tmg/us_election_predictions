@@ -1,6 +1,6 @@
 # Forecast Backtest Report — P1 Baselines
 
-_Generated: 2026-07-08_
+_Generated: 2026-08-03_
 
 > ⚠️ **SYNTHETIC DATA.** This run used a fictional fixture matching the MEDSL schema because live data access was unavailable. Numbers below are illustrative of the *pipeline*, not real electoral estimates. Re-run with real snapshots to publish.
 
@@ -12,39 +12,39 @@ _Generated: 2026-07-08_
 |---|---:|---:|---:|
 | Naive persistence (prev cycle) | 0.0265 | — | — |
 | Baseline (lag + national) | 0.0260 | 0.0322 | 0.936 |
-| + demographics (college share) | 0.0248 | 0.0311 | 0.931 |
+| + demographics (college share) | 0.0254 | 0.0316 | 0.936 |
 
 ### Calibration (win probability, + demographics model)
 
-- Brier score: **0.0548** · Log score: **0.1770** · ECE: **0.0439**
-- Interval coverage — 90%: 0.863 · 95%: 0.926 (target ≈ nominal level)
+- Brier score: **0.0480** · Log score: **0.1678** · ECE: **0.0429**
+- Interval coverage — 90%: 0.868 · 95%: 0.912 (target ≈ nominal level)
 
 ### Reliability curve
 
 | Pred bin | n | mean pred | observed |
 |---|---:|---:|---:|
-| 0.0–0.1 | 81 | 0.007 | 0.000 |
-| 0.1–0.2 | 10 | 0.145 | 0.100 |
-| 0.2–0.3 | 9 | 0.242 | 0.222 |
-| 0.3–0.4 | 8 | 0.358 | 0.125 |
-| 0.4–0.5 | 4 | 0.460 | 0.500 |
-| 0.5–0.6 | 5 | 0.539 | 0.800 |
-| 0.6–0.7 | 3 | 0.633 | 0.333 |
-| 0.7–0.8 | 8 | 0.747 | 0.875 |
-| 0.8–0.9 | 4 | 0.858 | 0.500 |
-| 0.9–1.0 | 72 | 0.987 | 0.972 |
+| 0.0–0.1 | 83 | 0.010 | 0.000 |
+| 0.1–0.2 | 14 | 0.149 | 0.143 |
+| 0.2–0.3 | 6 | 0.230 | 0.000 |
+| 0.3–0.4 | 6 | 0.366 | 0.167 |
+| 0.4–0.5 | 4 | 0.459 | 0.750 |
+| 0.5–0.6 | 4 | 0.542 | 0.500 |
+| 0.6–0.7 | 4 | 0.670 | 1.000 |
+| 0.7–0.8 | 5 | 0.734 | 0.800 |
+| 0.8–0.9 | 6 | 0.855 | 0.667 |
+| 0.9–1.0 | 72 | 0.988 | 0.972 |
 
 ## Correlated presidential simulation (latest backtested cycle)
 
 States are simulated with shared national + regional error (never independent).
 
-- Mean Democratic electoral votes: **264** (90% range 199–357)
-- P(Democratic EC majority ≥270): **0.40**
+- Mean Democratic electoral votes: **261** (90% range 202–360)
+- P(Democratic EC majority ≥270): **0.36**
 
 ## House correlated seat simulation
 
 - Districts scored: 172
-- Mean Democratic seats (of 172 simulated): **80** (90% range 45–119)
+- Mean Democratic seats (of 172 simulated): **80** (90% range 46–118)
 - P(Democratic control): **0.38**
 
 ## Reading these numbers

@@ -51,8 +51,21 @@ def test_tiger_synthetic_boundaries_valid():
 
 
 def test_tiger_url_pattern():
-    assert tiger.tiger_url(2022, "cd").endswith("tl_2022_us_cd118.zip")
+    # Congressional districts ship one zip per state, not as a national file.
+    assert tiger.tiger_url(2024, "cd", "01").endswith("tl_2024_01_cd119.zip")
+    assert tiger.tiger_url(2022, "cd", "51").endswith("tl_2022_51_cd118.zip")
     assert "STATE" in tiger.tiger_url(2022, "state")
+    assert tiger.tiger_url(2024, "state").endswith("tl_2024_us_state.zip")
+
+
+def test_tiger_cd_requires_state():
+    with pytest.raises(ValueError, match="per state"):
+        tiger.tiger_url(2024, "cd")
+
+
+def test_tiger_unknown_vintage_is_explicit():
+    with pytest.raises(ValueError, match="No congressional-district mapping"):
+        tiger.tiger_url(1999, "cd", "01")
 
 
 # ------------------------------------------------------------- panel (fundamentals)

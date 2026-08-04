@@ -6,12 +6,19 @@ Makes gaps visible before anything is modeled (PROJECT_CONTEXT.md §17.5).
 """
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import pandas as pd
 
 STALE_AFTER_DAYS = 400  # a per-cycle source older than this is flagged for refresh
+
+# Share of races whose candidate votes may disagree with the source's reported total
+# before the build fails. Real certified returns carry a small number of genuine
+# source-side discrepancies (amended counts, omitted scattering write-ins), and the
+# ingestion playbook's quality gate is "source totals reconcile **or caveats
+# documented**" — so mismatches are always listed, and only an unusual *rate* fails.
+RECONCILIATION_TOLERANCE_PCT = 0.5
 
 
 def _missingness(df: pd.DataFrame) -> pd.DataFrame:
@@ -31,9 +38,19 @@ def build_quality_report(
     returns: pd.DataFrame,
     race_table: pd.DataFrame,
     geography: pd.DataFrame,
+    *,
+    data_modes: dict | None = None,
+    transform_stats: dict | None = None,
 ) -> dict:
-    """Compute the data-quality metrics dict for the loaded P0 tables."""
-    report: dict = {"generated_at": datetime.utcnow().isoformat(timespec="seconds")}
+    """Compute the data-quality metrics dict for the loaded P0 tables.
+
+    ``data_modes`` records how each source was acquired (live / manual / synthetic) and
+    ``transform_stats`` what standardization dropped or merged, so both are auditable
+    from the published report rather than only from logs.
+    """
+    report: dict = {"generated_at": datetime.now(UTC).isoformat(timespec="seconds")}
+    report["data_modes"] = data_modes or {}
+    report["transform_stats"] = transform_stats or {}
 
     # --- coverage ---------------------------------------------------------
     report["coverage"] = {
@@ -61,9 +78,13 @@ def build_quality_report(
     )
     checkable = agg[agg["reported"] > 0]
     mismatches = checkable[checkable["sum_cand"] != checkable["reported"]]
+    mismatch_pct = round(100 * len(mismatches) / len(checkable), 3) if len(checkable) else 0.0
     report["vote_reconciliation"] = {
         "races_checked": int(len(checkable)),
         "races_mismatched": int(len(mismatches)),
+        "mismatch_pct": mismatch_pct,
+        "tolerance_pct": RECONCILIATION_TOLERANCE_PCT,
+        "within_tolerance": mismatch_pct <= RECONCILIATION_TOLERANCE_PCT,
         "example_mismatches": mismatches.head(5).reset_index().to_dict("records"),
     }
 
@@ -89,7 +110,7 @@ def build_quality_report(
 
     report["overall_ok"] = (
         sum(report["duplicate_keys"].values()) == 0
-        and report["vote_reconciliation"]["races_mismatched"] == 0
+        and report["vote_reconciliation"]["within_tolerance"]
     )
     return report
 
@@ -105,6 +126,26 @@ def render_markdown(report: dict) -> str:
         "> Scope: loaded MEDSL federal returns (silver), model-ready race table (gold),",
         "> and the canonical geography spine. Nonpartisan; historical/certified returns.",
         "",
+    ]
+
+    modes = report.get("data_modes") or {}
+    if modes:
+        synthetic = [k for k, v in modes.items() if v == "synthetic"]
+        if synthetic:
+            lines += [
+                "> ⚠️ **SYNTHETIC DATA IN THIS RUN.** Sources acquired as synthetic "
+                f"fixtures: {', '.join(sorted(synthetic))}. Numbers below describe the "
+                "*pipeline*, not real elections.",
+                "",
+            ]
+        lines += ["## Acquisition mode", ""]
+        for source, mode in sorted(modes.items()):
+            label = {"live": "live download", "manual": "verified manual download",
+                     "synthetic": "SYNTHETIC fixture"}.get(mode, mode)
+            lines.append(f"- `{source}`: {label}")
+        lines.append("")
+
+    lines += [
         "## Coverage",
         "",
         f"- Returns rows: **{c['returns_rows']:,}**",
@@ -127,8 +168,23 @@ def render_markdown(report: dict) -> str:
         "## Vote-total reconciliation",
         "",
         f"- Races checked (totalvotes populated): {vr['races_checked']:,}",
-        f"- Races where candidate sum ≠ reported total: **{vr['races_mismatched']}**",
+        f"- Races where candidate sum ≠ reported total: **{vr['races_mismatched']}** "
+        f"({vr.get('mismatch_pct', 0)}%, tolerance {vr.get('tolerance_pct', 0)}%)",
     ]
+
+    ts = report.get("transform_stats") or {}
+    if ts:
+        lines += ["", "## Standardization decisions", "",
+                  "What the raw → silver transform dropped or merged, per source:", ""]
+        for source, stats in sorted(ts.items()):
+            detail = ", ".join(f"{k.replace('_', ' ')}: {v:,}" for k, v in stats.items())
+            lines.append(f"- `{source}` — {detail}")
+        lines += [
+            "",
+            "Primaries and other non-general stages are excluded so comparisons stay "
+            "like-for-like; fusion-voting lines are summed per candidate so a candidate's "
+            "own vote is not split across party lines.",
+        ]
 
     ct = report["contests"]
     lines += [
