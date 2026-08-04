@@ -52,10 +52,12 @@ _DISTRICTS = {
     "VT": 1, "WY": 1,
 }
 
+# Named after the real published files so a synthetic snapshot is obviously the
+# stand-in for a specific source (the SYNTHETIC_ prefix is added on write).
 _FILENAMES = {
-    "president": "1976-2020-president.csv",
-    "us_senate": "1976-2020-senate.csv",
-    "us_house": "1976-2022-house.csv",
+    "president": "1976-2024-president.csv",
+    "us_senate": "1976-2024-senate-state.csv",
+    "us_house": "1976-2024-house.tab",
 }
 
 
@@ -175,11 +177,19 @@ def build_fixture(office: str) -> pd.DataFrame:
 
 
 def write_fixture(office: str, out_dir: str | Path) -> Path:
-    """Write a single office's synthetic CSV and return its path."""
+    """Write a single office's synthetic fixture and return its path.
+
+    The fixture is written with the *same delimiter* as the real published file for
+    that office (House ships tab-separated), so the parser is exercised exactly as it
+    will be against the live source rather than against a friendlier format.
+    """
+    from .medsl import MEDSL_SOURCES
+
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     p = out / f"SYNTHETIC_{_FILENAMES[office]}"
-    build_fixture(office).to_csv(p, index=False)
+    sep = MEDSL_SOURCES[office].sep if office in MEDSL_SOURCES else ","
+    build_fixture(office).to_csv(p, index=False, sep=sep)
     return p
 
 
