@@ -17,11 +17,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
 
-from .data import acs
+from .config import load_dotenv
+from .data import acquire, acs
 from .evaluation import forecast_eval
 from .features import fundamentals
 from .models import simulation
@@ -30,29 +32,45 @@ from .pipelines_cli import build as build_p0
 from .reporting.model_cards import write_forecast_report, write_presidential_model_card
 
 
-def _acs_features(base: Path, *, allow_network: bool, vintage: int = 2020) -> pd.DataFrame:
+def _acs_features(base: Path, *, allow_network: bool, require_live: bool = False,
+                  vintage: int = acs.DEFAULT_ACS_VINTAGE) -> tuple[pd.DataFrame, str]:
+    """Return (features, mode) where mode is 'live' or 'synthetic'."""
     if allow_network:
         try:
             raw_path = acs.download_acs_states(vintage, base / "data/raw")
             raw = acs.parse_acs_json(raw_path)
-            return acs.standardize_acs(raw, vintage=vintage, source_id=f"census_acs5_state_{vintage}")
-        except RuntimeError as e:
+            features = acs.standardize_acs(raw, vintage=vintage,
+                                           source_id=f"census_acs5_state_{vintage}")
+            return features, "live"
+        except acquire.CredentialRequired as e:
+            print(f"\n  ! {e.instructions()}\n")
+            if require_live:
+                raise
+        except acquire.AcquisitionError as e:
             print(f"  ! {e}")
+            if require_live:
+                raise
+
+    if require_live:
+        raise acquire.AcquisitionError("--require-live was set but ACS could not be acquired.")
+
     raw = acs.build_synthetic_acs(vintage)
     return acs.standardize_acs(raw, vintage=vintage,
-                               source_id=f"census_acs5_state_{vintage}_synthetic")
+                               source_id=f"census_acs5_state_{vintage}_synthetic"), "synthetic"
 
 
-def build(base: Path, *, allow_network: bool = True) -> dict:
+def build(base: Path, *, allow_network: bool = True, require_live: bool = False) -> dict:
     base = Path(base)
-    p0 = build_p0(base, allow_network=allow_network)
+    p0 = build_p0(base, allow_network=allow_network, require_live=require_live)
     race_table = p0["race_table"]
     gold_dir = base / "data/gold"
     reports_dir = base / "reports"
     gold_dir.mkdir(parents=True, exist_ok=True)
 
-    acs_features = _acs_features(base, allow_network=allow_network)
+    acs_features, acs_mode = _acs_features(base, allow_network=allow_network,
+                                           require_live=require_live)
     acs_features.to_parquet(gold_dir / "acs_state_features.parquet", index=False)
+    data_modes = {**p0["modes"], "census_acs": acs_mode}
 
     # ---- presidential fundamentals baseline (P1-001) --------------------
     panel = fundamentals.build_presidential_panel(race_table, acs_features)
@@ -97,12 +115,11 @@ def build(base: Path, *, allow_network: bool = True) -> dict:
             "simulation": _jsonable(pres_sim),
         },
         "house": {"n_districts_scored": int(len(score)), "seat_simulation": house_sim},
-        "data_mode": p0["modes"],
+        "data_mode": data_modes,
     }
-    write_presidential_model_card(results, reports_dir, synthetic=any(
-        m == "synthetic" for m in p0["modes"].values()))
-    report_path = write_forecast_report(results, reports_dir, synthetic=any(
-        m == "synthetic" for m in p0["modes"].values()))
+    any_synthetic = any(m == "synthetic" for m in data_modes.values())
+    write_presidential_model_card(results, reports_dir, synthetic=any_synthetic)
+    report_path = write_forecast_report(results, reports_dir, synthetic=any_synthetic)
     (reports_dir / "p1_results.json").write_text(json.dumps(_jsonable(results), indent=2))
 
     print("\n=== P1 baseline summary ===")
@@ -142,8 +159,20 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Build the P1 baseline forecasting stack.")
     ap.add_argument("--base", default=".")
     ap.add_argument("--offline", action="store_true", help="use synthetic fixtures (no network)")
+    ap.add_argument("--require-live", action="store_true",
+                    help="fail instead of falling back to synthetic fixtures "
+                         "(use for any run whose numbers will be published)")
     args = ap.parse_args(argv)
-    build(Path(args.base), allow_network=not args.offline)
+    if args.offline and args.require_live:
+        ap.error("--offline and --require-live are mutually exclusive")
+    if loaded := load_dotenv(Path(args.base) / ".env"):
+        print(f"Loaded {len(loaded)} local settings from .env: {', '.join(sorted(loaded))}",
+              flush=True)
+    try:
+        build(Path(args.base), allow_network=not args.offline, require_live=args.require_live)
+    except acquire.AcquisitionError as e:
+        print(f"\nP1 build FAILED — could not acquire real data:\n  {e}", file=sys.stderr)
+        return 2
     return 0
 
 

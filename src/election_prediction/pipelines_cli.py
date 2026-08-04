@@ -6,9 +6,10 @@ Runs the data-and-entity foundation reproducibly from a clean checkout:
       -> silver election_returns -> geography spine -> gold race table
       -> validate -> data-quality report
 
-Live MEDSL download is attempted first; if the environment has no outbound access
-the build falls back to the synthetic fixture (clearly labelled) so the pipeline is
-always exercised. Outputs land in the medallion lake and ``reports/``.
+Live MEDSL download is attempted first. When a source cannot be acquired the build
+either falls back to a clearly-labelled synthetic fixture (default, so the pipeline
+is always exercised) or fails outright under ``--require-live``, which is the mode to
+use for anything whose numbers will be published.
 """
 from __future__ import annotations
 
@@ -19,7 +20,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from .data import medsl, synthetic
+from .config import load_dotenv
+from .data import acquire, medsl, synthetic
 from .data.manifest import SourceManifest
 from .data.privacy import PrivacyTier
 from .data.validation import validate_geography_table, validate_silver_returns
@@ -30,20 +32,38 @@ from .geography.canonical import build_geography_table
 OFFICES = ["president", "us_senate", "us_house"]
 
 
-def _acquire(office: str, raw_dir: Path, *, allow_network: bool) -> tuple[Path, str]:
-    """Return (csv_path, mode) where mode is 'live' or 'synthetic'."""
+def _acquire(office: str, raw_dir: Path, *, allow_network: bool,
+             require_live: bool) -> tuple[Path, str]:
+    """Return (path, mode) where mode is 'live', 'manual', or 'synthetic'.
+
+    Under ``require_live`` an unacquirable source raises instead of degrading to a
+    fixture — a build that silently substitutes synthetic data can otherwise report
+    success while modelling fiction (CLAUDE.md §4 reproducibility).
+    """
     if allow_network:
         try:
             path = medsl.download_medsl(office, raw_dir)
-            return path, "live"
-        except RuntimeError as e:
+            mode = "manual" if path.parent.name == "manual" else "live"
+            return path, mode
+        except acquire.ManualAcquisitionRequired as e:
+            print(f"\n  ! {e.instructions()}\n", file=sys.stderr)
+            if require_live:
+                raise
+        except acquire.AcquisitionError as e:
             print(f"  ! {e}", file=sys.stderr)
-    # fallback
+            if require_live:
+                raise
+
+    if require_live:
+        raise acquire.AcquisitionError(
+            f"--require-live was set but {office} could not be acquired live."
+        )
+
     fx_dir = raw_dir / f"source=medsl/dataset={office}/snapshot={date.today():%Y-%m-%d}"
     return synthetic.write_fixture(office, fx_dir), "synthetic"
 
 
-def build(base: Path, *, allow_network: bool = True) -> dict:
+def build(base: Path, *, allow_network: bool = True, require_live: bool = False) -> dict:
     base = Path(base)
     raw_dir = base / "data/raw"
     silver_dir = base / "data/silver"
@@ -56,10 +76,12 @@ def build(base: Path, *, allow_network: bool = True) -> dict:
     snapshot_date = date.today().isoformat()
     silver_parts = []
     modes = {}
+    transform_stats = {}
 
     for office in OFFICES:
         print(f"[{office}] acquiring…")
-        csv_path, mode = _acquire(office, raw_dir, allow_network=allow_network)
+        csv_path, mode = _acquire(office, raw_dir, allow_network=allow_network,
+                                  require_live=require_live)
         modes[office] = mode
         src = medsl.MEDSL_SOURCES[office]
 
@@ -87,9 +109,16 @@ def build(base: Path, *, allow_network: bool = True) -> dict:
         # bronze -> silver
         bronze = medsl.parse_bronze(csv_path, office,
                                     source_id=manifest.source_id, snapshot_date=snapshot_date)
-        silver = medsl.standardize_silver(bronze, office)
+        silver, stats = medsl.standardize_silver_with_stats(bronze, office)
         silver_parts.append(silver)
+        transform_stats[office] = stats
         print(f"  raw={csv_path.name} mode={mode} rows={len(silver)} manifest={mpath.name}")
+        if stats.get("dropped_non_general"):
+            print(f"    dropped {stats['dropped_non_general']:,} non-general-stage rows")
+        if stats.get("fusion_candidates_merged"):
+            print(f"    merged {stats['fusion_candidates_merged']:,} fusion-voting candidate lines")
+        if stats.get("mode_rows_collapsed"):
+            print(f"    collapsed {stats['mode_rows_collapsed']:,} per-mode rows")
 
     returns = pd.concat(silver_parts, ignore_index=True)
 
@@ -114,7 +143,8 @@ def build(base: Path, *, allow_network: bool = True) -> dict:
     race_table.to_csv(gold_dir / "race_results.csv", index=False)
 
     # data-quality report
-    report = build_quality_report(returns, race_table, geography)
+    report = build_quality_report(returns, race_table, geography,
+                                  data_modes=modes, transform_stats=transform_stats)
     rpath = write_report(report, reports_dir)
     print(f"\nData-quality report -> {rpath}")
 
@@ -130,8 +160,21 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--base", default=".", help="repo root (default: cwd)")
     ap.add_argument("--offline", action="store_true",
                     help="skip the live download and use synthetic fixtures")
+    ap.add_argument("--require-live", action="store_true",
+                    help="fail instead of falling back to synthetic fixtures "
+                         "(use for any run whose numbers will be published)")
     args = ap.parse_args(argv)
-    result = build(Path(args.base), allow_network=not args.offline)
+    if args.offline and args.require_live:
+        ap.error("--offline and --require-live are mutually exclusive")
+    if loaded := load_dotenv(Path(args.base) / ".env"):
+        print(f"Loaded {len(loaded)} local settings from .env: {', '.join(sorted(loaded))}",
+              flush=True)
+    try:
+        result = build(Path(args.base), allow_network=not args.offline,
+                       require_live=args.require_live)
+    except acquire.AcquisitionError as e:
+        print(f"\nP0 build FAILED — could not acquire real data:\n  {e}", file=sys.stderr)
+        return 2
     return 0 if result["ok"] else 1
 
 
