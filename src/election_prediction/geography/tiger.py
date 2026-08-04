@@ -12,11 +12,10 @@ GeoParquet round-trips are exercised. Tier 0 (public aggregate).
 """
 from __future__ import annotations
 
-import urllib.error
-import urllib.request
 import zipfile
 from pathlib import Path
 
+from ..data import acquire
 from ..data.privacy import PrivacyTier
 from . import reference as ref
 
@@ -29,39 +28,87 @@ TIGER_BASE = "https://www2.census.gov/geo/tiger"
 TIGER_CRS = "EPSG:4269"
 
 
-def tiger_url(vintage: int, layer: str) -> str:
-    """Build the TIGER zip URL for a layer: 'state' | 'county' | 'cd'."""
-    if layer == "state":
-        return f"{TIGER_BASE}/TIGER{vintage}/STATE/tl_{vintage}_us_state.zip"
-    if layer == "county":
-        return f"{TIGER_BASE}/TIGER{vintage}/COUNTY/tl_{vintage}_us_county.zip"
+# Congress number by TIGER vintage. Congressional-district filenames encode the
+# Congress, not the year, and a new Congress reshapes the layer — so this mapping is
+# also the record of which district plan a snapshot represents.
+CD_CONGRESS = {2024: "cd119", 2023: "cd118", 2022: "cd118"}
+
+# Layers published as a single national file. Congressional districts are NOT one of
+# them: TIGER ships CD as one zip per state (tl_2024_01_cd119.zip, ...).
+NATIONAL_LAYERS = {"state": "STATE", "county": "COUNTY"}
+
+
+def congress_for_vintage(vintage: int) -> str:
+    if vintage not in CD_CONGRESS:
+        raise ValueError(
+            f"No congressional-district mapping for TIGER vintage {vintage}. "
+            f"Known vintages: {sorted(CD_CONGRESS)}. Check "
+            f"{TIGER_BASE}/TIGER{vintage}/CD/ and add the Congress number."
+        )
+    return CD_CONGRESS[vintage]
+
+
+def tiger_url(vintage: int, layer: str, state_fips: str | None = None) -> str:
+    """Build the TIGER zip URL for 'state' | 'county' | 'cd'.
+
+    ``cd`` requires ``state_fips`` because the Census publishes congressional
+    districts per state rather than as a national file.
+    """
+    if layer in NATIONAL_LAYERS:
+        directory = NATIONAL_LAYERS[layer]
+        return f"{TIGER_BASE}/TIGER{vintage}/{directory}/tl_{vintage}_us_{layer}.zip"
     if layer == "cd":
-        # congressional-district file name encodes the Congress number
-        congress = {2022: "cd118", 2020: "cd116", 2018: "cd116"}.get(vintage, "cd118")
-        return f"{TIGER_BASE}/TIGER{vintage}/CD/tl_{vintage}_us_{congress}.zip"
+        if not state_fips:
+            raise ValueError(
+                "TIGER congressional districts are published per state; pass state_fips "
+                "(use download_tiger_cd to fetch every state)."
+            )
+        congress = congress_for_vintage(vintage)
+        return f"{TIGER_BASE}/TIGER{vintage}/CD/tl_{vintage}_{state_fips}_{congress}.zip"
     raise ValueError(f"Unknown TIGER layer {layer!r}")
 
 
 # ---------------------------------------------------------------- acquisition
-def download_tiger(vintage: int, layer: str, raw_dir: str | Path, *, timeout: int = 120) -> Path:
-    """Download and unzip a TIGER shapefile; return the extracted .shp path."""
-    url = tiger_url(vintage, layer)
-    out_dir = Path(raw_dir) / f"source=tiger/dataset={layer}/vintage={vintage}"
+def _download_and_extract(url: str, out_dir: Path, *, timeout: int) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    zip_path = out_dir / Path(url).name
-    req = urllib.request.Request(url, headers={"User-Agent": "election-prediction/0.0.1"})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp, open(zip_path, "wb") as fh:
-            fh.write(resp.read())
-    except (urllib.error.URLError, TimeoutError, OSError) as e:
-        raise RuntimeError(
-            f"Live TIGER download failed ({url}): {e}. "
-            "No outbound access — fall back to synthetic boundaries."
-        ) from e
+    zip_path = acquire.fetch(url, out_dir / Path(url).name.split("?")[0],
+                             expect="zip", timeout=timeout)
     with zipfile.ZipFile(zip_path) as zf:
         zf.extractall(out_dir)
-    shp = next(out_dir.glob("*.shp"))
-    return shp
+    return next(out_dir.glob("*.shp"))
+
+
+def download_tiger(vintage: int, layer: str, raw_dir: str | Path, *,
+                   state_fips: str | None = None, timeout: int = 300) -> Path:
+    """Download and unzip one TIGER shapefile; return the extracted .shp path."""
+    url = tiger_url(vintage, layer, state_fips)
+    suffix = f"/state={state_fips}" if state_fips else ""
+    out_dir = Path(raw_dir) / f"source=tiger/dataset={layer}/vintage={vintage}{suffix}"
+    return _download_and_extract(url, out_dir, timeout=timeout)
+
+
+def download_tiger_cd(vintage: int, raw_dir: str | Path, *,
+                      state_fips: list[str] | None = None,
+                      timeout: int = 300) -> dict[str, Path]:
+    """Download congressional-district shapefiles for every requested state.
+
+    Returns ``{state_fips: shp_path}``. States are fetched independently so one
+    missing state (e.g. a territory without CDs) does not abort the whole layer;
+    failures are raised only if *every* state fails.
+    """
+    targets = state_fips or [s.fips for s in ref.STATES.values()]
+    out: dict[str, Path] = {}
+    errors: list[str] = []
+    for fips in targets:
+        try:
+            out[fips] = download_tiger(vintage, "cd", raw_dir, state_fips=fips, timeout=timeout)
+        except acquire.AcquisitionError as e:
+            errors.append(f"{fips}: {e}")
+    if not out:
+        raise acquire.NetworkUnavailable(
+            f"No TIGER congressional-district files could be downloaded: {errors[:3]}"
+        )
+    return out
 
 
 # ----------------------------------------------------------------- transforms
