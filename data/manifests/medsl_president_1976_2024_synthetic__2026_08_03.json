@@ -1,0 +1,35 @@
+{
+  "acquired_at": "2026-08-04T05:25:03+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "c9f088c203077075ec31c86c1c04a0ffa9057dad1df9a8d5471f43a323968945",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "MEDSL U.S. President 1976-2024 [SYNTHETIC FIXTURE]",
+  "election_cycle": "1976-2024",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state"
+  ],
+  "known_caveats": "SYNTHETIC fictional data \u2014 not real returns.",
+  "license_or_terms": "MEDSL data are released for research use; cite MIT Election Data and Science Lab.",
+  "office_coverage": [
+    "president"
+  ],
+  "owner": "project-owner (data steward)",
+  "permitted_use": "Public nonpartisan research, aggregate reporting with citation.",
+  "privacy_tier": 0,
+  "prohibited_use": "No repurposing for solicitation, targeting, or partisan advantage.",
+  "raw_path": "data/raw/source=medsl/dataset=president/snapshot=2026-08-03/SYNTHETIC_1976-2024-president.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "MIT Election Data and Science Lab (MEDSL), Harvard Dataverse.",
+  "review_date": "2027-08-03",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-08-03",
+  "source_id": "medsl_president_1976_2024_synthetic",
+  "source_owner": "MIT Election Data and Science Lab",
+  "source_url": "https://dataverse.harvard.edu/api/access/datafile/13887042?format=original",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

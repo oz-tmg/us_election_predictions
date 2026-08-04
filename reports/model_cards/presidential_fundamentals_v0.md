@@ -8,7 +8,7 @@
 - **Office / geography:** U.S. President · state (two-party Democratic vote share)
 - **Type:** transparent fundamentals baseline (polls-free), OLS
 - **Privacy tier:** 0 (public aggregate)
-- **Owner:** project-owner (data steward) · **Review date:** 2026-07-08
+- **Owner:** project-owner (data steward) · **Review date:** 2026-08-03
 
 ## Data
 
@@ -25,11 +25,11 @@
 
 ## Backtest (leave-one-cycle-out)
 
-- **MAE (vote share):** 0.0248  ·  **RMSE:** 0.0311
+- **MAE (vote share):** 0.0254  ·  **RMSE:** 0.0316
 - **Naive persistence MAE:** 0.0265 (baseline the model must beat)
-- **Winner accuracy:** 0.931
-- **Brier (win prob):** 0.0548  ·  **Log score:** 0.1770
-- **ECE (calibration):** 0.0439  ·  **90% interval coverage:** 0.863
+- **Winner accuracy:** 0.936
+- **Brier (win prob):** 0.0480  ·  **Log score:** 0.1678
+- **ECE (calibration):** 0.0429  ·  **90% interval coverage:** 0.868
 
 ## Failure modes
 
