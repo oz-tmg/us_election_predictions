@@ -1,11 +1,12 @@
 """Unit tests for P0-006/P0-007 ingestion and the P1 baseline stack."""
+
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 import pytest
 
-from election_prediction.data import acs, medsl, synthetic
+from election_prediction.data import acquire, acs, medsl, source_validation, synthetic
 from election_prediction.evaluation import forecast_eval
 from election_prediction.features import fundamentals
 from election_prediction.features.race_table import build_race_table
@@ -40,6 +41,7 @@ def test_acs_schema_and_signal(acs_features):
     # college share correlates with the synthetic partisan lean
     lean = acs_features["state_po"].map(synthetic.STATE_BASE_DEM_LEAN)
     assert np.corrcoef(acs_features["college_share"], lean)[0, 1] > 0.5
+    assert acs.validate_acs_features(acs_features)["ok"]
 
 
 # ----------------------------------------------------------------- TIGER (P0-007)
@@ -66,6 +68,46 @@ def test_tiger_cd_requires_state():
 def test_tiger_unknown_vintage_is_explicit():
     with pytest.raises(ValueError, match="No congressional-district mapping"):
         tiger.tiger_url(1999, "cd", "01")
+
+
+def test_tiger_cd_require_all_fails_on_partial_acquisition(monkeypatch, tmp_path):
+    def fake_download(vintage, layer, raw_dir, *, state_fips=None, timeout=300):
+        if state_fips == "02":
+            raise acquire.NetworkUnavailable("missing Alaska")
+        return tmp_path / f"{state_fips}.shp"
+
+    monkeypatch.setattr(tiger, "download_tiger", fake_download)
+    with pytest.raises(acquire.AcquisitionError, match="every requested state"):
+        tiger.download_tiger_cd(
+            2024,
+            tmp_path,
+            state_fips=["01", "02"],
+            require_all=True,
+        )
+
+
+def test_authoritative_source_spotchecks():
+    benchmarks = source_validation.load_benchmarks()
+    returns = pd.DataFrame(
+        [
+            {
+                "office": "us_senate",
+                "cycle": 2022,
+                "state_po": state,
+                "special": False,
+                "totalvotes": total,
+            }
+            for state, total in benchmarks["fec_2022_senate_general"]["values"].items()
+        ]
+    )
+    acs_rows = pd.DataFrame(
+        [
+            {"state_fips": fips, "total_population": total}
+            for fips, total in benchmarks["acs_2023_state_population"]["values"].items()
+        ]
+    )
+    assert source_validation.validate_senate_totals(returns, benchmarks)["ok"]
+    assert source_validation.validate_acs_populations(acs_rows, benchmarks)["ok"]
 
 
 # ------------------------------------------------------------- panel (fundamentals)

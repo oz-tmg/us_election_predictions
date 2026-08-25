@@ -1,0 +1,22 @@
+{
+  "acs_2023_state_population": {
+    "description": "2019-2023 ACS 5-Year Estimates, detailed table B01003",
+    "source_url": "https://data.census.gov/table/ACSDT5Y2023.B01003",
+    "unit": "state total population estimate",
+    "values": {
+      "06": 39242785,
+      "36": 19872319,
+      "48": 29640343
+    }
+  },
+  "fec_2022_senate_general": {
+    "description": "Federal Elections 2022, official results compiled from state election offices",
+    "source_url": "https://www.fec.gov/documents/5676/federalelections2022.xlsx",
+    "unit": "state general-election total votes",
+    "values": {
+      "AL": 1414238,
+      "AZ": 2572294,
+      "OH": 4133342
+    }
+  }
+}
