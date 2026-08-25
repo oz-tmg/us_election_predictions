@@ -22,6 +22,7 @@ Source (Tier 0, public aggregate; attribution required):
   Senate    1976-2024  doi:10.7910/DVN/PEJ5QU
   House     1976-2024  doi:10.7910/DVN/IG0UN2
 """
+
 from __future__ import annotations
 
 import os
@@ -40,11 +41,28 @@ DATAVERSE_TOKEN_ENV = "DATAVERSE_API_TOKEN"
 
 # Canonical silver schema every office maps into.
 SILVER_COLUMNS = [
-    "race_id", "cycle", "office", "state_po", "state_fips", "district_num",
-    "geography_id", "geog_level", "candidate", "party", "party_simplified",
-    "candidatevotes", "totalvotes", "vote_share", "writein",
-    "fusion_flag", "uncontested_flag", "certified_flag", "stage", "special",
-    "source_id", "snapshot_date",
+    "race_id",
+    "cycle",
+    "office",
+    "state_po",
+    "state_fips",
+    "district_num",
+    "geography_id",
+    "geog_level",
+    "candidate",
+    "party",
+    "party_simplified",
+    "candidatevotes",
+    "totalvotes",
+    "vote_share",
+    "writein",
+    "fusion_flag",
+    "uncontested_flag",
+    "certified_flag",
+    "stage",
+    "special",
+    "source_id",
+    "snapshot_date",
 ]
 
 OFFICE_CANON = {
@@ -62,16 +80,16 @@ GENERAL_STAGES = {"gen", "gen runoff", "runoff", "general"}
 
 @dataclass(frozen=True)
 class MedslSource:
-    office: str                 # canonical office name
+    office: str  # canonical office name
     source_id: str
     dataset_name: str
-    doi: str                    # dataset DOI (for citation + the human landing page)
-    datafile_id: int            # Dataverse numeric datafile id (for the access API)
-    filename: str               # the file as published in its original format
-    sep: str                    # separator of the *original* file
+    doi: str  # dataset DOI (for citation + the human landing page)
+    datafile_id: int  # Dataverse numeric datafile id (for the access API)
+    filename: str  # the file as published in its original format
+    sep: str  # separator of the *original* file
     election_cycle: str
-    geog_level: str             # "state" (pres/sen) | "cong_district" (house)
-    guestbook: bool = False     # True -> access API is gated, manual download required
+    geog_level: str  # "state" (pres/sen) | "cong_district" (house)
+    guestbook: bool = False  # True -> access API is gated, manual download required
     expected_md5: str | None = None
     expected_size: int | None = None
     raw_columns: tuple[str, ...] = field(default=())
@@ -101,9 +119,19 @@ MEDSL_SOURCES: dict[str, MedslSource] = {
         guestbook=True,
         expected_md5="405af83db7625cb35d8c19a5ebe029ff",
         expected_size=514108,
-        raw_columns=("year", "state", "state_po", "state_fips", "office",
-                     "candidate", "party_detailed", "party_simplified",
-                     "writein", "candidatevotes", "totalvotes"),
+        raw_columns=(
+            "year",
+            "state",
+            "state_po",
+            "state_fips",
+            "office",
+            "candidate",
+            "party_detailed",
+            "party_simplified",
+            "writein",
+            "candidatevotes",
+            "totalvotes",
+        ),
     ),
     "us_senate": MedslSource(
         office="us_senate",
@@ -117,10 +145,27 @@ MEDSL_SOURCES: dict[str, MedslSource] = {
         geog_level="state",
         guestbook=False,
         expected_size=530501,
-        raw_columns=("year", "state", "state_po", "state_fips", "state_cen", "state_ic",
-                     "office", "district", "stage", "special", "candidate",
-                     "party_detailed", "writein", "mode", "candidatevotes",
-                     "totalvotes", "unofficial", "version", "party_simplified"),
+        raw_columns=(
+            "year",
+            "state",
+            "state_po",
+            "state_fips",
+            "state_cen",
+            "state_ic",
+            "office",
+            "district",
+            "stage",
+            "special",
+            "candidate",
+            "party_detailed",
+            "writein",
+            "mode",
+            "candidatevotes",
+            "totalvotes",
+            "unofficial",
+            "version",
+            "party_simplified",
+        ),
     ),
     "us_house": MedslSource(
         office="us_house",
@@ -134,9 +179,24 @@ MEDSL_SOURCES: dict[str, MedslSource] = {
         geog_level="cong_district",
         guestbook=True,
         expected_size=4156562,
-        raw_columns=("year", "state", "state_po", "state_fips", "office", "district",
-                     "stage", "special", "candidate", "party", "writein", "mode",
-                     "candidatevotes", "totalvotes", "unofficial", "runoff"),
+        raw_columns=(
+            "year",
+            "state",
+            "state_po",
+            "state_fips",
+            "office",
+            "district",
+            "stage",
+            "special",
+            "candidate",
+            "party",
+            "writein",
+            "mode",
+            "candidatevotes",
+            "totalvotes",
+            "unofficial",
+            "runoff",
+        ),
     ),
 }
 
@@ -157,8 +217,9 @@ def find_manual_snapshot(office: str, raw_dir: str | Path) -> Path | None:
     candidate = manual_drop_dir(office, raw_dir) / src.filename
     if not candidate.exists():
         return None
-    acquire.verify_file(candidate, expected_md5=src.expected_md5,
-                        expected_size=src.expected_size, url=src.landing_page)
+    acquire.verify_file(
+        candidate, expected_md5=src.expected_md5, expected_size=src.expected_size, url=src.landing_page
+    )
     return candidate
 
 
@@ -190,9 +251,15 @@ def download_medsl(office: str, raw_dir: str | Path, *, timeout: int = 180) -> P
         raise _guestbook_error(src, raw_dir)
 
     try:
-        return acquire.fetch(src.url, out_dir / src.filename, expect=expect, timeout=timeout,
-                             expected_md5=src.expected_md5, expected_size=src.expected_size,
-                             headers=headers)
+        return acquire.fetch(
+            src.url,
+            out_dir / src.filename,
+            expect=expect,
+            timeout=timeout,
+            expected_md5=src.expected_md5,
+            expected_size=src.expected_size,
+            headers=headers,
+        )
     except acquire.InvalidResponse as e:
         if "guestbook" in str(e).lower():
             raise _guestbook_error(src, raw_dir) from e
@@ -207,8 +274,11 @@ def _guestbook_error(src: MedslSource, raw_dir: str | Path) -> acquire.ManualAcq
         f"downloaded programmatically. A valid ${DATAVERSE_TOKEN_ENV} does NOT satisfy "
         "this guestbook (verified 2026-08-03) — the response must be given in a browser, "
         "once.",
-        url=src.landing_page, filename=src.filename, drop_dir=drop,
-        expected_md5=src.expected_md5, expected_size=src.expected_size,
+        url=src.landing_page,
+        filename=src.filename,
+        drop_dir=drop,
+        expected_md5=src.expected_md5,
+        expected_size=src.expected_size,
     )
 
 
@@ -227,8 +297,7 @@ def _canon_party(row: pd.Series) -> tuple[str, str]:
     return (detailed or "OTHER", simple)
 
 
-def parse_bronze(csv_path: str | Path, office: str, *, source_id: str,
-                 snapshot_date: str) -> pd.DataFrame:
+def parse_bronze(csv_path: str | Path, office: str, *, source_id: str, snapshot_date: str) -> pd.DataFrame:
     """Parse a raw MEDSL file to a bronze frame with ingestion metadata columns.
 
     The separator comes from the source definition — senate/house ship as ingested
@@ -273,9 +342,22 @@ def collapse_vote_modes(bronze: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     if "mode" not in bronze.columns:
         return bronze, {"mode_rows_collapsed": 0}
 
-    key = [c for c in ("year", "state_po", "office", "district", "stage", "special",
-                       "candidate", "party_detailed", "party", "writein")
-           if c in bronze.columns]
+    key = [
+        c
+        for c in (
+            "year",
+            "state_po",
+            "office",
+            "district",
+            "stage",
+            "special",
+            "candidate",
+            "party_detailed",
+            "party",
+            "writein",
+        )
+        if c in bronze.columns
+    ]
     if not key:
         return bronze, {"mode_rows_collapsed": 0}
 
@@ -412,16 +494,18 @@ def standardize_silver_with_stats(bronze: pd.DataFrame, office: str) -> tuple[pd
     out["vote_share"] = _vote_share(out)
     out["uncontested_flag"] = _uncontested(out)
 
-    out = (out[SILVER_COLUMNS]
-           .sort_values(["cycle", "state_po", "race_id", "candidatevotes"],
-                        ascending=[True, True, True, False])
-           .reset_index(drop=True))
+    out = (
+        out[SILVER_COLUMNS]
+        .sort_values(["cycle", "state_po", "race_id", "candidatevotes"], ascending=[True, True, True, False])
+        .reset_index(drop=True)
+    )
     stats["rows"] = len(out)
     return out, stats
 
 
 def _race_id(df: pd.DataFrame) -> pd.Series:
     """Stable race key. Specials and runoffs are distinct races from the regular one."""
+
     def mk(r):
         base = f"{r['cycle']}_{r['office']}_{r['state_po']}".lower()
         if r["office"] == "us_house":
@@ -432,6 +516,7 @@ def _race_id(df: pd.DataFrame) -> pd.Series:
         if bool(r.get("special")):
             base += "_special"
         return base
+
     return df.apply(mk, axis=1)
 
 

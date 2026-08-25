@@ -6,6 +6,7 @@ features, exclusions, assumptions, failure modes, privacy tier, backtest + calib
 results, owner, review date. The forecast report summarizes the backtest honestly, with
 historical-vs-modeled labelling and close-races-look-close framing.
 """
+
 from __future__ import annotations
 
 from datetime import date
@@ -15,14 +16,15 @@ from pathlib import Path
 def _synthetic_banner(synthetic: bool) -> str:
     if not synthetic:
         return ""
-    return ("> ⚠️ **SYNTHETIC DATA.** This run used a fictional fixture matching the MEDSL "
-            "schema because live data access was unavailable. Numbers below are illustrative "
-            "of the *pipeline*, not real electoral estimates. Re-run with real snapshots to "
-            "publish.\n\n")
+    return (
+        "> ⚠️ **SYNTHETIC DATA.** This run used a fictional fixture matching the MEDSL "
+        "schema because live data access was unavailable. Numbers below are illustrative "
+        "of the *pipeline*, not real electoral estimates. Re-run with real snapshots to "
+        "publish.\n\n"
+    )
 
 
-def write_presidential_model_card(results: dict, reports_dir: str | Path, *,
-                                  synthetic: bool = False) -> Path:
+def write_presidential_model_card(results: dict, reports_dir: str | Path, *, synthetic: bool = False) -> Path:
     pres = results["presidential"]
     m = pres.get("demographics_backtest", {})
     ev = pres.get("demographics_eval", {})
@@ -53,8 +55,7 @@ def write_presidential_model_card(results: dict, reports_dir: str | Path, *,
         "state demographics. Snapshot dates recorded in `data/manifests/`.",
         f"- **Training cycles:** backtested leave-one-cycle-out (n={m.get('n', 'n/a')} state-cycles).",
         "- **Target:** state two-party Democratic vote share.",
-        "- **Features:** previous-cycle state share (F-002), national environment, college share "
-        "(F-006).",
+        "- **Features:** previous-cycle state share (F-002), national environment, college share (F-006).",
         "",
         "## Assumptions & exclusions",
         "",
@@ -65,8 +66,7 @@ def write_presidential_model_card(results: dict, reports_dir: str | Path, *,
         "## Backtest (leave-one-cycle-out)",
         "",
         f"- **MAE (vote share):** {g(m, 'mae')}  ·  **RMSE:** {g(m, 'rmse')}",
-        f"- **Naive persistence MAE:** {g(m, 'naive_persistence_mae')} "
-        "(baseline the model must beat)",
+        f"- **Naive persistence MAE:** {g(m, 'naive_persistence_mae')} (baseline the model must beat)",
         f"- **Winner accuracy:** {g(m, 'winner_accuracy', '{:.3f}')}",
         f"- **Brier (win prob):** {g(ev, 'brier')}  ·  **Log score:** {g(ev, 'log_score')}",
         f"- **ECE (calibration):** {g(ev, 'ece')}  ·  **90% interval coverage:** "
@@ -90,8 +90,7 @@ def write_presidential_model_card(results: dict, reports_dir: str | Path, *,
     return path
 
 
-def write_forecast_report(results: dict, reports_dir: str | Path, *,
-                          synthetic: bool = False) -> Path:
+def write_forecast_report(results: dict, reports_dir: str | Path, *, synthetic: bool = False) -> Path:
     pres = results["presidential"]
     m_base = pres.get("baseline_backtest", {})
     m_demo = pres.get("demographics_backtest", {})
@@ -139,11 +138,17 @@ def write_forecast_report(results: dict, reports_dir: str | Path, *,
 
     cc = ev.get("calibration_curve") or []
     if cc:
-        lines += ["### Reliability curve", "",
-                  "| Pred bin | n | mean pred | observed |", "|---|---:|---:|---:|"]
+        lines += [
+            "### Reliability curve",
+            "",
+            "| Pred bin | n | mean pred | observed |",
+            "|---|---:|---:|---:|",
+        ]
         for r in cc:
-            lines.append(f"| {r['bin_low']:.1f}–{r['bin_high']:.1f} | {r['n']} | "
-                         f"{r['mean_pred']:.3f} | {r['observed_freq']:.3f} |")
+            lines.append(
+                f"| {r['bin_low']:.1f}–{r['bin_high']:.1f} | {r['n']} | "
+                f"{r['mean_pred']:.3f} | {r['observed_freq']:.3f} |"
+            )
         lines.append("")
 
     if sim:

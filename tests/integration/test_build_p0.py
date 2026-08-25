@@ -1,4 +1,5 @@
 """Integration test: the full P0 build runs offline and produces valid outputs."""
+
 from __future__ import annotations
 
 from pathlib import Path

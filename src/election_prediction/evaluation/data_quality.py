@@ -4,6 +4,7 @@ Renders missingness, duplicate keys, vote-total reconciliation, and stale-source
 flags for the loaded data, as both a machine-readable dict and a Markdown report.
 Makes gaps visible before anything is modeled (PROJECT_CONTEXT.md §17.5).
 """
+
 from __future__ import annotations
 
 from datetime import UTC, date, datetime
@@ -73,9 +74,7 @@ def build_quality_report(
     }
 
     # --- vote-total reconciliation ---------------------------------------
-    agg = returns.groupby("race_id").agg(
-        sum_cand=("candidatevotes", "sum"), reported=("totalvotes", "max")
-    )
+    agg = returns.groupby("race_id").agg(sum_cand=("candidatevotes", "sum"), reported=("totalvotes", "max"))
     checkable = agg[agg["reported"] > 0]
     mismatches = checkable[checkable["sum_cand"] != checkable["reported"]]
     mismatch_pct = round(100 * len(mismatches) / len(checkable), 3) if len(checkable) else 0.0
@@ -100,17 +99,18 @@ def build_quality_report(
     for src, g in returns.groupby("source_id"):
         snap = g["snapshot_date"].iloc[0]
         age = _snapshot_age_days(snap)
-        freshness.append({
-            "source_id": src,
-            "snapshot_date": snap,
-            "age_days": age,
-            "stale": (age is not None and age > STALE_AFTER_DAYS),
-        })
+        freshness.append(
+            {
+                "source_id": src,
+                "snapshot_date": snap,
+                "age_days": age,
+                "stale": (age is not None and age > STALE_AFTER_DAYS),
+            }
+        )
     report["source_freshness"] = freshness
 
     report["overall_ok"] = (
-        sum(report["duplicate_keys"].values()) == 0
-        and report["vote_reconciliation"]["within_tolerance"]
+        sum(report["duplicate_keys"].values()) == 0 and report["vote_reconciliation"]["within_tolerance"]
     )
     return report
 
@@ -140,8 +140,11 @@ def render_markdown(report: dict) -> str:
             ]
         lines += ["## Acquisition mode", ""]
         for source, mode in sorted(modes.items()):
-            label = {"live": "live download", "manual": "verified manual download",
-                     "synthetic": "SYNTHETIC fixture"}.get(mode, mode)
+            label = {
+                "live": "live download",
+                "manual": "verified manual download",
+                "synthetic": "SYNTHETIC fixture",
+            }.get(mode, mode)
             lines.append(f"- `{source}`: {label}")
         lines.append("")
 
@@ -174,8 +177,13 @@ def render_markdown(report: dict) -> str:
 
     ts = report.get("transform_stats") or {}
     if ts:
-        lines += ["", "## Standardization decisions", "",
-                  "What the raw → silver transform dropped or merged, per source:", ""]
+        lines += [
+            "",
+            "## Standardization decisions",
+            "",
+            "What the raw → silver transform dropped or merged, per source:",
+            "",
+        ]
         for source, stats in sorted(ts.items()):
             detail = ", ".join(f"{k.replace('_', ' ')}: {v:,}" for k, v in stats.items())
             lines.append(f"- `{source}` — {detail}")
@@ -208,8 +216,7 @@ def render_markdown(report: dict) -> str:
     lines += ["", "## Source freshness", ""]
     for f in report["source_freshness"]:
         flag = "STALE" if f["stale"] else "fresh"
-        lines.append(f"- `{f['source_id']}` — snapshot {f['snapshot_date']} "
-                     f"({f['age_days']} days, {flag})")
+        lines.append(f"- `{f['source_id']}` — snapshot {f['snapshot_date']} ({f['age_days']} days, {flag})")
 
     lines += [
         "",

@@ -4,6 +4,7 @@ These cover the failure modes that let a build report success while modelling th
 wrong data: error bodies served with HTTP 200, gated sources, primaries mixed in with
 generals, per-mode vote rows, and fusion-voting candidate lines.
 """
+
 from __future__ import annotations
 
 import pandas as pd
@@ -21,8 +22,10 @@ def test_html_error_page_is_rejected():
 
 
 def test_dataverse_error_envelope_is_rejected():
-    body = (b'{"status":"ERROR","message":"You may not download this file without '
-            b'the required Guestbook response for guestbookID 458."}')
+    body = (
+        b'{"status":"ERROR","message":"You may not download this file without '
+        b'the required Guestbook response for guestbookID 458."}'
+    )
     with pytest.raises(acquire.InvalidResponse, match="Guestbook"):
         acquire._validate_body(body, expect="csv", url="https://dataverse.harvard.edu/x")
 
@@ -95,37 +98,93 @@ def _bronze(rows: list[dict]) -> pd.DataFrame:
 
 
 def test_primaries_are_dropped():
-    b = _bronze([
-        {"year": "2024", "state_po": "VA", "state": "VIRGINIA", "office": "US SENATE",
-         "candidate": "A", "party_detailed": "DEMOCRAT", "candidatevotes": "10",
-         "totalvotes": "10", "stage": "gen"},
-        {"year": "2024", "state_po": "VA", "state": "VIRGINIA", "office": "US SENATE",
-         "candidate": "B", "party_detailed": "DEMOCRAT", "candidatevotes": "5",
-         "totalvotes": "5", "stage": "pre"},
-        # MEDSL mixes case; 'GEN' must survive the filter.
-        {"year": "2024", "state_po": "VA", "state": "VIRGINIA", "office": "US SENATE",
-         "candidate": "C", "party_detailed": "REPUBLICAN", "candidatevotes": "8",
-         "totalvotes": "8", "stage": "GEN"},
-    ])
+    b = _bronze(
+        [
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "state": "VIRGINIA",
+                "office": "US SENATE",
+                "candidate": "A",
+                "party_detailed": "DEMOCRAT",
+                "candidatevotes": "10",
+                "totalvotes": "10",
+                "stage": "gen",
+            },
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "state": "VIRGINIA",
+                "office": "US SENATE",
+                "candidate": "B",
+                "party_detailed": "DEMOCRAT",
+                "candidatevotes": "5",
+                "totalvotes": "5",
+                "stage": "pre",
+            },
+            # MEDSL mixes case; 'GEN' must survive the filter.
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "state": "VIRGINIA",
+                "office": "US SENATE",
+                "candidate": "C",
+                "party_detailed": "REPUBLICAN",
+                "candidatevotes": "8",
+                "totalvotes": "8",
+                "stage": "GEN",
+            },
+        ]
+    )
     kept, stats = medsl.filter_general_election(b)
     assert stats["dropped_non_general"] == 1
     assert set(kept["candidate"]) == {"A", "C"}
 
 
 def test_vote_modes_prefer_published_total():
-    b = _bronze([
-        {"year": "2024", "state_po": "VA", "office": "US SENATE", "candidate": "A",
-         "party_detailed": "DEMOCRAT", "stage": "gen", "special": "False",
-         "writein": "False", "mode": "total", "candidatevotes": "100", "totalvotes": "100"},
-        {"year": "2024", "state_po": "VA", "office": "US SENATE", "candidate": "A",
-         "party_detailed": "DEMOCRAT", "stage": "gen", "special": "False",
-         "writein": "False", "mode": "election day", "candidatevotes": "60",
-         "totalvotes": "100"},
-        {"year": "2024", "state_po": "VA", "office": "US SENATE", "candidate": "A",
-         "party_detailed": "DEMOCRAT", "stage": "gen", "special": "False",
-         "writein": "False", "mode": "absentee", "candidatevotes": "40",
-         "totalvotes": "100"},
-    ])
+    b = _bronze(
+        [
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "office": "US SENATE",
+                "candidate": "A",
+                "party_detailed": "DEMOCRAT",
+                "stage": "gen",
+                "special": "False",
+                "writein": "False",
+                "mode": "total",
+                "candidatevotes": "100",
+                "totalvotes": "100",
+            },
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "office": "US SENATE",
+                "candidate": "A",
+                "party_detailed": "DEMOCRAT",
+                "stage": "gen",
+                "special": "False",
+                "writein": "False",
+                "mode": "election day",
+                "candidatevotes": "60",
+                "totalvotes": "100",
+            },
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "office": "US SENATE",
+                "candidate": "A",
+                "party_detailed": "DEMOCRAT",
+                "stage": "gen",
+                "special": "False",
+                "writein": "False",
+                "mode": "absentee",
+                "candidatevotes": "40",
+                "totalvotes": "100",
+            },
+        ]
+    )
     out, stats = medsl.collapse_vote_modes(b)
     assert len(out) == 1
     assert out["candidatevotes"].iloc[0] == 100  # not 200
@@ -133,16 +192,36 @@ def test_vote_modes_prefer_published_total():
 
 
 def test_vote_modes_summed_when_no_total_row():
-    b = _bronze([
-        {"year": "2024", "state_po": "VA", "office": "US SENATE", "candidate": "A",
-         "party_detailed": "DEMOCRAT", "stage": "gen", "special": "False",
-         "writein": "False", "mode": "election day", "candidatevotes": "60",
-         "totalvotes": "100"},
-        {"year": "2024", "state_po": "VA", "office": "US SENATE", "candidate": "A",
-         "party_detailed": "DEMOCRAT", "stage": "gen", "special": "False",
-         "writein": "False", "mode": "absentee", "candidatevotes": "40",
-         "totalvotes": "100"},
-    ])
+    b = _bronze(
+        [
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "office": "US SENATE",
+                "candidate": "A",
+                "party_detailed": "DEMOCRAT",
+                "stage": "gen",
+                "special": "False",
+                "writein": "False",
+                "mode": "election day",
+                "candidatevotes": "60",
+                "totalvotes": "100",
+            },
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "office": "US SENATE",
+                "candidate": "A",
+                "party_detailed": "DEMOCRAT",
+                "stage": "gen",
+                "special": "False",
+                "writein": "False",
+                "mode": "absentee",
+                "candidatevotes": "40",
+                "totalvotes": "100",
+            },
+        ]
+    )
     out, _ = medsl.collapse_vote_modes(b)
     assert len(out) == 1
     assert out["candidatevotes"].iloc[0] == 100
@@ -150,20 +229,49 @@ def test_vote_modes_summed_when_no_total_row():
 
 def test_fusion_lines_are_summed_per_candidate():
     """NY-style fusion: one candidate on two party lines is still one candidate."""
-    b = _bronze([
-        {"year": "1976", "state_po": "NY", "state": "NEW YORK", "office": "US SENATE",
-         "candidate": "DANIEL PATRICK MOYNIHAN", "party_detailed": "DEMOCRAT",
-         "party_simplified": "DEMOCRAT", "candidatevotes": "3238511",
-         "totalvotes": "6666875", "stage": "gen", "writein": "False"},
-        {"year": "1976", "state_po": "NY", "state": "NEW YORK", "office": "US SENATE",
-         "candidate": "DANIEL PATRICK MOYNIHAN", "party_detailed": "LIBERAL",
-         "party_simplified": "OTHER", "candidatevotes": "184083",
-         "totalvotes": "6666875", "stage": "gen", "writein": "False"},
-        {"year": "1976", "state_po": "NY", "state": "NEW YORK", "office": "US SENATE",
-         "candidate": "JAMES L. BUCKLEY", "party_detailed": "REPUBLICAN",
-         "party_simplified": "REPUBLICAN", "candidatevotes": "2836633",
-         "totalvotes": "6666875", "stage": "gen", "writein": "False"},
-    ])
+    b = _bronze(
+        [
+            {
+                "year": "1976",
+                "state_po": "NY",
+                "state": "NEW YORK",
+                "office": "US SENATE",
+                "candidate": "DANIEL PATRICK MOYNIHAN",
+                "party_detailed": "DEMOCRAT",
+                "party_simplified": "DEMOCRAT",
+                "candidatevotes": "3238511",
+                "totalvotes": "6666875",
+                "stage": "gen",
+                "writein": "False",
+            },
+            {
+                "year": "1976",
+                "state_po": "NY",
+                "state": "NEW YORK",
+                "office": "US SENATE",
+                "candidate": "DANIEL PATRICK MOYNIHAN",
+                "party_detailed": "LIBERAL",
+                "party_simplified": "OTHER",
+                "candidatevotes": "184083",
+                "totalvotes": "6666875",
+                "stage": "gen",
+                "writein": "False",
+            },
+            {
+                "year": "1976",
+                "state_po": "NY",
+                "state": "NEW YORK",
+                "office": "US SENATE",
+                "candidate": "JAMES L. BUCKLEY",
+                "party_detailed": "REPUBLICAN",
+                "party_simplified": "REPUBLICAN",
+                "candidatevotes": "2836633",
+                "totalvotes": "6666875",
+                "stage": "gen",
+                "writein": "False",
+            },
+        ]
+    )
     silver, stats = medsl.standardize_silver_with_stats(b, "us_senate")
     assert stats["fusion_candidates_merged"] == 1
 
@@ -178,27 +286,67 @@ def test_fusion_lines_are_summed_per_candidate():
 
 
 def test_specials_do_not_collide_with_regular_races():
-    b = _bronze([
-        {"year": "2024", "state_po": "VA", "state": "VIRGINIA", "office": "US SENATE",
-         "candidate": "A", "party_detailed": "DEMOCRAT", "candidatevotes": "10",
-         "totalvotes": "10", "stage": "gen", "special": "False"},
-        {"year": "2024", "state_po": "VA", "state": "VIRGINIA", "office": "US SENATE",
-         "candidate": "B", "party_detailed": "DEMOCRAT", "candidatevotes": "7",
-         "totalvotes": "7", "stage": "gen", "special": "True"},
-    ])
+    b = _bronze(
+        [
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "state": "VIRGINIA",
+                "office": "US SENATE",
+                "candidate": "A",
+                "party_detailed": "DEMOCRAT",
+                "candidatevotes": "10",
+                "totalvotes": "10",
+                "stage": "gen",
+                "special": "False",
+            },
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "state": "VIRGINIA",
+                "office": "US SENATE",
+                "candidate": "B",
+                "party_detailed": "DEMOCRAT",
+                "candidatevotes": "7",
+                "totalvotes": "7",
+                "stage": "gen",
+                "special": "True",
+            },
+        ]
+    )
     silver = medsl.standardize_silver(b, "us_senate")
     assert silver["race_id"].nunique() == 2
 
 
 def test_writeins_excluded_from_contender_count():
-    b = _bronze([
-        {"year": "2024", "state_po": "VA", "state": "VIRGINIA", "office": "US SENATE",
-         "candidate": "A", "party_detailed": "DEMOCRAT", "candidatevotes": "1000",
-         "totalvotes": "1005", "stage": "gen", "writein": "False"},
-        {"year": "2024", "state_po": "VA", "state": "VIRGINIA", "office": "US SENATE",
-         "candidate": "SCATTERING", "party_detailed": "", "candidatevotes": "5",
-         "totalvotes": "1005", "stage": "gen", "writein": "True"},
-    ])
+    b = _bronze(
+        [
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "state": "VIRGINIA",
+                "office": "US SENATE",
+                "candidate": "A",
+                "party_detailed": "DEMOCRAT",
+                "candidatevotes": "1000",
+                "totalvotes": "1005",
+                "stage": "gen",
+                "writein": "False",
+            },
+            {
+                "year": "2024",
+                "state_po": "VA",
+                "state": "VIRGINIA",
+                "office": "US SENATE",
+                "candidate": "SCATTERING",
+                "party_detailed": "",
+                "candidatevotes": "5",
+                "totalvotes": "1005",
+                "stage": "gen",
+                "writein": "True",
+            },
+        ]
+    )
     silver = medsl.standardize_silver(b, "us_senate")
     # A lone candidate plus write-ins is still an uncontested race.
     assert silver["uncontested_flag"].all()

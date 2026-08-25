@@ -3,6 +3,7 @@
 Credentials must reach the process environment without ever being written into a
 manifest, report, or log line.
 """
+
 from __future__ import annotations
 
 import os
@@ -25,10 +26,9 @@ def test_loads_pairs_and_returns_names_only(tmp_path, monkeypatch):
 
     loaded = load_dotenv(env, warn=False)
 
-    assert set(loaded) == {"CENSUS_API_KEY", "DATAVERSE_API_TOKEN", "QUOTED",
-                           "NO_TRAILING_NEWLINE"}
+    assert set(loaded) == {"CENSUS_API_KEY", "DATAVERSE_API_TOKEN", "QUOTED", "NO_TRAILING_NEWLINE"}
     assert os.environ["CENSUS_API_KEY"] == "abc123"
-    assert os.environ["DATAVERSE_API_TOKEN"] == "tok-456"   # export prefix + quotes stripped
+    assert os.environ["DATAVERSE_API_TOKEN"] == "tok-456"  # export prefix + quotes stripped
     assert os.environ["QUOTED"] == "has spaces"
     assert os.environ["NO_TRAILING_NEWLINE"] == "xyz"
     # The return value is safe to print: names only, no secret values.
@@ -60,9 +60,9 @@ def test_malformed_lines_are_skipped(tmp_path, monkeypatch):
 
 def test_warns_when_secrets_file_is_not_gitignored(tmp_path, capsys):
     """A .env holding credentials outside git's ignore rules must be called out."""
-    env = tmp_path / ".env"          # tmp_path is not a git repo -> not ignored
+    env = tmp_path / ".env"  # tmp_path is not a git repo -> not ignored
     env.write_text("CENSUS_API_KEY=abc\n")
     load_dotenv(env, warn=True)
     err = capsys.readouterr().err
     assert "NOT git-ignored" in err
-    assert "abc" not in err          # the warning must not leak the value
+    assert "abc" not in err  # the warning must not leak the value

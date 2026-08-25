@@ -6,6 +6,7 @@ a binned calibration (reliability) curve, interval coverage for vote-share inter
 and MAE/RMSE for vote share. Close races should look close and probabilities should be
 honest — these metrics are how we check that.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,12 +39,15 @@ def calibration_curve(prob: np.ndarray, outcome: np.ndarray, *, n_bins: int = 10
         m = idx == b
         if not m.any():
             continue
-        rows.append({
-            "bin_low": bins[b], "bin_high": bins[b + 1],
-            "n": int(m.sum()),
-            "mean_pred": float(prob[m].mean()),
-            "observed_freq": float(outcome[m].mean()),
-        })
+        rows.append(
+            {
+                "bin_low": bins[b],
+                "bin_high": bins[b + 1],
+                "n": int(m.sum()),
+                "mean_pred": float(prob[m].mean()),
+                "observed_freq": float(outcome[m].mean()),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -56,8 +60,9 @@ def expected_calibration_error(prob: np.ndarray, outcome: np.ndarray, *, n_bins:
     return float((w * (cc["mean_pred"] - cc["observed_freq"]).abs()).sum())
 
 
-def interval_coverage(pred_mean: np.ndarray, sigma: np.ndarray, actual: np.ndarray,
-                      *, level: float = 0.90) -> float:
+def interval_coverage(
+    pred_mean: np.ndarray, sigma: np.ndarray, actual: np.ndarray, *, level: float = 0.90
+) -> float:
     """Fraction of actual vote shares falling in the predicted central interval."""
 
     z = {0.80: 1.2816, 0.90: 1.6449, 0.95: 1.9600}.get(round(level, 2), 1.6449)

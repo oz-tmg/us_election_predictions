@@ -1,4 +1,5 @@
 """Unit tests for the P0 data-and-entity foundation."""
+
 from __future__ import annotations
 
 import pandas as pd
@@ -19,8 +20,7 @@ def test_public_tier_boundary_allows_0_to_2():
 
 
 def test_restricted_tier_refused():
-    for t in (PrivacyTier.LICENSED_PERSONAL, PrivacyTier.CAMPAIGN_OPERATIONAL,
-              PrivacyTier.DERIVED_SENSITIVE):
+    for t in (PrivacyTier.LICENSED_PERSONAL, PrivacyTier.CAMPAIGN_OPERATIONAL, PrivacyTier.DERIVED_SENSITIVE):
         with pytest.raises(GovernanceError):
             assert_public_safe(t, context="test")
 
@@ -30,11 +30,19 @@ def test_manifest_refuses_restricted_tier(tmp_path):
     f.write_text("a,b\n1,2\n")
     with pytest.raises(GovernanceError):
         SourceManifest.for_snapshot(
-            raw_path=f, source_id="s", dataset_name="d", source_owner="o",
-            source_url="u", privacy_tier=PrivacyTier.LICENSED_PERSONAL,
-            license_or_terms="l", permitted_use="p", prohibited_use="x",
-            office_coverage=["president"], geography_coverage=["state"],
-            election_cycle="2024", owner="me",
+            raw_path=f,
+            source_id="s",
+            dataset_name="d",
+            source_owner="o",
+            source_url="u",
+            privacy_tier=PrivacyTier.LICENSED_PERSONAL,
+            license_or_terms="l",
+            permitted_use="p",
+            prohibited_use="x",
+            office_coverage=["president"],
+            geography_coverage=["state"],
+            election_cycle="2024",
+            owner="me",
         )
 
 
@@ -43,11 +51,19 @@ def test_manifest_checksum_and_roundtrip(tmp_path):
     f = tmp_path / "data.csv"
     f.write_text("year,candidatevotes\n2020,100\n")
     m = SourceManifest.for_snapshot(
-        raw_path=f, source_id="medsl_president_1976_2020", dataset_name="d",
-        source_owner="MEDSL", source_url="u", privacy_tier=PrivacyTier.PUBLIC_AGGREGATE,
-        license_or_terms="l", permitted_use="p", prohibited_use="x",
-        office_coverage=["president"], geography_coverage=["state"],
-        election_cycle="1976-2020", owner="me",
+        raw_path=f,
+        source_id="medsl_president_1976_2020",
+        dataset_name="d",
+        source_owner="MEDSL",
+        source_url="u",
+        privacy_tier=PrivacyTier.PUBLIC_AGGREGATE,
+        license_or_terms="l",
+        permitted_use="p",
+        prohibited_use="x",
+        office_coverage=["president"],
+        geography_coverage=["state"],
+        election_cycle="1976-2020",
+        owner="me",
     )
     assert m.checksum_sha256 == sha256_file(f)
     assert len(m.checksum_sha256) == 64

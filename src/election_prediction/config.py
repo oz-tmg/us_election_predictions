@@ -8,6 +8,7 @@ Deliberately dependency-free: CLAUDE.md §7 requires a new dependency to be reco
 with its license before use, and a ~30-line parser is not worth that. Values are
 never logged — ``load_dotenv`` returns variable *names* only.
 """
+
 from __future__ import annotations
 
 import os
@@ -27,7 +28,7 @@ def _parse_line(line: str) -> tuple[str, str] | None:
     if not line or line.startswith("#"):
         return None
     if line.startswith("export "):
-        line = line[len("export "):].lstrip()
+        line = line[len("export ") :].lstrip()
     if "=" not in line:
         return None
     name, _, value = line.partition("=")
@@ -42,16 +43,22 @@ def _parse_line(line: str) -> tuple[str, str] | None:
 
 def _is_git_ignored(path: Path) -> bool:
     try:
-        return subprocess.run(  # noqa: S603 - fixed argv, no shell
-            ["git", "check-ignore", "-q", str(path)],
-            cwd=path.parent, capture_output=True, timeout=10,
-        ).returncode == 0
+        return (
+            subprocess.run(  # noqa: S603 - fixed argv, no shell
+                ["git", "check-ignore", "-q", str(path)],
+                cwd=path.parent,
+                capture_output=True,
+                timeout=10,
+            ).returncode
+            == 0
+        )
     except (OSError, subprocess.SubprocessError):
         return False
 
 
-def load_dotenv(path: str | Path = DEFAULT_ENV_FILE, *, override: bool = False,
-                warn: bool = True) -> list[str]:
+def load_dotenv(
+    path: str | Path = DEFAULT_ENV_FILE, *, override: bool = False, warn: bool = True
+) -> list[str]:
     """Load ``KEY=VALUE`` pairs from ``path`` into ``os.environ``.
 
     Existing environment variables win unless ``override`` is set, so an explicit

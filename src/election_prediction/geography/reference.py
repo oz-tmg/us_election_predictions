@@ -4,6 +4,7 @@ Small, static, authoritative lookup used to conform geography keys across every
 source (CLAUDE.md §3: standardize on FIPS/GEOID keys). Values follow Census /
 FIPS 5-2 and the Census statistical regions. 50 states + DC (+ common territories).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -12,9 +13,9 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class StateRef:
     postal: str
-    fips: str        # 2-digit state FIPS as string (preserves leading zero)
+    fips: str  # 2-digit state FIPS as string (preserves leading zero)
     name: str
-    census_region: str      # Northeast | Midwest | South | West | Territory
+    census_region: str  # Northeast | Midwest | South | West | Territory
     census_division: str
 
 
@@ -76,8 +77,7 @@ _ROWS = [
 ]
 
 STATES: dict[str, StateRef] = {
-    postal: StateRef(postal=postal, fips=fips, name=name,
-                     census_region=region, census_division=division)
+    postal: StateRef(postal=postal, fips=fips, name=name, census_region=region, census_division=division)
     for (name, postal, fips, region, division) in _ROWS
 }
 

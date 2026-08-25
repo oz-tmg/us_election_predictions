@@ -4,6 +4,7 @@ Single source of truth for the privacy tiers defined in CLAUDE.md §5 and
 docs/data-governance-and-privacy.md. Every dataset that enters the modeling
 layer carries a tier; ingestion refuses to land Tier 3+ data in the public lake.
 """
+
 from __future__ import annotations
 
 from enum import IntEnum
@@ -12,12 +13,12 @@ from enum import IntEnum
 class PrivacyTier(IntEnum):
     """Escalating sensitivity. Higher = more restricted (CLAUDE.md §5)."""
 
-    PUBLIC_AGGREGATE = 0          # certified returns, ACS tables, TIGER boundaries
+    PUBLIC_AGGREGATE = 0  # certified returns, ACS tables, TIGER boundaries
     PUBLIC_SENSITIVE_AGGREGATE = 1  # precinct returns, small-area demographics
-    PUBLIC_PERSONAL = 2           # FEC itemized donors, some voter-file fields
-    LICENSED_PERSONAL = 3         # state/national voter files, consumer append
-    CAMPAIGN_OPERATIONAL = 4      # VAN/CRM exports, canvass, persuasion surveys
-    DERIVED_SENSITIVE = 5         # modeled partisanship, turnout/support scores
+    PUBLIC_PERSONAL = 2  # FEC itemized donors, some voter-file fields
+    LICENSED_PERSONAL = 3  # state/national voter files, consumer append
+    CAMPAIGN_OPERATIONAL = 4  # VAN/CRM exports, canvass, persuasion surveys
+    DERIVED_SENSITIVE = 5  # modeled partisanship, turnout/support scores
 
     @property
     def label(self) -> str:

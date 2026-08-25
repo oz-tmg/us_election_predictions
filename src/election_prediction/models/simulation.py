@@ -14,6 +14,7 @@ Error decomposition for each simulated election e and unit i:
 with a_nat + a_reg + a_state = 1, scaled by the unit's sigma. The shared components
 induce positive cross-unit correlation.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -25,22 +26,66 @@ from ..geography import reference as ref
 
 # 2020-cycle Electoral College allocation (state -> electors). DC = 3.
 ELECTORAL_VOTES = {
-    "AL": 9, "AK": 3, "AZ": 11, "AR": 6, "CA": 55, "CO": 9, "CT": 7, "DE": 3,
-    "DC": 3, "FL": 29, "GA": 16, "HI": 4, "ID": 4, "IL": 20, "IN": 11, "IA": 6,
-    "KS": 6, "KY": 8, "LA": 8, "ME": 4, "MD": 10, "MA": 11, "MI": 16, "MN": 10,
-    "MS": 6, "MO": 10, "MT": 3, "NE": 5, "NV": 6, "NH": 4, "NJ": 14, "NM": 5,
-    "NY": 29, "NC": 15, "ND": 3, "OH": 18, "OK": 7, "OR": 7, "PA": 20, "RI": 4,
-    "SC": 9, "SD": 3, "TN": 11, "TX": 38, "UT": 6, "VT": 3, "VA": 13, "WA": 12,
-    "WV": 5, "WI": 10, "WY": 3,
+    "AL": 9,
+    "AK": 3,
+    "AZ": 11,
+    "AR": 6,
+    "CA": 55,
+    "CO": 9,
+    "CT": 7,
+    "DE": 3,
+    "DC": 3,
+    "FL": 29,
+    "GA": 16,
+    "HI": 4,
+    "ID": 4,
+    "IL": 20,
+    "IN": 11,
+    "IA": 6,
+    "KS": 6,
+    "KY": 8,
+    "LA": 8,
+    "ME": 4,
+    "MD": 10,
+    "MA": 11,
+    "MI": 16,
+    "MN": 10,
+    "MS": 6,
+    "MO": 10,
+    "MT": 3,
+    "NE": 5,
+    "NV": 6,
+    "NH": 4,
+    "NJ": 14,
+    "NM": 5,
+    "NY": 29,
+    "NC": 15,
+    "ND": 3,
+    "OH": 18,
+    "OK": 7,
+    "OR": 7,
+    "PA": 20,
+    "RI": 4,
+    "SC": 9,
+    "SD": 3,
+    "TN": 11,
+    "TX": 38,
+    "UT": 6,
+    "VT": 3,
+    "VA": 13,
+    "WA": 12,
+    "WV": 5,
+    "WI": 10,
+    "WY": 3,
 }
 EC_MAJORITY = 270
 
 
 @dataclass
 class CorrelationParams:
-    national: float = 0.45   # share of variance that is a common national shock
-    regional: float = 0.25   # share that is shared within a Census region
-    state: float = 0.30      # idiosyncratic
+    national: float = 0.45  # share of variance that is a common national shock
+    regional: float = 0.25  # share that is shared within a Census region
+    state: float = 0.30  # idiosyncratic
 
     def normalized(self) -> CorrelationParams:
         total = self.national + self.regional + self.state
@@ -48,8 +93,13 @@ class CorrelationParams:
 
 
 def simulate_shares(
-    means: np.ndarray, sigmas: np.ndarray, regions: list[str],
-    *, n_sims: int = 10_000, params: CorrelationParams | None = None, seed: int = 7,
+    means: np.ndarray,
+    sigmas: np.ndarray,
+    regions: list[str],
+    *,
+    n_sims: int = 10_000,
+    params: CorrelationParams | None = None,
+    seed: int = 7,
 ) -> np.ndarray:
     """Return an (n_sims, n_units) array of simulated two-party Dem shares."""
     params = (params or CorrelationParams()).normalized()
@@ -66,9 +116,9 @@ def simulate_shares(
     z_reg = z_reg_all[:, reg_ids]
     z_state = rng.standard_normal((n_sims, n))
 
-    err = (np.sqrt(params.national) * z_nat
-           + np.sqrt(params.regional) * z_reg
-           + np.sqrt(params.state) * z_state)
+    err = (
+        np.sqrt(params.national) * z_nat + np.sqrt(params.regional) * z_reg + np.sqrt(params.state) * z_state
+    )
     shares = means[None, :] + sigmas[None, :] * err
     return np.clip(shares, 0.0, 1.0)
 
@@ -108,16 +158,18 @@ def seat_distribution(sim_shares: np.ndarray, units: list[str], *, total_seats: 
     }
 
 
-def simulate_presidential(panel_preds: pd.DataFrame, *, n_sims: int = 10_000,
-                          params: CorrelationParams | None = None) -> dict:
+def simulate_presidential(
+    panel_preds: pd.DataFrame, *, n_sims: int = 10_000, params: CorrelationParams | None = None
+) -> dict:
     """Full presidential sim from a frame with state_po, pred mean, sigma.
 
     Expects columns: ``state_po``, ``pred_dem_share``, ``resid_sigma``.
     """
     df = panel_preds.dropna(subset=["pred_dem_share", "resid_sigma"]).copy()
     regions = [ref.by_postal(s).census_region for s in df["state_po"]]
-    sim = simulate_shares(df["pred_dem_share"].to_numpy(), df["resid_sigma"].to_numpy(),
-                          regions, n_sims=n_sims, params=params)
+    sim = simulate_shares(
+        df["pred_dem_share"].to_numpy(), df["resid_sigma"].to_numpy(), regions, n_sims=n_sims, params=params
+    )
     wp = win_probabilities(sim, df["state_po"].tolist())
     ec = electoral_college_distribution(sim, df["state_po"].tolist())
     return {"win_probabilities": wp, "electoral_college": ec}
