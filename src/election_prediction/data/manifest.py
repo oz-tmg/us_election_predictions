@@ -7,12 +7,13 @@ legal review (CLAUDE.md §4/§5, docs/ingestion-playbook.md "Required Manifest F
 The manifest is the unit of lineage: raw source -> snapshot -> transform ->
 model version -> evaluation report all trace back to a ``source_id`` + ``snapshot_id``.
 """
+
 from __future__ import annotations
 
 import hashlib
 import json
 from dataclasses import asdict, dataclass, field
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 from .privacy import PrivacyTier, assert_public_safe
@@ -30,7 +31,7 @@ def sha256_file(path: str | Path, *, chunk: int = 1 << 20) -> str:
 
 
 def _utcnow_iso() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return datetime.now(UTC).replace(microsecond=0).isoformat()
 
 
 @dataclass
@@ -42,38 +43,38 @@ class SourceManifest:
     """
 
     # --- identity ---------------------------------------------------------
-    source_id: str                 # e.g. "medsl_president_1976_2020"
-    dataset_name: str              # human name
-    source_owner: str              # e.g. "MIT Election Data and Science Lab"
+    source_id: str  # e.g. "medsl_president_1976_2020"
+    dataset_name: str  # human name
+    source_owner: str  # e.g. "MIT Election Data and Science Lab"
     source_url: str
-    acquisition_method: str        # "http_download" | "api" | "manual_export" | ...
+    acquisition_method: str  # "http_download" | "api" | "manual_export" | ...
 
     # --- timing / coverage ------------------------------------------------
-    acquired_at: str               # ISO timestamp of the fetch
-    snapshot_date: str             # logical snapshot date (YYYY-MM-DD)
-    election_cycle: str            # "1976-2020" | "2024" | "multi"
-    office_coverage: list[str]     # ["president","us_house","us_senate"]
+    acquired_at: str  # ISO timestamp of the fetch
+    snapshot_date: str  # logical snapshot date (YYYY-MM-DD)
+    election_cycle: str  # "1976-2020" | "2024" | "multi"
+    office_coverage: list[str]  # ["president","us_house","us_senate"]
     geography_coverage: list[str]  # ["state","county","district"]
 
     # --- payload ----------------------------------------------------------
-    file_format: str               # "csv" | "parquet" | "shp_zip" | ...
-    raw_path: str                  # path under data/raw/
+    file_format: str  # "csv" | "parquet" | "shp_zip" | ...
+    raw_path: str  # path under data/raw/
     checksum_sha256: str
 
     # --- governance -------------------------------------------------------
     license_or_terms: str
     permitted_use: str
     prohibited_use: str
-    privacy_tier: int              # PrivacyTier value
+    privacy_tier: int  # PrivacyTier value
     contains_personal_data: bool
     contains_sensitive_data: bool
     redistribution_allowed: bool
-    update_cadence: str            # "static" | "per_cycle" | "live" | ...
-    owner: str                     # responsible person (data steward)
-    review_date: str               # next governance review (YYYY-MM-DD)
+    update_cadence: str  # "static" | "per_cycle" | "live" | ...
+    owner: str  # responsible person (data steward)
+    review_date: str  # next governance review (YYYY-MM-DD)
 
     # --- quality / notes --------------------------------------------------
-    validation_status: str = "pending"   # pending | passed | failed
+    validation_status: str = "pending"  # pending | passed | failed
     known_caveats: str = ""
     required_attribution: str = ""
     row_count: int | None = None
@@ -180,18 +181,39 @@ def json_schema() -> dict:
         "title": "SourceManifest",
         "type": "object",
         "required": [
-            "source_id", "dataset_name", "source_owner", "source_url",
-            "acquisition_method", "acquired_at", "snapshot_date", "election_cycle",
-            "office_coverage", "geography_coverage", "file_format", "raw_path",
-            "checksum_sha256", "license_or_terms", "permitted_use", "prohibited_use",
-            "privacy_tier", "contains_personal_data", "contains_sensitive_data",
-            "redistribution_allowed", "update_cadence", "owner", "review_date",
+            "source_id",
+            "dataset_name",
+            "source_owner",
+            "source_url",
+            "acquisition_method",
+            "acquired_at",
+            "snapshot_date",
+            "election_cycle",
+            "office_coverage",
+            "geography_coverage",
+            "file_format",
+            "raw_path",
+            "checksum_sha256",
+            "license_or_terms",
+            "permitted_use",
+            "prohibited_use",
+            "privacy_tier",
+            "contains_personal_data",
+            "contains_sensitive_data",
+            "redistribution_allowed",
+            "update_cadence",
+            "owner",
+            "review_date",
         ],
         "properties": {
             "source_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
             "checksum_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-            "privacy_tier": {"type": "integer", "minimum": 0, "maximum": 2,
-                             "description": "Public repo accepts tiers 0-2 only (CLAUDE.md §5)."},
+            "privacy_tier": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2,
+                "description": "Public repo accepts tiers 0-2 only (CLAUDE.md §5).",
+            },
             "snapshot_date": {"type": "string", "format": "date"},
             "office_coverage": {"type": "array", "items": {"type": "string"}},
             "geography_coverage": {"type": "array", "items": {"type": "string"}},

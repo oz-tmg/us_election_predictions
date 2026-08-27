@@ -7,6 +7,7 @@ that CLAUDE.md §3 and PROJECT_CONTEXT.md §13 call out as a foundational risk.
 ``geography_id`` follows the naming convention in docs/ingestion-playbook.md, e.g.
 ``state:51`` , ``state:51|county:059`` , ``state:51|district:cong_07``.
 """
+
 from __future__ import annotations
 
 import pandas as pd
@@ -17,13 +18,26 @@ GEOG_LEVELS = ("nation", "state", "county", "cong_district")
 
 # Canonical column contract for the geography spine.
 GEOGRAPHY_COLUMNS = [
-    "geography_id", "geog_level", "state_po", "state_fips", "state_name",
-    "county_fips", "district_num", "geoid", "census_region", "census_division",
+    "geography_id",
+    "geog_level",
+    "state_po",
+    "state_fips",
+    "state_name",
+    "county_fips",
+    "district_num",
+    "geoid",
+    "census_region",
+    "census_division",
 ]
 
 
-def geography_id(level: str, *, state_fips: str | None = None,
-                 county_fips: str | None = None, district_num: str | int | None = None) -> str:
+def geography_id(
+    level: str,
+    *,
+    state_fips: str | None = None,
+    county_fips: str | None = None,
+    district_num: str | int | None = None,
+) -> str:
     """Build a stable, human-readable geography_id."""
     if level == "nation":
         return "nation:us"
@@ -47,18 +61,20 @@ def build_state_table() -> pd.DataFrame:
     """The 50 states + DC (+ territories present in reference data) as the base spine."""
     rows = []
     for s in ref.STATES.values():
-        rows.append({
-            "geography_id": geography_id("state", state_fips=s.fips),
-            "geog_level": "state",
-            "state_po": s.postal,
-            "state_fips": s.fips,
-            "state_name": s.name,
-            "county_fips": None,
-            "district_num": None,
-            "geoid": s.fips,  # state GEOID == state FIPS
-            "census_region": s.census_region,
-            "census_division": s.census_division,
-        })
+        rows.append(
+            {
+                "geography_id": geography_id("state", state_fips=s.fips),
+                "geog_level": "state",
+                "state_po": s.postal,
+                "state_fips": s.fips,
+                "state_name": s.name,
+                "county_fips": None,
+                "district_num": None,
+                "geoid": s.fips,  # state GEOID == state FIPS
+                "census_region": s.census_region,
+                "census_division": s.census_division,
+            }
+        )
     df = pd.DataFrame(rows, columns=GEOGRAPHY_COLUMNS)
     return df.sort_values("state_fips").reset_index(drop=True)
 
@@ -78,18 +94,20 @@ def counties_from_returns(returns: pd.DataFrame) -> pd.DataFrame:
         sf = str(r["state_fips"]).zfill(2)
         cf = str(r["county_fips"]).zfill(3)
         s = ref.by_fips(sf)
-        rows.append({
-            "geography_id": geography_id("county", state_fips=sf, county_fips=cf),
-            "geog_level": "county",
-            "state_po": s.postal,
-            "state_fips": sf,
-            "state_name": s.name,
-            "county_fips": cf,
-            "district_num": None,
-            "geoid": f"{sf}{cf}",  # 5-digit county GEOID
-            "census_region": s.census_region,
-            "census_division": s.census_division,
-        })
+        rows.append(
+            {
+                "geography_id": geography_id("county", state_fips=sf, county_fips=cf),
+                "geog_level": "county",
+                "state_po": s.postal,
+                "state_fips": sf,
+                "state_name": s.name,
+                "county_fips": cf,
+                "district_num": None,
+                "geoid": f"{sf}{cf}",  # 5-digit county GEOID
+                "census_region": s.census_region,
+                "census_division": s.census_division,
+            }
+        )
     return pd.DataFrame(rows, columns=GEOGRAPHY_COLUMNS)
 
 
@@ -107,18 +125,20 @@ def cong_districts_from_returns(returns: pd.DataFrame) -> pd.DataFrame:
         sf = str(r["state_fips"]).zfill(2)
         dnum = int(r["district_num"])
         s = ref.by_fips(sf)
-        rows.append({
-            "geography_id": geography_id("cong_district", state_fips=sf, district_num=dnum),
-            "geog_level": "cong_district",
-            "state_po": s.postal,
-            "state_fips": sf,
-            "state_name": s.name,
-            "county_fips": None,
-            "district_num": dnum,
-            "geoid": f"{sf}{str(dnum).zfill(2)}",  # 4-digit CD GEOID
-            "census_region": s.census_region,
-            "census_division": s.census_division,
-        })
+        rows.append(
+            {
+                "geography_id": geography_id("cong_district", state_fips=sf, district_num=dnum),
+                "geog_level": "cong_district",
+                "state_po": s.postal,
+                "state_fips": sf,
+                "state_name": s.name,
+                "county_fips": None,
+                "district_num": dnum,
+                "geoid": f"{sf}{str(dnum).zfill(2)}",  # 4-digit CD GEOID
+                "census_region": s.census_region,
+                "census_division": s.census_division,
+            }
+        )
     return pd.DataFrame(rows, columns=GEOGRAPHY_COLUMNS)
 
 
@@ -128,12 +148,23 @@ def build_geography_table(returns: pd.DataFrame | None = None) -> pd.DataFrame:
     ``returns`` (silver election returns) is optional; when provided, county and
     congressional-district rows are seeded from the geography present in the data.
     """
-    nation = pd.DataFrame([{
-        "geography_id": "nation:us", "geog_level": "nation", "state_po": None,
-        "state_fips": None, "state_name": "United States", "county_fips": None,
-        "district_num": None, "geoid": "US", "census_region": None,
-        "census_division": None,
-    }], columns=GEOGRAPHY_COLUMNS)
+    nation = pd.DataFrame(
+        [
+            {
+                "geography_id": "nation:us",
+                "geog_level": "nation",
+                "state_po": None,
+                "state_fips": None,
+                "state_name": "United States",
+                "county_fips": None,
+                "district_num": None,
+                "geoid": "US",
+                "census_region": None,
+                "census_division": None,
+            }
+        ],
+        columns=GEOGRAPHY_COLUMNS,
+    )
 
     parts = [nation, build_state_table()]
     if returns is not None:

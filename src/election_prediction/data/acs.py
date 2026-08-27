@@ -15,6 +15,7 @@ When outbound access is unavailable the caller falls back to ``build_synthetic_a
 correlated with the synthetic partisan lean, so downstream feature joins and
 demographic models are exercised. Tier 0 (public aggregate).
 """
+
 from __future__ import annotations
 
 import json
@@ -60,10 +61,19 @@ ACS_VARIABLES: dict[str, str] = {
 
 # Silver ACS feature schema (one row per geography).
 ACS_FEATURE_COLUMNS = [
-    "geoid", "geog_level", "state_fips", "state_po",
-    "total_population", "median_age", "median_household_income",
-    "college_share", "pct_white", "pct_black", "pct_hispanic",
-    "acs_vintage", "source_id",
+    "geoid",
+    "geog_level",
+    "state_fips",
+    "state_po",
+    "total_population",
+    "median_age",
+    "median_household_income",
+    "college_share",
+    "pct_white",
+    "pct_black",
+    "pct_hispanic",
+    "acs_vintage",
+    "source_id",
 ]
 
 
@@ -75,13 +85,19 @@ def resolve_api_key(api_key: str | None = None) -> str:
         raise acquire.CredentialRequired(
             "The Census API requires a key: keyless requests return an HTML "
             '"Missing Key" page with HTTP 200, not usable data.',
-            env_var=CENSUS_KEY_ENV, signup_url=CENSUS_KEY_SIGNUP,
+            env_var=CENSUS_KEY_ENV,
+            signup_url=CENSUS_KEY_SIGNUP,
         )
     return key
 
 
-def download_acs_states(vintage: int = DEFAULT_ACS_VINTAGE, raw_dir: str | Path = "data/raw",
-                        *, timeout: int = 60, api_key: str | None = None) -> Path:
+def download_acs_states(
+    vintage: int = DEFAULT_ACS_VINTAGE,
+    raw_dir: str | Path = "data/raw",
+    *,
+    timeout: int = 60,
+    api_key: str | None = None,
+) -> Path:
     """Download state-level ACS 5-year estimates for ``vintage`` to a raw snapshot.
 
     Returns the raw JSON path. Raises ``acquire.CredentialRequired`` when no API key
@@ -121,8 +137,7 @@ def standardize_acs(raw: pd.DataFrame, *, vintage: int, source_id: str) -> pd.Da
     out["median_age"] = df["median_age"]
     out["median_household_income"] = df["median_household_income"]
 
-    college = (df["edu_bachelors"] + df["edu_masters"] + df["edu_professional"]
-               + df["edu_doctorate"])
+    college = df["edu_bachelors"] + df["edu_masters"] + df["edu_professional"] + df["edu_doctorate"]
     out["college_share"] = (college / df["edu_universe_25plus"]).where(df["edu_universe_25plus"] > 0)
     out["pct_white"] = (df["race_white"] / df["total_population"]).where(df["total_population"] > 0)
     out["pct_black"] = (df["race_black"] / df["total_population"]).where(df["total_population"] > 0)
@@ -131,6 +146,40 @@ def standardize_acs(raw: pd.DataFrame, *, vintage: int, source_id: str) -> pd.Da
     out["acs_vintage"] = vintage
     out["source_id"] = source_id
     return out[ACS_FEATURE_COLUMNS].sort_values("state_fips").reset_index(drop=True)
+
+
+def validate_acs_features(features: pd.DataFrame) -> dict[str, bool | int]:
+    """Validate state-level ACS keys, ranges, and required feature completeness."""
+    required = set(ACS_FEATURE_COLUMNS)
+    required_present = required.issubset(features.columns)
+    numeric = [
+        "total_population",
+        "median_age",
+        "median_household_income",
+        "college_share",
+        "pct_white",
+        "pct_black",
+        "pct_hispanic",
+    ]
+    no_required_nulls = required_present and not features[list(required)].isna().any().any()
+    rates_in_range = required_present and all(features[col].between(0, 1).all() for col in numeric[3:])
+    checks: dict[str, bool | int] = {
+        "required_columns": required_present,
+        "geoid_unique": bool(features["geoid"].is_unique) if "geoid" in features else False,
+        "state_fips_known": (
+            bool(features["state_fips"].isin({s.fips for s in ref.STATES.values()}).all())
+            if "state_fips" in features
+            else False
+        ),
+        "no_required_nulls": bool(no_required_nulls),
+        "positive_population": (
+            bool((features["total_population"] > 0).all()) if "total_population" in features else False
+        ),
+        "rates_in_range": bool(rates_in_range),
+        "n_features": int(len(features)),
+    }
+    checks["ok"] = all(value for value in checks.values() if isinstance(value, bool))
+    return checks
 
 
 # ------------------------------------------------------------------ synthetic
@@ -158,8 +207,21 @@ def build_synthetic_acs(vintage: int = 2020) -> pd.DataFrame:
         mast = int(edu_univ * college_share * 0.25)
         prof = int(edu_univ * college_share * 0.07)
         doct = int(edu_univ * college_share * 0.06)
-        rows.append([
-            s.name, pop, round(med_age, 1), income, edu_univ, bach, mast, prof, doct,
-            int(pop * white), int(pop * black), int(pop * hisp), s.fips,
-        ])
+        rows.append(
+            [
+                s.name,
+                pop,
+                round(med_age, 1),
+                income,
+                edu_univ,
+                bach,
+                mast,
+                prof,
+                doct,
+                int(pop * white),
+                int(pop * black),
+                int(pop * hisp),
+                s.fips,
+            ]
+        )
     return pd.DataFrame([header] + rows).iloc[1:].set_axis(header, axis=1).reset_index(drop=True)

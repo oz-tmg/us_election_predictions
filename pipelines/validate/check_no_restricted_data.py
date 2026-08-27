@@ -11,6 +11,7 @@ Usage:
 
 Exit code 0 = clean, 1 = violation found. Wire into .pre-commit-config or CI.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -21,10 +22,23 @@ from pathlib import Path
 
 # Filename patterns that indicate restricted personal / operational data.
 RESTRICTED_NAME_PATTERNS = [
-    r"voter[_-]?file", r"\bl2[_-]", r"targetsmart", r"catalist", r"datatrust",
-    r"van[_-]?export", r"crm[_-]?export", r"canvass", r"respondent",
-    r"person[_-]?scores", r"household[_-]?scores", r"\.van$", r"\.pii$",
-    r"credentials", r"api[_-]?key", r"secrets\.", r"\.env(\.|$)",
+    r"voter[_-]?file",
+    r"\bl2[_-]",
+    r"targetsmart",
+    r"catalist",
+    r"datatrust",
+    r"van[_-]?export",
+    r"crm[_-]?export",
+    r"canvass",
+    r"respondent",
+    r"person[_-]?scores",
+    r"household[_-]?scores",
+    r"\.van$",
+    r"\.pii$",
+    r"credentials",
+    r"api[_-]?key",
+    r"secrets\.",
+    r"\.env(\.|$)",
 ]
 
 # Bulk data belongs in the (git-ignored) data lake, not in Git.
@@ -37,7 +51,8 @@ _name_re = re.compile("|".join(RESTRICTED_NAME_PATTERNS), re.IGNORECASE)
 def _staged_files() -> list[str]:
     out = subprocess.run(
         ["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     return [f for f in out.stdout.splitlines() if f.strip()]
 

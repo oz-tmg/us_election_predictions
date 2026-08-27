@@ -15,6 +15,7 @@ modes motivated this module, both observed against the real endpoints:
 So downloads are written to a temporary file, sniffed and validated, and only then
 moved into the raw snapshot path. Anything unexpected raises rather than lands.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -55,13 +56,15 @@ class CredentialRequired(AcquisitionError):
         self.signup_url = signup_url
 
     def instructions(self) -> str:
-        return "\n".join([
-            str(self),
-            "",
-            f"    1. Request a key at {self.signup_url}",
-            f"    2. Export it:  export {self.env_var}=<your key>",
-            "    3. Re-run the build.",
-        ])
+        return "\n".join(
+            [
+                str(self),
+                "",
+                f"    1. Request a key at {self.signup_url}",
+                f"    2. Export it:  export {self.env_var}=<your key>",
+                "    3. Re-run the build.",
+            ]
+        )
 
 
 class ManualAcquisitionRequired(AcquisitionError):
@@ -71,8 +74,16 @@ class ManualAcquisitionRequired(AcquisitionError):
     must do to land the snapshot, rather than degrading to synthetic data.
     """
 
-    def __init__(self, message: str, *, url: str, filename: str, drop_dir: Path,
-                 expected_md5: str | None = None, expected_size: int | None = None):
+    def __init__(
+        self,
+        message: str,
+        *,
+        url: str,
+        filename: str,
+        drop_dir: Path,
+        expected_md5: str | None = None,
+        expected_size: int | None = None,
+    ):
         super().__init__(message)
         self.url = url
         self.filename = filename
@@ -162,9 +173,17 @@ def _validate_body(head: bytes, *, expect: str, url: str) -> None:
 
 
 # ------------------------------------------------------------------- fetching
-def fetch(url: str, out_path: str | Path, *, expect: str = "csv", timeout: int = 180,
-          expected_md5: str | None = None, expected_size: int | None = None,
-          size_tolerance: float = 0.02, headers: dict[str, str] | None = None) -> Path:
+def fetch(
+    url: str,
+    out_path: str | Path,
+    *,
+    expect: str = "csv",
+    timeout: int = 180,
+    expected_md5: str | None = None,
+    expected_size: int | None = None,
+    size_tolerance: float = 0.02,
+    headers: dict[str, str] | None = None,
+) -> Path:
     """Download ``url`` to ``out_path``, validating before it lands.
 
     ``expect`` is one of ``csv`` | ``tsv`` | ``json`` | ``zip`` and drives body
@@ -202,8 +221,13 @@ def fetch(url: str, out_path: str | Path, *, expect: str = "csv", timeout: int =
         raise
 
     try:
-        verify_file(tmp_path, expected_md5=expected_md5, expected_size=expected_size,
-                    size_tolerance=size_tolerance, url=url)
+        verify_file(
+            tmp_path,
+            expected_md5=expected_md5,
+            expected_size=expected_size,
+            size_tolerance=size_tolerance,
+            url=url,
+        )
     except AcquisitionError:
         tmp_path.unlink(missing_ok=True)
         raise
@@ -212,9 +236,14 @@ def fetch(url: str, out_path: str | Path, *, expect: str = "csv", timeout: int =
     return out_path
 
 
-def verify_file(path: str | Path, *, expected_md5: str | None = None,
-                expected_size: int | None = None, size_tolerance: float = 0.02,
-                url: str = "") -> None:
+def verify_file(
+    path: str | Path,
+    *,
+    expected_md5: str | None = None,
+    expected_size: int | None = None,
+    size_tolerance: float = 0.02,
+    url: str = "",
+) -> None:
     """Check a downloaded/manually-placed file against the source's published metadata.
 
     Size is checked with a small tolerance because Dataverse re-serves *ingested*

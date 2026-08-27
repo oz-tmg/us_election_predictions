@@ -10,6 +10,7 @@ mean prediction plus a residual standard deviation, which the correlated simulat
 layer turns into win probabilities. Evaluation is leave-one-cycle-out backtesting with
 MAE on vote share (calibration/Brier live in evaluation.forecast_eval).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -52,7 +53,8 @@ class OLSModel:
 
 
 def backtest_leave_one_cycle_out(
-    panel: pd.DataFrame, features: list[str] | None = None,
+    panel: pd.DataFrame,
+    features: list[str] | None = None,
     target: str = "two_party_dem_share",
 ) -> tuple[pd.DataFrame, dict]:
     """Leave-one-cycle-out backtest. Returns (predictions, metrics).
@@ -79,16 +81,15 @@ def backtest_leave_one_cycle_out(
 
     out = pd.concat(preds, ignore_index=True)
     # naive baseline: predict the lag directly (persistence)
-    naive_mae = float((out["lag_dem_share"] - out[target]).abs().mean()) \
-        if "lag_dem_share" in out else float("nan")
+    naive_mae = (
+        float((out["lag_dem_share"] - out[target]).abs().mean()) if "lag_dem_share" in out else float("nan")
+    )
     metrics = {
         "n": int(len(out)),
         "mae": float(out["error"].abs().mean()),
         "rmse": float(np.sqrt((out["error"] ** 2).mean())),
         "naive_persistence_mae": naive_mae,
-        "winner_accuracy": float(
-            ((out["pred_dem_share"] > 0.5) == (out[target] > 0.5)).mean()
-        ),
+        "winner_accuracy": float(((out["pred_dem_share"] > 0.5) == (out[target] > 0.5)).mean()),
         "features": list(features),
     }
     return out, metrics

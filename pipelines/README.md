@@ -50,16 +50,21 @@ the report are tracked.
 ## Build the P1 baselines
 
 ```bash
-ep-build-p1              # runs P0, then the baseline forecasting stack
-ep-build-p1 --offline    # synthetic fixtures (no network)
+ep-build-p1                # runs P0, then the baseline forecasting stack
+ep-build-p1 --require-live # FAIL unless MEDSL, ACS, and TIGER are all real
+ep-build-p1 --offline      # synthetic fixtures (no network)
 ```
 
 Adds ACS (P0-006) + TIGER (P0-007) ingestion, a presidential fundamentals panel and
 OLS baseline (P1-001), a House district partisanship score (P1-002), a correlated
 simulation (P1-005), and calibration evaluation (P1-006). Writes
 `data/gold/{presidential_panel,house_partisanship_score,acs_state_features}.parquet`,
-`reports/forecast_backtest_report.md`, and `reports/model_cards/`. Historical backtest
-only — no live forecast is published.
+`data/silver/tiger_{state,county,cd}_2024.parquet`, raw TIGER archive inventories,
+source manifests, `reports/source_validation_report.md`,
+`reports/forecast_backtest_report.md`, and `reports/model_cards/`. The strict build
+also checks sampled MEDSL Senate totals against certified FEC results and ACS population
+features against published B01003 values. Historical backtest only — no live forecast
+is published.
 
 ## Governance guard
 
@@ -88,7 +93,7 @@ All three MEDSL series now run **1976-2024** (they previously ended 2020/2022).
 | MEDSL President | **one-time manual** | Behind a Dataverse guestbook; the API refuses it even when authenticated. |
 | MEDSL House | **one-time manual** | Same guestbook. Ships tab-separated, not CSV. |
 | Census ACS | automatic ✅ landed | 5-year estimates, state level; vintage 2023 by default. |
-| Census TIGER | automatic | State/county are national files; **congressional districts ship one zip per state**. |
+| Census TIGER | automatic ✅ landed | 2024 state/county/CD GeoParquet validated; **congressional districts ship one zip per state**. |
 
 ### Guestbook-gated sources (president, house)
 
@@ -125,6 +130,8 @@ reported in `reports/data_quality_report.md` rather than applied silently:
 ## Tests
 
 ```bash
-pytest -q                  # 45 unit + integration tests
+pytest -q                            # 53 unit + integration tests
 ruff check src pipelines tests
+ruff format --check src pipelines tests
+mypy src
 ```

@@ -9,21 +9,31 @@ because boundary changes break historical baselines (CLAUDE.md §6, PROJECT_CONT
 Score convention: positive = more Democratic than the national House environment,
 in two-party vote-share points (e.g. +0.06 ≈ "D+6").
 """
+
 from __future__ import annotations
 
 import pandas as pd
 
 SCORE_COLUMNS = [
-    "geography_id", "state_po", "district_num", "n_cycles", "cycles",
-    "mean_dem_share", "national_mean", "partisanship_score", "lean_label",
+    "geography_id",
+    "state_po",
+    "district_num",
+    "n_cycles",
+    "cycles",
+    "mean_dem_share",
+    "national_mean",
+    "partisanship_score",
+    "lean_label",
 ]
 
 
 def _national_by_cycle(house: pd.DataFrame) -> pd.Series:
     w = house["total_votes"]
-    return (house.assign(w=w)
-            .groupby("cycle")[["two_party_dem_share", "w"]]
-            .apply(lambda g: (g["two_party_dem_share"] * g["w"]).sum() / g["w"].sum()))
+    return (
+        house.assign(w=w)
+        .groupby("cycle")[["two_party_dem_share", "w"]]
+        .apply(lambda g: (g["two_party_dem_share"] * g["w"]).sum() / g["w"].sum())
+    )
 
 
 def _label(score: float) -> str:
@@ -33,8 +43,9 @@ def _label(score: float) -> str:
     return f"{'D' if pts > 0 else 'R'}+{abs(pts)}"
 
 
-def build_partisanship_score(house_input: pd.DataFrame, *, exclude_uncontested: bool = True,
-                             plan_version: str | None = None) -> pd.DataFrame:
+def build_partisanship_score(
+    house_input: pd.DataFrame, *, exclude_uncontested: bool = True, plan_version: str | None = None
+) -> pd.DataFrame:
     """Compute the district partisanship score from district x cycle two-party shares."""
     df = house_input.copy()
     if exclude_uncontested and "uncontested_flag" in df.columns:
@@ -55,5 +66,8 @@ def build_partisanship_score(house_input: pd.DataFrame, *, exclude_uncontested: 
     out["lean_label"] = out["partisanship_score"].map(_label)
     if plan_version:
         out["plan_version"] = plan_version
-    return out[SCORE_COLUMNS + (["plan_version"] if plan_version else [])] \
-        .sort_values(["state_po", "district_num"]).reset_index(drop=True)
+    return (
+        out[SCORE_COLUMNS + (["plan_version"] if plan_version else [])]
+        .sort_values(["state_po", "district_num"])
+        .reset_index(drop=True)
+    )

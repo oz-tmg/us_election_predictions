@@ -7,7 +7,7 @@ name = "election-prediction"
 version = "0.0.1"
 description = "Nonpartisan, reproducible, calibration-first US election analytics platform (Phase 0 / P0 foundation)."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = { text = "TBD — public license selected before first public artifact (PROJECT_CONTEXT.md)" }
 authors = [{ name = "Savepoint Analytics" }]
 
@@ -33,13 +33,13 @@ where = ["src"]
 
 [tool.ruff]
 line-length = 110
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 ignore_missing_imports = true
 warn_unused_ignores = true
 

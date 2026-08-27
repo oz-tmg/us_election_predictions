@@ -11,6 +11,7 @@ and noise. That structure gives the P1 baselines, correlated simulation, and
 calibration evaluation genuine signal to learn — the same code runs unchanged on
 the real MEDSL snapshots. Values are NOT real returns and are labelled SYNTHETIC.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -25,31 +26,117 @@ _RNG = np.random.default_rng(20260708)
 # Latent Democratic two-party lean per state (approx. modern baseline; used only as
 # a generative parameter for fictional data). DC intentionally very Dem.
 STATE_BASE_DEM_LEAN: dict[str, float] = {
-    "AL": .37, "AK": .44, "AZ": .50, "AR": .35, "CA": .65, "CO": .57, "CT": .60,
-    "DE": .59, "DC": .93, "FL": .48, "GA": .50, "HI": .65, "ID": .34, "IL": .58,
-    "IN": .42, "IA": .45, "KS": .42, "KY": .37, "LA": .40, "ME": .55, "MD": .66,
-    "MA": .67, "MI": .51, "MN": .53, "MS": .41, "MO": .43, "MT": .41, "NE": .40,
-    "NV": .51, "NH": .53, "NJ": .58, "NM": .55, "NY": .62, "NC": .49, "ND": .33,
-    "OH": .46, "OK": .33, "OR": .58, "PA": .50, "RI": .60, "SC": .44, "SD": .36,
-    "TN": .38, "TX": .47, "UT": .39, "VT": .68, "VA": .55, "WA": .60, "WV": .30,
-    "WI": .50, "WY": .27,
+    "AL": 0.37,
+    "AK": 0.44,
+    "AZ": 0.50,
+    "AR": 0.35,
+    "CA": 0.65,
+    "CO": 0.57,
+    "CT": 0.60,
+    "DE": 0.59,
+    "DC": 0.93,
+    "FL": 0.48,
+    "GA": 0.50,
+    "HI": 0.65,
+    "ID": 0.34,
+    "IL": 0.58,
+    "IN": 0.42,
+    "IA": 0.45,
+    "KS": 0.42,
+    "KY": 0.37,
+    "LA": 0.40,
+    "ME": 0.55,
+    "MD": 0.66,
+    "MA": 0.67,
+    "MI": 0.51,
+    "MN": 0.53,
+    "MS": 0.41,
+    "MO": 0.43,
+    "MT": 0.41,
+    "NE": 0.40,
+    "NV": 0.51,
+    "NH": 0.53,
+    "NJ": 0.58,
+    "NM": 0.55,
+    "NY": 0.62,
+    "NC": 0.49,
+    "ND": 0.33,
+    "OH": 0.46,
+    "OK": 0.33,
+    "OR": 0.58,
+    "PA": 0.50,
+    "RI": 0.60,
+    "SC": 0.44,
+    "SD": 0.36,
+    "TN": 0.38,
+    "TX": 0.47,
+    "UT": 0.39,
+    "VT": 0.68,
+    "VA": 0.55,
+    "WA": 0.60,
+    "WV": 0.30,
+    "WI": 0.50,
+    "WY": 0.27,
 }
 
 # National environment: Democratic share of the two-party presidential vote by cycle.
-NATIONAL_ENV = {2008: .540, 2012: .520, 2016: .512, 2020: .522, 2024: .495}
+NATIONAL_ENV = {2008: 0.540, 2012: 0.520, 2016: 0.512, 2020: 0.522, 2024: 0.495}
 PRES_CYCLES = [2008, 2012, 2016, 2020, 2024]
 HOUSE_CYCLES = [2016, 2018, 2020, 2022]
 SENATE_CYCLES = [2012, 2016, 2018, 2020]
 
 # Approx apportionment (fictional-friendly): districts per state for the House fixture.
 _DISTRICTS = {
-    "CA": 12, "TX": 10, "FL": 8, "NY": 8, "PA": 6, "IL": 6, "OH": 6, "GA": 5,
-    "NC": 5, "MI": 5, "NJ": 5, "VA": 4, "WA": 4, "AZ": 4, "MA": 4, "TN": 4,
-    "IN": 4, "MO": 4, "MD": 4, "WI": 4, "CO": 4, "MN": 4, "SC": 3, "AL": 3,
-    "LA": 3, "KY": 3, "OR": 3, "OK": 3, "CT": 3, "IA": 2, "MS": 2, "AR": 2,
-    "KS": 2, "NV": 3, "UT": 2, "NM": 2, "NE": 2, "WV": 2, "ID": 2, "HI": 2,
-    "ME": 2, "NH": 2, "RI": 2, "MT": 1, "DE": 1, "SD": 1, "ND": 1, "AK": 1,
-    "VT": 1, "WY": 1,
+    "CA": 12,
+    "TX": 10,
+    "FL": 8,
+    "NY": 8,
+    "PA": 6,
+    "IL": 6,
+    "OH": 6,
+    "GA": 5,
+    "NC": 5,
+    "MI": 5,
+    "NJ": 5,
+    "VA": 4,
+    "WA": 4,
+    "AZ": 4,
+    "MA": 4,
+    "TN": 4,
+    "IN": 4,
+    "MO": 4,
+    "MD": 4,
+    "WI": 4,
+    "CO": 4,
+    "MN": 4,
+    "SC": 3,
+    "AL": 3,
+    "LA": 3,
+    "KY": 3,
+    "OR": 3,
+    "OK": 3,
+    "CT": 3,
+    "IA": 2,
+    "MS": 2,
+    "AR": 2,
+    "KS": 2,
+    "NV": 3,
+    "UT": 2,
+    "NM": 2,
+    "NE": 2,
+    "WV": 2,
+    "ID": 2,
+    "HI": 2,
+    "ME": 2,
+    "NH": 2,
+    "RI": 2,
+    "MT": 1,
+    "DE": 1,
+    "SD": 1,
+    "ND": 1,
+    "AK": 1,
+    "VT": 1,
+    "WY": 1,
 }
 
 # Named after the real published files so a synthetic snapshot is obviously the
@@ -93,12 +180,21 @@ def _president_rows() -> list[dict]:
                 ("REPUBLICAN CANDIDATE", "REPUBLICAN", "REPUBLICAN", rep),
                 ("OTHER", "LIBERTARIAN", "OTHER", oth),
             ]:
-                rows.append(dict(
-                    year=year, state=s.name.upper(), state_po=po, state_fips=s.fips,
-                    office="US PRESIDENT", candidate=cand, party_detailed=pd_,
-                    party_simplified=ps_, writein="FALSE",
-                    candidatevotes=v, totalvotes=dem + rep + oth,
-                ))
+                rows.append(
+                    dict(
+                        year=year,
+                        state=s.name.upper(),
+                        state_po=po,
+                        state_fips=s.fips,
+                        office="US PRESIDENT",
+                        candidate=cand,
+                        party_detailed=pd_,
+                        party_simplified=ps_,
+                        writein="FALSE",
+                        candidatevotes=v,
+                        totalvotes=dem + rep + oth,
+                    )
+                )
     return rows
 
 
@@ -110,11 +206,12 @@ def _senate_rows() -> list[dict]:
             if (i % 3) != (SENATE_CYCLES.index(year) % 3):
                 continue  # staggered classes
             s = ref.by_postal(po)
-            shift = (NATIONAL_ENV.get(year, 0.51) - 0.515)
+            shift = NATIONAL_ENV.get(year, 0.51) - 0.515
             incumbent_dem = STATE_BASE_DEM_LEAN[po] >= 0.5
             inc_boost = 0.03 if incumbent_dem else -0.03
-            lean = float(np.clip(STATE_BASE_DEM_LEAN[po] + shift + inc_boost + _RNG.normal(0, 0.03),
-                                 0.03, 0.97))
+            lean = float(
+                np.clip(STATE_BASE_DEM_LEAN[po] + shift + inc_boost + _RNG.normal(0, 0.03), 0.03, 0.97)
+            )
             total = int(_state_size(po) * 0.9)
             dem, rep, oth = _split_votes(total, lean, other_share=0.015)
             for cand, pd_, ps_, v in [
@@ -122,13 +219,24 @@ def _senate_rows() -> list[dict]:
                 ("REPUBLICAN CANDIDATE", "REPUBLICAN", "REPUBLICAN", rep),
                 ("OTHER", "LIBERTARIAN", "OTHER", oth),
             ]:
-                rows.append(dict(
-                    year=year, state=s.name.upper(), state_po=po, state_fips=s.fips,
-                    office="US SENATE", candidate=cand, party_detailed=pd_,
-                    party_simplified=ps_, writein="FALSE",
-                    candidatevotes=v, totalvotes=dem + rep + oth,
-                    stage="GEN", special="FALSE", unofficial="FALSE",
-                ))
+                rows.append(
+                    dict(
+                        year=year,
+                        state=s.name.upper(),
+                        state_po=po,
+                        state_fips=s.fips,
+                        office="US SENATE",
+                        candidate=cand,
+                        party_detailed=pd_,
+                        party_simplified=ps_,
+                        writein="FALSE",
+                        candidatevotes=v,
+                        totalvotes=dem + rep + oth,
+                        stage="GEN",
+                        special="FALSE",
+                        unofficial="FALSE",
+                    )
+                )
     return rows
 
 
@@ -144,10 +252,11 @@ def _house_rows() -> list[dict]:
             s = ref.by_postal(po)
             for d in range(1, _DISTRICTS[po] + 1):
                 offset = _RNG.normal(0, 0.08)  # district heterogeneity within state
-                lean = float(np.clip(STATE_BASE_DEM_LEAN[po] + penalty + offset
-                                     + _RNG.normal(0, 0.02), 0.03, 0.97))
+                lean = float(
+                    np.clip(STATE_BASE_DEM_LEAN[po] + penalty + offset + _RNG.normal(0, 0.02), 0.03, 0.97)
+                )
                 total = int(250_000 * (1 + _RNG.normal(0, 0.1)))
-                uncontested = (d == 1 and STATE_BASE_DEM_LEAN[po] > 0.62)  # a few safe seats
+                uncontested = d == 1 and STATE_BASE_DEM_LEAN[po] > 0.62  # a few safe seats
                 if uncontested:
                     dem, rep, oth = total, 0, 0
                 else:
@@ -156,12 +265,25 @@ def _house_rows() -> list[dict]:
                 if not uncontested:
                     cands.append(("REPUBLICAN CANDIDATE", "REPUBLICAN", rep))
                 for cand, party, v in cands:
-                    rows.append(dict(
-                        year=year, state=s.name.upper(), state_po=po, state_fips=s.fips,
-                        office="US HOUSE", district=d, candidate=cand, party=party,
-                        writein="FALSE", candidatevotes=v, totalvotes=dem + rep + oth,
-                        stage="GEN", special="FALSE", unofficial="FALSE", runoff="FALSE",
-                    ))
+                    rows.append(
+                        dict(
+                            year=year,
+                            state=s.name.upper(),
+                            state_po=po,
+                            state_fips=s.fips,
+                            office="US HOUSE",
+                            district=d,
+                            candidate=cand,
+                            party=party,
+                            writein="FALSE",
+                            candidatevotes=v,
+                            totalvotes=dem + rep + oth,
+                            stage="GEN",
+                            special="FALSE",
+                            unofficial="FALSE",
+                            runoff="FALSE",
+                        )
+                    )
     return rows
 
 
