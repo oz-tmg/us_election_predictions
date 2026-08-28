@@ -261,6 +261,7 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
     score.to_parquet(gold_dir / "house_partisanship_score.parquet", index=False)
 
     house_sim = {}
+    house_units = pd.DataFrame()
     if len(score):
         import numpy as np
 
@@ -271,6 +272,7 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         regions = [ref.by_postal(s).census_region for s in score["state_po"]]
         sim = simulation.simulate_shares(means, sigmas, regions, n_sims=10_000)
         house_sim = simulation.seat_distribution(sim, score["state_po"].tolist())
+        house_units = simulation.unit_distributions(sim, score["geography_id"].tolist())
 
     # ---- reports --------------------------------------------------------
     results = {
@@ -281,7 +283,11 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
             "demographics_eval": eval_demo,
             "simulation": _jsonable(pres_sim),
         },
-        "house": {"n_districts_scored": int(len(score)), "seat_simulation": house_sim},
+        "house": {
+            "n_districts_scored": int(len(score)),
+            "seat_simulation": house_sim,
+            "unit_distributions": house_units,
+        },
         "data_mode": data_modes,
         "tiger": tiger_result["checks"],
         "source_validation": source_checks,

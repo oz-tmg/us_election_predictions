@@ -21,7 +21,11 @@ import pandas as pd
 
 from ..geography import reference as ref
 
-_RNG = np.random.default_rng(20260708)
+_SEEDS = {
+    "president": 20260708,
+    "us_senate": 20260709,
+    "us_house": 20260710,
+}
 
 # Latent Democratic two-party lean per state (approx. modern baseline; used only as
 # a generative parameter for fictional data). DC intentionally very Dem.
@@ -160,20 +164,20 @@ def _split_votes(total: int, dem_share: float, other_share: float = 0.02) -> tup
     return dem, rep, other
 
 
-def _state_size(po: str) -> int:
+def _state_size(po: str, rng: np.random.Generator) -> int:
     # deterministic pseudo electorate size, larger for big states
     base = {"CA": 14e6, "TX": 11e6, "FL": 11e6, "NY": 8e6, "PA": 7e6}.get(po, 2.5e6)
-    return int(base * (1 + _RNG.normal(0, 0.05)))
+    return int(base * (1 + rng.normal(0, 0.05)))
 
 
-def _president_rows() -> list[dict]:
+def _president_rows(rng: np.random.Generator) -> list[dict]:
     rows = []
     for year in PRES_CYCLES:
         shift = NATIONAL_ENV[year] - 0.515
         for po in _states():
             s = ref.by_postal(po)
-            lean = float(np.clip(STATE_BASE_DEM_LEAN[po] + shift + _RNG.normal(0, 0.02), 0.03, 0.97))
-            total = _state_size(po)
+            lean = float(np.clip(STATE_BASE_DEM_LEAN[po] + shift + rng.normal(0, 0.02), 0.03, 0.97))
+            total = _state_size(po, rng)
             dem, rep, oth = _split_votes(total, lean)
             for cand, pd_, ps_, v in [
                 ("DEMOCRAT CANDIDATE", "DEMOCRAT", "DEMOCRAT", dem),
@@ -198,7 +202,7 @@ def _president_rows() -> list[dict]:
     return rows
 
 
-def _senate_rows() -> list[dict]:
+def _senate_rows(rng: np.random.Generator) -> list[dict]:
     rows = []
     states = _states()
     for year in SENATE_CYCLES:
@@ -210,9 +214,9 @@ def _senate_rows() -> list[dict]:
             incumbent_dem = STATE_BASE_DEM_LEAN[po] >= 0.5
             inc_boost = 0.03 if incumbent_dem else -0.03
             lean = float(
-                np.clip(STATE_BASE_DEM_LEAN[po] + shift + inc_boost + _RNG.normal(0, 0.03), 0.03, 0.97)
+                np.clip(STATE_BASE_DEM_LEAN[po] + shift + inc_boost + rng.normal(0, 0.03), 0.03, 0.97)
             )
-            total = int(_state_size(po) * 0.9)
+            total = int(_state_size(po, rng) * 0.9)
             dem, rep, oth = _split_votes(total, lean, other_share=0.015)
             for cand, pd_, ps_, v in [
                 ("DEMOCRAT CANDIDATE", "DEMOCRAT", "DEMOCRAT", dem),
@@ -240,7 +244,7 @@ def _senate_rows() -> list[dict]:
     return rows
 
 
-def _house_rows() -> list[dict]:
+def _house_rows(rng: np.random.Generator) -> list[dict]:
     rows = []
     for year in HOUSE_CYCLES:
         midterm = year % 4 != 0
@@ -251,11 +255,11 @@ def _house_rows() -> list[dict]:
                 continue
             s = ref.by_postal(po)
             for d in range(1, _DISTRICTS[po] + 1):
-                offset = _RNG.normal(0, 0.08)  # district heterogeneity within state
+                offset = rng.normal(0, 0.08)  # district heterogeneity within state
                 lean = float(
-                    np.clip(STATE_BASE_DEM_LEAN[po] + penalty + offset + _RNG.normal(0, 0.02), 0.03, 0.97)
+                    np.clip(STATE_BASE_DEM_LEAN[po] + penalty + offset + rng.normal(0, 0.02), 0.03, 0.97)
                 )
-                total = int(250_000 * (1 + _RNG.normal(0, 0.1)))
+                total = int(250_000 * (1 + rng.normal(0, 0.1)))
                 uncontested = d == 1 and STATE_BASE_DEM_LEAN[po] > 0.62  # a few safe seats
                 if uncontested:
                     dem, rep, oth = total, 0, 0
@@ -295,7 +299,9 @@ _BUILDERS = {
 
 
 def build_fixture(office: str) -> pd.DataFrame:
-    return pd.DataFrame(_BUILDERS[office]())
+    """Build an order-independent deterministic fixture for one office."""
+    rng = np.random.default_rng(_SEEDS[office])
+    return pd.DataFrame(_BUILDERS[office](rng))
 
 
 def write_fixture(office: str, out_dir: str | Path) -> Path:
