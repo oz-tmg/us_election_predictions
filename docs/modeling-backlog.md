@@ -60,8 +60,8 @@ Status labels:
 
 | ID | Task | Analytical Question | Acceptance Criteria | Status |
 |---|---|---|---|---|
-| P2-001 | Poll ingestion schema | Can polls be compared across pollsters? | Pollster, sponsor, mode, field dates, sample, population, weights, toplines. | todo |
-| P2-002 | Polling average | What is the current topline signal? | Time decay, sample-size weighting, pollster house effect placeholder. | todo |
+| P2-001 | Poll ingestion schema | Can polls be compared across pollsters? | Pollster, sponsor, mode, field dates, sample, population, weights, toplines. | done |
+| P2-002 | Polling average | What is the current topline signal? | Time decay, sample-size weighting, pollster house effect placeholder. | done |
 | P2-003 | Pollster house effects | Which pollsters systematically lean? | Historical estimates with uncertainty. | todo |
 | P2-004 | MRP prototype | Can national/state survey data estimate district opinion? | Model using demographics + geography with poststratification frame. | todo |
 | P2-005 | MRP uncertainty report | Are district estimates overconfident? | Posterior intervals include survey and poststratification uncertainty. | todo |
