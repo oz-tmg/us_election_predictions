@@ -62,13 +62,20 @@ def validate_silver_returns(df: pd.DataFrame, *, required_columns: list[str]) ->
     # 2. non-empty
     rep.add("rows.non_empty", len(df) > 0, f"{len(df)} rows")
 
-    # 3. unique natural key (race_id + candidate)
-    if {"race_id", "candidate"}.issubset(df.columns):
-        dupes = df.duplicated(["race_id", "candidate"]).sum()
+    # 3. unique natural key (race_id + candidate + party line)
+    #
+    # The party line is part of the key because MEDSL records aggregate minor-party
+    # and scattering votes with no candidate name — several such rows per race, each
+    # on a different party line. They are real counted votes that reconcile to the
+    # race total, so they are kept; keying on candidate alone would flag them as
+    # duplicates. A genuine double-count of one candidate on one party line is still
+    # caught, and fusion lines are already merged upstream (``medsl._collapse_fusion``).
+    if {"race_id", "candidate", "party"}.issubset(df.columns):
+        dupes = df.duplicated(["race_id", "candidate", "party"]).sum()
         rep.add(
-            "keys.unique_race_candidate",
+            "keys.unique_race_candidate_party",
             dupes == 0,
-            "" if dupes == 0 else f"{dupes} duplicate race_id+candidate rows",
+            "" if dupes == 0 else f"{dupes} duplicate race_id+candidate+party rows",
         )
 
     # 4. nonnegative votes

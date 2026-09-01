@@ -42,16 +42,19 @@ def build_quality_report(
     *,
     data_modes: dict | None = None,
     transform_stats: dict | None = None,
+    quarantine_stats: dict | None = None,
 ) -> dict:
     """Compute the data-quality metrics dict for the loaded P0 tables.
 
     ``data_modes`` records how each source was acquired (live / manual / synthetic) and
-    ``transform_stats`` what standardization dropped or merged, so both are auditable
-    from the published report rather than only from logs.
+    ``transform_stats`` what standardization dropped or merged, and ``quarantine_stats``
+    which races were excluded for failing reconciliation — all auditable from the
+    published report rather than only from logs.
     """
     report: dict = {"generated_at": datetime.now(UTC).isoformat(timespec="seconds")}
     report["data_modes"] = data_modes or {}
     report["transform_stats"] = transform_stats or {}
+    report["quarantine"] = quarantine_stats or {}
 
     # --- coverage ---------------------------------------------------------
     report["coverage"] = {
@@ -68,7 +71,9 @@ def build_quality_report(
 
     # --- duplicate keys ---------------------------------------------------
     report["duplicate_keys"] = {
-        "returns_race_candidate": int(returns.duplicated(["race_id", "candidate"]).sum()),
+        # Same natural key as the silver gate: the party line is part of it, because
+        # MEDSL records unnamed aggregate minor-party votes as several rows per race.
+        "returns_race_candidate_party": int(returns.duplicated(["race_id", "candidate", "party"]).sum()),
         "race_table_race_id": int(race_table.duplicated(["race_id"]).sum()),
         "geography_geography_id": int(geography.duplicated(["geography_id"]).sum()),
     }
@@ -174,6 +179,25 @@ def render_markdown(report: dict) -> str:
         f"- Races where candidate sum ≠ reported total: **{vr['races_mismatched']}** "
         f"({vr.get('mismatch_pct', 0)}%, tolerance {vr.get('tolerance_pct', 0)}%)",
     ]
+
+    q = report.get("quarantine") or {}
+    if q.get("quarantined_races"):
+        lines += [
+            "",
+            "## Quarantined races (excluded from the modeling layer)",
+            "",
+            f"- Races excluded: **{q['quarantined_races']}** of {q['races_total']:,} ({q['pct_of_races']}%)",
+            "",
+            "These races' candidate votes do not sum to the jurisdiction's reported total. "
+            "The causes are heterogeneous and state-specific, so they are excluded uniformly "
+            "and retained at `data/silver/quarantined_races.csv` with a reason, rather than "
+            "corrected by cause-specific rules (CLAUDE.md §6). The reason labels below are "
+            "descriptive: confirming why any given race fails requires the state's certified "
+            "return, not an inference from the discrepancy.",
+            "",
+        ]
+        for reason, n in q.get("by_reason", {}).items():
+            lines.append(f"- {n} — {reason}")
 
     ts = report.get("transform_stats") or {}
     if ts:
