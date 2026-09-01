@@ -155,3 +155,78 @@ def test_validation_catches_negative_votes(silver_returns):
     rep = validate_silver_returns(bad, required_columns=medsl.SILVER_COLUMNS)
     assert not rep.ok
     assert any("nonnegative" in r.name and not r.passed for r in rep.results)
+
+
+# --------------------------------------------------------------- sentinels
+def test_unreported_race_keeps_winner_but_nulls_votes():
+    """MEDSL's -1 sentinel means 'no count reported', not zero votes.
+
+    2020 FL-25 (Diaz-Balart, unopposed) carries -1 in both vote columns; 2024 FL-20
+    and OK-3 carry a placeholder 1 against a -1 total. Both must land as NA so the
+    seat is retained without implying the winner received no votes.
+    """
+    bronze = pd.DataFrame(
+        [
+            {
+                "year": "2020",
+                "state_po": "FL",
+                "state": "FLORIDA",
+                "district": "25",
+                "office": "US HOUSE",
+                "candidate": "MARIO DIAZ-BALART",
+                "party": "REPUBLICAN",
+                "candidatevotes": "-1",
+                "totalvotes": "-1",
+                "stage": "gen",
+                "writein": "FALSE",
+            },
+            {
+                "year": "2024",
+                "state_po": "OK",
+                "state": "OKLAHOMA",
+                "district": "3",
+                "office": "US HOUSE",
+                "candidate": "FRANK D. LUCAS",
+                "party": "REPUBLICAN",
+                "candidatevotes": "1",
+                "totalvotes": "-1",
+                "stage": "gen",
+                "writein": "FALSE",
+            },
+        ]
+    )
+    silver = medsl.standardize_silver(bronze, "us_house")
+
+    assert silver["candidatevotes"].isna().all(), "sentinel votes must be NA, not 0 or -1"
+    assert silver["totalvotes"].isna().all()
+    assert silver["vote_share"].isna().all(), "no share is computable without a count"
+    assert silver["uncontested_flag"].all(), "a lone candidate with no count is uncontested"
+    assert (silver["candidate"] != "").all(), "the winner is real and must be retained"
+
+
+def test_race_table_keeps_unreported_race_without_inventing_zeros():
+    bronze = pd.DataFrame(
+        [
+            {
+                "year": "2020",
+                "state_po": "FL",
+                "state": "FLORIDA",
+                "district": "25",
+                "office": "US HOUSE",
+                "candidate": "MARIO DIAZ-BALART",
+                "party": "REPUBLICAN",
+                "candidatevotes": "-1",
+                "totalvotes": "-1",
+                "stage": "gen",
+                "writein": "FALSE",
+            },
+        ]
+    )
+    table = build_race_table(medsl.standardize_silver(bronze, "us_house"))
+
+    assert len(table) == 1
+    row = table.iloc[0]
+    assert row["winner"] == "MARIO DIAZ-BALART"
+    assert pd.isna(row["winner_votes"]), "an unreported count must not become 0"
+    assert pd.isna(row["total_votes"])
+    assert pd.isna(row["two_party_dem_share"])

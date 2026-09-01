@@ -129,6 +129,28 @@ def win_probabilities(sim_shares: np.ndarray, units: list[str]) -> pd.DataFrame:
     return pd.DataFrame({"unit": units, "dem_win_prob": p})
 
 
+def unit_distributions(sim_shares: np.ndarray, units: list[str]) -> pd.DataFrame:
+    """Vote-share intervals and win probabilities for every simulated unit.
+
+    ``mean_leader`` describes which party is above 50% in the mean draw; it is not a
+    deterministic race call. ``dem_win_prob`` remains the decision-relevant probability.
+    """
+    if sim_shares.ndim != 2 or sim_shares.shape[1] != len(units):
+        raise ValueError("sim_shares columns must match units")
+    mean = sim_shares.mean(axis=0)
+    return pd.DataFrame(
+        {
+            "unit": units,
+            "mean_dem_share": mean,
+            "median_dem_share": np.median(sim_shares, axis=0),
+            "dem_share_5th": np.percentile(sim_shares, 5, axis=0),
+            "dem_share_95th": np.percentile(sim_shares, 95, axis=0),
+            "dem_win_prob": (sim_shares > 0.5).mean(axis=0),
+            "mean_leader": np.where(mean > 0.5, "D", np.where(mean < 0.5, "R", "EVEN")),
+        }
+    )
+
+
 def electoral_college_distribution(sim_shares: np.ndarray, states: list[str]) -> dict:
     """Distribution of Democratic electoral votes across simulations."""
     ev = np.array([ELECTORAL_VOTES.get(s, 0) for s in states])
@@ -170,6 +192,11 @@ def simulate_presidential(
     sim = simulate_shares(
         df["pred_dem_share"].to_numpy(), df["resid_sigma"].to_numpy(), regions, n_sims=n_sims, params=params
     )
-    wp = win_probabilities(sim, df["state_po"].tolist())
-    ec = electoral_college_distribution(sim, df["state_po"].tolist())
-    return {"win_probabilities": wp, "electoral_college": ec}
+    states = df["state_po"].tolist()
+    units = unit_distributions(sim, states)
+    ec = electoral_college_distribution(sim, states)
+    return {
+        "unit_distributions": units,
+        "win_probabilities": units[["unit", "dem_win_prob"]].copy(),
+        "electoral_college": ec,
+    }

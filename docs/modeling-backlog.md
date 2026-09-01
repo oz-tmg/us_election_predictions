@@ -21,10 +21,10 @@ Status labels:
 | ID | Task | Why It Matters | Acceptance Criteria | Status |
 |---|---|---|---|---|
 | P0-001 | Create canonical election cycle table | Every model needs consistent election dates and office types. | Table has cycle, election date, office, jurisdiction, election type. | todo |
-| P0-002 | Create canonical geography table | Prevents FIPS/GEOID/district mismatch. | State, county, district, precinct, media market keys documented. | in_progress |
+| P0-002 | Create canonical geography table | Prevents FIPS/GEOID/district mismatch. | State, county, district, precinct, media market keys documented. | done (nation/state/county/CD; precinct + media market deferred) |
 | P0-003 | Create candidate and party normalization rules | Candidate names and party labels vary across sources. | Reusable crosswalk with aliases, party, office, cycle, source IDs. | todo |
 | P0-004 | Build source manifest schema | Enables reproducibility and legal review. | Every raw source snapshot has source, date, checksum, license, privacy tier. | done |
-| P0-005 | Ingest MIT/MEDSL federal returns | Core historical baseline. | President, House, Senate available in standardized silver tables. | in_progress |
+| P0-005 | Ingest MIT/MEDSL federal returns | Core historical baseline. | President, House, Senate available in standardized silver tables. | done (all three series live/manual 1976-2024; validated) |
 | P0-006 | Ingest Census ACS features | Core demographics. | ACS variables selected, transformed, and joined to geography table. | done |
 | P0-007 | Ingest TIGER/Line boundaries | Core geospatial layer. | Current state/county/CD boundaries stored in PostGIS/GeoParquet. | done |
 | P0-008 | Build model-ready race table | Central model grain. | One row per race/candidate or race/party with results and metadata. | done |
@@ -36,8 +36,8 @@ Status labels:
 |---|---|---|---|---|
 | P1-001 | Presidential fundamentals model | How much can we predict without polls? | Backtest by state for 2008–2024 with MAE and calibration. | done |
 | P1-002 | House district baseline | What is each district's normal partisan lean? | District partisanship score using presidential and House history. | done |
-| P1-003 | Senate/governor baseline | How much do state partisanship and incumbency explain? | Backtest statewide races with incumbency/open-seat indicators. | todo |
-| P1-004 | Generic ballot adjustment | How should national environment affect districts? | Historical relationship estimated and documented. | todo |
+| P1-003 | Senate/governor baseline | How much do state partisanship and incumbency explain? | Backtest statewide races with incumbency/open-seat indicators. | done (Senate); governor blocked on MEDSL gubernatorial returns not yet ingested |
+| P1-004 | Generic ballot adjustment | How should national environment affect districts? | Historical relationship estimated and documented. | done (swing ratio estimated from certified returns; live generic-ballot input still needs governed poll sources) |
 | P1-005 | Correlated simulation layer | How does race-level uncertainty translate to seat control? | Simulation returns win probability, seat distribution, chamber probability. | done |
 | P1-006 | Forecast evaluation notebook | Are probabilities calibrated? | Brier score, log score, calibration curve, interval coverage. | done |
 
@@ -45,7 +45,7 @@ Status labels:
 
 | ID | Feature | Offices | Why It Matters | Acceptance Criteria | Status |
 |---|---|---|---|---|---|
-| F-001 | Incumbency status | House, Senate, Gov, State Leg, Judicial | Large effect across offices. | Incumbent running, open seat, appointed incumbent flags. | todo |
+| F-001 | Incumbency status | House, Senate, Gov, State Leg, Judicial | Large effect across offices. | Incumbent running, open seat, appointed incumbent flags. | done (House/Senate, derived; redistricting-aware). Appointed-incumbent flag not derivable from returns |
 | F-002 | Past presidential vote | All geographic races | Strong baseline for partisanship. | Latest and previous presidential two-party vote by geography. | done |
 | F-003 | District partisanship score | House, State Leg | Core prior. | Standardized score with cycle and plan version. | done |
 | F-004 | Fundraising totals | Federal, Gov, Judicial | Proxy for candidate viability and campaign intensity. | Receipts, disbursements, cash, outside spending by reporting period. | todo |
@@ -60,8 +60,8 @@ Status labels:
 
 | ID | Task | Analytical Question | Acceptance Criteria | Status |
 |---|---|---|---|---|
-| P2-001 | Poll ingestion schema | Can polls be compared across pollsters? | Pollster, sponsor, mode, field dates, sample, population, weights, toplines. | todo |
-| P2-002 | Polling average | What is the current topline signal? | Time decay, sample-size weighting, pollster house effect placeholder. | todo |
+| P2-001 | Poll ingestion schema | Can polls be compared across pollsters? | Pollster, sponsor, mode, field dates, sample, population, weights, toplines. | done |
+| P2-002 | Polling average | What is the current topline signal? | Time decay, sample-size weighting, pollster house effect placeholder. | done |
 | P2-003 | Pollster house effects | Which pollsters systematically lean? | Historical estimates with uncertainty. | todo |
 | P2-004 | MRP prototype | Can national/state survey data estimate district opinion? | Model using demographics + geography with poststratification frame. | todo |
 | P2-005 | MRP uncertainty report | Are district estimates overconfident? | Posterior intervals include survey and poststratification uncertainty. | todo |

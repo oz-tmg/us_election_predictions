@@ -22,7 +22,7 @@ from pathlib import Path
 import pandas as pd
 
 from .config import load_dotenv
-from .data import acquire, medsl, synthetic
+from .data import acquire, medsl, quarantine, synthetic
 from .data.manifest import SourceManifest
 from .data.privacy import PrivacyTier
 from .data.validation import validate_geography_table, validate_silver_returns
@@ -115,7 +115,7 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         silver, stats = medsl.standardize_silver_with_stats(bronze, office)
         manifest.validation_status = "passed"
         manifest.row_count = len(silver)
-        manifest.unique_key = ["race_id", "candidate"]
+        manifest.unique_key = ["race_id", "candidate", "party"]
         manifest.write(manifests_dir)
         silver_parts.append(silver)
         transform_stats[office] = stats
@@ -127,7 +127,20 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         if stats.get("mode_rows_collapsed"):
             print(f"    collapsed {stats['mode_rows_collapsed']:,} per-mode rows")
 
-    returns = pd.concat(silver_parts, ignore_index=True)
+    all_returns = pd.concat(silver_parts, ignore_index=True)
+
+    # Quarantine races that fail vote-total reconciliation before they reach the
+    # modeling layer (CLAUDE.md §6 — documented exclusion, never a silent fix).
+    # The excluded rows are kept on disk with a reason so the decision is auditable.
+    returns, quarantined, q_manifest = quarantine.split_quarantine(all_returns)
+    q_stats = quarantine.summarize(q_manifest, races_total=all_returns["race_id"].nunique())
+    if q_stats["quarantined_races"]:
+        print(
+            f"\n[quarantine] {q_stats['quarantined_races']} of {q_stats['races_total']} races "
+            f"({q_stats['pct_of_races']}%) failed vote-total reconciliation and were excluded:"
+        )
+        for reason, n in q_stats["by_reason"].items():
+            print(f"    {n:>3}  {reason}")
 
     # geography spine (seeded from observed geography in returns)
     geography = build_geography_table(returns)
@@ -142,6 +155,9 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
     race_table = build_race_table(returns)
 
     # persist medallion outputs
+    if not q_manifest.empty:
+        q_manifest.to_csv(silver_dir / "quarantined_races.csv", index=False)
+        quarantined.to_parquet(silver_dir / "quarantined_returns.parquet", index=False)
     returns.to_parquet(silver_dir / "election_returns.parquet", index=False)
     geography.to_parquet(silver_dir / "geography.parquet", index=False)
     race_table.to_parquet(gold_dir / "race_results.parquet", index=False)
@@ -151,7 +167,12 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
 
     # data-quality report
     report = build_quality_report(
-        returns, race_table, geography, data_modes=modes, transform_stats=transform_stats
+        returns,
+        race_table,
+        geography,
+        data_modes=modes,
+        transform_stats=transform_stats,
+        quarantine_stats=q_stats,
     )
     rpath = write_report(report, reports_dir)
     print(f"\nData-quality report -> {rpath}")
@@ -162,6 +183,9 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         "ok": ok,
         "modes": modes,
         "report": report,
+        "quarantine": q_stats,
+        "quarantined_races": q_manifest,
+        "quarantined_returns": quarantined,
         "returns": returns,
         "race_table": race_table,
         "geography": geography,

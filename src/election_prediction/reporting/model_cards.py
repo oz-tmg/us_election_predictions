@@ -9,8 +9,11 @@ historical-vs-modeled labelling and close-races-look-close framing.
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
+
+import pandas as pd
 
 
 def _synthetic_banner(synthetic: bool) -> str:
@@ -22,6 +25,218 @@ def _synthetic_banner(synthetic: bool) -> str:
         "of the *pipeline*, not real electoral estimates. Re-run with real snapshots to "
         "publish.\n\n"
     )
+
+
+@dataclass(frozen=True)
+class ModelCard:
+    """Reusable minimum model-card contract for every forecasting component."""
+
+    name: str
+    version: str
+    office_geography: str
+    model_type: str
+    target: str
+    training_cycles: str
+    sources: list[str]
+    features: list[str]
+    exclusions: list[str]
+    assumptions: list[str]
+    failure_modes: list[str]
+    intended_use: str
+    metrics: dict[str, str | int | float] = field(default_factory=dict)
+    privacy_tier: int = 0
+    owner: str = "project-owner (data steward)"
+    review_date: str = field(default_factory=lambda: date.today().isoformat())
+
+
+def render_model_card(card: ModelCard, *, synthetic: bool = False) -> str:
+    """Render a standardized Markdown model card with the required audit fields."""
+
+    def bullets(values: list[str]) -> list[str]:
+        return [f"- {value}" for value in values] or ["- None documented."]
+
+    lines = [
+        f"# Model Card — {card.name} {card.version}",
+        "",
+        _synthetic_banner(synthetic).rstrip(),
+        "",
+        "## Identity",
+        "",
+        f"- **Name / version:** {card.name} · {card.version}",
+        f"- **Office / geography:** {card.office_geography}",
+        f"- **Type:** {card.model_type}",
+        f"- **Privacy tier:** {card.privacy_tier}",
+        f"- **Owner:** {card.owner} · **Review date:** {card.review_date}",
+        "",
+        "## Data and target",
+        "",
+        f"- **Training/evaluation cycles:** {card.training_cycles}",
+        f"- **Target:** {card.target}",
+        "- **Sources:**",
+        *[f"  - {source}" for source in card.sources],
+        "",
+        "## Features",
+        "",
+        *bullets(card.features),
+        "",
+        "## Exclusions",
+        "",
+        *bullets(card.exclusions),
+        "",
+        "## Assumptions",
+        "",
+        *bullets(card.assumptions),
+        "",
+        "## Evaluation",
+        "",
+    ]
+    if card.metrics:
+        lines.extend(f"- **{name}:** {value}" for name, value in card.metrics.items())
+    else:
+        lines.append("- Not yet outcome-evaluated; treat as a transparent baseline component.")
+    lines.extend(
+        [
+            "",
+            "## Failure modes",
+            "",
+            *bullets(card.failure_modes),
+            "",
+            "## Intended use",
+            "",
+            card.intended_use,
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def write_model_card(
+    card: ModelCard,
+    reports_dir: str | Path,
+    *,
+    filename: str,
+    synthetic: bool = False,
+) -> Path:
+    out_dir = Path(reports_dir) / "model_cards"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = out_dir / filename
+    path.write_text(render_model_card(card, synthetic=synthetic))
+    return path
+
+
+def write_polling_model_card(results: dict, reports_dir: str | Path, *, synthetic: bool = False) -> Path:
+    polling = results["polling"]
+    card = ModelCard(
+        name="polling_average",
+        version="v0",
+        office_geography="U.S. President · state (two-party Democratic vote share)",
+        model_type="transparent weighted average + precision blend with fundamentals",
+        target="State two-party Democratic vote share and simulated win probability.",
+        training_cycles=str(polling.get("cycle", "n/a")),
+        sources=[
+            "Public pollster toplines supplied through the governed poll schema; "
+            "row-level source URLs retained.",
+            "MEDSL presidential returns and Census ACS fundamentals prior; snapshots in data/manifests/.",
+        ],
+        features=[
+            "Exponential field-date decay (21-day half-life by default).",
+            "Square-root sample-size weighting and LV/RV/adult population weights.",
+            "Optional externally supplied Democratic house-effect adjustment; v0 does not estimate ratings.",
+            "Fundamentals prior blended by inverse variance with a non-zero uncertainty floor.",
+        ],
+        exclusions=[
+            "Respondent microdata and all personal/contact fields.",
+            "Polls with invalid dates, samples, geography, source URLs, or vote-share ranges.",
+            "Third-party/undecided allocation beyond conversion to reported D/R two-party share.",
+        ],
+        assumptions=[
+            "Published toplines and metadata accurately describe the survey.",
+            "The supplied house-effect value is independently governed and expressed as Democratic share.",
+            "The precision blend is a transparent baseline, not a claim that polling and "
+            "fundamentals errors are independent.",
+            "Correlated national and regional simulation errors remain after averaging.",
+        ],
+        failure_modes=[
+            "Correlated polling miss, nonresponse bias, or late movement shared across states.",
+            "Sparse state polling lets one pollster or sponsor dominate despite explicit weighting.",
+            "Mode/population labels are coarse quality proxies, not learned causal corrections.",
+            "Synthetic fixture runs are pipeline tests and cannot support public forecasts.",
+        ],
+        intended_use=(
+            "Auditable polling baseline and input to historical/scenario simulation. "
+            "Publish only after real toplines, source licenses, and held-out calibration "
+            "are reviewed. Never use it for person-level targeting."
+        ),
+        metrics={
+            "Polls": polling.get("n_polls", "n/a"),
+            "States/geographies averaged": polling.get("n_averages", "n/a"),
+            "Mean effective polls": f"{polling.get('mean_effective_polls', float('nan')):.2f}",
+            "Outcome calibration": "pending held-out real-poll backtest",
+        },
+    )
+    return write_model_card(card, reports_dir, filename="polling_average_v0.md", synthetic=synthetic)
+
+
+def write_polling_forecast_report(results: dict, reports_dir: str | Path, *, synthetic: bool = False) -> Path:
+    """Write poll-average, blended-state, and correlated simulation outputs."""
+    polling = results["polling"]
+    sim = results["simulation"]
+    ec = sim["electoral_college"]
+    units = sim["unit_distributions"]
+    if isinstance(units, list):
+        units = pd.DataFrame(units)
+    closest = units.assign(distance=(units["dem_win_prob"] - 0.5).abs()).sort_values("distance").head(12)
+    path = Path(reports_dir) / "polling_forecast_report.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "# Polling + Fundamentals Scenario Report — P2 Baseline",
+        "",
+        f"_Generated: {date.today().isoformat()}_",
+        "",
+        _synthetic_banner(synthetic).rstrip(),
+        "",
+        "> Vote share, uncertainty, and win probability are separate outputs. This is a "
+        "historical/scenario pipeline, not a deterministic race call.",
+        "",
+        "## Polling average",
+        "",
+        f"- Poll rows: **{polling['n_polls']}**",
+        f"- State/geography averages: **{polling['n_averages']}**",
+        f"- Mean effective polls per average: **{polling['mean_effective_polls']:.2f}**",
+        f"- Data mode: **{results['data_mode']['polls']}**",
+        "",
+        "## Correlated Electoral College simulation",
+        "",
+        "Shared national and regional errors move states together; states are never simulated independently.",
+        "",
+        f"- Mean Democratic EV: **{ec['mean_dem_ev']:.0f}** "
+        f"(90% range {ec['ev_5th']:.0f}–{ec['ev_95th']:.0f})",
+        f"- P(Democratic EC majority ≥270): **{ec['p_dem_majority']:.3f}**",
+        "",
+        "## Closest state distributions",
+        "",
+        "| State | Mean D share | 90% share interval | P(D win) | Mean leader |",
+        "|---|---:|---:|---:|:---:|",
+    ]
+    for row in closest.itertuples():
+        lines.append(
+            f"| {row.unit} | {row.mean_dem_share:.3f} | "
+            f"{row.dem_share_5th:.3f}–{row.dem_share_95th:.3f} | "
+            f"{row.dem_win_prob:.3f} | {row.mean_leader} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Limitations",
+            "",
+            "The v0 average uses transparent fixed weights and supplied house-effect placeholders. "
+            "It has not yet estimated pollster effects or completed a held-out real-poll backtest. "
+            "See `reports/model_cards/polling_average_v0.md` before interpreting outputs.",
+            "",
+        ]
+    )
+    path.write_text("\n".join(lines))
+    return path
 
 
 def write_presidential_model_card(results: dict, reports_dir: str | Path, *, synthetic: bool = False) -> Path:
@@ -173,6 +388,113 @@ def write_forecast_report(results: dict, reports_dir: str | Path, *, synthetic: 
             f"**{f(hs, 'mean_dem_seats', '{:.0f}')}** "
             f"(90% range {f(hs, 'seats_5th', '{:.0f}')}–{f(hs, 'seats_95th', '{:.0f}')})",
             f"- P(Democratic control): **{f(hs, 'p_dem_control', '{:.2f}')}**",
+            "",
+        ]
+
+    sen = results.get("senate") or {}
+    sm, se = sen.get("backtest") or {}, sen.get("evaluation") or {}
+    if sm.get("n"):
+        lines += [
+            "## Senate fundamentals (statewide two-party Dem share)",
+            "",
+            "| Model | MAE | RMSE | Winner acc. |",
+            "|---|---:|---:|---:|",
+            f"| Naive (state's last presidential vote) | {f(sm, 'naive_persistence_mae')} | — | — |",
+            f"| Baseline (presidential lean + incumbency + midterm) | {f(sm, 'mae')} "
+            f"| {f(sm, 'rmse')} | {f(sm, 'winner_accuracy', '{:.3f}')} |",
+            "",
+        ]
+        if se:
+            lines += [
+                f"- Brier: **{f(se, 'brier')}** · Log score: {f(se, 'log_score')} · ECE: {f(se, 'ece')}",
+                f"- Interval coverage — 90%: {f(se, 'coverage_90', '{:.3f}')} · "
+                f"95%: {f(se, 'coverage_95', '{:.3f}')}",
+                "",
+            ]
+        lines += [
+            "Governor is not covered: MEDSL's gubernatorial returns are a separate dataset "
+            "this project has not ingested yet.",
+            "",
+        ]
+
+    inc = results.get("incumbency") or {}
+    if inc:
+        lines += [
+            "## Incumbency (F-001, derived)",
+            "",
+            "MEDSL carries no incumbency flag, so it is derived by matching the prior "
+            "seat-holder against the current candidate roster — six years back for Senate, "
+            "and never across a redistricting boundary.",
+            "",
+            "| Office | Races w/ usable prior | Incumbent running | Open seat | Incumbent win rate |",
+            "|---|---:|---:|---:|---:|",
+        ]
+        for office, st in sorted(inc.items()):
+            lines.append(
+                f"| {office} | {st.get('races_with_prior', 0):,} "
+                f"| {f(st, 'incumbent_running_rate', '{:.3f}')} "
+                f"| {f(st, 'open_seat_rate', '{:.3f}')} "
+                f"| {f(st, 'incumbent_win_rate', '{:.3f}')} |"
+            )
+        lines.append("")
+
+    ns = results.get("national_swing") or {}
+    pooled = ns.get("pooled") or {}
+    if pooled.get("status") == "ok":
+        lines += [
+            "## National environment → district swing (P1-004)",
+            "",
+            "`district_swing = alpha + beta * national_swing`, estimated on certified "
+            "returns within redistricting eras, excluding uncontested races.",
+            "",
+            f"- Swing ratio **beta = {f(pooled, 'swing_ratio', '{:.3f}')}** "
+            f"(uniform-swing null = 1.0; deviation {f(pooled, 'deviation_from_uniform', '{:+.3f}')})",
+            f"- Unexplained district-specific swing (residual sd): "
+            f"**{f(pooled, 'residual_sigma', '{:.4f}')}**",
+            f"- R²: {f(pooled, 'r_squared', '{:.3f}')} on {pooled.get('n', 0):,} district-cycles",
+            "",
+            "| Plan era | n | Swing ratio | Residual sd | R² |",
+            "|---:|---:|---:|---:|---:|",
+        ]
+        for era in ns.get("by_plan_era") or []:
+            ratio = "unidentified" if era.get("status") != "ok" else f"{era['swing_ratio']:.3f}"
+            sd = "—" if era.get("status") != "ok" else f"{era['residual_sigma']:.4f}"
+            r2 = "—" if era.get("status") != "ok" else f"{era['r_squared']:.3f}"
+            lines.append(f"| {era['plan_era']} | {era['n']:,} | {ratio} | {sd} | {r2} |")
+        lines += [
+            "",
+            "A generic-ballot poll is a *forecast of next cycle's national swing* and is an "
+            "input to this relationship, not part of estimating it — so no poll data is "
+            "needed here and none is assumed. The low R² is the finding: national swing "
+            "explains only a small share of district-level movement, and the residual sd "
+            "above is what keeps a seat simulation from being overconfident.",
+            "",
+        ]
+
+    qs = results.get("quarantine_sensitivity") or {}
+    if qs.get("status") == "ok":
+        delta = qs.get("mae_delta")
+        lines += [
+            "## Quarantine sensitivity",
+            "",
+            f"{qs['quarantined_races']} races were excluded for failing vote-total "
+            "reconciliation (see the data-quality report). Refitting the same baseline with "
+            "them included:",
+            "",
+            "| Presidential baseline | MAE | n |",
+            "|---|---:|---:|",
+            f"| Excluding quarantined races (published) | {f(qs, 'mae_excluding_quarantine')} "
+            f"| {f(qs, 'n_excluding_quarantine', '{:.0f}')} |",
+            f"| Including quarantined races | {f(qs, 'mae_including_quarantine')} "
+            f"| {f(qs, 'n_including_quarantine', '{:.0f}')} |",
+            "",
+            (
+                f"Difference: **{delta:+.6f}** two-party share. A near-zero delta means the "
+                "exclusion is not doing hidden work; a large one would mean the excluded "
+                "races carry signal and the exclusion needs revisiting."
+                if isinstance(delta, (int, float))
+                else "Difference could not be computed."
+            ),
             "",
         ]
 

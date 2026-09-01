@@ -118,6 +118,13 @@ def test_presidential_panel_has_lags(race_table, acs_features):
     assert panel["college_share"].notna().sum() > 0
 
 
+def test_synthetic_fixtures_are_order_independent():
+    first = synthetic.build_fixture("president")
+    synthetic.build_fixture("us_house")
+    second = synthetic.build_fixture("president")
+    pd.testing.assert_frame_equal(first, second)
+
+
 # ----------------------------------------------------------- baseline (P1-001/002)
 def test_presidential_backtest_beats_or_matches_persistence(race_table, acs_features):
     panel = fundamentals.build_presidential_panel(race_table, acs_features)
@@ -155,6 +162,20 @@ def test_electoral_college_distribution_ranges():
     ec = simulation.electoral_college_distribution(sim, states)
     assert 0 <= ec["p_dem_majority"] <= 1
     assert ec["ev_5th"] <= ec["mean_dem_ev"] <= ec["ev_95th"]
+
+
+def test_simulate_presidential_includes_unit_vote_share_distributions():
+    frame = pd.DataFrame(
+        {
+            "state_po": ["VA", "MD"],
+            "pred_dem_share": [0.51, 0.60],
+            "resid_sigma": [0.04, 0.04],
+        }
+    )
+    result = simulation.simulate_presidential(frame, n_sims=1_000)
+    units = result["unit_distributions"]
+    assert set(units["unit"]) == {"VA", "MD"}
+    assert {"mean_dem_share", "dem_share_5th", "dem_share_95th", "dem_win_prob"}.issubset(units.columns)
 
 
 # ------------------------------------------------------------- evaluation (P1-006)

@@ -6,7 +6,7 @@ The P0 data-and-entity foundation runs as one reproducible command.
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev,geo]"      # package + ep-build-p0/ep-build-p1, pytest/ruff, geopandas
+pip install -e ".[dev,geo]"      # package + ep-build-p0/p1/p2, pytest/ruff, geopandas
 ```
 
 Credentials live in a **git-ignored `.env`** at the repo root; both builds load it at
@@ -16,7 +16,9 @@ secret is written to a manifest, report, or log — only variable *names* are pr
 ```ini
 # .env  — never commit
 CENSUS_API_KEY=...          # required for ACS
-DATAVERSE_API_TOKEN=...     # optional; does NOT unlock the guestbook-gated files
+DATAVERSE_USER=...          # optional; browser login for Harvard Dataverse
+DATAVERSE_PSWD=...          # optional; browser login only, never logged
+DATAVERSE_API_TOKEN=...     # optional; does NOT unlock guestbook-gated files
 ```
 
 ## Build the P0 foundation
@@ -57,14 +59,39 @@ ep-build-p1 --offline      # synthetic fixtures (no network)
 
 Adds ACS (P0-006) + TIGER (P0-007) ingestion, a presidential fundamentals panel and
 OLS baseline (P1-001), a House district partisanship score (P1-002), a correlated
-simulation (P1-005), and calibration evaluation (P1-006). Writes
-`data/gold/{presidential_panel,house_partisanship_score,acs_state_features}.parquet`,
+simulation (P1-005), calibration evaluation (P1-006), derived incumbency (F-001),
+a Senate fundamentals baseline (P1-003), and the national-environment-to-district
+swing relationship (P1-004). Writes
+`data/gold/{presidential_panel,house_partisanship_score,acs_state_features,senate_panel,house_swing_panel,incumbency_*}.parquet`,
 `data/silver/tiger_{state,county,cd}_2024.parquet`, raw TIGER archive inventories,
 source manifests, `reports/source_validation_report.md`,
 `reports/forecast_backtest_report.md`, and `reports/model_cards/`. The strict build
 also checks sampled MEDSL Senate totals against certified FEC results and ACS population
 features against published B01003 values. Historical backtest only — no live forecast
 is published.
+
+## Build the P2 polling baseline
+
+```bash
+ep-build-p2 --offline                 # synthetic aggregate-poll fixture
+ep-build-p2 --polls /path/to/polls.csv # governed public toplines
+ep-build-p2 --polls /path/to/polls.csv --require-live
+```
+
+P2 adds the minimum viable polling and forecast-output layer. Its canonical aggregate
+schema includes pollster, sponsor, mode, field dates, sample size, population, explicit
+weights, toplines, cycle, geography, and source URL. The average excludes polls completed
+after its as-of date, then uses 21-day exponential time decay, square-root sample-size
+weighting, population weights, and an explicit externally supplied house-effect
+adjustment; it does not estimate pollster effects yet.
+Poll uncertainty and fundamentals uncertainty are precision-blended before correlated
+simulation.
+
+Outputs include silver poll toplines, gold polling averages, per-unit vote-share
+distributions, win probabilities, Electoral College outcomes, a Markdown forecast
+report, a structured results JSON file, and a reusable model card. Synthetic runs are
+labelled and cannot satisfy `--require-live`. Real poll inputs must be registered above
+and must contain aggregate toplines only—never respondent records.
 
 ## Governance guard
 
@@ -81,7 +108,7 @@ Blocks Tier 3-5 personal/operational data and bulk data from entering the public
 | Source | Requirement | How |
 |---|---|---|
 | Census ACS | **API key required.** A keyless request returns HTTP 200 with an HTML "Missing Key" page, not data. | Request at <https://api.census.gov/data/key_signup.html>, set `CENSUS_API_KEY` |
-| Harvard Dataverse | Optional account token. **Verified 2026-08-03: a valid token does _not_ unlock the guestbook-gated MEDSL files** (`gbrecs=true` and authenticated requests both return HTTP 400). It is kept only for ungated files and future use. | Set `DATAVERSE_API_TOKEN` |
+| Harvard Dataverse | Optional account credentials for browser-only guestbook acceptance plus an optional API token. **Verified 2026-08-28: authenticated browser acceptance still does not make the guestbook-gated file available through the API** (`gbrecs=true` returns HTTP 400). | Set `DATAVERSE_USER`, `DATAVERSE_PSWD`, and/or `DATAVERSE_API_TOKEN`; never commit them |
 
 ## Live acquisition, per source
 
@@ -90,8 +117,8 @@ All three MEDSL series now run **1976-2024** (they previously ended 2020/2022).
 | Source | Acquisition | Notes |
 |---|---|---|
 | MEDSL Senate | automatic ✅ landed | Downloads via the Dataverse datafile API. |
-| MEDSL President | **one-time manual** | Behind a Dataverse guestbook; the API refuses it even when authenticated. |
-| MEDSL House | **one-time manual** | Same guestbook. Ships tab-separated, not CSV. |
+| MEDSL President | **one-time manual** ✅ landed | Behind a Dataverse guestbook; the API refuses it even when authenticated. |
+| MEDSL House | **one-time manual** ✅ landed | Same guestbook. Published under a `.tab` name but **comma-separated** — the parser confirms the delimiter from the header, not the extension. |
 | Census ACS | automatic ✅ landed | 5-year estimates, state level; vintage 2023 by default. |
 | Census TIGER | automatic ✅ landed | 2024 state/county/CD GeoParquet validated; **congressional districts ship one zip per state**. |
 
@@ -130,8 +157,21 @@ reported in `reports/data_quality_report.md` rather than applied silently:
 ## Tests
 
 ```bash
-pytest -q                            # 53 unit + integration tests
+pytest -q                            # 91 unit + integration tests
 ruff check src pipelines tests
 ruff format --check src pipelines tests
 mypy src
 ```
+
+## Data-quality decisions on the real returns
+
+Two treatments applied to live MEDSL data, both documented rather than silent:
+
+- **`-1` is a 'not reported' sentinel, not zero.** It marks unopposed candidates in states
+  (FL, OK) that elect without placing the race on the ballot. Those races keep their
+  winner, are flagged uncontested, and carry null vote counts.
+- **Races failing vote-total reconciliation are quarantined** (34 of 12,392, 0.274%) to
+  `data/silver/quarantined_races.csv` with a per-race reason, and excluded from the
+  modeling layer. Causes are heterogeneous and state-specific, so no cause-specific
+  correction is applied. The forecast report carries a sensitivity test showing the
+  exclusion moves presidential MAE by +0.000089 (CLAUDE.md §6).

@@ -352,9 +352,24 @@ def test_writeins_excluded_from_contender_count():
     assert silver["uncontested_flag"].all()
 
 
-def test_parse_bronze_rejects_wrong_delimiter(tmp_path):
-    """House ships tab-separated; reading it as CSV yields one useless column."""
+@pytest.mark.parametrize("sep", [",", "\t"])
+def test_parse_bronze_accepts_either_dataverse_representation(tmp_path, sep):
+    """Dataverse serves the same file comma- and tab-separated under a ``.tab`` name.
+
+    Which one a manual download yields depends on the button the operator clicks,
+    so the parser confirms the delimiter from the header instead of trusting the
+    extension. Reading one as the other silently yields a single useless column.
+    """
     f = tmp_path / "1976-2024-house.tab"
-    f.write_text("year,state_po,candidate\n2024,VA,A\n")  # comma-delimited, wrong for house
+    f.write_text(sep.join(["year", "state_po", "candidate"]) + "\n" + sep.join(["2024", "VA", "A"]) + "\n")
+    df = medsl.parse_bronze(f, "us_house", source_id="s", snapshot_date="2026-07-31")
+    assert list(df.columns[:3]) == ["year", "state_po", "candidate"]
+    assert df.iloc[0]["state_po"] == "VA"
+
+
+def test_parse_bronze_rejects_untabular_file(tmp_path):
+    """A file with no recognisable delimiter still fails loudly rather than landing."""
+    f = tmp_path / "1976-2024-house.tab"
+    f.write_text("year|state_po|candidate\n2024|VA|A\n")
     with pytest.raises(ValueError, match="single column"):
         medsl.parse_bronze(f, "us_house", source_id="s", snapshot_date="2026-07-31")

@@ -1,6 +1,6 @@
 # Dataset Registry
 
-_Last updated: 2026-08-25_
+_Last updated: 2026-08-31_
 
 This registry is the control document for every dataset acquired, downloaded, licensed, scraped, requested, or generated for the U.S. election analytics project. Populate this before or during ingestion so the project does not become an undocumented folder of CSVs.
 
@@ -77,8 +77,20 @@ This registry is the control document for every dataset acquired, downloaded, li
 >   general-election totals also match the FEC's certified-results workbook exactly.
 > - **MEDSL President and House are behind a Harvard Dataverse guestbook** that the access
 >   API refuses. They are a documented, checksum-verified **one-time manual download**
->   (`pipelines/README.md`), not an automated pull. Until that is done they remain
->   synthetic and are labelled as such in every report.
+>   (`pipelines/README.md`), not an automated pull. **Both landed 2026-08-31** — president
+>   md5-verified against the published checksum, house size-verified — so no source is
+>   synthetic any more and the SYNTHETIC banner no longer appears in any report.
+> - **The house file is comma-separated despite its `.tab` name.** Dataverse serves both an
+>   original and an ingested representation; `expected_size` was recorded from the original.
+>   The parser now confirms the delimiter from the file's header rather than its extension.
+> - **34 races (0.274%) are quarantined** for failing vote-total reconciliation, with a
+>   documented exclusion, a per-race reason in `data/silver/quarantined_races.csv`, and a
+>   sensitivity test in the forecast report (presidential MAE moves +0.000089). Causes are
+>   heterogeneous and state-specific (Louisiana's all-party primary, New York's inconsistent
+>   `BLANK` ballot rows), so no cause-specific correction is applied.
+> - **MEDSL's `-1` is a 'not reported' sentinel, not zero.** It marks unopposed candidates in
+>   states that elect without placing the race on the ballot. Those races keep their winner
+>   and are flagged uncontested; the vote counts are null.
 > - **Census ACS is validated** (key supplied 2026-08-03; vintage 2023, 52 state rows,
 >   0 nulls). California, New York, and Texas population estimates match published
 >   B01003 values exactly.
@@ -98,15 +110,16 @@ This registry is the control document for every dataset acquired, downloaded, li
 
 | dataset_id | dataset_name | provider | access_type | status | sensitivity | geography | unit_of_observation | time_coverage | priority | next_action |
 |---|---|---|---|---|---|---|---|---|---:|---|
-| `mit_us_president_returns` | U.S. President 1976-2024 Returns (`medsl_president_1976_2024`) | MIT Election Data and Science Lab | Open, **guestbook-gated** (Harvard Dataverse doi:10.7910/DVN/42MVDX) | profiled (blocked on guestbook; manual step defined) | public_aggregate | State | Race/candidate result | 1976-2024 | High | One-time manual download per `pipelines/README.md`, then `ep-build-p0 --require-live` |
+| `mit_us_president_returns` | U.S. President 1976-2024 Returns (`medsl_president_1976_2024`) | MIT Election Data and Science Lab | Open, **guestbook-gated** (Harvard Dataverse doi:10.7910/DVN/42MVDX) | **validated** (manual snapshot 2026-08-31, md5-verified; 4,775 silver rows; reconciles after quarantine) | public_aggregate | State | Race/candidate result | 1976-2024 | High | One-time manual download per `pipelines/README.md`, then `ep-build-p0 --require-live` |
 | `mit_us_senate_returns` | U.S. Senate 1976-2024 Returns (`medsl_senate_1976_2024`) | MIT Election Data and Science Lab | Open (Harvard Dataverse doi:10.7910/DVN/PEJ5QU) | **validated** (3,749 rows / 860 races; totals reconcile 860/860; AL/AZ/OH 2022 totals match FEC) | public_aggregate | State | Race/candidate result | 1976-2024 | High | Extend official spot-checks across cycles during model validation |
-| `mit_us_house_returns` | U.S. House 1976-2024 Returns (`medsl_house_1976_2024`) | MIT Election Data and Science Lab | Open, **guestbook-gated** (Harvard Dataverse doi:10.7910/DVN/IG0UN2) | profiled (blocked on guestbook; manual step defined) | public_aggregate | Congressional district | Race/candidate result | 1976-2024 | High | One-time manual download (tab-separated) per `pipelines/README.md`, then `ep-build-p0 --require-live` |
+| `mit_us_house_returns` | U.S. House 1976-2024 Returns (`medsl_house_1976_2024`) | MIT Election Data and Science Lab | Open, **guestbook-gated** (Harvard Dataverse doi:10.7910/DVN/IG0UN2) | **validated** (manual snapshot 2026-08-31, size-verified; 32,148 silver rows; reconciles after quarantine) | public_aggregate | Congressional district | Race/candidate result | 1976-2024 | High | One-time manual download (tab-separated) per `pipelines/README.md`, then `ep-build-p0 --require-live` |
 | `mit_precinct_project` | Precinct-Level Election Results | MIT Election Data and Science Lab | Open | identified | public_aggregate | Precinct / county / state | Precinct result | Varies by state/year | High | Identify target states and available cycles |
 | `openelections_results` | OpenElections Results | OpenElections | Open | identified | public_aggregate | State/county/precinct depending repo | Race result | Varies | High | Clone target-state repos |
 | `census_acs_5yr` | ACS 5-Year Estimates | U.S. Census Bureau | Open API, **key required** | **validated** (vintage 2023; 52 rows, 0 nulls; CA/NY/TX match B01003) | public_aggregate | Block group and above (state ingested first) | Geography-variable estimate | Rolling 5-year (default vintage 2023) | High | Extend below state and carry margins of error |
 | `census_cvap` | Citizen Voting Age Population Special Tabulation | U.S. Census Bureau | Open | identified | public_aggregate | Block group and above | Geography-race/ethnicity estimate | ACS 5-year vintages | High | Download latest and target-cycle vintages |
 | `census_tiger_cd` | Congressional District / State / County TIGER Boundaries | U.S. Census Bureau | Open | **validated** (2024: 56 state/territory, 3,235 county, 440 CD features; geometry/CRS/GEOIDs pass) | public_aggregate | State / county / congressional district | Geometry | By Congress/year | High | Add vintage-aware district crosswalks |
 | `fec_federal_elections_2022` | Federal Elections 2022 certified-results workbook | Federal Election Commission | Open | **validated** (validation-only benchmark; AL/AZ/OH Senate totals extracted) | public_aggregate | State | Candidate/race result | 2022 | High | Retain as an independent benchmark and extend sampled states/cycles |
+| `public_poll_toplines` | Governed public presidential poll toplines | Mixed public pollster releases | Manual public-release collection | profiled (schema, validation, averaging, and lineage built; no real snapshot registered) | public_aggregate | State (v0) | One poll/race topline | Historical/current | High | Register row-level sources and terms, then run `ep-build-p2 --polls <csv>` on held-out historical cycles |
 | `rdh_precinct_boundaries` | Precinct Boundaries and Election Results | Redistricting Data Hub | Open with account/terms | identified | public_aggregate | Precinct | Geometry/result | Varies | High | Register/review terms and download target states |
 | `fec_api` | FEC API Data | Federal Election Commission | Open API | identified | public_aggregate/public_pii_restricted | Candidate/committee/contributor geography | Contribution, disbursement, filing | Current + historical | High | Create API key and ingestion scripts |
 | `fec_bulk` | FEC Bulk Data / Raw .FEC Files | Federal Election Commission | Open | identified | public_aggregate/public_pii_restricted | Candidate/committee/contributor geography | Filing/transaction | Historical/current | Medium | Decide API vs bulk warehouse strategy |

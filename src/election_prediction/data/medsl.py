@@ -37,6 +37,10 @@ from .privacy import PrivacyTier
 
 DATAVERSE_ACCESS = "https://dataverse.harvard.edu/api/access/datafile"
 DATAVERSE_PAGE = "https://dataverse.harvard.edu/dataset.xhtml?persistentId="
+
+# MEDSL writes -1 in a vote column to mean "the jurisdiction reported no count",
+# not "zero votes". See ``_votes`` / ``_mask_unreported_races``.
+MEDSL_UNREPORTED = -1
 DATAVERSE_TOKEN_ENV = "DATAVERSE_API_TOKEN"
 
 # Canonical silver schema every office maps into.
@@ -174,7 +178,10 @@ MEDSL_SOURCES: dict[str, MedslSource] = {
         doi="doi:10.7910/DVN/IG0UN2",
         datafile_id=13592823,
         filename="1976-2024-house.tab",
-        sep="\t",
+        # Published under a ``.tab`` name, but ``expected_size`` below was recorded
+        # from the *original* comma-separated file, which is what the manual
+        # download yields. ``_detect_sep`` still accepts the ingested tab copy.
+        sep=",",
         election_cycle="1976-2024",
         geog_level="cong_district",
         guestbook=True,
@@ -297,18 +304,38 @@ def _canon_party(row: pd.Series) -> tuple[str, str]:
     return (detailed or "OTHER", simple)
 
 
+def _detect_sep(csv_path: str | Path, declared: str) -> str:
+    """Return the delimiter that actually parses ``csv_path``'s header.
+
+    Dataverse serves two representations of the same tabular file — the original
+    (comma-separated, for the MEDSL series) and an *ingested* copy (tab-separated,
+    published under a ``.tab`` name). Which one an operator gets depends on the
+    download button they click, and the guestbook-gated sources are downloaded by
+    hand (see ``ManualAcquisitionRequired``), so the extension is not a reliable
+    signal. Pick the delimiter that yields the most header fields, preferring the
+    declared one on a tie.
+    """
+    with open(csv_path, encoding="utf-8", errors="replace") as fh:
+        header = fh.readline()
+    candidates = [declared, *(c for c in (",", "\t") if c != declared)]
+    best = max(candidates, key=lambda c: header.count(c))
+    return best if header.count(best) > header.count(declared) else declared
+
+
 def parse_bronze(csv_path: str | Path, office: str, *, source_id: str, snapshot_date: str) -> pd.DataFrame:
     """Parse a raw MEDSL file to a bronze frame with ingestion metadata columns.
 
-    The separator comes from the source definition — senate/house ship as ingested
-    tabular files and reading them as CSV silently produces a single-column frame.
+    The source definition supplies the expected separator, but the real delimiter is
+    confirmed against the file's header first: reading a comma-separated file with
+    ``sep='\\t'`` (or the reverse) silently produces a single-column frame.
     """
-    sep = MEDSL_SOURCES[office].sep if office in MEDSL_SOURCES else ","
+    declared = MEDSL_SOURCES[office].sep if office in MEDSL_SOURCES else ","
+    sep = _detect_sep(csv_path, declared)
     df = pd.read_csv(csv_path, dtype=str, sep=sep, low_memory=False)
     if df.shape[1] == 1:
         raise ValueError(
-            f"{Path(csv_path).name} parsed to a single column with sep={sep!r}. "
-            "The source's file format has probably changed."
+            f"{Path(csv_path).name} parsed to a single column with sep={sep!r} "
+            f"(declared {declared!r}). The source's file format has probably changed."
         )
     df.columns = [c.strip().lower() for c in df.columns]
     df["source_id"] = source_id
@@ -414,9 +441,10 @@ def _collapse_fusion(out: pd.DataFrame) -> tuple[pd.DataFrame, int]:
     kept["fusion_flag"] = False
     combined = pd.concat([kept, merged], ignore_index=True)
     # Row-wise assembly of the merged lines can widen dtypes to object; restore them
-    # so the downstream share/uncontested maths stays numeric.
-    combined["candidatevotes"] = pd.to_numeric(combined["candidatevotes"]).astype("int64")
-    combined["totalvotes"] = pd.to_numeric(combined["totalvotes"]).astype("int64")
+    # so the downstream share/uncontested maths stays numeric. The counts stay
+    # *nullable* — races the jurisdiction never counted carry NA, not 0 (see ``_votes``).
+    combined["candidatevotes"] = pd.to_numeric(combined["candidatevotes"]).astype("Int64")
+    combined["totalvotes"] = pd.to_numeric(combined["totalvotes"]).astype("Int64")
     for flag in ("writein", "special", "certified_flag", "fusion_flag"):
         combined[flag] = combined[flag].astype(bool)
     return combined, len(merged)
@@ -476,8 +504,8 @@ def standardize_silver_with_stats(bronze: pd.DataFrame, office: str) -> tuple[pd
     out["candidate"] = b["candidate"].fillna("").astype(str).str.strip().str.upper()
     out["party"] = parties[0]
     out["party_simplified"] = parties[1]
-    out["candidatevotes"] = pd.to_numeric(b["candidatevotes"], errors="coerce").fillna(0).astype("int64")
-    out["totalvotes"] = pd.to_numeric(b["totalvotes"], errors="coerce").fillna(0).astype("int64")
+    out["candidatevotes"] = _votes(b["candidatevotes"])
+    out["totalvotes"] = _votes(b["totalvotes"])
     out["writein"] = truthy("writein")
     out["stage"] = col("stage", "gen").fillna("gen").astype(str).str.strip().str.lower()
     out["special"] = truthy("special")
@@ -490,6 +518,9 @@ def standardize_silver_with_stats(bronze: pd.DataFrame, office: str) -> tuple[pd
     out["race_id"] = _race_id(out)
     out, n_fusion = _collapse_fusion(out)
     stats["fusion_candidates_merged"] = n_fusion
+
+    out, n_unreported = _mask_unreported_races(out)
+    stats["unreported_vote_races"] = n_unreported
 
     out["vote_share"] = _vote_share(out)
     out["uncontested_flag"] = _uncontested(out)
@@ -520,9 +551,37 @@ def _race_id(df: pd.DataFrame) -> pd.Series:
     return df.apply(mk, axis=1)
 
 
+def _votes(series: pd.Series) -> pd.Series:
+    """Parse a MEDSL vote column, mapping the ``-1`` sentinel to NA.
+
+    MEDSL writes ``-1`` where a jurisdiction reports no count at all — most often an
+    unopposed candidate in a state (FL, OK) that elects without placing the race on
+    the ballot. That is *not reported*, not zero, and coercing it to 0 would both
+    corrupt reconciliation and imply the winner received no votes.
+    """
+    v = pd.to_numeric(series, errors="coerce")
+    return v.mask(v <= MEDSL_UNREPORTED).astype("Int64")
+
+
+def _mask_unreported_races(df: pd.DataFrame) -> tuple[pd.DataFrame, int]:
+    """Blank the candidate counts of races whose reported total is unavailable.
+
+    MEDSL is inconsistent about the sentinel: 2020 FL-25 carries ``-1`` in both vote
+    columns, while 2024 FL-20 and OK-3 carry a placeholder ``1`` against a ``-1``
+    total. Keying off the race total treats both encodings the same way — the seat
+    and its winner are real and retained, the vote counts are simply unknown.
+    """
+    out = df.copy()
+    unreported = out.groupby("race_id")["totalvotes"].transform(lambda s: s.isna().all())
+    out.loc[unreported, "candidatevotes"] = pd.NA
+    return out, int(out.loc[unreported, "race_id"].nunique())
+
+
 def _vote_share(df: pd.DataFrame) -> pd.Series:
-    tot = df.groupby("race_id")["candidatevotes"].transform("sum")
-    return (df["candidatevotes"] / tot.where(tot > 0)).fillna(0.0)
+    """Share of the race's counted vote; NA where the jurisdiction reported no count."""
+    votes = df["candidatevotes"].astype("Float64")
+    tot = votes.groupby(df["race_id"]).transform("sum", min_count=1)
+    return votes / tot.where(tot > 0)
 
 
 def _uncontested(df: pd.DataFrame) -> pd.Series:
@@ -530,10 +589,11 @@ def _uncontested(df: pd.DataFrame) -> pd.Series:
 
     Write-ins are excluded from the contender count so a safe seat with a handful of
     write-in votes is still recorded as uncontested (CLAUDE.md §6 — uncontested races
-    are handled explicitly, never as 100-0 truth).
+    are handled explicitly, never as 100-0 truth). A race with no reported count is
+    uncontested by the same test: its lone candidate never clears the >0 threshold.
     """
-    real = df[(df["candidatevotes"] > 0) & (~df["writein"]) & (df["candidate"] != "")]
-    n_contenders = real.groupby("race_id")["candidate"].nunique()
+    contender = (df["candidatevotes"] > 0).fillna(False) & (~df["writein"]) & (df["candidate"] != "")
+    n_contenders = df[contender].groupby("race_id")["candidate"].nunique()
     return df["race_id"].map(n_contenders).fillna(0) < 2
 
 
