@@ -42,6 +42,15 @@ RACE_TABLE_COLUMNS = [
 ]
 
 
+def _int_or_none(value) -> int | None:
+    """Coerce a possibly-NA nullable vote count to ``int``, preserving 'not reported'."""
+    return None if pd.isna(value) else int(value)
+
+
+def _party_votes(g: pd.DataFrame, party: str) -> int:
+    return int(g.loc[g["party_simplified"] == party, "candidatevotes"].sum())
+
+
 def build_race_table(returns: pd.DataFrame) -> pd.DataFrame:
     """Build the gold race table from silver election returns.
 
@@ -49,26 +58,44 @@ def build_race_table(returns: pd.DataFrame) -> pd.DataFrame:
     """
     rows = []
     for race_id, g in returns.groupby("race_id", sort=False):
-        g = g.sort_values("candidatevotes", ascending=False)
+        g = g.sort_values("candidatevotes", ascending=False, na_position="last")
         first = g.iloc[0]
-        total = int(g["candidatevotes"].sum())
-        n_cand = int((g["candidatevotes"] > 0).sum())
 
-        dem = int(g.loc[g["party_simplified"] == "DEMOCRAT", "candidatevotes"].sum())
-        rep = int(g.loc[g["party_simplified"] == "REPUBLICAN", "candidatevotes"].sum())
-        other = total - dem - rep
-        two_party = dem + rep
-        two_party_dem = (dem / two_party) if two_party > 0 else np.nan
+        # A race whose jurisdiction reported no count (MEDSL's -1 sentinel, typically
+        # an unopposed candidate elected without appearing on the ballot) has a real
+        # winner but no vote totals. Counts stay null rather than collapsing to zero,
+        # so downstream shares are excluded instead of silently reading as 0-0.
+        winner_votes = _int_or_none(first["candidatevotes"])
+        n_cand = int((g["candidatevotes"] > 0).fillna(False).sum())
+
+        total: int | None = None
+        dem: int | None = None
+        rep: int | None = None
+        other: int | None = None
+        margin_votes: int | None = None
+        two_party_dem: float = np.nan
+        winner_share: float = np.nan
+        margin_share: float = np.nan
 
         if len(g) > 1:
             second = g.iloc[1]
             ru = second["candidate"]
             ru_party = second["party_simplified"]
-            ru_votes = int(second["candidatevotes"])
+            ru_votes = _int_or_none(second["candidatevotes"]) or 0
         else:
             ru, ru_party, ru_votes = None, None, 0
 
-        margin_votes = int(first["candidatevotes"]) - ru_votes
+        if winner_votes is not None:
+            total = int(g["candidatevotes"].sum())
+            dem = _party_votes(g, "DEMOCRAT")
+            rep = _party_votes(g, "REPUBLICAN")
+            other = total - dem - rep
+            margin_votes = winner_votes - ru_votes
+            if dem + rep > 0:
+                two_party_dem = dem / (dem + rep)
+            if total > 0:
+                winner_share = winner_votes / total
+                margin_share = margin_votes / total
         rows.append(
             {
                 "race_id": race_id,
@@ -83,13 +110,13 @@ def build_race_table(returns: pd.DataFrame) -> pd.DataFrame:
                 "total_votes": total,
                 "winner": first["candidate"],
                 "winner_party": first["party_simplified"],
-                "winner_votes": int(first["candidatevotes"]),
-                "winner_share": (int(first["candidatevotes"]) / total) if total else np.nan,
+                "winner_votes": winner_votes,
+                "winner_share": winner_share,
                 "runner_up": ru,
                 "runner_up_party": ru_party,
                 "runner_up_votes": ru_votes,
                 "margin_votes": margin_votes,
-                "margin_share": (margin_votes / total) if total else np.nan,
+                "margin_share": margin_share,
                 "dem_votes": dem,
                 "rep_votes": rep,
                 "other_votes": other,
