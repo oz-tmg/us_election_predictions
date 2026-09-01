@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-09-01T00:44:05+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "87aefeab6ad8d47b4af6fc7d8b1ba774d28345e5aed6b80f0d7af336804f16a7",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "TIGER/Line 2024 CD Boundaries",
+  "election_cycle": "2024",
+  "file_format": "json",
+  "geography_coverage": [
+    "congressional_district"
+  ],
+  "known_caveats": "Congressional districts are distributed as one archive per state; the raw inventory records every archive checksum.",
+  "license_or_terms": "Public domain (U.S. Census Bureau); cite table/layer and vintage.",
+  "office_coverage": [
+    "all"
+  ],
+  "owner": "project-owner (data steward)",
+  "permitted_use": "Public nonpartisan research and aggregate reporting with citation.",
+  "privacy_tier": 0,
+  "prohibited_use": "Do not misrepresent estimates as certified election results.",
+  "raw_path": "data/raw/source=tiger/dataset=cd/vintage=2024/archive_inventory.json",
+  "redistribution_allowed": true,
+  "required_attribution": "U.S. Census Bureau.",
+  "review_date": "2027-08-31",
+  "row_count": 440,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-08-31",
+  "source_id": "census_tiger_cd119_2024",
+  "source_owner": "U.S. Census Bureau",
+  "source_url": "https://www2.census.gov/geo/tiger/TIGER2024/CD",
+  "unique_key": [
+    "GEOID"
+  ],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

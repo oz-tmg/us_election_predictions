@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-09-01T00:43:45+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "3547a44df5868787b3f2aa9f1bff5a019375b9c682c1d972ff8c8eff17b5f6fb",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "ACS 2023 5-Year State Estimates",
+  "election_cycle": "2023",
+  "file_format": "json",
+  "geography_coverage": [
+    "state"
+  ],
+  "known_caveats": "ACS estimates carry sampling uncertainty; margins of error matter.",
+  "license_or_terms": "Public domain (U.S. Census Bureau); cite table/layer and vintage.",
+  "office_coverage": [
+    "all"
+  ],
+  "owner": "project-owner (data steward)",
+  "permitted_use": "Public nonpartisan research and aggregate reporting with citation.",
+  "privacy_tier": 0,
+  "prohibited_use": "Do not misrepresent estimates as certified election results.",
+  "raw_path": "data/raw/source=census_acs/dataset=acs5_state/vintage=2023/acs5_state_2023.json",
+  "redistribution_allowed": true,
+  "required_attribution": "U.S. Census Bureau.",
+  "review_date": "2027-08-31",
+  "row_count": 52,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-08-31",
+  "source_id": "census_acs5_state_2023",
+  "source_owner": "U.S. Census Bureau",
+  "source_url": "https://api.census.gov/data/2023/acs/acs5",
+  "unique_key": [
+    "geoid"
+  ],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

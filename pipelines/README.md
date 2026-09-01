@@ -59,8 +59,10 @@ ep-build-p1 --offline      # synthetic fixtures (no network)
 
 Adds ACS (P0-006) + TIGER (P0-007) ingestion, a presidential fundamentals panel and
 OLS baseline (P1-001), a House district partisanship score (P1-002), a correlated
-simulation (P1-005), and calibration evaluation (P1-006). Writes
-`data/gold/{presidential_panel,house_partisanship_score,acs_state_features}.parquet`,
+simulation (P1-005), calibration evaluation (P1-006), derived incumbency (F-001),
+a Senate fundamentals baseline (P1-003), and the national-environment-to-district
+swing relationship (P1-004). Writes
+`data/gold/{presidential_panel,house_partisanship_score,acs_state_features,senate_panel,house_swing_panel,incumbency_*}.parquet`,
 `data/silver/tiger_{state,county,cd}_2024.parquet`, raw TIGER archive inventories,
 source manifests, `reports/source_validation_report.md`,
 `reports/forecast_backtest_report.md`, and `reports/model_cards/`. The strict build
@@ -115,8 +117,8 @@ All three MEDSL series now run **1976-2024** (they previously ended 2020/2022).
 | Source | Acquisition | Notes |
 |---|---|---|
 | MEDSL Senate | automatic ✅ landed | Downloads via the Dataverse datafile API. |
-| MEDSL President | **one-time manual** | Behind a Dataverse guestbook; the API refuses it even when authenticated. |
-| MEDSL House | **one-time manual** | Same guestbook. Ships tab-separated, not CSV. |
+| MEDSL President | **one-time manual** ✅ landed | Behind a Dataverse guestbook; the API refuses it even when authenticated. |
+| MEDSL House | **one-time manual** ✅ landed | Same guestbook. Published under a `.tab` name but **comma-separated** — the parser confirms the delimiter from the header, not the extension. |
 | Census ACS | automatic ✅ landed | 5-year estimates, state level; vintage 2023 by default. |
 | Census TIGER | automatic ✅ landed | 2024 state/county/CD GeoParquet validated; **congressional districts ship one zip per state**. |
 
@@ -155,8 +157,21 @@ reported in `reports/data_quality_report.md` rather than applied silently:
 ## Tests
 
 ```bash
-pytest -q                            # 65 unit + integration tests
+pytest -q                            # 91 unit + integration tests
 ruff check src pipelines tests
 ruff format --check src pipelines tests
 mypy src
 ```
+
+## Data-quality decisions on the real returns
+
+Two treatments applied to live MEDSL data, both documented rather than silent:
+
+- **`-1` is a 'not reported' sentinel, not zero.** It marks unopposed candidates in states
+  (FL, OK) that elect without placing the race on the ballot. Those races keep their
+  winner, are flagged uncontested, and carry null vote counts.
+- **Races failing vote-total reconciliation are quarantined** (34 of 12,392, 0.274%) to
+  `data/silver/quarantined_races.csv` with a per-race reason, and excluded from the
+  modeling layer. Causes are heterogeneous and state-specific, so no cause-specific
+  correction is applied. The forecast report carries a sensitivity test showing the
+  exclusion moves presidential MAE by +0.000089 (CLAUDE.md §6).
