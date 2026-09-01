@@ -391,6 +391,113 @@ def write_forecast_report(results: dict, reports_dir: str | Path, *, synthetic: 
             "",
         ]
 
+    sen = results.get("senate") or {}
+    sm, se = sen.get("backtest") or {}, sen.get("evaluation") or {}
+    if sm.get("n"):
+        lines += [
+            "## Senate fundamentals (statewide two-party Dem share)",
+            "",
+            "| Model | MAE | RMSE | Winner acc. |",
+            "|---|---:|---:|---:|",
+            f"| Naive (state's last presidential vote) | {f(sm, 'naive_persistence_mae')} | — | — |",
+            f"| Baseline (presidential lean + incumbency + midterm) | {f(sm, 'mae')} "
+            f"| {f(sm, 'rmse')} | {f(sm, 'winner_accuracy', '{:.3f}')} |",
+            "",
+        ]
+        if se:
+            lines += [
+                f"- Brier: **{f(se, 'brier')}** · Log score: {f(se, 'log_score')} · ECE: {f(se, 'ece')}",
+                f"- Interval coverage — 90%: {f(se, 'coverage_90', '{:.3f}')} · "
+                f"95%: {f(se, 'coverage_95', '{:.3f}')}",
+                "",
+            ]
+        lines += [
+            "Governor is not covered: MEDSL's gubernatorial returns are a separate dataset "
+            "this project has not ingested yet.",
+            "",
+        ]
+
+    inc = results.get("incumbency") or {}
+    if inc:
+        lines += [
+            "## Incumbency (F-001, derived)",
+            "",
+            "MEDSL carries no incumbency flag, so it is derived by matching the prior "
+            "seat-holder against the current candidate roster — six years back for Senate, "
+            "and never across a redistricting boundary.",
+            "",
+            "| Office | Races w/ usable prior | Incumbent running | Open seat | Incumbent win rate |",
+            "|---|---:|---:|---:|---:|",
+        ]
+        for office, st in sorted(inc.items()):
+            lines.append(
+                f"| {office} | {st.get('races_with_prior', 0):,} "
+                f"| {f(st, 'incumbent_running_rate', '{:.3f}')} "
+                f"| {f(st, 'open_seat_rate', '{:.3f}')} "
+                f"| {f(st, 'incumbent_win_rate', '{:.3f}')} |"
+            )
+        lines.append("")
+
+    ns = results.get("national_swing") or {}
+    pooled = ns.get("pooled") or {}
+    if pooled.get("status") == "ok":
+        lines += [
+            "## National environment → district swing (P1-004)",
+            "",
+            "`district_swing = alpha + beta * national_swing`, estimated on certified "
+            "returns within redistricting eras, excluding uncontested races.",
+            "",
+            f"- Swing ratio **beta = {f(pooled, 'swing_ratio', '{:.3f}')}** "
+            f"(uniform-swing null = 1.0; deviation {f(pooled, 'deviation_from_uniform', '{:+.3f}')})",
+            f"- Unexplained district-specific swing (residual sd): "
+            f"**{f(pooled, 'residual_sigma', '{:.4f}')}**",
+            f"- R²: {f(pooled, 'r_squared', '{:.3f}')} on {pooled.get('n', 0):,} district-cycles",
+            "",
+            "| Plan era | n | Swing ratio | Residual sd | R² |",
+            "|---:|---:|---:|---:|---:|",
+        ]
+        for era in ns.get("by_plan_era") or []:
+            ratio = "unidentified" if era.get("status") != "ok" else f"{era['swing_ratio']:.3f}"
+            sd = "—" if era.get("status") != "ok" else f"{era['residual_sigma']:.4f}"
+            r2 = "—" if era.get("status") != "ok" else f"{era['r_squared']:.3f}"
+            lines.append(f"| {era['plan_era']} | {era['n']:,} | {ratio} | {sd} | {r2} |")
+        lines += [
+            "",
+            "A generic-ballot poll is a *forecast of next cycle's national swing* and is an "
+            "input to this relationship, not part of estimating it — so no poll data is "
+            "needed here and none is assumed. The low R² is the finding: national swing "
+            "explains only a small share of district-level movement, and the residual sd "
+            "above is what keeps a seat simulation from being overconfident.",
+            "",
+        ]
+
+    qs = results.get("quarantine_sensitivity") or {}
+    if qs.get("status") == "ok":
+        delta = qs.get("mae_delta")
+        lines += [
+            "## Quarantine sensitivity",
+            "",
+            f"{qs['quarantined_races']} races were excluded for failing vote-total "
+            "reconciliation (see the data-quality report). Refitting the same baseline with "
+            "them included:",
+            "",
+            "| Presidential baseline | MAE | n |",
+            "|---|---:|---:|",
+            f"| Excluding quarantined races (published) | {f(qs, 'mae_excluding_quarantine')} "
+            f"| {f(qs, 'n_excluding_quarantine', '{:.0f}')} |",
+            f"| Including quarantined races | {f(qs, 'mae_including_quarantine')} "
+            f"| {f(qs, 'n_including_quarantine', '{:.0f}')} |",
+            "",
+            (
+                f"Difference: **{delta:+.6f}** two-party share. A near-zero delta means the "
+                "exclusion is not doing hidden work; a large one would mean the excluded "
+                "races carry signal and the exclusion needs revisiting."
+                if isinstance(delta, (int, float))
+                else "Difference could not be computed."
+            ),
+            "",
+        ]
+
     lines += [
         "## Reading these numbers",
         "",

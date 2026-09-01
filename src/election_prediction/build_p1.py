@@ -29,10 +29,12 @@ from .data.manifest import SourceManifest
 from .data.privacy import PrivacyTier
 from .evaluation import forecast_eval
 from .features import fundamentals
+from .features import incumbency as incumbency_features
+from .features.race_table import build_race_table
 from .geography import reference as geography_reference
 from .geography import tiger
 from .models import simulation
-from .models.baseline import house_partisanship, presidential
+from .models.baseline import generic_ballot, house_partisanship, presidential, senate
 from .pipelines_cli import build as build_p0
 from .reporting.model_cards import write_forecast_report, write_presidential_model_card
 
@@ -210,6 +212,43 @@ def _tiger_boundaries(
     return {"mode": "synthetic", "checks": checks, "outputs": outputs}
 
 
+def _quarantine_sensitivity(p0: dict, acs_features, features: list[str], *, baseline_metrics: dict) -> dict:
+    """Refit the presidential baseline *including* the quarantined races.
+
+    Reports the error difference the exclusion made. A near-zero delta means the
+    quarantine is safe to keep; a large one means the excluded races carry signal and
+    the exclusion needs revisiting rather than silently standing.
+    """
+    q = p0.get("quarantine") or {}
+    if not q.get("quarantined_races"):
+        return {"status": "not_applicable", "reason": "no races quarantined"}
+
+    quarantined_rows = p0.get("quarantined_returns")
+    if quarantined_rows is None or not len(quarantined_rows):
+        return {"status": "skipped", "reason": "quarantined rows unavailable"}
+
+    unfiltered = pd.concat([p0["returns"], quarantined_rows], ignore_index=True)
+    panel_all = fundamentals.build_presidential_panel(build_race_table(unfiltered), acs_features)
+    preds_all, m_all = presidential.backtest_leave_one_cycle_out(panel_all, features)
+    if not len(preds_all):
+        return {"status": "skipped", "reason": "no backtest rows without the quarantine"}
+
+    return {
+        "status": "ok",
+        "quarantined_races": q["quarantined_races"],
+        "by_office": q.get("by_office", {}),
+        "mae_excluding_quarantine": baseline_metrics.get("mae"),
+        "mae_including_quarantine": m_all.get("mae"),
+        "mae_delta": (
+            None
+            if baseline_metrics.get("mae") is None or m_all.get("mae") is None
+            else round(m_all["mae"] - baseline_metrics["mae"], 6)
+        ),
+        "n_excluding_quarantine": baseline_metrics.get("n"),
+        "n_including_quarantine": m_all.get("n"),
+    }
+
+
 def build(base: Path, *, allow_network: bool = True, require_live: bool = False) -> dict:
     base = Path(base)
     p0 = build_p0(base, allow_network=allow_network, require_live=require_live)
@@ -248,12 +287,44 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
     eval_base = forecast_eval.evaluate_backtest(preds_base) if len(preds_base) else {}
     eval_demo = forecast_eval.evaluate_backtest(preds_demo) if len(preds_demo) else {}
 
+    # ---- quarantine sensitivity ----------------------------------------
+    # CLAUDE.md §6 requires an exclusion to be paired with a sensitivity test: refit
+    # the same baseline on the unfiltered returns and report how much the exclusion
+    # actually moved the error, so the decision can be judged rather than trusted.
+    quarantine_sensitivity = _quarantine_sensitivity(p0, acs_features, feats_demo, baseline_metrics=m_demo)
+
     # ---- correlated presidential simulation (P1-005) --------------------
     # Simulate the most recent backtested cycle using its held-out predictions.
     pres_sim = {}
     if len(preds_demo):
         latest = preds_demo[preds_demo["cycle"] == preds_demo["cycle"].max()]
         pres_sim = simulation.simulate_presidential(latest)
+
+    # ---- incumbency (F-001) ---------------------------------------------
+    incumbency_tables = {
+        office: incumbency_features.build_incumbency(p0["returns"], office)
+        for office in ("us_house", "us_senate")
+    }
+    for office, table in incumbency_tables.items():
+        table.to_parquet(gold_dir / f"incumbency_{office}.parquet", index=False)
+    incumbency_stats = {o: incumbency_features.incumbency_summary(t) for o, t in incumbency_tables.items()}
+
+    # ---- Senate fundamentals baseline (P1-003) --------------------------
+    senate_panel = senate.build_senate_panel(race_table, p0["returns"])
+    senate_panel.to_parquet(gold_dir / "senate_panel.parquet", index=False)
+    senate_preds, senate_metrics = senate.backtest(senate_panel)
+    senate_eval = forecast_eval.evaluate_backtest(senate_preds) if len(senate_preds) else {}
+
+    senate_sim = {}
+    if len(senate_preds):
+        latest = senate_preds[senate_preds["cycle"] == senate_preds["cycle"].max()]
+        senate_sim = simulation.simulate_presidential(latest)
+
+    # ---- national environment -> district swing (P1-004) ----------------
+    swing_panel = generic_ballot.build_swing_panel(race_table)
+    swing_panel.to_parquet(gold_dir / "house_swing_panel.parquet", index=False)
+    swing_relationship = generic_ballot.estimate_swing_ratio(swing_panel)
+    swing_by_era = generic_ballot.estimate_by_plan_era(swing_panel)
 
     # ---- House partisanship + seat simulation (P1-002, P1-005) ----------
     house_input = fundamentals.build_house_partisanship_input(race_table)
@@ -288,9 +359,21 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
             "seat_simulation": house_sim,
             "unit_distributions": house_units,
         },
+        "senate": {
+            "backtest": senate_metrics,
+            "evaluation": senate_eval,
+            "simulation": _jsonable(senate_sim),
+        },
+        "incumbency": incumbency_stats,
+        "national_swing": {
+            "pooled": swing_relationship,
+            "by_plan_era": swing_by_era.to_dict(orient="records"),
+        },
         "data_mode": data_modes,
         "tiger": tiger_result["checks"],
         "source_validation": source_checks,
+        "quarantine": p0.get("quarantine", {}),
+        "quarantine_sensitivity": quarantine_sensitivity,
     }
     any_synthetic = any(m == "synthetic" for m in data_modes.values())
     write_presidential_model_card(results, reports_dir, synthetic=any_synthetic)
@@ -298,6 +381,23 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
     (reports_dir / "p1_results.json").write_text(json.dumps(_jsonable(results), indent=2))
 
     print("\n=== P1 baseline summary ===")
+    if senate_metrics.get("n"):
+        print(
+            f"  Senate MAE: {senate_metrics['mae']:.4f} "
+            f"| naive (state pres. lean): {senate_metrics['naive_persistence_mae']:.4f} "
+            f"| winner acc: {senate_metrics['winner_accuracy']:.3f}"
+        )
+    for office, st in sorted(incumbency_stats.items()):
+        print(
+            f"  Incumbency {office}: running {st['incumbent_running_rate']:.3f} "
+            f"| open {st['open_seat_rate']:.3f} | incumbent win rate {st['incumbent_win_rate']:.3f}"
+        )
+    if swing_relationship.get("status") == "ok":
+        print(
+            f"  National->district swing ratio: {swing_relationship['swing_ratio']:.3f} "
+            f"(uniform=1.0) | residual sd {swing_relationship['residual_sigma']:.4f} "
+            f"| R2 {swing_relationship['r_squared']:.3f}"
+        )
     print(
         f"  Presidential MAE (lag+national): {m_base.get('mae'):.4f} "
         f"| +college: {m_demo.get('mae'):.4f} | naive persistence: "

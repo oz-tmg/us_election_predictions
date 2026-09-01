@@ -56,10 +56,15 @@ def backtest_leave_one_cycle_out(
     panel: pd.DataFrame,
     features: list[str] | None = None,
     target: str = "two_party_dem_share",
+    naive_feature: str = "lag_dem_share",
 ) -> tuple[pd.DataFrame, dict]:
     """Leave-one-cycle-out backtest. Returns (predictions, metrics).
 
     For each cycle with a usable lag, train on all *other* cycles and predict it.
+    ``naive_feature`` names the column the persistence baseline predicts directly —
+    the bar the model has to clear (CLAUDE.md §2 rule 5). It differs by office: the
+    previous presidential result for president, the state's presidential lean for
+    Senate.
     """
     features = features or DEFAULT_FEATURES
     usable = panel.dropna(subset=features + [target]).copy()
@@ -82,7 +87,7 @@ def backtest_leave_one_cycle_out(
     out = pd.concat(preds, ignore_index=True)
     # naive baseline: predict the lag directly (persistence)
     naive_mae = (
-        float((out["lag_dem_share"] - out[target]).abs().mean()) if "lag_dem_share" in out else float("nan")
+        float((out[naive_feature] - out[target]).abs().mean()) if naive_feature in out else float("nan")
     )
     metrics = {
         "n": int(len(out)),
