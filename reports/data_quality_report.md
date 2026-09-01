@@ -1,6 +1,6 @@
 # Data-Quality Report — P0 Foundation
 
-_Generated: 2026-09-01T00:43:41+00:00Z_
+_Generated: 2026-09-01T01:15:39+00:00Z_
 
 > Scope: loaded MEDSL federal returns (silver), model-ready race table (gold),
 > and the canonical geography spine. Nonpartisan; historical/certified returns.

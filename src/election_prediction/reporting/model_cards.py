@@ -379,13 +379,59 @@ def write_forecast_report(results: dict, reports_dir: str | Path, *, synthetic: 
             "",
         ]
 
+    hb, he = house.get("backtest") or {}, house.get("evaluation") or {}
+    if hb.get("n"):
+        lines += [
+            "## House district fundamentals (district two-party Dem share)",
+            "",
+            "| Model | MAE | RMSE | Winner acc. |",
+            "|---|---:|---:|---:|",
+            f"| Naive (district's previous result) | {f(hb, 'naive_persistence_mae')} | — | — |",
+            f"| Baseline (lagged lean + national env. + incumbency) | {f(hb, 'mae')} "
+            f"| {f(hb, 'rmse')} | {f(hb, 'winner_accuracy', '{:.3f}')} |",
+            "",
+        ]
+        if he:
+            lines.append(
+                f"- Brier: **{f(he, 'brier')}** · Log score: {f(he, 'log_score')} · "
+                f"ECE: {f(he, 'ece')} · 90% coverage: {f(he, 'coverage_90', '{:.3f}')}"
+            )
+        lines += [
+            "",
+            "Uncontested districts are excluded from fitting and scoring — a race with no "
+            "opponent measures ballot access, not district preference — but they keep their "
+            "seats in the simulation below. The national environment is contemporaneous, so "
+            "this measures district accuracy *given* a correct national call; forecasting "
+            "that national number is P1-004's job.",
+            "",
+        ]
+
+    cov = house.get("seat_universe") or {}
     if hs:
         lines += [
             "## House correlated seat simulation",
             "",
-            f"- Districts scored: {house.get('n_districts_scored', 'n/a')}",
-            f"- Mean Democratic seats (of {hs.get('n_units', 'n/a')} simulated): "
-            f"**{f(hs, 'mean_dem_seats', '{:.0f}')}** "
+        ]
+        if cov:
+            complete = "complete" if cov.get("seats_complete") else "**INCOMPLETE**"
+            by_src = cov.get("by_source", {})
+            lines += [
+                f"- Seat universe ({cov.get('cycle')}, plan era {cov.get('plan_era')}): "
+                f"**{cov.get('seats')} of {cov.get('expected_voting_seats')}** voting seats "
+                f"({complete})",
+                f"- Seats from the model: {by_src.get('model', 0)} "
+                f"({f(cov, 'model_coverage', '{:.1%}')}); carried on a partisanship prior "
+                f"with widened uncertainty: {by_src.get('partisanship_prior', 0)}; "
+                f"on the most recent result: {by_src.get('recent_result', 0)}",
+                "",
+                "Districts whose returns were quarantined or that ran unopposed still hold "
+                "seats, so they are carried on a fallback rather than dropped — a chamber "
+                "simulated on fewer than 435 seats would understate uncertainty and misstate "
+                "control. Non-voting delegates (DC and the territories) are excluded.",
+                "",
+            ]
+        lines += [
+            f"- Mean Democratic seats: **{f(hs, 'mean_dem_seats', '{:.0f}')}** "
             f"(90% range {f(hs, 'seats_5th', '{:.0f}')}–{f(hs, 'seats_95th', '{:.0f}')})",
             f"- P(Democratic control): **{f(hs, 'p_dem_control', '{:.2f}')}**",
             "",

@@ -8,7 +8,7 @@ import pytest
 
 from election_prediction.features import incumbency
 from election_prediction.models.baseline import generic_ballot as gb
-from election_prediction.models.baseline import senate
+from election_prediction.models.baseline import house, senate
 
 
 def _returns(rows: list[dict]) -> pd.DataFrame:
@@ -207,3 +207,118 @@ def test_white_house_party_uses_electoral_votes_not_popular_vote():
         ]
     )
     assert senate._white_house_party(race_table).loc[2016] == "REPUBLICAN"
+
+
+# ------------------------------------------------------- house seats (step 5)
+def _house_race_table(cycles: list[int], n_districts: int, *, include_dc: bool = False) -> pd.DataFrame:
+    rows = []
+    for cycle in cycles:
+        for d in range(1, n_districts + 1):
+            rows.append(
+                {
+                    "race_id": f"{cycle}_us_house_va_{d:02d}",
+                    "office": "us_house",
+                    "cycle": cycle,
+                    "state_po": "VA",
+                    "district_num": float(d),
+                    "geography_id": f"state:51|district:cong_{d:02d}",
+                    "two_party_dem_share": 0.5 + 0.001 * d,
+                    "total_votes": 1000,
+                    "uncontested_flag": False,
+                }
+            )
+        if include_dc:
+            rows.append(
+                {
+                    "race_id": f"{cycle}_us_house_dc_00",
+                    "office": "us_house",
+                    "cycle": cycle,
+                    "state_po": "DC",
+                    "district_num": 0.0,
+                    "geography_id": "state:11|district:cong_00",
+                    "two_party_dem_share": 0.9,
+                    "total_votes": 1000,
+                    "uncontested_flag": False,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def test_non_voting_delegates_are_excluded_from_the_chamber():
+    """DC elects a non-voting Delegate; counting it puts 436 seats in a 435-seat House."""
+    race_table = _house_race_table([2022, 2024], n_districts=4, include_dc=True)
+    universe, coverage = house.build_seat_universe(
+        race_table, pd.DataFrame(), pd.DataFrame(columns=["cycle", "geography_id"]), cycle=2024
+    )
+    assert "DC" not in set(universe["state_po"]), "a non-voting delegate cannot hold a seat"
+    assert coverage["seats"] == 4
+
+
+def test_quarantined_district_keeps_its_seat_on_a_fallback():
+    """A district dropped from one cycle's returns still exists and must be simulated."""
+    race_table = _house_race_table([2022, 2024], n_districts=3)
+    # District 3 is missing from 2024 (e.g. quarantined for failing reconciliation).
+    race_table = race_table[~((race_table.cycle == 2024) & (race_table.district_num == 3.0))]
+    preds = pd.DataFrame(
+        {
+            "cycle": [2024, 2024],
+            "geography_id": ["state:51|district:cong_01", "state:51|district:cong_02"],
+            "pred_dem_share": [0.51, 0.52],
+            "resid_sigma": [0.05, 0.05],
+        }
+    )
+    universe, coverage = house.build_seat_universe(race_table, pd.DataFrame(), preds, cycle=2024)
+
+    assert coverage["seats"] == 3, "the seat exists even when its returns were excluded"
+    assert coverage["by_source"]["model"] == 2
+    fallback = universe[universe["source"] != "model"]
+    assert len(fallback) == 1
+    assert fallback.iloc[0]["sigma"] > universe[universe["source"] == "model"]["sigma"].max(), (
+        "a seat carried on a fallback must be less certain, not equally certain"
+    )
+
+
+def test_seat_universe_reports_incompleteness_rather_than_hiding_it():
+    race_table = _house_race_table([2022, 2024], n_districts=3)
+    _, coverage = house.build_seat_universe(
+        race_table, pd.DataFrame(), pd.DataFrame(columns=["cycle", "geography_id"]), cycle=2024
+    )
+    assert coverage["expected_voting_seats"] == 435
+    assert coverage["seats_complete"] is False, "a 3-seat fixture is not a full chamber"
+
+
+def test_house_backtest_excludes_uncontested_from_scoring():
+    """An unopposed race measures ballot access, not district preference."""
+    rng = np.random.default_rng(1)
+    rows = []
+    for cycle in (2016, 2018, 2020):
+        for d in range(10):
+            rows.append(
+                {
+                    "cycle": cycle,
+                    "two_party_dem_share": 0.5 + 0.01 * d + rng.normal(0, 0.005),
+                    "lag_dem_share": 0.5 + 0.01 * d,
+                    "district_lean": 0.01 * d,
+                    "national_dem_share": 0.5,
+                    "incumbent_dem": 1.0,
+                    "incumbent_rep": 0.0,
+                    "uncontested_flag": False,
+                }
+            )
+        # one unopposed seat per cycle, which must never be scored
+        rows.append(
+            {
+                "cycle": cycle,
+                "two_party_dem_share": 1.0,
+                "lag_dem_share": 1.0,
+                "district_lean": 0.5,
+                "national_dem_share": 0.5,
+                "incumbent_dem": 1.0,
+                "incumbent_rep": 0.0,
+                "uncontested_flag": True,
+            }
+        )
+    preds, metrics = house.backtest(pd.DataFrame(rows))
+
+    assert metrics["n"] == 30, "the three uncontested rows must not be scored"
+    assert not preds["uncontested_flag"].any()

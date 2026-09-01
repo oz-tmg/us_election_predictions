@@ -34,7 +34,7 @@ from .features.race_table import build_race_table
 from .geography import reference as geography_reference
 from .geography import tiger
 from .models import simulation
-from .models.baseline import generic_ballot, house_partisanship, presidential, senate
+from .models.baseline import generic_ballot, house, house_partisanship, presidential, senate
 from .pipelines_cli import build as build_p0
 from .reporting.model_cards import write_forecast_report, write_presidential_model_card
 
@@ -331,19 +331,37 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
     score = house_partisanship.build_partisanship_score(house_input)
     score.to_parquet(gold_dir / "house_partisanship_score.parquet", index=False)
 
-    house_sim = {}
-    house_units = pd.DataFrame()
-    if len(score):
-        import numpy as np
+    # District fundamentals model, then a *complete chamber* for the simulation.
+    house_panel = house.build_house_panel(race_table, p0["returns"])
+    house_panel.to_parquet(gold_dir / "house_panel.parquet", index=False)
+    house_preds, house_metrics = house.backtest(house_panel)
+    house_eval = forecast_eval.evaluate_backtest(house_preds) if len(house_preds) else {}
 
+    house_sim: dict = {}
+    house_units = pd.DataFrame()
+    house_coverage: dict = {}
+    if len(house_preds):
         from .geography import reference as ref
 
-        means = score["mean_dem_share"].to_numpy()
-        sigmas = np.full(len(score), 0.05)  # baseline district-level uncertainty
-        regions = [ref.by_postal(s).census_region for s in score["state_po"]]
-        sim = simulation.simulate_shares(means, sigmas, regions, n_sims=10_000)
-        house_sim = simulation.seat_distribution(sim, score["state_po"].tolist())
-        house_units = simulation.unit_distributions(sim, score["geography_id"].tolist())
+        target_cycle = int(house_preds["cycle"].max())
+        universe, house_coverage = house.build_seat_universe(
+            race_table, house_panel, house_preds, cycle=target_cycle, partisanship_score=score
+        )
+        universe.to_parquet(gold_dir / "house_seat_universe.parquet", index=False)
+        if len(universe):
+            regions = [ref.by_postal(s).census_region for s in universe["state_po"]]
+            sim = simulation.simulate_shares(
+                universe["mean_dem_share"].to_numpy(),
+                universe["sigma"].to_numpy(),
+                regions,
+                n_sims=10_000,
+            )
+            # Majority is judged against the statutory 435, not the number of rows that
+            # happened to survive, so a short chamber cannot inflate a control probability.
+            house_sim = simulation.seat_distribution(
+                sim, universe["state_po"].tolist(), total_seats=house.VOTING_SEATS
+            )
+            house_units = simulation.unit_distributions(sim, universe["geography_id"].tolist())
 
     # ---- reports --------------------------------------------------------
     results = {
@@ -356,6 +374,9 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         },
         "house": {
             "n_districts_scored": int(len(score)),
+            "backtest": house_metrics,
+            "evaluation": house_eval,
+            "seat_universe": house_coverage,
             "seat_simulation": house_sim,
             "unit_distributions": house_units,
         },
@@ -391,6 +412,19 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         print(
             f"  Incumbency {office}: running {st['incumbent_running_rate']:.3f} "
             f"| open {st['open_seat_rate']:.3f} | incumbent win rate {st['incumbent_win_rate']:.3f}"
+        )
+    if house_metrics.get("n"):
+        print(
+            f"  House district MAE: {house_metrics['mae']:.4f} "
+            f"| naive (prev result): {house_metrics['naive_persistence_mae']:.4f} "
+            f"| winner acc: {house_metrics['winner_accuracy']:.3f}"
+        )
+    if house_coverage:
+        print(
+            f"  House seat universe ({house_coverage['cycle']}): {house_coverage['seats']}"
+            f"/{house_coverage['expected_voting_seats']} seats "
+            f"(complete={house_coverage['seats_complete']}, "
+            f"model coverage {house_coverage['model_coverage']:.1%})"
         )
     if swing_relationship.get("status") == "ok":
         print(

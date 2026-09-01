@@ -41,11 +41,26 @@ States are simulated with shared national + regional error (never independent).
 - Mean Democratic electoral votes: **237** (90% range 140–365)
 - P(Democratic EC majority ≥270): **0.30**
 
+## House district fundamentals (district two-party Dem share)
+
+| Model | MAE | RMSE | Winner acc. |
+|---|---:|---:|---:|
+| Naive (district's previous result) | 0.0909 | — | — |
+| Baseline (lagged lean + national env. + incumbency) | 0.0788 | 0.1129 | 0.929 |
+
+- Brier: **0.0614** · Log score: 0.2299 · ECE: 0.0480 · 90% coverage: 0.903
+
+Uncontested districts are excluded from fitting and scoring — a race with no opponent measures ballot access, not district preference — but they keep their seats in the simulation below. The national environment is contemporaneous, so this measures district accuracy *given* a correct national call; forecasting that national number is P1-004's job.
+
 ## House correlated seat simulation
 
-- Districts scored: 505
-- Mean Democratic seats (of 505 simulated): **267** (90% range 202–342)
-- P(Democratic control): **0.61**
+- Seat universe (2024, plan era 2022): **435 of 435** voting seats (complete)
+- Seats from the model: 391 (89.9%); carried on a partisanship prior with widened uncertainty: 44; on the most recent result: 0
+
+Districts whose returns were quarantined or that ran unopposed still hold seats, so they are carried on a fallback rather than dropped — a chamber simulated on fewer than 435 seats would understate uncertainty and misstate control. Non-voting delegates (DC and the territories) are excluded.
+
+- Mean Democratic seats: **214** (90% range 112–318)
+- P(Democratic control): **0.47**
 
 ## Senate fundamentals (statewide two-party Dem share)
 
