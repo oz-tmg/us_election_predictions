@@ -28,7 +28,7 @@ from .data import acquire, acs, source_validation
 from .data.manifest import SourceManifest
 from .data.privacy import PrivacyTier
 from .evaluation import forecast_eval
-from .features import fundamentals
+from .features import fundamentals, race_universe
 from .features import incumbency as incumbency_features
 from .features.race_table import build_race_table
 from .geography import reference as geography_reference
@@ -363,6 +363,20 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
             )
             house_units = simulation.unit_distributions(sim, universe["geography_id"].tolist())
 
+    # ---- prospective race universe (P0-001) -----------------------------
+    # The forward-looking join: which seats are on the ballot next cycle and who holds
+    # them. Historical-only elsewhere; this table is what a live forecast would run on.
+    next_cycle = int(race_table["cycle"].max()) + 2
+    cycle_table = race_universe.build_cycle_table([next_cycle], p0["returns"])
+    cycle_table.to_parquet(gold_dir / "election_cycles.parquet", index=False)
+    universe_2026, universe_coverage = race_universe.build_race_universe(
+        p0["returns"],
+        race_table,
+        cycle=next_cycle,
+        seat_universe=universe if len(house_preds) else None,
+    )
+    universe_2026.to_parquet(gold_dir / f"race_universe_{next_cycle}.parquet", index=False)
+
     # ---- reports --------------------------------------------------------
     results = {
         "presidential": {
@@ -393,6 +407,7 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         "data_mode": data_modes,
         "tiger": tiger_result["checks"],
         "source_validation": source_checks,
+        "race_universe": universe_coverage,
         "quarantine": p0.get("quarantine", {}),
         "quarantine_sensitivity": quarantine_sensitivity,
     }
@@ -426,6 +441,13 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
             f"(complete={house_coverage['seats_complete']}, "
             f"model coverage {house_coverage['model_coverage']:.1%})"
         )
+    print(
+        f"  Race universe {universe_coverage['cycle']} "
+        f"({universe_coverage['election_date']}): {universe_coverage['seats_total']} seats "
+        f"= {universe_coverage['by_office'].get('us_house', 0)} House "
+        f"+ {universe_coverage['by_office'].get('us_senate', 0)} Senate "
+        f"| candidates: NOT YET KNOWN (needs filings)"
+    )
     if swing_relationship.get("status") == "ok":
         print(
             f"  National->district swing ratio: {swing_relationship['swing_ratio']:.3f} "

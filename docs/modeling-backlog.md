@@ -20,7 +20,7 @@ Status labels:
 
 | ID | Task | Why It Matters | Acceptance Criteria | Status |
 |---|---|---|---|---|
-| P0-001 | Create canonical election cycle table | Every model needs consistent election dates and office types. | Table has cycle, election date, office, jurisdiction, election type. | todo |
+| P0-001 | Create canonical election cycle table | Every model needs consistent election dates and office types. | Table has cycle, election date, office, jurisdiction, election type. | done (cycle table + prospective race universe: 435 House + 33 Senate for 2026, with current seat-holders; candidate filings still need `fec_api`) |
 | P0-002 | Create canonical geography table | Prevents FIPS/GEOID/district mismatch. | State, county, district, precinct, media market keys documented. | done (nation/state/county/CD; precinct + media market deferred) |
 | P0-003 | Create candidate and party normalization rules | Candidate names and party labels vary across sources. | Reusable crosswalk with aliases, party, office, cycle, source IDs. | todo |
 | P0-004 | Build source manifest schema | Enables reproducibility and legal review. | Every raw source snapshot has source, date, checksum, license, privacy tier. | done |

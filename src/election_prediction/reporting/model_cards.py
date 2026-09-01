@@ -517,6 +517,37 @@ def write_forecast_report(results: dict, reports_dir: str | Path, *, synthetic: 
             "",
         ]
 
+    ru = results.get("race_universe") or {}
+    if ru.get("seats_total"):
+        by_office = ru.get("by_office", {})
+        lines += [
+            f"## Prospective race universe — {ru.get('cycle')} (P0-001)",
+            "",
+            "Everything above is a backtest. This is the forward-looking scaffold: which "
+            "seats are on the ballot and who holds them now.",
+            "",
+            f"- Election date: **{ru.get('election_date')}**",
+            f"- Seats on the ballot: **{ru['seats_total']}** "
+            f"({by_office.get('us_house', 0)} House, {by_office.get('us_senate', 0)} Senate)",
+            f"- House chamber complete: {ru.get('house_complete')} · "
+            f"incumbent identified for {ru.get('incumbent_known', 0)} seats · "
+            f"prior available for {ru.get('prior_known', 0)}",
+        ]
+        if ru.get("party_unresolved"):
+            lines.append(
+                f"- ⚠️ Holder's party unresolved for **{ru['party_unresolved']}** seat(s) — the "
+                "source leaves the party field null for some contests, so the seat would "
+                "otherwise be counted as third-party. Closing this is backlog item P0-003."
+            )
+        lines += [
+            "",
+            "**This is not a candidate list.** The following are not derivable from returns "
+            "and are left explicitly unknown rather than guessed:",
+            "",
+        ]
+        lines += [f"- {item}" for item in ru.get("not_derivable", [])]
+        lines.append("")
+
     qs = results.get("quarantine_sensitivity") or {}
     if qs.get("status") == "ok":
         delta = qs.get("mae_delta")

@@ -62,8 +62,9 @@ OLS baseline (P1-001), a House district partisanship score (P1-002), a correlate
 simulation (P1-005), calibration evaluation (P1-006), derived incumbency (F-001),
 a Senate fundamentals baseline (P1-003), and the national-environment-to-district
 swing relationship (P1-004), and a House district fundamentals model whose seat
-simulation runs on a complete 435-seat chamber. Writes
-`data/gold/{presidential_panel,house_partisanship_score,acs_state_features,senate_panel,house_swing_panel,house_panel,house_seat_universe,incumbency_*}.parquet`,
+simulation runs on a complete 435-seat chamber, and the prospective race
+universe for the next cycle (P0-001). Writes
+`data/gold/{presidential_panel,house_partisanship_score,acs_state_features,senate_panel,house_swing_panel,house_panel,house_seat_universe,election_cycles,race_universe_*,incumbency_*}.parquet`,
 `data/silver/tiger_{state,county,cd}_2024.parquet`, raw TIGER archive inventories,
 source manifests, `reports/source_validation_report.md`,
 `reports/forecast_backtest_report.md`, and `reports/model_cards/`. The strict build
@@ -158,7 +159,7 @@ reported in `reports/data_quality_report.md` rather than applied silently:
 ## Tests
 
 ```bash
-pytest -q                            # 95 unit + integration tests
+pytest -q                            # 105 unit + integration tests
 ruff check src pipelines tests
 ruff format --check src pipelines tests
 mypy src

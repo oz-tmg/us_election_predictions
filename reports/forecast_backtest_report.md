@@ -102,6 +102,24 @@ MEDSL carries no incumbency flag, so it is derived by matching the prior seat-ho
 
 A generic-ballot poll is a *forecast of next cycle's national swing* and is an input to this relationship, not part of estimating it — so no poll data is needed here and none is assumed. The low R² is the finding: national swing explains only a small share of district-level movement, and the residual sd above is what keeps a seat simulation from being overconfident.
 
+## Prospective race universe — 2026 (P0-001)
+
+Everything above is a backtest. This is the forward-looking scaffold: which seats are on the ballot and who holds them now.
+
+- Election date: **2026-11-03**
+- Seats on the ballot: **468** (435 House, 33 Senate)
+- House chamber complete: True · incumbent identified for 468 seats · prior available for 468
+- ⚠️ Holder's party unresolved for **1** seat(s) — the source leaves the party field null for some contests, so the seat would otherwise be counted as third-party. Closing this is backlog item P0-003.
+
+**This is not a candidate list.** The following are not derivable from returns and are left explicitly unknown rather than guessed:
+
+- candidate filings / who is actually running (needs fec_api — registered, key required)
+- retirements, primary outcomes, party switches
+- appointed incumbents filling a vacancy
+- governor (gubernatorial returns not ingested)
+- special elections (off-schedule by definition)
+- post-2022 mid-decade redistricting (F-008 open)
+
 ## Quarantine sensitivity
 
 34 races were excluded for failing vote-total reconciliation (see the data-quality report). Refitting the same baseline with them included:

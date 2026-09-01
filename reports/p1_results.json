@@ -5625,6 +5625,33 @@
       "acs": "https://data.census.gov/table/ACSDT5Y2023.B01003"
     }
   },
+  "race_universe": {
+    "cycle": 2026,
+    "election_date": "2026-11-03",
+    "seats_total": 468,
+    "by_office": {
+      "us_house": 435,
+      "us_senate": 33
+    },
+    "house_complete": true,
+    "senate_states": 33,
+    "incumbent_known": 468,
+    "incumbent_by_source": {
+      "regular_winner_2024": 408,
+      "regular_winner_2020": 33,
+      "earlier_regular_winner_fallback": 27
+    },
+    "prior_known": 468,
+    "party_unresolved": 1,
+    "not_derivable": [
+      "candidate filings / who is actually running (needs fec_api \u2014 registered, key required)",
+      "retirements, primary outcomes, party switches",
+      "appointed incumbents filling a vacancy",
+      "governor (gubernatorial returns not ingested)",
+      "special elections (off-schedule by definition)",
+      "post-2022 mid-decade redistricting (F-008 open)"
+    ]
+  },
   "quarantine": {
     "quarantined_races": 34,
     "races_total": 12392,
