@@ -1,6 +1,6 @@
 # Dataset Registry
 
-_Last updated: 2026-08-31_
+_Last updated: 2026-09-01_
 
 This registry is the control document for every dataset acquired, downloaded, licensed, scraped, requested, or generated for the U.S. election analytics project. Populate this before or during ingestion so the project does not become an undocumented folder of CSVs.
 
@@ -104,6 +104,24 @@ This registry is the control document for every dataset acquired, downloaded, li
 >   present/unique GEOIDs, raw archive inventories, and manifests. Congressional
 >   districts ship one zip per state, not as a national file.
 >
+> **Gubernatorial returns (added 2026-09-01).** An earlier note in this project claimed
+> MEDSL publishes a gubernatorial returns dataset that simply had not been ingested. That
+> was **wrong**. MEDSL publishes no multi-decade governor series comparable to its
+> president/senate/house files. What exists, verified against the live Dataverse API:
+>
+> - **2016:** `State Office-Level Returns 2016` — state-level, CC0, and its variable list
+>   is our exact silver schema including `candidatevotes`/`totalvotes`. **Guestbook-gated**
+>   like president and house, so it is a one-time manual download. Note the API reports
+>   `guestbook: false` and `restricted: false` for this dataset while the download still
+>   returns HTTP 400 — the gate is not visible in metadata, same as the other two.
+> - **2018-2024:** precinct-level, one file per state, ~2.5 GB per cycle, vote column named
+>   `votes`. Requires aggregation to statewide totals.
+> - **Neither** of the two obvious "governors" datasets on Dataverse (Kaplan, Klarner)
+>   contains vote totals; both are officeholder/characteristics files.
+>
+> The Dataverse search API returns **HTTP 403 to a default Python user-agent**; it works
+> with the project `USER_AGENT` from `data/acquire.py`.
+
 > Use **`ep-build-p0 --require-live` / `ep-build-p1 --require-live`** for any run whose
 > numbers will be published: it fails loudly instead of silently substituting synthetic
 > fixtures. Flip a row to `validated` only after a `--require-live` run covers it.
@@ -113,6 +131,11 @@ This registry is the control document for every dataset acquired, downloaded, li
 | `mit_us_president_returns` | U.S. President 1976-2024 Returns (`medsl_president_1976_2024`) | MIT Election Data and Science Lab | Open, **guestbook-gated** (Harvard Dataverse doi:10.7910/DVN/42MVDX) | **validated** (manual snapshot 2026-08-31, md5-verified; 4,775 silver rows; reconciles after quarantine) | public_aggregate | State | Race/candidate result | 1976-2024 | High | One-time manual download per `pipelines/README.md`, then `ep-build-p0 --require-live` |
 | `mit_us_senate_returns` | U.S. Senate 1976-2024 Returns (`medsl_senate_1976_2024`) | MIT Election Data and Science Lab | Open (Harvard Dataverse doi:10.7910/DVN/PEJ5QU) | **validated** (3,749 rows / 860 races; totals reconcile 860/860; AL/AZ/OH 2022 totals match FEC) | public_aggregate | State | Race/candidate result | 1976-2024 | High | Extend official spot-checks across cycles during model validation |
 | `mit_us_house_returns` | U.S. House 1976-2024 Returns (`medsl_house_1976_2024`) | MIT Election Data and Science Lab | Open, **guestbook-gated** (Harvard Dataverse doi:10.7910/DVN/IG0UN2) | **validated** (manual snapshot 2026-08-31, size-verified; 32,148 silver rows; reconciles after quarantine) | public_aggregate | Congressional district | Race/candidate result | 1976-2024 | High | One-time manual download (tab-separated) per `pipelines/README.md`, then `ep-build-p0 --require-live` |
+| `medsl_state_office_2016` | State Office-Level Returns 2016 (incl. governor) | MIT Election Data and Science Lab | Open **CC0**, but **guestbook-gated** (doi:10.7910/DVN/XSOFHD) | identified — schema verified 2026-09-01 via DDI; data not downloaded | public_aggregate | State | Race/candidate result | 2016 only | High | **One-time manual download** to `data/raw/source=medsl/dataset=governor/manual/stateoffices2016.tab`, then wire a `MedslSource`. Schema is our exact silver layout (`office, candidate, party, candidatevotes, totalvotes, stage, special, writein, mode`). `office` values unconfirmed — verify GOVERNOR is present on first download. |
+| `medsl_precinct_by_state` | Precinct-Level Returns by Individual State, 2018/2020/2022/2024 | MIT Election Data and Science Lab | Open (doi:10.7910/DVN/NVQYMG, NT66Z3, UYQIEP, NYTPDU) | identified — schema verified 2026-09-01 | public_aggregate | Precinct | Precinct/candidate result | 2018, 2020, 2022, 2024 | Medium | Only route to governor returns for 2018-2024. ~53 files/cycle, **2.5 GB for 2022 alone**; vote column is `votes`, not `candidatevotes`. Needs precinct→state aggregation. 2022 filenames say `local`, so confirm statewide offices are included before committing to it. |
+| `kaplan_us_governors` | United States Governors 1775-2020 | Jacob Kaplan (Harvard Dataverse doi:10.7910/DVN/RYY3OW) | Open **CC BY 4.0**, ungated | profiled 2026-09-01 (12,345 x 5 downloaded and inspected) | public_aggregate | State | Governor-year officeholder | 1775-2020 | Low-Medium | **No vote totals** — `governor, state, time_in_office, party, year`. Useful for incumbency/party-control features, not for a vote-share baseline. Attribution required (CC BY). |
+| `klarner_governors` | Governors Dataset | Carl Klarner (Harvard Dataverse doi:10.7910/DVN/PQ0Y1N) | Open **CC0**, ungated | profiled 2026-09-01 (4,600 x 81 downloaded and inspected) | public_aggregate | State | Governor-year characteristics | 1925-2016 | Low-Medium | **No vote totals.** Carries term limits, lame-duck status, years served, `state_midterm_penalty`, party control — good governor-model covariates. |
+| `klarner_state_leg_returns` | State Legislative Election Returns, 1967-2016 | Carl Klarner (Harvard Dataverse doi:10.7910/DVN/3WZFK9) | Open | identified 2026-09-01 — **not yet inspected** | public_aggregate | State-legislative district | Race/candidate result | 1967-2016 | Medium | Candidate source for backlog SL-001, which currently has none. Verify columns and vote coverage before relying on it. |
 | `mit_precinct_project` | Precinct-Level Election Results | MIT Election Data and Science Lab | Open | identified | public_aggregate | Precinct / county / state | Precinct result | Varies by state/year | High | Identify target states and available cycles |
 | `openelections_results` | OpenElections Results | OpenElections | Open | identified | public_aggregate | State/county/precinct depending repo | Race result | Varies | High | Clone target-state repos |
 | `census_acs_5yr` | ACS 5-Year Estimates | U.S. Census Bureau | Open API, **key required** | **validated** (vintage 2023; 52 rows, 0 nulls; CA/NY/TX match B01003) | public_aggregate | Block group and above (state ingested first) | Geography-variable estimate | Rolling 5-year (default vintage 2023) | High | Extend below state and carry margins of error |

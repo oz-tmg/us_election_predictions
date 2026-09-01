@@ -8,7 +8,7 @@
 - **Office / geography:** U.S. President · state (two-party Democratic vote share)
 - **Type:** transparent fundamentals baseline (polls-free), OLS
 - **Privacy tier:** 0 (public aggregate)
-- **Owner:** project-owner (data steward) · **Review date:** 2026-08-31
+- **Owner:** project-owner (data steward) · **Review date:** 2026-09-01
 
 ## Data
 

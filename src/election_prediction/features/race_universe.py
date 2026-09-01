@@ -20,9 +20,11 @@ What is **not** derivable and is therefore left explicitly unknown rather than g
   ``incumbent_status = "unknown"`` until a filings source is joined; the registry entry
   for ``fec_api`` is the documented next step, and it needs an API key plus a registry
   review before use (CLAUDE.md §7 — a source is registered before it is used).
-* **Governor.** 2026 has gubernatorial races, but MEDSL's gubernatorial returns are a
-  separate dataset this project has not ingested, so the office is reported as
-  out-of-coverage rather than silently omitted.
+* **Governor.** 2026 has gubernatorial races, but this project has not ingested
+  gubernatorial returns: MEDSL splits them across a 2016 state-level file and
+  precinct-level per-state files for 2018-2024 rather than publishing one series
+  (`docs/dataset-registry.md`). The office is reported as out-of-coverage rather than
+  silently omitted.
 * **Vacancies and appointments.** A seat whose holder resigned or died carries the last
   *elected* winner; returns cannot show a subsequent appointment.
 
@@ -217,8 +219,9 @@ def build_cycle_table(cycles: list[int], returns: pd.DataFrame) -> pd.DataFrame:
                 "election_type": "regular",
                 "seats": pd.NA,
                 "coverage": "out_of_coverage",
-                "notes": "Gubernatorial returns are a separate MEDSL dataset not yet ingested; "
-                "seat count cannot be derived (see modeling backlog P1-003).",
+                "notes": "Gubernatorial returns are not ingested: MEDSL splits them across "
+                "a 2016 state-level file and 2018-2024 precinct-level per-state files rather "
+                "than one series, so the seat count cannot be derived (backlog P1-003).",
             }
         )
     return pd.DataFrame(rows, columns=CYCLE_TABLE_COLUMNS)
@@ -331,7 +334,7 @@ def build_race_universe(
             "candidate filings / who is actually running (needs fec_api — registered, key required)",
             "retirements, primary outcomes, party switches",
             "appointed incumbents filling a vacancy",
-            "governor (gubernatorial returns not ingested)",
+            "governor (returns not ingested; MEDSL splits them by year and geography level)",
             "special elections (off-schedule by definition)",
             "post-2022 mid-decade redistricting (F-008 open)",
         ],

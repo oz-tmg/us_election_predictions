@@ -5647,7 +5647,7 @@
       "candidate filings / who is actually running (needs fec_api \u2014 registered, key required)",
       "retirements, primary outcomes, party switches",
       "appointed incumbents filling a vacancy",
-      "governor (gubernatorial returns not ingested)",
+      "governor (returns not ingested; MEDSL splits them by year and geography level)",
       "special elections (off-schedule by definition)",
       "post-2022 mid-decade redistricting (F-008 open)"
     ]

@@ -1,6 +1,6 @@
 # Forecast Backtest Report — P1 Baselines
 
-_Generated: 2026-08-31_
+_Generated: 2026-09-01_
 
 
 
@@ -72,7 +72,7 @@ Districts whose returns were quarantined or that ran unopposed still hold seats,
 - Brier: **0.1480** · Log score: 0.4599 · ECE: 0.0759
 - Interval coverage — 90%: 0.928 · 95%: 0.943
 
-Governor is not covered: MEDSL's gubernatorial returns are a separate dataset this project has not ingested yet.
+Governor is not covered. MEDSL publishes no multi-decade gubernatorial series; its returns sit in a 2016 state-level file and 2018-2024 precinct-level per-state files that need aggregating (see the dataset registry).
 
 ## Incumbency (F-001, derived)
 
@@ -116,7 +116,7 @@ Everything above is a backtest. This is the forward-looking scaffold: which seat
 - candidate filings / who is actually running (needs fec_api — registered, key required)
 - retirements, primary outcomes, party switches
 - appointed incumbents filling a vacancy
-- governor (gubernatorial returns not ingested)
+- governor (returns not ingested; MEDSL splits them by year and geography level)
 - special elections (off-schedule by definition)
 - post-2022 mid-decade redistricting (F-008 open)
 

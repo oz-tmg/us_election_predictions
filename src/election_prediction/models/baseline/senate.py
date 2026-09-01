@@ -5,10 +5,14 @@ share. The predictors are the ones the backlog says should be hard to beat: how 
 state votes for president relative to the nation, whether an incumbent is running and
 for which party, and the midterm penalty on the party holding the White House.
 
-Governor is deliberately **not** covered here. MEDSL's gubernatorial returns are a
-separate Dataverse dataset that this project has not ingested, so a governor baseline
-would have to run on data that does not exist yet; the statewide machinery below is
-reusable for it once those returns land.
+Governor is deliberately **not** covered here — not for lack of a source, but because
+MEDSL publishes no multi-decade gubernatorial series comparable to its president/senate/
+house files. Governor returns are spread across `State Office-Level Returns 2016`
+(state-level, our exact schema, guestbook-gated) and the precinct-level per-state files
+for 2018-2024, which need aggregating up to statewide totals. See
+`docs/dataset-registry.md`. The machinery below is office-agnostic and reusable for
+governor once those returns land, and the key predictor — state presidential lean — is
+already available for every state.
 
 Design notes:
 

@@ -458,8 +458,9 @@ def write_forecast_report(results: dict, reports_dir: str | Path, *, synthetic: 
                 "",
             ]
         lines += [
-            "Governor is not covered: MEDSL's gubernatorial returns are a separate dataset "
-            "this project has not ingested yet.",
+            "Governor is not covered. MEDSL publishes no multi-decade gubernatorial series; "
+            "its returns sit in a 2016 state-level file and 2018-2024 precinct-level per-state "
+            "files that need aggregating (see the dataset registry).",
             "",
         ]
 

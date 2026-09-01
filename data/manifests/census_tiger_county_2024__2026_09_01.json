@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-09-01T19:37:49+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "0b7d1124742f09c3e8d88ea7cd46fb271291ab386a068e27cfc6a119ef2b7145",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "TIGER/Line 2024 COUNTY Boundaries",
+  "election_cycle": "2024",
+  "file_format": "json",
+  "geography_coverage": [
+    "county"
+  ],
+  "known_caveats": "Boundary vintage must match the analysis cycle.",
+  "license_or_terms": "Public domain (U.S. Census Bureau); cite table/layer and vintage.",
+  "office_coverage": [
+    "all"
+  ],
+  "owner": "project-owner (data steward)",
+  "permitted_use": "Public nonpartisan research and aggregate reporting with citation.",
+  "privacy_tier": 0,
+  "prohibited_use": "Do not misrepresent estimates as certified election results.",
+  "raw_path": "data/raw/source=tiger/dataset=county/vintage=2024/archive_inventory.json",
+  "redistribution_allowed": true,
+  "required_attribution": "U.S. Census Bureau.",
+  "review_date": "2027-09-01",
+  "row_count": 3235,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-09-01",
+  "source_id": "census_tiger_county_2024",
+  "source_owner": "U.S. Census Bureau",
+  "source_url": "https://www2.census.gov/geo/tiger/TIGER2024/COUNTY",
+  "unique_key": [
+    "GEOID"
+  ],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

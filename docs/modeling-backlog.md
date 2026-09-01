@@ -36,7 +36,7 @@ Status labels:
 |---|---|---|---|---|
 | P1-001 | Presidential fundamentals model | How much can we predict without polls? | Backtest by state for 2008–2024 with MAE and calibration. | done |
 | P1-002 | House district baseline | What is each district's normal partisan lean? | District partisanship score using presidential and House history. | done (score + district fundamentals forecast model; complete 435-seat chamber simulation) |
-| P1-003 | Senate/governor baseline | How much do state partisanship and incumbency explain? | Backtest statewide races with incumbency/open-seat indicators. | done (Senate); governor blocked on MEDSL gubernatorial returns not yet ingested |
+| P1-003 | Senate/governor baseline | How much do state partisanship and incumbency explain? | Backtest statewide races with incumbency/open-seat indicators. | done (Senate); governor pending ingestion — sources identified 2026-09-01, see registry (`medsl_state_office_2016` is a one-file drop-in; 2018-2024 need precinct aggregation) |
 | P1-004 | Generic ballot adjustment | How should national environment affect districts? | Historical relationship estimated and documented. | done (swing ratio estimated from certified returns; live generic-ballot input still needs governed poll sources) |
 | P1-005 | Correlated simulation layer | How does race-level uncertainty translate to seat control? | Simulation returns win probability, seat distribution, chamber probability. | done |
 | P1-006 | Forecast evaluation notebook | Are probabilities calibrated? | Brier score, log score, calibration curve, interval coverage. | done |

@@ -1,6 +1,6 @@
 # Data-Quality Report — P0 Foundation
 
-_Generated: 2026-09-01T03:29:08+00:00Z_
+_Generated: 2026-09-01T19:37:17+00:00Z_
 
 > Scope: loaded MEDSL federal returns (silver), model-ready race table (gold),
 > and the canonical geography spine. Nonpartisan; historical/certified returns.
@@ -66,9 +66,9 @@ Primaries and other non-general stages are excluded so comparisons stay like-for
 
 ## Source freshness
 
-- `medsl_house_1976_2024` — snapshot 2026-08-31 (0 days, fresh)
-- `medsl_president_1976_2024` — snapshot 2026-08-31 (0 days, fresh)
-- `medsl_senate_1976_2024` — snapshot 2026-08-31 (0 days, fresh)
+- `medsl_house_1976_2024` — snapshot 2026-09-01 (0 days, fresh)
+- `medsl_president_1976_2024` — snapshot 2026-09-01 (0 days, fresh)
+- `medsl_senate_1976_2024` — snapshot 2026-09-01 (0 days, fresh)
 
 ## Overall
 
