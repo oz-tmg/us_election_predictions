@@ -98,6 +98,13 @@ much better (MI and PA hold every year 2004–2024).
 - **Use it for:** backfilling historical specials to calibrate the metric, and for the
   handful of 2025–26 states already covered.
 
+## What to compile
+
+`docs/special-elections-worklist.md` lists the ~28 contests identified for 2025-2026 —
+11 U.S. House specials, ~17 state-legislative, plus two U.S. Senate specials that must be
+**excluded** from the metric because they fall on general-election day and therefore carry
+no turnout differential. That worklist is a research aid only; it contains no results.
+
 ## Recommended workflow
 
 Per special, one row in `data/reference/special_elections_2025_2026.csv`:
