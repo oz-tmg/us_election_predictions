@@ -159,7 +159,7 @@ reported in `reports/data_quality_report.md` rather than applied silently:
 ## Tests
 
 ```bash
-pytest -q                            # 105 unit + integration tests
+pytest -q                            # 127 unit + integration tests
 ruff check src pipelines tests
 ruff format --check src pipelines tests
 mypy src
@@ -177,3 +177,43 @@ Two treatments applied to live MEDSL data, both documented rather than silent:
   modeling layer. Causes are heterogeneous and state-specific, so no cause-specific
   correction is applied. The forecast report carries a sensitivity test showing the
   exclusion moves presidential MAE by +0.000089 (CLAUDE.md §6).
+
+## Build the governor returns (`ep-build-governor`)
+
+```bash
+ep-build-governor                       # all available cycles
+ep-build-governor --vintages 2020,2024  # named precinct cycles only
+```
+
+Deliberately **separate from `ep-build-p0/p1`** so an ingestion problem in these newly
+added multi-gigabyte sources cannot destabilise the federal forecast build. Reads
+`data/raw/source=medsl/dataset=state_office/vintage=2016/manual/` (state level) and
+`dataset=precinct_by_state/vintage=YYYY/` (precinct level), one state at a time,
+filtering to governor and president rows on read so peak memory stays near a single
+file rather than the ~5 GB on disk.
+
+Outputs `data/gold/governor_county_returns.parquet`,
+`data/gold/coattails_county.parquet`, `data/silver/governor_returns.parquet`, and
+`reports/governor_ingestion_report.md`.
+
+### Source quirks handled (each verified against the files, not assumed)
+
+- **Four spellings of one office.** `GOVERNOR`, `GOVERNOR AND LIEUTENANT GOVERNOR`,
+  `GOVERNOR AND LT. GOVERNOR`, and a standalone `LIEUTENANT GOVERNOR` that is a
+  *different race*. Matching only the long joint-ticket form silently dropped Montana,
+  North Dakota and Utah from 2016.
+- **Vote modes differ by state and cycle.** Delaware and Indiana 2024 publish a `TOTAL`
+  row *alongside* breakdowns (summing both doubles them); North Carolina and West
+  Virginia publish breakdowns only (which must be summed).
+- **Administrative rows masquerade as candidates.** Vermont files the race total as a
+  candidate literally named `TOTAL VOTES CAST`, which otherwise becomes the winner.
+- **Fusion tickets.** Votes summed per candidate across party lines.
+- **Filename separators are inconsistent within one release** (`2020-nc-...` vs
+  `2020_in_...`), so globbing one form loses Indiana.
+
+### Known limitation
+
+Fusion and joint tickets whose nominee MEDSL records as `OTHER` (Vermont 2020/2024,
+North Dakota 2020) have an undefined two-party share. Those counties carry
+`two_party_suspect = True` and are excluded from reported means rather than patched
+with a substring guess; closing this needs the P0-003 alias crosswalk.

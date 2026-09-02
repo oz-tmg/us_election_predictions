@@ -36,7 +36,7 @@ Status labels:
 |---|---|---|---|---|
 | P1-001 | Presidential fundamentals model | How much can we predict without polls? | Backtest by state for 2008–2024 with MAE and calibration. | done |
 | P1-002 | House district baseline | What is each district's normal partisan lean? | District partisanship score using presidential and House history. | done (score + district fundamentals forecast model; complete 435-seat chamber simulation) |
-| P1-003 | Senate/governor baseline | How much do state partisanship and incumbency explain? | Backtest statewide races with incumbency/open-seat indicators. | done (Senate); governor pending ingestion — sources identified 2026-09-01, see registry (`medsl_state_office_2016` is a one-file drop-in; 2018-2024 need precinct aggregation) |
+| P1-003 | Senate/governor baseline | How much do state partisanship and incumbency explain? | Backtest statewide races with incumbency/open-seat indicators. | done (Senate); governor **ingestion built** (`ep-build-governor`, 2016/2020/2024 landed; 2018/2022 pending download). Model not yet fitted — 3 cycles is thin for a backtest |
 | P1-004 | Generic ballot adjustment | How should national environment affect districts? | Historical relationship estimated and documented. | done (swing ratio estimated from certified returns; live generic-ballot input still needs governed poll sources) |
 | P1-005 | Correlated simulation layer | How does race-level uncertainty translate to seat control? | Simulation returns win probability, seat distribution, chamber probability. | done |
 | P1-006 | Forecast evaluation notebook | Are probabilities calibrated? | Brier score, log score, calibration curve, interval coverage. | done |
@@ -81,7 +81,7 @@ Status labels:
 
 | ID | Task | Analytical Question | Acceptance Criteria | Status |
 |---|---|---|---|---|
-| SL-001 | State legislative returns ingestion | Can we build historical chamber baselines? | Lower/upper chamber returns by state, district, year where available. | todo |
+| SL-001 | State legislative returns ingestion | Can we build historical chamber baselines? | Lower/upper chamber returns by state, district, year where available. | source found 2026-09-01 — `medsl_state_office_2016` is ~12.4k state-legislative rows (9,311 State Rep + 3,100 State Senator); Klarner 1967-2016 also registered |
 | SL-002 | Uncontested race treatment | How should missing opposition vote be handled? | Documented imputation or exclusion strategy with sensitivity test. | todo |
 | SL-003 | Chamber-control simulation | What is probability of each chamber outcome? | Seat simulation by district with correlated state-level error. | todo |
 | SL-004 | Redistricting crosswalk | Can old results map to current districts? | Crosswalk confidence and transfer estimates for target states. | todo |

@@ -359,12 +359,20 @@ def filter_general_election(bronze: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     return bronze[keep].copy(), {"dropped_non_general": int((~keep).sum())}
 
 
-def collapse_vote_modes(bronze: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+def collapse_vote_modes(
+    bronze: pd.DataFrame, *, extra_key: list[str] | None = None
+) -> tuple[pd.DataFrame, dict]:
     """Reduce per-voting-mode rows to one row per candidate line.
 
     Some MEDSL rows are broken out by ``mode`` (election day / absentee / total).
     Mixing a 'total' row with mode breakdowns double-counts votes. Where a race has
     any non-total modes we sum them; where it already reports totals we keep those.
+
+    ``extra_key`` widens the grouping for finer-grained sources. Precinct files need
+    the precinct/county columns added, or every precinct in a state would collapse
+    into one row. The mode conventions there are genuinely inconsistent — Delaware and
+    Indiana 2024 publish a ``TOTAL`` row *alongside* breakdowns, while North Carolina
+    publishes breakdowns only — so the prefer-total rule matters per state.
     """
     if "mode" not in bronze.columns:
         return bronze, {"mode_rows_collapsed": 0}
@@ -382,6 +390,7 @@ def collapse_vote_modes(bronze: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
             "party_detailed",
             "party",
             "writein",
+            *(extra_key or ()),
         )
         if c in bronze.columns
     ]

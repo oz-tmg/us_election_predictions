@@ -28,6 +28,7 @@ dev = ["pytest>=7.4", "ruff>=0.4", "mypy>=1.8"]
 ep-build-p0 = "election_prediction.pipelines_cli:main"   # data-and-entity foundation
 ep-build-p1 = "election_prediction.build_p1:main"        # baseline forecasting stack
 ep-build-p2 = "election_prediction.build_p2:main"        # polling + correlated simulation
+ep-build-governor = "election_prediction.build_governor:main"  # gubernatorial returns + coattails
 
 [tool.setuptools.packages.find]
 where = ["src"]
