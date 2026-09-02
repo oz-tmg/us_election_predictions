@@ -35,6 +35,32 @@ one date appears, the first is usually — but not reliably — the general.
 | GA-14 | Mar 10 2026 · Jan 5 2026 · Apr 7 2026 |
 | NJ-11 | Apr 16 2026 · Nov 20 2025 · Feb 5 2026 |
 
+### Baselines are now computed in-house
+
+`data/gold/cd_presidential_baseline_2024.parquet` holds the 2024 presidential two-party
+Democratic share for every congressional district in these states, derived from MEDSL
+precinct files (`features/cd_baseline.py`). **You no longer need a tracker for the House
+rows** — set `baseline_source` to that file and `baseline_cycle` to 2024.
+
+| District | 2024 baseline | Quality |
+|---|---:|---|
+| AZ-07 | 0.5575 | ⚠️ **under_covered — do not use** |
+| FL-01 | 0.3151 | ok |
+| FL-06 | 0.3488 | ok |
+| TN-07 | 0.3764 | ok |
+| VA-11 | 0.6786 | ok |
+| TX-18 | 0.7019 | ok |
+| CA-01 | 0.3719 | ok |
+| CA-14 | 0.6844 | ok |
+| GA-13 | 0.7164 | ok |
+| GA-14 | 0.3095 | ok |
+| NJ-11 | 0.5474 | ok |
+
+AZ-07 recovers only **26% of Arizona's median district vote** because Phoenix and Tucson
+precincts split across districts and split precincts are excluded rather than allocated.
+Its baseline rests on about a quarter of the district. Use a tracker baseline for AZ-07,
+or omit that row.
+
 These are the **highest-value rows**: congressional districts, so the baseline is more
 readily available from published trackers than for state-legislative seats, and turnout
 is high enough that the result is not dominated by noise.
