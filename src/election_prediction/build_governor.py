@@ -259,7 +259,7 @@ def main(argv: list[str] | None = None) -> int:
         help="comma-separated precinct cycles to process",
     )
     args = ap.parse_args(argv)
-    load_dotenv(Path(args.base))
+    load_dotenv(Path(args.base) / ".env")
     vintages = tuple(int(v) for v in args.vintages.split(",") if v.strip())
     result = build(Path(args.base), vintages=vintages)
     return 0 if result["ok"] else 1

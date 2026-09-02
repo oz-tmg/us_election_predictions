@@ -1,0 +1,12 @@
+# Hand-compiled special-election results, 2025-2026 cycle.
+# Tier 0 public aggregate. EVERY row must carry source_url + retrieved_on or validation rejects it.
+#
+# baseline_dem_share = two-party Democratic PRESIDENTIAL share for the SAME geography,
+#   from baseline_cycle (2024 preferred). Cite where you got it in baseline_source --
+#   state-legislative districts have no baseline in this repo, so it must be supplied.
+# office: us_house | us_senate | state_house | state_senate | governor | other
+# Votes are whole numbers. other_votes may be 0. Leave notes blank if nothing to flag.
+#
+# Example row (delete before use):
+# ex-2025-xx-hd001,2025-01-14,XX,state_house,001,5123,4210,88,0.4720,"Daily Kos Elections 2024 pres-by-LD",2024,https://example.gov/results,2026-09-01,illustrative only
+special_id,election_date,state_po,office,district,dem_votes,rep_votes,other_votes,baseline_dem_share,baseline_source,baseline_cycle,source_url,retrieved_on,notes

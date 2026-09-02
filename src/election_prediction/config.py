@@ -66,6 +66,12 @@ def load_dotenv(
     names that were loaded — never the values.
     """
     env_path = Path(path)
+    # Accept a repo root as well as a file path. Call sites pass ``Path(base) / ".env"``,
+    # and one that passed the directory instead loaded nothing at all — silently, since
+    # a missing .env is a legitimate state. Resolving the directory here removes the
+    # whole class of bug rather than one instance of it.
+    if env_path.is_dir():
+        env_path = env_path / DEFAULT_ENV_FILE
     if not env_path.is_file():
         return []
 

@@ -66,3 +66,13 @@ def test_warns_when_secrets_file_is_not_gitignored(tmp_path, capsys):
     err = capsys.readouterr().err
     assert "NOT git-ignored" in err
     assert "abc" not in err  # the warning must not leak the value
+
+
+def test_load_dotenv_accepts_a_directory(tmp_path):
+    """A call site passing the repo root instead of the file loaded nothing, silently."""
+    from election_prediction.config import load_dotenv
+
+    (tmp_path / ".env").write_text("EP_TEST_TOKEN=abc123\n")
+    assert load_dotenv(tmp_path, override=True) == ["EP_TEST_TOKEN"]
+    assert load_dotenv(tmp_path / ".env", override=True) == ["EP_TEST_TOKEN"]
+    assert load_dotenv(tmp_path / "nope.env") == []
