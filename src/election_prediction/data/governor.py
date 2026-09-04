@@ -158,22 +158,66 @@ def is_real_candidate(candidate: object) -> bool:
     return _norm_office(candidate) not in NON_CANDIDATE_LABELS
 
 
-def find_precinct_files(raw_dir: str | Path, vintage: int) -> list[Path]:
-    """All per-state precinct files for ``vintage``, tolerating both name separators.
+# Files in a precinct drop that are documentation, not returns.
+NON_DATA_STEMS = frozenset({"codebook", "readme", "changelog", "license", "notes"})
 
-    MEDSL mixes ``2020-in-...`` and ``2020_in_...`` inside one release, so matching a
-    single separator quietly drops states.
+DATA_SUFFIXES = frozenset({".csv", ".tab", ".txt", ".tsv"})
+
+
+def find_precinct_files(raw_dir: str | Path, vintage: int) -> list[Path]:
+    """Every per-state returns file in a precinct drop.
+
+    Filenames cannot be pattern-matched. MEDSL's 2022 release alone ships at least six
+    conventions — ``2022-id-local-precinct-general.csv``, ``ak22_cleaned.csv``,
+    ``AR_final.csv``, ``CA_2022_final.csv``, ``colorado_cleaned.csv`` (full state name),
+    ``louisiana_20240306.csv`` — and requiring a ``YYYY-xx-`` prefix silently matched only
+    5 of its 53 files. So any data-suffixed file is taken, documentation is excluded by
+    stem, and the *state is read from the file's own contents* rather than its name
+    (see ``read_precinct_file``).
     """
     d = Path(raw_dir) / f"source=medsl/dataset={PRECINCT_DATASET}/vintage={vintage}"
     if not d.is_dir():
         return []
-    pattern = re.compile(rf"^{vintage}[-_][a-z]{{2}}[-_].*\.(csv|tab|txt)$", re.I)
-    return sorted(p for p in d.iterdir() if p.is_file() and pattern.match(p.name))
+    return sorted(
+        p
+        for p in d.iterdir()
+        if p.is_file() and p.suffix.lower() in DATA_SUFFIXES and p.stem.strip().lower() not in NON_DATA_STEMS
+    )
 
 
 def state_from_filename(path: Path) -> str | None:
-    m = re.match(r"^\d{4}[-_]([a-z]{2})[-_]", path.name, re.I)
-    return m.group(1).upper() if m else None
+    """Best-effort state code from a filename. A *fallback* only — prefer file contents.
+
+    Handles the conventions actually observed: ``2020-nc-...``, ``2020_in_...``,
+    ``ak22_cleaned``, ``AR_final``, ``AZ-cleaned``, ``CA_2022_final``.
+    """
+    name = path.stem
+    m = re.match(r"^\d{4}[-_]([A-Za-z]{2})[-_]", name)
+    if m:
+        return m.group(1).upper()
+    m = re.match(r"^([A-Za-z]{2})(?:\d{2})?[-_]", name)
+    if m:
+        return m.group(1).upper()
+    return None
+
+
+def state_of(df: pd.DataFrame, path: Path) -> str | None:
+    """State for a precinct file, taken from its data and falling back to its name."""
+    for col in ("state_po", "state"):
+        if col in df.columns:
+            vals = df[col].dropna().astype(str).str.strip()
+            vals = vals[vals != ""]
+            if len(vals):
+                top = vals.mode().iloc[0].upper()
+                if col == "state_po" and len(top) == 2:
+                    return top
+                from ..geography import reference as ref
+
+                try:
+                    return ref.normalize_state(top).postal
+                except Exception:
+                    pass
+    return state_from_filename(path)
 
 
 def read_precinct_file(path: Path) -> pd.DataFrame:
@@ -199,8 +243,9 @@ def read_precinct_file(path: Path) -> pd.DataFrame:
     out["candidatevotes"] = pd.to_numeric(out["candidatevotes"], errors="coerce").fillna(0)
     if "candidate" in out.columns:
         out = out[out["candidate"].map(is_real_candidate)]
+    resolved = state_of(out, path)
     if "state_po" not in out.columns or out["state_po"].isna().all():
-        out["state_po"] = state_from_filename(path)
+        out["state_po"] = resolved
     return out.reset_index(drop=True)
 
 

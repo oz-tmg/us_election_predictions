@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pathlib
+
 import pandas as pd
 import pytest
 
@@ -27,24 +29,53 @@ def test_governor_office_matching_excludes_lieutenant_governor(office, expected)
 
 
 # ------------------------------------------------------------ file discovery
-def test_find_precinct_files_accepts_both_name_separators(tmp_path):
-    """MEDSL's 2020 release mixes '2020-xx-' and '2020_in_'; matching one loses Indiana."""
-    d = tmp_path / "source=medsl/dataset=precinct_by_state/vintage=2020"
-    d.mkdir(parents=True)
-    for name in (
-        "2020-nc-precinct-general.csv",
-        "2020_in_precinct_general.csv",
-        "2020-precincts-codebook.md",
-        "README.md",
-    ):
-        (d / name).write_text("x")
+def test_find_precinct_files_takes_every_data_file_regardless_of_name(tmp_path):
+    """Filenames cannot be pattern-matched — MEDSL 2022 ships six conventions at once.
 
-    found = {p.name for p in gov.find_precinct_files(tmp_path, 2020)}
-    assert found == {"2020-nc-precinct-general.csv", "2020_in_precinct_general.csv"}
-    assert (
-        gov.state_from_filename(next(p for p in gov.find_precinct_files(tmp_path, 2020) if "_in_" in p.name))
-        == "IN"
-    )
+    Requiring a ``YYYY-xx-`` prefix matched only 5 of that release's 53 files.
+    """
+    d = tmp_path / "source=medsl/dataset=precinct_by_state/vintage=2022"
+    d.mkdir(parents=True)
+    data = [
+        "2022-id-local-precinct-general.csv",
+        "ak22_cleaned.csv",
+        "AR_final.csv",
+        "AZ-cleaned.csv",
+        "CA_2022_final.csv",
+        "colorado_cleaned.csv",
+        "louisiana_20240306.csv",
+        "2020_in_precinct_general.csv",
+    ]
+    for n in data + ["codebook.md", "README.md", "notes.txt"]:
+        (d / n).write_text("x")
+
+    found = {p.name for p in gov.find_precinct_files(tmp_path, 2022)}
+    assert found == set(data), "every data file must be picked up, whatever it is called"
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected"),
+    [
+        ("2020-nc-precinct-general.csv", "NC"),
+        ("2020_in_precinct_general.csv", "IN"),
+        ("ak22_cleaned.csv", "AK"),
+        ("AR_final.csv", "AR"),
+        ("AZ-cleaned.csv", "AZ"),
+        ("CA_2022_final.csv", "CA"),
+        ("colorado_cleaned.csv", None),
+    ],
+)
+def test_state_from_filename_is_best_effort_only(filename, expected):
+    """Full-state names like colorado_cleaned.csv are unparseable — hence state_of()."""
+    assert gov.state_from_filename(pathlib.Path(filename)) == expected
+
+
+def test_state_is_read_from_file_contents_not_its_name():
+    """`colorado_cleaned.csv` has no parseable code; the data itself knows the state."""
+    df = pd.DataFrame([{"state_po": "CO", "office": "GOVERNOR"}] * 3)
+    assert gov.state_of(df, pathlib.Path("colorado_cleaned.csv")) == "CO"
+    only_name = pd.DataFrame({"office": ["GOVERNOR"]})
+    assert gov.state_of(only_name, pathlib.Path("ak22_cleaned.csv")) == "AK"
 
 
 # ------------------------------------------------------------- vote modes
@@ -245,3 +276,63 @@ def test_normal_race_is_not_flagged_suspect():
     county = pd.DataFrame(_county_rows("governor", 60, 40) + _county_rows("president", 45, 55))
     ct = gov.build_coattails_table(county)
     assert not ct.iloc[0]["two_party_suspect"]
+
+
+def test_state_cycle_with_an_unrecognised_major_party_is_flagged():
+    """Minnesota's DFL and New Mexico 2022 read as OTHER; two-party share is meaningless."""
+    from election_prediction.build_governor import _state_level
+
+    county = pd.DataFrame(
+        [
+            # MN 2022: Walz's DFL line is not recognised as DEMOCRAT.
+            {
+                "cycle": 2022,
+                "state_po": "MN",
+                "state_fips": "27",
+                "office": "governor",
+                "candidate": "WALZ",
+                "party_simplified": "OTHER",
+                "votes": 1_312_349,
+                "county_fips": "27001",
+                "county_name": "A",
+            },
+            {
+                "cycle": 2022,
+                "state_po": "MN",
+                "state_fips": "27",
+                "office": "governor",
+                "candidate": "JENSEN",
+                "party_simplified": "REPUBLICAN",
+                "votes": 1_119_941,
+                "county_fips": "27001",
+                "county_name": "A",
+            },
+            # A clean state-cycle for contrast.
+            {
+                "cycle": 2022,
+                "state_po": "CO",
+                "state_fips": "08",
+                "office": "governor",
+                "candidate": "POLIS",
+                "party_simplified": "DEMOCRAT",
+                "votes": 1_468_481,
+                "county_fips": "08001",
+                "county_name": "B",
+            },
+            {
+                "cycle": 2022,
+                "state_po": "CO",
+                "state_fips": "08",
+                "office": "governor",
+                "candidate": "GANAHL",
+                "party_simplified": "REPUBLICAN",
+                "votes": 1_000_000,
+                "county_fips": "08001",
+                "county_name": "B",
+            },
+        ]
+    )
+    out = _state_level(county)
+    flagged = out.set_index(["cycle", "state_po"])["two_party_suspect"]
+    assert flagged.loc[(2022, "MN")].all(), "a zero major party must be flagged"
+    assert not flagged.loc[(2022, "CO")].any()

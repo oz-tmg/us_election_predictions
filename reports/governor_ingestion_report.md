@@ -7,7 +7,9 @@
 | Cycle | Level | Governor states | Counties | Status |
 |---:|---|---:|---:|---|
 | 2016 | state_office | 12 | 0 | ok |
+| 2018 | precinct | 34 | 1,974 | ok |
 | 2020 | precinct | 11 | 528 | ok |
+| 2022 | precinct | 34 | 2,053 | ok |
 | 2024 | precinct | 11 | 565 | ok |
 
 ## County-level governor vs president (presidential cycles)

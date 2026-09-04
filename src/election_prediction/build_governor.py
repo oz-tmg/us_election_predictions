@@ -62,11 +62,20 @@ def _read_state_office(base: Path, vintage: int) -> tuple[pd.DataFrame, str | No
 
 
 def _state_level(county: pd.DataFrame) -> pd.DataFrame:
-    """Roll county rows up to one row per state x cycle x candidate."""
+    """Roll county rows up to one row per state x cycle x candidate.
+
+    Adds ``two_party_suspect`` per state-cycle. A major party showing zero votes means the
+    nominee was not recognised as Democrat or Republican, not that nobody ran: the precinct
+    files' ``party_simplified`` misses Minnesota's DFL line and leaves New Mexico's entire
+    2022 race unlabelled. Note the *federal* MEDSL files handle DFL correctly (all 125 rows
+    map to DEMOCRAT), so this is specific to the precinct releases. Flagged rather than
+    patched — a substring rule misfires on genuine third parties, and fixing it properly is
+    backlog item P0-003.
+    """
     if county.empty:
         return pd.DataFrame()
     gov = county[county["office"] == "governor"]
-    return (
+    out = (
         gov.groupby(["cycle", "state_po", "state_fips", "candidate", "party_simplified"], dropna=False)[
             "votes"
         ]
@@ -74,6 +83,19 @@ def _state_level(county: pd.DataFrame) -> pd.DataFrame:
         .reset_index()
         .sort_values(["cycle", "state_po", "votes"], ascending=[True, True, False])
     )
+    by_party = out.pivot_table(
+        index=["cycle", "state_po"],
+        columns="party_simplified",
+        values="votes",
+        aggfunc="sum",
+        fill_value=0,
+    )
+    for col in ("DEMOCRAT", "REPUBLICAN"):
+        if col not in by_party.columns:
+            by_party[col] = 0
+    suspect = set(by_party[(by_party["DEMOCRAT"] == 0) | (by_party["REPUBLICAN"] == 0)].index)
+    out["two_party_suspect"] = [(c, s) in suspect for c, s in zip(out["cycle"], out["state_po"], strict=True)]
+    return out
 
 
 def build(base: Path, *, vintages: tuple[int, ...] = PRECINCT_VINTAGES) -> dict:
@@ -230,6 +252,33 @@ def _write_report(
                 "otherwise computes a -0.66 'split' that is pure artefact. Fixing this needs the "
                 "candidate/party alias crosswalk (backlog P0-003), not a substring rule.",
             ]
+
+    if "two_party_suspect" in state.columns and bool(state["two_party_suspect"].any()):
+        pairs = sorted(
+            {
+                (int(c), s)
+                for c, s in zip(
+                    state.loc[state["two_party_suspect"], "cycle"],
+                    state.loc[state["two_party_suspect"], "state_po"],
+                    strict=True,
+                )
+            }
+        )
+        lines += [
+            "",
+            "## ⚠️ State-cycles with an unrecognised major party",
+            "",
+            f"**{len(pairs)} of {state.groupby(['cycle', 'state_po']).ngroups} state-cycles** show a "
+            "major party at zero votes. The nominee ran; the precinct files' `party_simplified` did "
+            "not recognise the line — Minnesota's DFL, and New Mexico 2022 where *neither* major "
+            "party is labelled. Two-party share is meaningless for these and they carry "
+            "`two_party_suspect = True`.",
+            "",
+            "Affected: " + ", ".join(f"{s} {c}" for c, s in pairs) + ".",
+            "",
+            "The *federal* MEDSL files handle DFL correctly, so this is specific to the precinct "
+            "releases. Fixing it needs the candidate/party alias crosswalk (backlog P0-003).",
+        ]
 
     if warnings:
         lines += ["", "## Warnings", ""] + [f"- {w}" for w in warnings]
