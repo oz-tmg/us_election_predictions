@@ -10,3 +10,13 @@
 # Example row (delete before use):
 # ex-2025-xx-hd001,2025-01-14,XX,state_house,001,5123,4210,88,0.4720,"Daily Kos Elections 2024 pres-by-LD",2024,https://example.gov/results,2026-09-01,illustrative only
 special_id,election_date,state_po,office,district,dem_votes,rep_votes,other_votes,baseline_dem_share,baseline_source,baseline_cycle,source_url,retrieved_on,notes
+2025-fl-cd01,2025-04-01,FL,us_house,01,,,,0.315095,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
+2025-fl-cd06,2025-04-01,FL,us_house,06,,,,0.348756,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
+2025-tn-cd07,2025-12-02,TN,us_house,07,,,,0.376359,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page. results URL not yet located; search TN SOS
+2025-va-cd11,2025-09-09,VA,us_house,11,,,,0.678638,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
+2025-tx-cd18,2025-11-04,TX,us_house,18,,,,0.701937,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page. RUNOFF 2026-01-31 may be decisive - use the DECIDING round
+2026-ca-cd01,2026-06-02,CA,us_house,01,,,,0.371887,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
+2026-ca-cd14,2026-06-16,CA,us_house,14,,,,0.684424,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
+2026-ga-cd13,2026-07-28,GA,us_house,13,,,,0.716404,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
+2026-ga-cd14,2026-03-10,GA,us_house,14,,,,0.309471,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
+2026-nj-cd11,2026-04-16,NJ,us_house,11,,,,0.547419,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
