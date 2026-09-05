@@ -65,6 +65,54 @@ These are the **highest-value rows**: congressional districts, so the baseline i
 readily available from published trackers than for state-legislative seats, and turnout
 is high enough that the result is not dominated by noise.
 
+## Direct result links — Virginia (verified 2026-09-04)
+
+Virginia's election-night reporting uses a stable, predictable URL per election. These
+were read off the official results index at `elections.virginia.gov`, so they are
+authoritative sources of record — not a tertiary pointer.
+
+**The VA-11 congressional special:**
+`https://enr.elections.virginia.gov/results/public/virginia/2025-September-9-Special`
+
+**Thirteen further Virginia specials that were missing from the Wikipedia-derived list
+above** — Virginia holds many state-legislative specials and none of them surfaced in a
+year-scoped article search:
+
+| Date | URL suffix (prefix `https://enr.elections.virginia.gov/results/public/virginia/`) |
+|---|---|
+| 2025-01-07 | `Virginia/2025-January-7-Specials` |
+| 2025-04-08 | `2025-April-8-Town-of-Marion-Special_` |
+| 2025-12-09 | `2025-December-9-Special` |
+| 2026-01-06 | `2026-January-6-Special` |
+| 2026-01-13 | `2026-January-13-Special` |
+| 2026-01-20 | `2026-January-20-Special` |
+| 2026-02-03 | `2026-February-3-Special` |
+| 2026-02-10 | `elections/2026-February-10-Special` |
+| 2026-03-03 | `elections/2026-March-3-Special` |
+| 2026-03-10 | `elections/2026-March-10-Special` |
+| 2026-03-17 | `2026-March-17-Special` |
+| 2026-04-14 | `2026-April-14-Special` |
+| 2026-04-21 | `2026-April-21-Special` |
+
+⚠️ **These pages are JavaScript-rendered single-page apps.** They load fine in a browser
+but cannot be parsed programmatically without a headless browser. Open, read, transcribe.
+
+### Why automated acquisition was abandoned
+
+Attempted and failed on 2026-09-04, recorded so it is not retried blindly:
+
+| Source | Result |
+|---|---|
+| `enr.elections.virginia.gov` | HTTP 200 but a JS SPA; no API path found |
+| `apps.elections.virginia.gov/SBE_CSV/.../ELECTIONRESULTS/` | Directory index empty |
+| Clarity Elections (`results.enr.clarityelections.com`) | **HTTP 403** — bot-protected |
+| Ballotpedia (`ballotpedia.org`) | **HTTP 202, zero bytes** — bot-protected |
+| Split Ticket / The Downballot | JS-rendered; specials URL 404s |
+
+Every modern results platform is either a JS app or bot-protected. Compiling these rows
+requires a human reading pages, or a Ballotpedia licence. That is a property of the
+sources, not a gap in tooling.
+
 ## U.S. Senate specials — exclude these from the metric
 
 | Contest | Date |
