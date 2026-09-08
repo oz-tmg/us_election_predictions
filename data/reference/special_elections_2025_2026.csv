@@ -2,21 +2,21 @@
 # Tier 0 public aggregate. EVERY row must carry source_url + retrieved_on or validation rejects it.
 #
 # baseline_dem_share = two-party Democratic PRESIDENTIAL share for the SAME geography,
-#   from baseline_cycle (2024 preferred). Cite where you got it in baseline_source --
-#   state-legislative districts have no baseline in this repo, so it must be supplied.
+#   from baseline_cycle (2024 preferred). Cite where you got it in baseline_source.
+# baseline_two_party_votes = that geography's presidential two-party TURNOUT; enables turnout_ratio.
+# contest_format: single_round | all_party_first_round | runoff | unknown
+#   Under an all-party ballot, compile the LAST ROUND IN WHICH BOTH PARTIES RAN -- round one.
+#   A same-party runoff is unusable: the margin is +/-1 by ballot construction, not by preference.
+# include_in_metric: Y|N. N requires exclusion_reason. Excluded rows are recorded, not trusted.
 # office: us_house | us_senate | state_house | state_senate | governor | other
-# Votes are whole numbers. other_votes may be 0. Leave notes blank if nothing to flag.
-#
-# Example row (delete before use):
-# ex-2025-xx-hd001,2025-01-14,XX,state_house,001,5123,4210,88,0.4720,"Daily Kos Elections 2024 pres-by-LD",2024,https://example.gov/results,2026-09-01,illustrative only
-special_id,election_date,state_po,office,district,dem_votes,rep_votes,other_votes,baseline_dem_share,baseline_source,baseline_cycle,source_url,retrieved_on,notes
-2025-fl-cd01,2025-04-01,FL,us_house,01,,,,0.315095,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
-2025-fl-cd06,2025-04-01,FL,us_house,06,,,,0.348756,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
-2025-tn-cd07,2025-12-02,TN,us_house,07,,,,0.376359,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page. results URL not yet located; search TN SOS
-2025-va-cd11,2025-09-09,VA,us_house,11,,,,0.678638,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
-2025-tx-cd18,2025-11-04,TX,us_house,18,,,,0.701937,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page. RUNOFF 2026-01-31 may be decisive - use the DECIDING round
-2026-ca-cd01,2026-06-02,CA,us_house,01,,,,0.371887,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
-2026-ca-cd14,2026-06-16,CA,us_house,14,,,,0.684424,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
-2026-ga-cd13,2026-07-28,GA,us_house,13,,,,0.716404,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
-2026-ga-cd14,2026-03-10,GA,us_house,14,,,,0.309471,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
-2026-nj-cd11,2026-04-16,NJ,us_house,11,,,,0.547419,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,,,CONFIRM DATE against the results page.
+special_id,election_date,state_po,office,district,contest_format,dem_votes,rep_votes,other_votes,baseline_dem_share,baseline_source,baseline_cycle,baseline_two_party_votes,include_in_metric,exclusion_reason,source_url,retrieved_on,notes
+2025-fl-cd01,2025-04-01,FL,us_house,01,single_round,72375,97370,1384,0.315095,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,406331,Y,,https://results.elections.myflorida.com/Specials.asp?ElectionDate=4/1/2025&DATAMODE=,2026-09-08,CONFIRM DATE against the results page.
+2025-fl-cd06,2025-04-01,FL,us_house,06,single_round,83580,110980,702,0.348756,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,430066,Y,,https://results.elections.myflorida.com/Specials.asp?ElectionDate=4/1/2025&DATAMODE=,2026-09-08,CONFIRM DATE against the results page.
+2025-tn-cd07,2025-12-02,TN,us_house,07,single_round,81109,97034,1259,0.376359,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,313578,Y,,https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20251202GeneralbyOffice.pdf,2026-09-08,2025-12-05
+2025-va-cd11,2025-09-09,VA,us_house,11,single_round,113596,37297,287,0.678638,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,391459,Y,,https://enr.elections.virginia.gov/results/public/virginia/elections/2025-September-9-Special,2026-09-08,2025-09-17
+2025-tx-cd18,2025-11-04,TX,us_house,18,all_party_first_round,61845,11296,3048,0.701937,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,220329,Y,,https://goelect.txelections.civixapps.com/ivis-enr-ui/races,2026-09-08,2025-11-09 | All-party first round (D field split across many candidates); aggregated by party. Runoff 2026-01-31 was D-vs-D and is NOT usable.
+2026-ca-cd01,2026-06-02,CA,us_house,01,all_party_first_round,71160,125974,1808,0.371887,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,317099,N,"Held on California's 2026 statewide primary day, so it carries no turnout differential (ratio 0.62). Same rule as the two general-election-day Senate specials.",https://elections.cdn.sos.ca.gov/special-elections/2026-cd1/cd1-primary-official-canvass.xlsx,2026-09-08,CONFIRM DATE against the results page.
+2026-ca-cd14,2026-06-16,CA,us_house,14,unknown,,,,0.684424,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,279277,N,Not yet compiled - no results transcribed.,,,CONFIRM DATE against the results page.
+2026-ga-cd13,2026-07-28,GA,us_house,13,runoff,17760,2750,0,0.716404,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,349800,N,"Runoff, not the all-party first round: turnout is 6% of the 2024 presidential two-party vote. Compile the 2026-04-22 first round instead.",https://results.sos.ga.gov/cdn/results/09378a07-e6cf-4f66-be7c-ca4aa534f99a/Total%20Votes%20Results_e0fa5a4d-4f6f-4a17-affe-bbd0165f4ba9.xlsx,2026-09-08,2026-08-10
+2026-ga-cd14,2026-03-10,GA,us_house,14,all_party_first_round,54374,69142,,0.309471,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,374407,Y,,https://results.sos.ga.gov/cdn/results/09378a07-e6cf-4f66-be7c-ca4aa534f99a/Total%20Votes%20Results_0dbf4738-5105-42d9-a21f-84a34abd28c6.xlsx,2026-09-08,2026-03-19 | other_votes blank - confirm whether any minor-party/write-in votes were cast.
+2026-nj-cd11,2026-04-16,NJ,us_house,11,single_round,81825,53520,625,0.547419,data/gold/cd_presidential_baseline_2024.parquet (MEDSL precinct-derived),2024,399102,Y,,https://nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-special-general-results-us-house-11cd.pdf,2026-09-08,2026-05-14

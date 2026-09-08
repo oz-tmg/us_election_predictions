@@ -15,12 +15,16 @@ def _row(**over) -> dict:
         "state_po": "GA",
         "office": "state_house",
         "district": "017",
+        "contest_format": "single_round",
         "dem_votes": 5000,
         "rep_votes": 4000,
         "other_votes": 0,
         "baseline_dem_share": 0.40,
         "baseline_source": "tracker X",
         "baseline_cycle": 2024,
+        "baseline_two_party_votes": None,
+        "include_in_metric": "Y",
+        "exclusion_reason": "",
         "source_url": "https://sos.example.gov/r",
         "retrieved_on": "2026-09-01",
         "notes": "",
@@ -86,3 +90,46 @@ def test_environment_estimate_reports_spread_and_caveats():
     assert est["status"] == "ok" and est["n"] == 8
     assert est["std_error"] > 0
     assert any("non-random" in c for c in est["caveats"])
+
+
+def test_a_same_party_runoff_cannot_enter_the_metric():
+    """D-vs-D runoff: rep_votes is zero by ballot construction, so the margin is +1
+    regardless of preference. TX-18 scored +59.6 points of fake overperformance."""
+    rep = se.validate_specials(_frame([_row(dem_votes=61845, rep_votes=0, baseline_dem_share=0.702)]))
+    assert not rep["ok"]
+    assert not rep["votes.both_parties_contested"]
+    assert rep["votes.rows_one_sided_but_included"] == 1
+
+
+def test_a_one_sided_row_may_be_recorded_if_explicitly_excluded():
+    row = _row(dem_votes=61845, rep_votes=0, include_in_metric="N", exclusion_reason="D-vs-D runoff")
+    assert se.validate_specials(_frame([row]))["ok"]
+
+
+def test_an_exclusion_without_a_reason_is_rejected():
+    rep = se.validate_specials(_frame([_row(include_in_metric="N", exclusion_reason="")]))
+    assert not rep["ok"]
+    assert not rep["exclusion.reason_given"]
+
+
+def test_an_unknown_contest_format_is_rejected():
+    assert not se.validate_specials(_frame([_row(contest_format="jungle")]))["ok"]
+
+
+def test_excluded_rows_are_dropped_from_the_estimate_and_reported():
+    rows = [_row(special_id=f"s{i}", dem_votes=5000 + 100 * i) for i in range(6)]
+    rows.append(_row(special_id="drop", dem_votes=9999, include_in_metric="N", exclusion_reason="runoff"))
+    est = se.national_environment_estimate(se.compute_overperformance(_frame(rows)))
+    assert est["n"] == 6, "the excluded row must not be averaged"
+    assert est["excluded"] == {"drop": "runoff"}
+
+
+def test_turnout_ratio_compares_the_special_to_presidential_turnout():
+    out = se.compute_overperformance(_frame([_row(baseline_two_party_votes=90000)]))
+    assert out.iloc[0]["turnout_ratio"] == pytest.approx(9000 / 90000)
+
+
+def test_a_table_predating_the_governance_columns_still_loads():
+    """with_defaults keeps older compilations readable rather than failing the schema."""
+    legacy = pd.DataFrame([_row()]).drop(columns=["contest_format", "include_in_metric", "exclusion_reason"])
+    assert se.validate_specials(legacy)["ok"]
