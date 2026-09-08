@@ -1,0 +1,28 @@
+specials: n=8  mean overperformance +0.1877 (se 0.0220)
+2024 House national two-party Dem share: 0.4922
+
+implied national environment by shrinkage factor
+ shrinkage  applied_margin_swing  national_dem_share  share_std_error
+      0.25                0.0469              0.5157           0.0027
+      0.33                0.0619              0.5232           0.0036
+      0.50                0.0939              0.5392           0.0055
+      0.75                0.1408              0.5626           0.0082
+      1.00                0.1877              0.5861           0.0110
+
+fitted resid sigma: house 0.1123  senate 0.1283
+
+senate holdover seats not up in 2026: 67  Democratic-held: 32
+  (includes 2 independents who caucus with Democrats)
+  derived current Democratic caucus: 32 holdover + 13 up = 45 of 100 seats
+  NOTE: 2 seats short of the actual Democratic caucus -- unresolved party crosswalk (P0-003).
+
+house seats projected: 435/435   senate seats up: 33
+
+ shrinkage  nat_share  house_mean_seats  house_5th  house_95th  house_p_dem  sen_dem_seats_up  sen_mean_total  sen_p_dem
+      0.25     0.5157             224.2      146.0       318.0        0.518              15.8            47.8      0.272
+      0.33     0.5232             228.3      151.0       325.0        0.551              16.3            48.3      0.298
+      0.50     0.5392             237.0      161.0       338.0        0.619              17.2            49.2      0.357
+      0.75     0.5626             250.4      175.0       357.0        0.712              18.7            50.7      0.450
+      1.00     0.5861             264.4      187.0       373.0        0.792              20.1            52.1      0.545
+
+incumbency assumed (not verified): every sitting member runs and is renominated.

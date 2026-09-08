@@ -166,3 +166,33 @@ def test_results_updated_on_must_not_predate_its_election():
 def test_results_updated_on_is_optional_but_must_parse():
     assert se.validate_specials(_frame([_row(results_updated_on="")]))["ok"]
     assert not se.validate_specials(_frame([_row(results_updated_on="last Tuesday")]))["ok"]
+
+
+def test_the_implied_national_share_is_never_presented_as_calibrated():
+    """shrinkage is an assumption; the status must stop a consumer treating it as fitted."""
+    rows = [_row(special_id=f"s{i}", dem_votes=5000 + 100 * i) for i in range(8)]
+    est = se.national_environment_estimate(se.compute_overperformance(_frame(rows)))
+    out = se.implied_national_dem_share(est, baseline_national_dem_share=0.4922, shrinkage=0.5)
+    assert out["status"] == "uncalibrated"
+    assert any("shrinkage is an assumption" in c for c in out["caveats"])
+
+
+def test_overperformance_is_halved_because_it_is_a_margin():
+    est = {"status": "ok", "n": 8, "mean_overperformance": 0.20, "std_error": 0.02}
+    out = se.implied_national_dem_share(est, baseline_national_dem_share=0.50, shrinkage=1.0)
+    assert out["national_dem_share"] == pytest.approx(0.60)
+
+
+def test_the_sensitivity_sweep_spans_the_shrinkage_band():
+    est = {"status": "ok", "n": 8, "mean_overperformance": 0.1877, "std_error": 0.022}
+    sweep = se.shrinkage_sensitivity(est, baseline_national_dem_share=0.4922)
+    assert len(sweep) == len(se.SHRINKAGE_SENSITIVITY)
+    assert sweep["national_dem_share"].is_monotonic_increasing
+
+
+def test_an_unusable_estimate_does_not_yield_a_national_share():
+    out = se.implied_national_dem_share(
+        {"status": "insufficient_data", "reason": "too few"}, baseline_national_dem_share=0.49
+    )
+    assert out["status"] == "unavailable"
+    assert "national_dem_share" not in out

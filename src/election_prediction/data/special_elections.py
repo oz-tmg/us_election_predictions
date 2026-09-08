@@ -323,3 +323,84 @@ def national_environment_estimate(df: pd.DataFrame, *, weight: str = "equal", mi
             "Margin-based, so it controls for turnout level but not turnout composition.",
         ],
     }
+
+
+# Special-election overperformance is a biased estimator of the eventual general-election
+# swing, and biased in a known direction: specials are low-turnout contests whose
+# electorates skew toward the higher-engagement, higher-education voters currently more
+# Democratic, and the out-party's supporters are the ones motivated to turn out for a
+# protest vote. Published trackers consistently find specials overstating the following
+# general election. So the raw mean must be shrunk before it can act as a national
+# environment, and the shrinkage factor is the one number here this project cannot yet
+# estimate: calibrating it needs historical specials matched to their following general,
+# and none have been compiled (docs/special-elections-worklist.md step 3).
+#
+# The consequence is deliberately made loud rather than papered over. Applying no
+# shrinkage to the 2025-26 mean of +18.8 points implies a national House Democratic share
+# of 0.586 -- above every cycle since 1974 and well past 2018's 0.537. That is a
+# reductio, not a forecast, which is why this function refuses to return a bare number.
+SHRINKAGE_UNCALIBRATED = 0.5
+SHRINKAGE_SENSITIVITY = (0.25, 0.33, 0.5, 0.75, 1.0)
+
+
+def implied_national_dem_share(
+    estimate: dict,
+    *,
+    baseline_national_dem_share: float,
+    shrinkage: float = SHRINKAGE_UNCALIBRATED,
+) -> dict:
+    """Translate a specials overperformance mean into a national two-party Dem share.
+
+    ``estimate`` is a ``national_environment_estimate`` result. ``baseline_national_dem_share``
+    is the share the swing is applied *to* — the House national two-party Democratic share
+    of the last regular cycle, because that is the basis the House model's
+    ``national_dem_share`` feature is measured on.
+
+    Overperformance is a *margin* difference, so it is halved to become a share shift.
+
+    The returned ``status`` is always ``"uncalibrated"``: ``shrinkage`` is a documented
+    assumption, not an estimated quantity, and no consumer should treat the output as a
+    validated forecast. Use ``shrinkage_sensitivity`` to show the range instead of
+    implying a precision this does not have.
+    """
+    if estimate.get("status") != "ok":
+        return {"status": "unavailable", "reason": estimate.get("reason", "no estimate")}
+
+    raw_margin_swing = float(estimate["mean_overperformance"])
+    applied = raw_margin_swing * float(shrinkage)
+    se_margin = float(estimate.get("std_error") or float("nan"))
+    return {
+        "status": "uncalibrated",
+        "n_specials": int(estimate["n"]),
+        "raw_margin_swing": raw_margin_swing,
+        "shrinkage": float(shrinkage),
+        "applied_margin_swing": applied,
+        "baseline_national_dem_share": float(baseline_national_dem_share),
+        "national_dem_share": float(baseline_national_dem_share) + applied / 2.0,
+        # Sampling spread across specials only, propagated through the same halving. It
+        # excludes the shrinkage uncertainty, which is larger and unquantified.
+        "share_std_error": (se_margin * float(shrinkage)) / 2.0,
+        "caveats": [
+            "shrinkage is an assumption, not an estimate; no historical calibration exists yet",
+            "specials over-represent high-engagement voters, so the raw mean is biased upward",
+            "std_error covers sampling spread across specials only, not shrinkage error",
+            "the swing is measured against presidential baselines and applied to a House basis",
+        ],
+    }
+
+
+def shrinkage_sensitivity(
+    estimate: dict,
+    *,
+    baseline_national_dem_share: float,
+    factors: tuple[float, ...] = SHRINKAGE_SENSITIVITY,
+) -> pd.DataFrame:
+    """The implied national share across shrinkage factors — the honest presentation."""
+    rows = [
+        implied_national_dem_share(
+            estimate, baseline_national_dem_share=baseline_national_dem_share, shrinkage=f
+        )
+        for f in factors
+    ]
+    keep = ["shrinkage", "applied_margin_swing", "national_dem_share", "share_std_error"]
+    return pd.DataFrame([{k: r[k] for k in keep} for r in rows if r["status"] == "uncalibrated"])
