@@ -27,6 +27,7 @@ def _row(**over) -> dict:
         "exclusion_reason": "",
         "source_url": "https://sos.example.gov/r",
         "retrieved_on": "2026-09-01",
+        "results_updated_on": "",
         "notes": "",
     }
     return {**base, **over}
@@ -133,3 +134,35 @@ def test_a_table_predating_the_governance_columns_still_loads():
     """with_defaults keeps older compilations readable rather than failing the schema."""
     legacy = pd.DataFrame([_row()]).drop(columns=["contest_format", "include_in_metric", "exclusion_reason"])
     assert se.validate_specials(legacy)["ok"]
+
+
+def test_one_seat_cannot_feed_the_metric_twice():
+    """GA-14 filed a first round and a runoff. Both are valid rows; only one may average."""
+    rounds = [
+        _row(special_id="ga14-r1", state_po="GA", district="14", contest_format="all_party_first_round"),
+        _row(special_id="ga14-runoff", state_po="GA", district="14", contest_format="runoff"),
+    ]
+    rep = se.validate_specials(_frame(rounds))
+    assert not rep["ok"]
+    assert not rep["keys.one_included_row_per_seat"]
+    assert rep["keys.seats_double_counted"] == ["GA|state_house|14"]
+
+
+def test_recording_the_superseded_round_is_allowed():
+    rounds = [
+        _row(special_id="ga14-r1", district="14", include_in_metric="N", exclusion_reason="superseded"),
+        _row(special_id="ga14-runoff", district="14", contest_format="runoff"),
+    ]
+    assert se.validate_specials(_frame(rounds))["ok"]
+
+
+def test_results_updated_on_must_not_predate_its_election():
+    """The live slip: a runoff row inherited the first round's revision date."""
+    rep = se.validate_specials(_frame([_row(election_date="2026-04-07", results_updated_on="2026-03-19")]))
+    assert not rep["ok"]
+    assert not rep["dates.results_updated_after_election"]
+
+
+def test_results_updated_on_is_optional_but_must_parse():
+    assert se.validate_specials(_frame([_row(results_updated_on="")]))["ok"]
+    assert not se.validate_specials(_frame([_row(results_updated_on="last Tuesday")]))["ok"]

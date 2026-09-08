@@ -35,7 +35,7 @@ Leave every other column alone. Validation **rejects** any row missing `source_u
 
 All verified reachable 2026-09-05 except TN.
 
-## Four things that will bite you
+## Six things that will bite you
 
 **1. Confirm the date.** Every pre-filled `election_date` came from Wikipedia and is
 **unverified** — the article intros mixed generals, primaries, runoffs and term-start
@@ -71,6 +71,17 @@ major-party candidates. Independents, write-ins and minor parties go in `other_v
 they do not affect the metric, which runs on the two-party margin, but they belong in the
 total.
 
+**5. A multi-round contest is one row per round — but only one row averages.**
+Give each round its own `special_id` (`2026-ga-cd14-r1`, `2026-ga-cd14-runoff`) and mark
+exactly one `include_in_metric=Y`. Averaging both rounds gives that seat double weight in
+a national estimate. `keys.one_included_row_per_seat` rejects it.
+
+**6. `retrieved_on` and `results_updated_on` are different dates.** The first is when you
+read the page; the second is when the *state* last revised the count, which is what says
+whether a number is final or still moving. `results_updated_on` is optional, but if given
+it must parse and must not predate its own election — the live catch was a runoff row that
+inherited the first round's revision date.
+
 ## Recording an unusable contest
 
 Do not delete it. Set `include_in_metric` to `N` and write an `exclusion_reason`.
@@ -94,17 +105,19 @@ overperformance and the national-environment estimate.
 
 ## Current state (2026-09-08)
 
-Nine of ten rows are compiled and the table **validates**. Seven feed the metric; three
-are recorded and excluded:
+All eleven rows are compiled and the table **validates**. Eight feed the metric:
+**mean Democratic overperformance +18.8 points, standard error 2.2.**
+
+Three rows are recorded and excluded:
 
 | Row | Why excluded |
 |---|---|
-| GA-13 | Runoff, turnout 6% of presidential. Compile the 2026-04-22 first round instead. |
-| CA-01 | Held on the statewide primary day — no turnout differential. |
-| CA-14 | Not yet compiled. |
+| CA-01 | Held on California's statewide primary day — no turnout differential (ratio 0.62). |
+| GA-13 | Runoff at 6% of presidential turnout. Compile the 2026-04-22 first round to recover this seat. |
+| GA-14 r1 | Superseded by the runoff, which also had both parties. Kept for comparison. |
 
-`national_environment_estimate` requires **five**, so seven clears the bar. The two
-outstanding jobs are CA-14's results and GA-13's April first round.
+`national_environment_estimate` requires **five**, so eight clears the bar comfortably.
+One outstanding job: **GA-13's 2026-04-22 first round**.
 
 ## What happens after
 

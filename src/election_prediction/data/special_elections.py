@@ -55,7 +55,8 @@ SPECIAL_COLUMNS = [
     "include_in_metric",
     "exclusion_reason",
     "source_url",
-    "retrieved_on",
+    "retrieved_on",  # when we read the page
+    "results_updated_on",  # when the state last revised the count -- not the same thing
     "notes",
 ]
 
@@ -114,6 +115,7 @@ def with_defaults(df: pd.DataFrame) -> pd.DataFrame:
         ("include_in_metric", "Y"),
         ("exclusion_reason", ""),
         ("baseline_two_party_votes", pd.NA),
+        ("results_updated_on", ""),
         ("notes", ""),
     ):
         if col not in out.columns:
@@ -159,6 +161,22 @@ def validate_specials(df: pd.DataFrame) -> dict:
 
     included = is_included(df["include_in_metric"])
 
+    # A multi-round contest is compiled as one row per round, so the same seat can appear
+    # twice legitimately. Only one of those rounds may feed the metric: averaging both
+    # would let one seat carry double weight in a national estimate. GA-14's first round
+    # and runoff are the live case, and they agree to within 0.2 points -- which is
+    # reassuring about robustness, and exactly why the duplication would be easy to miss.
+    seat = (
+        df["state_po"].astype(str).str.upper().str.strip()
+        + "|"
+        + df["office"].astype(str).str.lower().str.strip()
+        + "|"
+        + df["district"].astype(str).str.strip()
+    )
+    dup_seats = seat[included].duplicated()
+    checks["keys.one_included_row_per_seat"] = int(dup_seats.sum()) == 0
+    checks["keys.seats_double_counted"] = sorted(set(seat[included][dup_seats]))
+
     # Provenance: a row without a citation cannot be audited and is not usable. Enforced
     # on rows that feed the metric — an excluded row may be a placeholder for a contest
     # not yet compiled, which by definition has nothing to cite. The counts stay
@@ -175,6 +193,15 @@ def validate_specials(df: pd.DataFrame) -> dict:
     dates = pd.to_datetime(df["election_date"], errors="coerce")
     checks["dates.parse"] = int(dates.isna().sum()) == 0
     checks["dates.not_future"] = bool((dates.dropna() <= pd.Timestamp(date.today())).all())
+
+    # ``results_updated_on`` is the state's own last-revision date, distinct from
+    # ``retrieved_on``. It is what says whether a count is final or still moving, so it
+    # must parse and must not predate the election it describes.
+    updated = pd.to_datetime(df["results_updated_on"], errors="coerce")
+    stated = updated.notna()
+    checks["dates.results_updated_parse"] = int((~stated & ~_blank("results_updated_on")).sum()) == 0
+    checks["dates.results_updated_after_election"] = bool((updated[stated] >= dates[stated]).all())
+    checks["dates.rows_without_results_updated"] = int((~stated).sum())
 
     checks["office.known"] = bool(df["office"].str.strip().str.lower().isin(VALID_OFFICES).all())
 
