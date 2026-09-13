@@ -12,10 +12,12 @@ not happened, which needs three inputs the backtest gets for free:
   ``national_dem_share`` is +0.884, so a 1-point error in the national call moves nearly
   every district by 0.9 points.
 * **Incumbency** — from the seat roster's ``incumbent_party``, under the assumption that
-  the sitting member both runs and is renominated. That assumption is *not* verified:
-  ``incumbent_status`` is ``unknown`` for every 2026 seat, and primaries have not been
-  compiled. Projections therefore carry ``incumbency_assumed`` so a consumer cannot
-  mistake the assumption for a finding.
+  the sitting member both runs and is renominated. ``features.filings`` now verifies the
+  first half of that from FEC filings (``incumbent_status = "filed"``); the second half is
+  still unverified, because renomination needs primary results and FEC does not publish
+  them. Projections therefore keep ``incumbency_assumed`` so a consumer cannot mistake the
+  assumption for a finding, and ``filings_summary`` reports how much of the roster the
+  filing evidence covers.
 
 The Senate model takes **no national-environment feature** (its terms are state
 presidential lean, incumbency, and the midterm penalty), so the specials estimate does not
@@ -43,16 +45,19 @@ PROJECTION_COLUMNS = [
 ]
 
 
-# Stopgap for the unresolved candidate/party crosswalk (P0-003). MEDSL's party labels
-# leave a handful of members as OTHER, and an OTHER incumbent is encoded here as an *open
-# seat* -- both indicators zero -- which is wrong twice over: it drops a real incumbency
-# advantage and mislabels who holds the seat. Only cases verified against the seat's own
-# returns belong here, and each is a line item for P0-003 to fix upstream rather than a
-# permanent home for party fixes.
-INCUMBENT_PARTY_OVERRIDES = {
-    # Wyoming's Class II senator, labelled OTHER in the 2026 roster.
-    "CYNTHIA M. LUMMIS": "REPUBLICAN",
-}
+# P0-003 replaced the hand-kept ``INCUMBENT_PARTY_OVERRIDES`` table that used to live here.
+# The one entry it held -- Cynthia Lummis, labelled OTHER in the 2026 roster because
+# Wyoming's 2020 Senate returns carry a null party for every candidate -- is now resolved
+# from the FEC roster, which records her as ``REP``. Any seat whose party the returns cannot
+# supply is filled the same way, so the table has nothing left to hold.
+#
+# ``filings.resolve_incumbent_status`` writes this column from
+# ``filings.resolved_incumbent_party``; ``_incumbency_terms`` prefers it when present and
+# falls back to the raw ``incumbent_party`` otherwise, so a projection still runs before
+# the FEC layer is built. The producer and this constant must agree on the name --
+# ``test_filings`` pins that, because a silent mismatch would leave the fallback running
+# forever while every unit test still passed.
+RESOLVED_PARTY_COLUMN = "incumbent_party_resolved"
 
 # Senators elected as independents who caucus with the Democrats. Two-party vote share
 # cannot see them -- Sanders's 2024 race records a Democratic share of 0.000 and King's
@@ -64,9 +69,11 @@ INDEPENDENT_DEM_CAUCUS = frozenset({("ME", 2024), ("VT", 2024)})
 def _incumbency_terms(universe: pd.DataFrame) -> pd.DataFrame:
     out = universe.copy()
     party = out["incumbent_party"].fillna("").astype(str).str.upper()
-    names = out.get("incumbent_name", pd.Series([""] * len(out), index=out.index))
-    override = names.fillna("").astype(str).str.upper().map(INCUMBENT_PARTY_OVERRIDES)
-    party = override.fillna(party)
+    if RESOLVED_PARTY_COLUMN in out.columns:
+        # A resolved label only ever *fills* a gap -- it never overwrites a party the
+        # returns already state -- so preferring it cannot silently reclassify a seat.
+        resolved = out[RESOLVED_PARTY_COLUMN].fillna("").astype(str).str.upper()
+        party = party.where(party.isin(["DEMOCRAT", "REPUBLICAN"]), resolved)
     # An open seat is one with no identified incumbent; both indicators go to zero, which
     # is exactly how the fitted models encode it.
     out["incumbent_dem"] = (party == "DEMOCRAT").astype(float)

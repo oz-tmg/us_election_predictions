@@ -5,6 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
+from election_prediction.features import filings
 from election_prediction.models.baseline import projection
 from election_prediction.models.baseline.presidential import OLSModel
 
@@ -61,12 +62,73 @@ def test_a_stronger_national_environment_moves_every_district_up():
     assert (high["mean_dem_share"].to_numpy() > low["mean_dem_share"].to_numpy()).all()
 
 
-def test_the_party_crosswalk_override_restores_a_mislabelled_incumbent():
-    """An OTHER incumbent would otherwise be encoded as an open seat (P0-003 stopgap)."""
+def test_an_unlabelled_incumbent_is_an_open_seat_without_a_resolved_party():
+    """Wyoming's 2020 returns carry a null party, so Lummis reads OTHER.
+
+    With nothing to resolve her against, both indicators go to zero and the seat trains as
+    open -- which is wrong, and is exactly the defect P0-003 exists to fix. The test pins
+    the un-fixed behaviour so the fix below is demonstrably doing the work.
+    """
     terms = projection._incumbency_terms(_roster())
+    lummis = terms[terms["state_po"] == "WY"].iloc[0]
+    assert lummis["incumbent_rep"] == 0.0
+    assert lummis["incumbent_dem"] == 0.0
+
+
+def _resolved_roster(fec_parties: list[str]) -> pd.DataFrame:
+    """A roster carrying the resolved column, built the way the pipeline builds it.
+
+    Deliberately routed through ``filings.resolve_incumbent_status`` rather than assigning
+    ``RESOLVED_PARTY_COLUMN`` by hand. Hand-assignment is what let the producer and the
+    consumer disagree on the column name while every test still passed -- the projection
+    silently fell back to the raw ``incumbent_party`` and the Lummis fix never ran.
+    """
+    roster = _roster()
+    roster["incumbent_fec_party"] = fec_parties
+    roster["incumbent_party_resolved"] = filings.resolved_incumbent_party(roster)
+    return roster
+
+
+def test_the_filings_producer_and_the_projection_consumer_agree_on_the_column():
+    """The seam itself: whatever filings emits must be what the projection reads."""
+    out = filings.resolve_incumbent_status(
+        pd.DataFrame(
+            [
+                {
+                    "geography_id": "swy",
+                    "office": "us_senate",
+                    "state_po": "WY",
+                    "district_num": None,
+                    "election_cycle": 2026,
+                    "incumbent_name": "CYNTHIA M. LUMMIS",
+                    "incumbent_party": "OTHER",
+                }
+            ]
+        ),
+        None,
+        cycle=2026,
+    )
+    assert projection.RESOLVED_PARTY_COLUMN in out.columns
+    assert projection.RESOLVED_PARTY_COLUMN in filings.FILING_COLUMNS
+
+
+def test_a_resolved_party_column_fills_an_unlabelled_incumbent():
+    """P0-003: FEC records Lummis as REP, which recovers the incumbency the returns lost."""
+    roster = _resolved_roster(["DEM", "REP", "DEM", "REP"])
+    terms = projection._incumbency_terms(roster)
     lummis = terms[terms["state_po"] == "WY"].iloc[0]
     assert lummis["incumbent_rep"] == 1.0
     assert lummis["incumbent_dem"] == 0.0
+
+
+def test_a_resolved_party_never_overwrites_a_party_the_returns_state():
+    """The resolved column only fills gaps; a disagreement must not reclassify a seat."""
+    # Contradict every stated party. The two seats the returns label must not move.
+    roster = _resolved_roster(["REP", "DEM", "REP", "REP"])
+    terms = projection._incumbency_terms(roster)
+    ga = terms[terms["state_po"] == "GA"].sort_values("district_num")
+    assert ga["incumbent_dem"].tolist() == [1.0, 0.0]
+    assert ga["incumbent_rep"].tolist() == [0.0, 1.0]
 
 
 def test_projections_never_claim_verified_incumbency():
