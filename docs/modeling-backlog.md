@@ -37,9 +37,22 @@ Status labels:
 | P1-001 | Presidential fundamentals model | How much can we predict without polls? | Backtest by state for 2008–2024 with MAE and calibration. | done |
 | P1-002 | House district baseline | What is each district's normal partisan lean? | District partisanship score using presidential and House history. | done (score + district fundamentals forecast model; complete 435-seat chamber simulation) |
 | P1-003 | Senate/governor baseline | How much do state partisanship and incumbency explain? | Backtest statewide races with incumbency/open-seat indicators. | done (Senate); governor **ingestion complete** — all five cycles 2016-2024 landed, **103 state-cycles**, enough to fit. Model not yet fitted |
-| P1-004 | Generic ballot adjustment | How should national environment affect districts? | Historical relationship estimated and documented. | done (swing ratio estimated from certified returns). **Live national-environment input still open**: swing ratio is unidentified for the 2022 plan era and polls are blocked on redistribution terms — special-election overperformance is the candidate substitute, see `docs/special-elections-sourcing.md` |
+| P1-004 | Generic ballot adjustment | How should national environment affect districts? | Historical relationship estimated and documented. | done (swing ratio estimated from certified returns). **Live national-environment input still open**: swing ratio is unidentified for the 2022 plan era and polls are blocked on redistribution terms (NE-000). Architecture reworked 2026-09-09: the shrinkage band is the output, not a parameter to fit. See `docs/national-environment-plan.md` and NE-000..NE-003 below |
 | P1-005 | Correlated simulation layer | How does race-level uncertainty translate to seat control? | Simulation returns win probability, seat distribution, chamber probability. | done |
 | P1-006 | Forecast evaluation notebook | Are probabilities calibrated? | Brier score, log score, calibration curve, interval coverage. | done |
+
+## P1 — National Environment
+
+Tracked separately from P1-004 because the blocker is not the district relationship — that
+is estimated and documented — but the *national input* it consumes. Full rationale,
+architecture and decision gates: `docs/national-environment-plan.md`.
+
+| ID | Task | Analytical Question | Acceptance Criteria | Status |
+|---|---|---|---|---|
+| NE-000 | Resolve poll redistribution terms | May this project store and redistribute public poll toplines? | Written answer recorded in `dataset-registry.md` with the terms cited; `redistribution_allowed` set from it rather than hardcoded to the synthetic flag. | todo — **human decision, blocks NE-003** |
+| NE-001 | National-environment estimator contract | Can a projection consume a band without collapsing it to a point? | `models/baseline/national_environment.py` returns a uniform shape carrying `identified`, `assumptions` and `provenance`; `shrinkage`'s default removed; a validator fails any specials-derived estimate claiming `identified = True`; band conclusions stated as text in the projection report. | todo — no dependencies, start first |
+| NE-002 | Historical calibration pairs (bound, not fit) | How wide is the plausible shrinkage band? | Four cycle pairs (2017→18, 2019→20, 2021→22, 2023→24) compiled to the existing specials schema; `calibration_pairs` + `band_from_pairs` return an interval with `status = "bound"`; a test fails if a scalar shrinkage is ever returned; same `compute_overperformance` path as the live estimate. | todo — House-only pairs first |
+| NE-003 | Generic ballot as primary estimator | Can the national environment be measured rather than inferred? | National geography row + `us_house_generic` office accepted by `validate_polls`; average built from `polling.average_polls`; specials demoted to `cross_check` with disagreement reported and never blended; at least one held-out cycle backtested before promotion to primary. | blocked on NE-000 |
 
 ## P1 — Feature Engineering
 
