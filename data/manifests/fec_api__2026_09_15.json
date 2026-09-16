@@ -1,0 +1,36 @@
+{
+  "acquired_at": "2026-09-16T01:02:24+00:00",
+  "acquisition_method": "api",
+  "checksum_sha256": "2d596be28cef5cc4b7791121f606a530ddc22c6e34191a29a81bbc9be582b9ed",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "OpenFEC candidate_totals \u2014 us_senate 2026",
+  "election_cycle": "2026",
+  "file_format": "json",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "FEC election_years is incomplete: Keith Self (TX-03) won in 2022 and 2024 but is listed as [2002, 2026], so a roster pull is not exhaustive. candidate_status and candidate_inactive describe the present, not the requested cycle. The district field tracks the candidate's last filing, not the seat contested.",
+  "license_or_terms": "U.S. federal government work; public domain. Attribution requested.",
+  "office_coverage": [
+    "us_senate"
+  ],
+  "owner": "project-owner (data steward)",
+  "permitted_use": "Aggregate nonpartisan analysis of candidate filings and campaign finance totals: race-level fundraising ratios, incumbent filing status, and the candidate_id join key.",
+  "privacy_tier": 0,
+  "prohibited_use": "Itemized contributor records (Schedule A) are out of scope and off the endpoint allowlist. Never use FEC data for solicitation, list-building, marketing, harassment, or commercial targeting (CLAUDE.md \u00a75).",
+  "raw_path": "data/raw/source=fec_api/dataset=candidate_totals/cycle=2026/fec_candidate_totals__us_senate__2026.json",
+  "redistribution_allowed": true,
+  "required_attribution": "Federal Election Commission, OpenFEC API (api.open.fec.gov).",
+  "review_date": "2027-09-15",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-09-15",
+  "source_id": "fec_api",
+  "source_owner": "Federal Election Commission",
+  "source_url": "https://api.open.fec.gov/v1",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

@@ -28,7 +28,7 @@ def _fitted_house_model() -> OLSModel:
     ).fit(train)
 
 
-def _roster() -> pd.DataFrame:
+def _roster(boundary: str = "unchanged") -> pd.DataFrame:
     return pd.DataFrame(
         {
             "office": ["us_house", "us_house", "us_house", "us_senate"],
@@ -38,8 +38,12 @@ def _roster() -> pd.DataFrame:
             "incumbent_party": ["DEMOCRAT", "REPUBLICAN", "DEMOCRAT", "OTHER"],
             "incumbent_name": ["A", "B", "C", "CYNTHIA M. LUMMIS"],
             "prior_dem_share": [0.55, 0.45, 0.90, 0.24],
+            "boundary_confidence": [boundary, boundary, boundary, "n/a"],
         }
     )
+
+
+_PRES_REF = pd.DataFrame({"state_po": ["GA"], "state_pres_lean": [-0.02]})
 
 
 def test_non_voting_delegates_are_excluded_from_the_projected_chamber():
@@ -138,6 +142,153 @@ def test_projections_never_claim_verified_incumbency():
     )
     assert cov["incumbency_verified"] is False
     assert out["incumbency_assumed"].all()
+
+
+# ---- RD-002: boundary routing -----------------------------------------------------------
+
+
+def test_unverified_boundaries_are_refused_by_default():
+    """The register (RD-001) is not compiled; a caller must opt in and the report must say so."""
+    with pytest.raises(projection.UnverifiedBoundaryError):
+        projection.project_house(
+            _roster("unverified"),
+            _fitted_house_model(),
+            national_dem_share=0.52,
+            lagged_national_dem_share=0.49,
+        )
+
+
+def test_a_roster_without_the_column_is_treated_as_unverified():
+    """An old roster cannot slip past the gate by omitting the column."""
+    roster = _roster().drop(columns=["boundary_confidence"])
+    with pytest.raises(projection.UnverifiedBoundaryError):
+        projection.project_house(
+            roster, _fitted_house_model(), national_dem_share=0.52, lagged_national_dem_share=0.49
+        )
+
+
+def test_opting_in_projects_unverified_seats_as_unchanged_and_counts_the_assumption():
+    model = _fitted_house_model()
+    verified, _ = projection.project_house(
+        _roster(), model, national_dem_share=0.52, lagged_national_dem_share=0.49
+    )
+    assumed, cov = projection.project_house(
+        _roster("unverified"),
+        model,
+        national_dem_share=0.52,
+        lagged_national_dem_share=0.49,
+        allow_unverified=True,
+    )
+    assert assumed["mean_dem_share"].tolist() == verified["mean_dem_share"].tolist()
+    assert set(assumed["source"]) == {"model_unverified"}
+    assert cov["boundaries_assumed_unchanged"] == 2
+
+
+def test_a_redrawn_seat_is_never_projected_from_its_old_number_prior():
+    """The plan's acceptance test: whatever a redrawn seat gets, it is not the model on the old prior."""
+    model = _fitted_house_model()
+    old, _ = projection.project_house(
+        _roster(), model, national_dem_share=0.52, lagged_national_dem_share=0.49
+    )
+    new, cov = projection.project_house(
+        _roster("redrawn"),
+        model,
+        national_dem_share=0.52,
+        lagged_national_dem_share=0.49,
+        resid_sigma=0.05,
+        pres_reference=_PRES_REF,
+        fallback_lean_sd=0.15,
+    )
+    assert set(new["source"]) == {"fallback_state_lean"}
+    # The old priors (0.55 / 0.45) describe different territory and must not survive; the
+    # only thing still separating the two Georgia seats is their incumbent's party.
+    assert not (new["mean_dem_share"].to_numpy() == old["mean_dem_share"].to_numpy()).any()
+    # Old-prior spread was 0.10 of lean; after routing, the spread is just the incumbency gap.
+    assert abs(new["mean_dem_share"].diff().iloc[-1]) < abs(old["mean_dem_share"].diff().iloc[-1])
+    assert cov["redrawn_states"] == ["GA"]
+    assert cov["seats_by_source"] == {"fallback_state_lean": 2}
+
+
+def test_the_fallback_sigma_is_wider_than_the_residual_and_measured_not_invented():
+    """sigma = hypot(resid, beta_lean * within-state sd) -- both inputs come from data."""
+    model = _fitted_house_model()
+    out, cov = projection.project_house(
+        _roster("redrawn"),
+        model,
+        national_dem_share=0.52,
+        lagged_national_dem_share=0.49,
+        resid_sigma=0.05,
+        pres_reference=_PRES_REF,
+        fallback_lean_sd=0.15,
+    )
+    beta = projection._lean_coefficient(model)
+    expected = (0.05**2 + (beta * 0.15) ** 2) ** 0.5
+    assert out["sigma"].unique().tolist() == pytest.approx([expected])
+    assert expected > 0.05
+    assert cov["fallback_sigma"] == pytest.approx(expected)
+
+
+def test_a_redrawn_seat_without_stated_uncertainty_is_an_error_not_a_default():
+    with pytest.raises(ValueError, match="fallback_lean_sd"):
+        projection.project_house(
+            _roster("redrawn"),
+            _fitted_house_model(),
+            national_dem_share=0.52,
+            lagged_national_dem_share=0.49,
+            pres_reference=_PRES_REF,
+        )
+
+
+def test_pending_is_routed_like_redrawn():
+    out, cov = projection.project_house(
+        _roster("pending"),
+        _fitted_house_model(),
+        national_dem_share=0.52,
+        lagged_national_dem_share=0.49,
+        pres_reference=_PRES_REF,
+        fallback_lean_sd=0.15,
+    )
+    assert set(out["source"]) == {"fallback_state_lean"}
+    assert cov["seats_by_boundary_confidence"] == {"pending": 2}
+
+
+def test_a_transferred_prior_is_preferred_over_the_fallback_and_needs_its_own_sigma():
+    """The Track C seam: a prior on the new boundaries routes to model_transferred."""
+    roster = _roster("redrawn")
+    roster[projection.TRANSFERRED_PRIOR_COLUMN] = [0.60, None, None, None]
+    with pytest.raises(ValueError, match="transfer_sigma"):
+        projection.project_house(
+            roster,
+            _fitted_house_model(),
+            national_dem_share=0.52,
+            lagged_national_dem_share=0.49,
+            pres_reference=_PRES_REF,
+            fallback_lean_sd=0.15,
+        )
+    out, cov = projection.project_house(
+        roster,
+        _fitted_house_model(),
+        national_dem_share=0.52,
+        lagged_national_dem_share=0.49,
+        pres_reference=_PRES_REF,
+        fallback_lean_sd=0.15,
+        transfer_sigma=0.03,
+    )
+    by_seat = out.set_index("geography_id")["source"]
+    assert by_seat["g1"] == "model_transferred"
+    assert by_seat["g2"] == "fallback_state_lean"
+    assert out.set_index("geography_id").loc["g1", "sigma"] < out.set_index("geography_id").loc["g2", "sigma"]
+    assert cov["seats_by_source"] == {"fallback_state_lean": 1, "model_transferred": 1}
+
+
+def test_an_unknown_confidence_value_is_rejected():
+    with pytest.raises(ValueError, match="unknown boundary_confidence"):
+        projection.project_house(
+            _roster("probably_fine"),
+            _fitted_house_model(),
+            national_dem_share=0.52,
+            lagged_national_dem_share=0.49,
+        )
 
 
 def test_uniform_swing_is_additive_and_separate_from_the_senate_model():

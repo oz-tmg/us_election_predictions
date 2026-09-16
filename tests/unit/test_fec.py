@@ -11,8 +11,8 @@ import json
 import pandas as pd
 import pytest
 
-from election_prediction.data.privacy import GovernanceError
 from election_prediction.data import acquire, fec
+from election_prediction.data.privacy import GovernanceError
 
 
 def _write(tmp_path, rows: list[dict], *, endpoint="/candidates/", cycle=2024):

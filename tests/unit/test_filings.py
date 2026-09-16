@@ -46,7 +46,9 @@ def test_a_matched_incumbent_is_filed_with_a_candidate_id():
 
 def test_an_unmatched_incumbent_is_not_found_and_never_called_retired():
     """Absence missed ~88% of 2022-24 House departures, so it cannot mean retirement."""
-    out = filings.resolve_incumbent_status(_universe([{"incumbent_name": "SOMEBODY ELSE"}]), _roster(), cycle=2026)
+    out = filings.resolve_incumbent_status(
+        _universe([{"incumbent_name": "SOMEBODY ELSE"}]), _roster(), cycle=2026
+    )
     row = out.iloc[0]
     assert row["incumbent_status"] == "not_found"
     assert "not evidence of either" in row["incumbent_status_evidence"]

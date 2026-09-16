@@ -134,7 +134,12 @@ def test_a_one_party_race_is_unusable_with_a_stated_reason():
 def test_misaligned_coverage_windows_make_a_race_unusable():
     """coverage_end_date is per candidate: December receipts vs September receipts."""
     out = fr.build_fundraising(
-        _pair(1_000_000, 1_000_000, dem={"coverage_end_date": "2024-12-31"}, rep={"coverage_end_date": "2024-06-30"})
+        _pair(
+            1_000_000,
+            1_000_000,
+            dem={"coverage_end_date": "2024-12-31"},
+            rep={"coverage_end_date": "2024-06-30"},
+        )
     )
     row = out.iloc[0]
     assert row["coverage_gap_days"] > fr.MAX_COVERAGE_GAP_DAYS
@@ -151,7 +156,12 @@ def test_a_missing_coverage_window_is_unusable_not_assumed_aligned():
 def test_post_election_coverage_is_flagged_because_it_leaks_the_outcome():
     """Winners raise after election day to retire debt; that inflates a backtest only."""
     out = fr.build_fundraising(
-        _pair(1_000_000, 1_000_000, dem={"coverage_end_date": "2024-12-31"}, rep={"coverage_end_date": "2024-12-31"})
+        _pair(
+            1_000_000,
+            1_000_000,
+            dem={"coverage_end_date": "2024-12-31"},
+            rep={"coverage_end_date": "2024-12-31"},
+        )
     )
     assert out.iloc[0]["post_election_coverage"]
     assert fr.validate_fundraising(out)["coverage.rows_post_election"] == 1
@@ -167,7 +177,12 @@ def test_a_pre_election_window_is_not_flagged():
 def test_a_senate_race_carries_no_district():
     """Keeping FEC's 00 would distinguish a state's two Senate classes by nothing."""
     out = fr.build_fundraising(
-        _pair(1_000_000, 1_000_000, dem={"office": "us_senate", "district_num": 0}, rep={"office": "us_senate", "district_num": 0})
+        _pair(
+            1_000_000,
+            1_000_000,
+            dem={"office": "us_senate", "district_num": 0},
+            rep={"office": "us_senate", "district_num": 0},
+        )
     )
     assert pd.isna(out.iloc[0]["district_num"])
 

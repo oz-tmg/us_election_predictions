@@ -159,9 +159,7 @@ def test_an_accent_does_not_break_a_match():
 
 def test_a_double_encoded_name_is_repaired():
     """46 names in silver cycle 2022 are UTF-8 read as Latin-1, then upper-cased."""
-    assert cc.name_key("JESÃ\x9aS G Â\x80\x9cCHUYÂ\x80\x9d GARCÃ\x8dA") == cc.name_key(
-        "GARCIA, JESUS G"
-    )
+    assert cc.name_key("JESÃ\x9aS G Â\x80\x9cCHUYÂ\x80\x9d GARCÃ\x8dA") == cc.name_key("GARCIA, JESUS G")
 
 
 def test_an_apostrophe_surname_normalizes_the_same_either_way():
