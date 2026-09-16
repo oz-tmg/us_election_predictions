@@ -1,7 +1,7 @@
 # National Environment: Architecture Plan
 
-_Drafted 2026-09-09. Supersedes the implicit design in which `shrinkage` was a number to
-be estimated later._
+_Drafted 2026-09-09; Track D added 2026-09-15. Supersedes the implicit design in which
+`shrinkage` was a number to be estimated later._
 
 ## The decision this document records
 
@@ -13,13 +13,16 @@ treating the sensitivity band as the output**, then reorganize the national-envi
 layer around an estimator that is identified — the generic ballot — with specials demoted
 to a cross-check.
 
-Three consequences follow, and they are the three tracks below.
+Three consequences follow, and they are the first three tracks below. A fourth track adds
+the estimator that none of the others supply: the one available a year out, when there are
+no specials and no generic ballot worth averaging.
 
 | Track | Item | What it changes | Gated on |
 |---|---|---|---|
 | A | NE-001 | The band becomes the contract, not a diagnostic printout | nothing |
 | B | NE-002 | Four historical pairs bound the band; they never fit it | hand compilation |
 | C | NE-003 | Generic ballot becomes primary; specials become a cross-check | NE-000 (legal) |
+| D | NE-004 | Economic fundamentals become a third estimator — a cross-check in midterms, the far-out estimator in presidential years | FRED/BEA/BLS registered; NE-001's contract |
 | — | NE-000 | Poll redistribution terms answered | a human reading terms |
 
 ---
@@ -232,6 +235,151 @@ because it invites exactly the false precision this plan exists to remove.
 
 ---
 
+## Track D — Economic fundamentals as a third estimator (NE-004)
+
+### The claim
+
+The economy's effect on the national vote is the best-established regularity in election
+forecasting, and this project does not model it. `docs/methodology.md` lists "GDP/income,
+inflation, consumer sentiment, party tenure" in one bullet; nothing in `src/` reads an
+economic series, no BEA/BLS/FRED source is registered, and the presidential baseline
+conditions on the *true* `national_dem_share` — the national vote is never forecast.
+
+The regularity is worth stating precisely, because the precise version is what the
+estimator should encode. Election-year growth in real income (and GDP), measured over the
+first half of the year, predicts the **incumbent president's party's** two-party share;
+the effect is stronger when the president is on the ballot, and weakens with the number
+of consecutive terms the party has held the White House (Fair; Abramowitz's "Time for
+Change"; Hibbs's "Bread and Peace"). In midterms, the economy's effect runs mostly
+through presidential approval and is smaller than the midterm penalty the House and
+Senate baselines already carry (Tufte).
+
+### What this track is not
+
+It is not a narrative fitted to the cycles everyone remembers. Two of the cases most
+often cited for the economy-decides-elections story are famous misses of exactly this
+class of model: **1992** (the recession ended in March 1991; Q2–Q3 1992 real growth was
+~4%; Fair's model predicted a Bush win) and **2000** (strong Q2 growth; fundamentals models
+predicted a comfortable Gore popular-vote win; he won it by half a point and lost the
+Electoral College). 2008 is the clean case. 2020 held the sign but not the magnitude:
+Q2 GDP fell ~31% annualized, rebounded ~33% in Q3, and the incumbent lost the two-party
+vote by ~4.5 points while raising his own vote share over 2016.
+
+The honest picture is a robust *direction*, an uncertain *magnitude*, and a sample of
+**13 presidential cycles in this project's own returns** (1976–2024) — nineteen if a
+pre-1976 national-vote source is registered. That is the same shape of problem as
+shrinkage: a parameter that n cannot pin down and that a story will pin down for you if
+the architecture lets it. The guards below exist for that reason.
+
+### Architecture
+
+**Ingestion.** Add `data/fred.py`: FRED API (`FRED_API_KEY`, same `.env` discipline as
+Census and FEC), pulling a fixed, documented series list into `data/raw/` with query
+date in the filename and a manifest. Register each series in `docs/dataset-registry.md`
+before use (CLAUDE.md §7) — all Tier 0. First-pass series:
+
+| Series | Source via FRED | Role |
+|---|---|---|
+| Real disposable personal income per capita (`A229RX0`) | BEA | Primary growth measure (Hibbs; Fair's "growth") |
+| Real GDP (`GDPC1`) | BEA | Secondary growth measure |
+| Unemployment rate (`UNRATE`) | BLS | Change over the election year |
+| CPI-U (`CPIAUCSL`) | BLS | Election-year inflation |
+| Consumer sentiment (`UMCSENT`) | U. Michigan | Perceived economy — the 1992 lesson |
+
+Presidential approval is deliberately **not** in the first pass: it is the strongest
+midterm predictor, but its redistribution terms are the same question as NE-000 and it
+should be gated the same way.
+
+**Vintages are the measurement trap.** Q2 GDP's advance estimate is released in late July
+and revised for years; a forecast issued in September should use the number that existed
+in September, not the one revised in 2028. FRED's ALFRED endpoint serves as-of vintages.
+Every panel row must carry `data_vintage`, and the backtest must be run on real-time
+vintages, or it is measuring a quantity no forecaster could have used. Record the vintage
+policy in the registry row.
+
+**Panel.** Add `features/national_fundamentals.py` building one row per presidential
+cycle (and, separately, per midterm):
+
+```
+cycle, incumbent_party, president_on_ballot, consecutive_terms,
+h1_rdi_growth, h1_gdp_growth, unemployment_change_12m, cpi_yoy, sentiment_q2,
+data_vintage, incumbent_party_two_party_share
+```
+
+The target is the **incumbent party's** share, not the Democratic share. The estimator is
+sign-agnostic by construction: no feature is defined by party, and the mapping to
+`national_dem_share` happens once, at the end, through `_white_house_party` (already in
+`models/baseline/senate.py`). This is the nonpartisanship rule (CLAUDE.md §2.1) made
+structural rather than asserted.
+
+**Estimator.** `national_environment.from_fundamentals(panel, *, cycle, as_of)` returns the
+Track A contract with `status: "point"`, `identified: True`, and `sigma` taken from the
+leave-one-cycle-out residuals — which will be wide, and which is reported, not tuned.
+Specification is fixed in advance and small: one growth term, `president_on_ballot`,
+`consecutive_terms`. Adding indicators is a *new* specification requiring a *new*
+held-out comparison, not a refinement.
+
+**Pre-registered decisions (2026-09-15, before any backtest has run):**
+
+- *Growth term:* **H1 real disposable personal income per capita**, annualized. Q2 real
+  GDP is the one documented sensitivity. The reason is 1992: headline output had recovered
+  while real income had not, and income is the quantity a voter experiences.
+- *Panel depth:* extend **before 1976, but only as far back as a real-time vintage of the
+  growth term exists** — the boundary is set by data honesty, not by preference. The
+  Philadelphia Fed Real-Time Data Set for Macroeconomists carries real-output vintages
+  from 1965Q4, which would make **1968 the earliest cycle** (n = 15); if real-time
+  disposable-income vintages do not reach that far, the pre-1976 rows carry the GDP
+  sensitivity term only and say so. 1948 is explicitly out: revised-data rows would
+  measure a quantity no forecaster could have used. The pre-1976 national two-party vote
+  needs its own registered source (MEDSL starts in 1976; ICPSR's historical constituency
+  totals are the candidate), registered before use like everything else.
+
+**Role by cycle type.** In a **midterm** (2026) it is a third cross-check through the
+existing `cross_check(primary, ...)` — never blended with specials or the generic ballot,
+disagreement reported. In a **presidential** year it is the only national estimator
+available before polls mean anything, which is the reason the track exists: 2028 is
+where this earns its keep, and 2026 is where it gets backtested in public.
+
+### Acceptance criteria
+
+- FRED series registered (license, vintage policy, attribution) before any pull; pulls
+  land with manifests and query-dated filenames.
+- A panel with real-time vintages for every cycle 1976–2024, and a test that fails if any
+  row lacks `data_vintage`.
+- Leave-one-cycle-out MAE and 90% coverage reported against **two** comparators: naive
+  persistence (last cycle's national two-party share) and, for midterms, the midterm
+  penalty alone.
+- The estimator's output is the incumbent-party share; a test asserts that flipping the
+  White House party in the panel flips the sign of the Democratic mapping and nothing else.
+- `cross_check` output for 2026 includes the fundamentals estimate alongside specials.
+
+### Decision gate
+
+**It is a cross-check until it beats persistence on held-out cycles, and it is never the
+primary estimator in a midterm.** In a presidential year it may be primary only until
+the generic ballot or a poll average is available and has itself been backtested, at
+which point it becomes the cross-check. A fundamentals estimate that has beaten
+persistence on 13 cycles is still a 13-cycle result; its sigma says so.
+
+### What would falsify this track
+
+If leave-one-cycle-out MAE is not better than persistence — or is better only under a
+specification chosen after looking at the residuals — the track closes with the negative
+result written up, and the fundamentals estimate stays in the report as a labelled
+cross-check with its honest sigma. Do not add series, lags, or interaction terms in search
+of a fit; with n = 13 the garden of forking paths is the whole garden. Decide the
+comparison metric and the specification **before** the first backtest runs, and record
+both in this document.
+
+### Cost
+
+Small in compute and data: the FRED API is free with a key, the panel is a few dozen
+rows, and the backtest runs in seconds. The cost is discipline — the vintage handling and
+the pre-registered specification are what separate this from a curve-fit to five
+memorable elections.
+
+---
+
 ## Sequencing
 
 1. **NE-000 (legal) and NE-001 (band contract) start immediately and in parallel.** NE-001
@@ -241,9 +389,14 @@ because it invites exactly the false precision this plan exists to remove.
    not a prerequisite.
 3. **NE-003 begins when NE-000 returns.** If the answer permits storage, the schema and
    manifest work is small; the backtest is the long pole.
-4. **NE-002 and NE-003 are not competitors.** If the generic ballot becomes primary, the
-   historical pairs still bound the cross-check — the band does not stop being reported
-   just because something better exists next to it.
+4. **NE-004 begins after NE-001 lands** — it needs the contract to return into — and
+   after its FRED series are registered. Its 2026 role is cross-check only, so it is not
+   on the critical path for the current projection; its 2028 role is why it should not
+   wait until 2028.
+5. **None of B, C, and D are competitors.** If the generic ballot becomes primary, the
+   historical pairs still bound the specials cross-check and the fundamentals estimate
+   still appears beside it — the band does not stop being reported just because
+   something better exists next to it.
 
 ## Open questions
 
@@ -254,3 +407,7 @@ because it invites exactly the false precision this plan exists to remove.
 - Whether a pooled cross-era swing ratio or uniform swing is the better interim
   assumption for the 2022 plan era. Both are assumptions; the choice should be made on
   which is easier for a reader to reason about, since neither is estimable.
+- ~~Panel depth and growth term for NE-004~~ — decided 2026-09-15; see Track D
+  "Pre-registered decisions". Remaining sub-question: whether real-time disposable-income
+  vintages exist before 1976, which determines whether the 1968–1972 rows carry the
+  primary term or only the sensitivity term.
