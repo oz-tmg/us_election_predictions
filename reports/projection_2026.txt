@@ -1,3 +1,4 @@
+national environment: specials_band (status=band, identified=False)
 specials: n=8  mean overperformance +0.1877 (se 0.0220)
 2024 House national two-party Dem share: 0.4922
 
@@ -26,6 +27,11 @@ house seats projected: 435/435   senate seats up: 33
       0.50     0.5392             237.0      161.0       338.0        0.619              17.2            49.2      0.357
       0.75     0.5626             250.4      175.0       357.0        0.712              18.7            50.7      0.450
       1.00     0.5861             264.4      187.0       373.0        0.792              20.1            52.1      0.545
+
+House: Democrats favored at every assumption in the band (P(control) 0.518–0.792).
+Senate: control depends on the assumption -- Democrats favored only at shrinkage=1 (P(Dem control) 0.272–0.545). The band cannot resolve this chamber; narrowing it (NE-002) or an identified estimator (NE-003) would.
+
+band written to reports/national_environment_2026-09-15.json
 
 incumbency: 458 sitting members have an FEC filing for 2026; 10 were not found in the roster (not spelled 'retired': absence misses most departures). Renomination is assumed for all -- primaries are not compiled.
 district boundaries: {'unverified': 435}   projected by source: {'model_unverified': 435}

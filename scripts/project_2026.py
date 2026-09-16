@@ -7,7 +7,9 @@ reproducible from a clean checkout once ``ep-build-p1`` has run.
 
 from __future__ import annotations
 
+import json
 import sys
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -17,13 +19,18 @@ sys.path.insert(0, "src")
 from election_prediction.data import special_elections as se  # noqa: E402
 from election_prediction.models import simulation  # noqa: E402
 from election_prediction.models.baseline import house, projection, senate  # noqa: E402
+from election_prediction.models.baseline import national_environment as ne  # noqa: E402
 
 GOLD = "data/gold"
+REPORTS = "reports"
 N_SIMS = 20_000
 
 
 def main() -> None:
-    # ---- national environment from specials -------------------------------
+    # ---- national environment: the estimator contract (NE-001) --------------
+    # The specials mean enters through ``national_environment.from_specials`` as a *band*
+    # over the shrinkage factor, never as a point: ``projectable`` refuses an unidentified
+    # point, so the loop below iterates a contract rather than a specials-specific frame.
     specials = se.compute_overperformance(se.read_compiled("data/reference/special_elections_2025_2026.csv"))
     est = se.national_environment_estimate(specials)
 
@@ -31,14 +38,21 @@ def main() -> None:
     nat = house_panel.groupby("cycle")["national_dem_share"].first()
     base_2024 = float(nat.loc[2024])
 
-    sweep = se.shrinkage_sensitivity(est, baseline_national_dem_share=base_2024)
+    env = ne.from_specials(
+        est,
+        baseline_national_dem_share=base_2024,
+        snapshot_date=str(specials["retrieved_on"].max()) if "retrieved_on" in specials else None,
+    )
+    sweep = ne.projectable(env)
+    prov = env.provenance
     print(
-        f"specials: n={est['n']}  mean overperformance {est['mean_overperformance']:+.4f} "
-        f"(se {est['std_error']:.4f})"
+        f"national environment: {env.estimator} (status={env.status}, identified={env.identified})\n"
+        f"specials: n={prov['n']}  mean overperformance {prov['mean_overperformance']:+.4f} "
+        f"(se {prov['std_error']:.4f})"
     )
     print(f"2024 House national two-party Dem share: {base_2024:.4f}\n")
     print("implied national environment by shrinkage factor")
-    print(sweep.round(4).to_string(index=False))
+    print(sweep.drop(columns=["assumption"]).round(4).to_string(index=False))
 
     # ---- fit the models on all history -----------------------------------
     hmodel = house.fit_full(house_panel)
@@ -145,6 +159,7 @@ def main() -> None:
         ssim = _simulate(sproj, total_seats=100, holdover_dem=dem_holdovers)
         rows.append(
             {
+                "assumption": s["assumption"],
                 "shrinkage": s["shrinkage"],
                 "nat_share": round(float(s["national_dem_share"]), 4),
                 "house_mean_seats": round(hsim["mean_dem_seats"], 1),
@@ -156,11 +171,38 @@ def main() -> None:
                 "sen_p_dem": round(ssim["p_dem_control"], 3),
             }
         )
+    results = pd.DataFrame(rows)
     print(
         f"\nhouse seats projected: {hcov['seats_projected']}/{hcov['seats_in_roster']}"
         f"   senate seats up: {scov['seats_projected']}\n"
     )
-    print(pd.DataFrame(rows).to_string(index=False))
+    print(results.drop(columns=["assumption"]).to_string(index=False))
+
+    # ---- band-level conclusions, as text (NE-001 acceptance criterion) -------
+    # The band is the output. What it says about control is stated, not left for the
+    # reader to infer from the table -- and a flip inside the band is named as such.
+    conclusions = [
+        ne.control_conclusion(results, chamber="House", p_column="house_p_dem"),
+        ne.control_conclusion(results, chamber="Senate", p_column="sen_p_dem"),
+    ]
+    print()
+    for line in conclusions:
+        print(line)
+
+    # Machine-readable sibling so the band can be diffed across runs rather than re-read
+    # from formatted text.
+    stamp = date.today().isoformat()
+    payload = {
+        "generated_on": stamp,
+        "national_environment": env.to_dict(),
+        "band_results": results.to_dict(orient="records"),
+        "conclusions": conclusions,
+        "house_coverage": hcov,
+        "senate_coverage": scov,
+    }
+    out_path = Path(REPORTS) / f"national_environment_{stamp}.json"
+    out_path.write_text(json.dumps(payload, indent=2, default=str))
+    print(f"\nband written to {out_path}")
     status = universe["incumbent_status"].value_counts().to_dict()
     filed, not_found = status.get("filed", 0), status.get("not_found", 0)
     if filed:
