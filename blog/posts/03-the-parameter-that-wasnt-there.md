@@ -2,7 +2,7 @@
 
 *I had eight data points, a question that needed a ninth, and a function signature that wanted a default value. This is about why I deleted the default.*
 
-**Savepoint Analytics · US Election Analysis · modelled projection, not published as a forecast · snapshot 2026-09-15**
+**Savepoint Analytics · US Election Analysis · modelled projection, not published as a forecast · snapshot 2026-09-30**
 
 ---
 
@@ -85,11 +85,11 @@ So the output is a sweep. Here is the whole thing:
 
 | Assumed shrinkage | National Dem share | House mean seats | House 90% range | P(Dem House) | P(Dem Senate) |
 |---:|---:|---:|---:|---:|---:|
-| 0.25 | 51.6% | 224.2 | 146–318 | 51.8% | 27.2% |
-| 0.33 | 52.3% | 228.3 | 151–325 | 55.1% | 29.8% |
-| 0.50 | 53.9% | 237.0 | 161–338 | 61.9% | 35.7% |
-| 0.75 | 56.3% | 250.4 | 175–357 | 71.2% | 45.0% |
-| 1.00 | 58.6% | 264.4 | 187–373 | 79.2% | 54.5% |
+| 0.25 | 51.6% | 228.2 | 117–352 | 53.6% | 27.2% |
+| 0.33 | 52.3% | 233.1 | 122–357 | 56.2% | 29.8% |
+| 0.50 | 53.9% | 243.6 | 132–368 | 62.0% | 35.7% |
+| 0.75 | 56.3% | 259.3 | 148–383 | 70.1% | 45.0% |
+| 1.00 | 58.6% | 275.1 | 162–395 | 77.0% | 54.5% |
 
 *Margin swing is halved to convert to a share, so a shrinkage of 1.0 applies the full +18.77-point specials margin to the 2024 House baseline of 49.2%.*
 
@@ -97,7 +97,7 @@ So the output is a sweep. Here is the whole thing:
 
 Two things, and only two.
 
-**On the House, the band has a verdict.** Democrats are favoured at every assumption in it — P(control) runs from 51.8% to 79.2%, and never crosses 0.5. That conclusion is robust to the thing I do not know. It is also much weaker than any individual number in that column sounds: "somewhere between a coin flip and a strong favourite" is the honest translation.
+**On the House, the band has a verdict.** Democrats are favoured at every assumption in it — P(control) runs from 53.6% to 77.0%, and never crosses 0.5. That conclusion is robust to the thing I do not know. It is also much weaker than any individual number in that column sounds: "somewhere between a coin flip and a strong favourite" is the honest translation.
 
 **On the Senate, the band has no verdict, and that is the finding.** P(Democratic control) runs from 27.2% to 54.5%, straddling the coin flip. The chamber's outcome depends entirely on a parameter I cannot estimate. There is no responsible way to collapse that into a headline, and the report says so in text rather than leaving a reader to work it out from a table.
 

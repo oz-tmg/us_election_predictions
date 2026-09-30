@@ -2,7 +2,7 @@
 
 *The model runs. It produces a number. The number is wrong in a way I can describe precisely, which is the only reason I get to say so.*
 
-**Savepoint Analytics · US Election Analysis · modelled projection, withheld · snapshot 2026-09-15**
+**Savepoint Analytics · US Election Analysis · modelled projection, withheld · snapshot 2026-09-30**
 
 ---
 
@@ -30,17 +30,18 @@ Here is the output, and the first thing worth noticing is what it says in its ow
 
 ```
 house seats projected: 435/435   senate seats up: 33
-district boundaries: {'unverified': 435}
-projected by source: {'model_unverified': 435}
+district boundaries: {'redrawn': 173, 'unchanged': 262}
+projected by source: {'fallback_state_lean': 173, 'model': 262}
+litigation active: AL, LA, MO, TN
 ```
 
-Every single House seat carries `boundary_confidence = "unverified"`. Not "unchanged" — *unverified*. The model is explicitly recording that it does not know whether the territory behind each district number is the same territory that produced the result it is projecting from.
+Two hundred and sixty-two House seats are projected from their own 2024 result. One hundred and seventy-three are not allowed to be, because the territory behind those district numbers changed.
 
-That flag exists because of a design decision I want to dwell on, since it is the only reason this post can be written. The projection function **routes on boundary confidence**. Seats marked `unchanged` go to the model. Seats marked `redrawn` without a vote transfer are thrown off the model entirely — they do not get to keep their old-number prior, because that prior describes someone else's territory now — and fall back to a state-lean estimate with an inflated sigma, computed as `hypot(residual_sigma, β_lean × within-state lean sd)`, both inputs measured rather than assumed. And seats marked `unverified` **raise an exception** unless the caller explicitly passes `allow_unverified`.
+This footer is the second version. The first one read `{'unverified': 435}` — every seat flagged as *unknown*, not *unchanged*, because the model could not tell which districts had moved. Getting from that line to this one is what the rest of this post is about, and it is worth being precise that the two lines are different kinds of admission. The first says "I don't know." The second says "I know, and here is what it costs."
 
-The default behaviour of my own forecasting pipeline, when asked to project a seat whose boundaries it cannot vouch for, is to refuse and crash.
+The mechanism underneath both is a design decision I want to dwell on. The projection function **routes on boundary confidence**. Seats marked `unchanged` go to the model. Seats marked `redrawn` are thrown off the model entirely — they do not keep their old-number prior, because that prior describes someone else's territory now — and fall back to a state-lean estimate with an inflated sigma, computed as `hypot(residual_sigma, β_lean × within-state lean sd)`, both inputs measured rather than assumed. And seats marked `unverified` **raise an exception** unless the caller explicitly passes `allow_unverified`.
 
-I had to opt in to get the number above. That is the correct relationship between an analyst and a model.
+For weeks the only way to get a number out of this pipeline was to pass that flag. The default behaviour of my own forecasting code, asked to project a seat whose boundaries it could not vouch for, was to refuse and crash. That flag is now gone from the script, because the register answers the question the exception was asking.
 
 ## How much of the chamber is affected
 
@@ -64,7 +65,7 @@ I mention these because they are the reason the register had to be *researched* 
 
 Boundaries are the largest problem. They are not the only one.
 
-**The Senate band does not resolve.** As [the previous post](03-the-parameter-that-wasnt-there.md) lays out, the national environment is an unidentified band rather than an estimate, and Senate control sits inside it: P(Democratic control) runs from 27.2% to 54.5% across the swept assumption. It crosses the coin flip. There is no number in that range I could publish without the assumption doing the talking, and no defensible way to pick a point on it.
+**The Senate band does not resolve.** As [the previous post](03-the-parameter-that-wasnt-there.md) lays out, the national environment is an unidentified band rather than an estimate, and Senate control sits inside it: P(Democratic control) runs from 27.2% to 54.5% across the swept assumption — unchanged by everything below, because Senate races are statewide and have no district boundaries to get wrong. It crosses the coin flip. There is no number in that range I could publish without the assumption doing the talking, and no defensible way to pick a point on it.
 
 ![Chamber-control probability across the swept shrinkage assumption](../figures/fig-06-shrinkage-band.png)
 
@@ -82,18 +83,24 @@ And underneath all three: the incumbency layer assumes **renomination for everyb
 
 There is a version of this post where I have found a devastating flaw and heroically suppressed a bad number. That is not what happened, and I want to be accurate about the epistemics.
 
-**The model is probably not badly wrong on the top line.** Most of the nine redrawn states redrew in ways that shift a handful of seats, and the correlated simulation's uncertainty is wide enough — the House 90% range spans 146 to 318 seats at the low end of the band — that a boundary error of this size is likely inside the interval. If I published, I would probably not be embarrassed.
+**The boundary objection is the one I no longer have.** When this post was first drafted, the argument was that I could not state the forecast's error: 173 seats sat on territory the model could not vouch for, carrying an uncertainty term I had not measured and could not bound. That was true, and it is not true any more. The register says which seats moved, the routing discards their stale priors, and the cost is now a number rather than a worry.
 
-"Probably not embarrassed" is not a standard. The problem is not that the number is likely wrong; it is that **I cannot state its error**, and a forecast whose error cannot be characterised is not a forecast, it is an opinion with a decimal point. The entire value proposition of this project is that every number traces to a source and carries a stated uncertainty. A House probability built on 173 seats the model still treats as unverified territory has an uncertainty term I have not measured and cannot bound.
+Here is that number. Feeding sourced boundaries into the projection widened the House 90% seat range from an average of **178 seats to 235** — a 32% increase in stated uncertainty — because 173 seats swapped a fitted prior (sigma 0.112) for a state-lean fallback (sigma 0.145). At the low end of the shrinkage band the range went from 146–318 seats to **117–352**.
+
+That is the shape of an honest correction: the forecast did not get better, it got *wider*, and the widening is the part that was previously missing rather than wrong. A model that knows it is ignorant about 40% of the chamber produces a less impressive interval than one that doesn't, which is exactly why the second kind is more common.
+
+One counter-intuitive result fell out of it, and I want to record it because I did not predict it. The House **control probability band narrowed slightly** — from 51.8–79.2% to 53.6–77.0% — even as the seat range widened by a third. Wider per-seat uncertainty pulls extreme probabilities toward the coin flip from both directions, so a less certain seat forecast can produce a *more* stable control probability. Seat-count precision and probability precision are not the same quantity and do not have to move together.
+
+**So why is this still not published?** Because two objections survived. The Senate band straddles 0.5 and no amount of boundary work touches it — Senate races are statewide. And the party crosswalk is two seats wrong, below. Boundaries were the largest blocker and are now the smallest.
 
 **The second assumption is about what publication does.** A number in a report I can revise. A number on the internet with my name on it becomes a citation, gets screenshotted without its band, and outlives every caveat attached to it. In *The Boys*, Vought's entire business model is the distance between a measured quantity and the number that reaches the public, and the distance is created almost entirely by stripping context that was technically present in the source. I do not need a PR department to do that to my own work; a chart with a big number and a small footnote will do it unassisted.
 
 ## What I would change, in order
 
 1. ~~**Verify the register.**~~ Done — every row confirmed against an official state or court record, which is what surfaced the Alabama and Missouri corrections above.
-2. **Split litigation risk from boundary confidence.** Missouri broke the vocabulary. `boundary_confidence` should describe the relationship between this cycle's territory and last cycle's, given whichever plan is actually in effect. Whether litigation is live is a *separate* flag that the report prints and the routing ignores — otherwise a live case makes the model throw away a valid prior.
-3. **Do not let the register move the backtest.** Alabama, Louisiana and North Carolina also changed maps between 2022 and 2024, so consulting the register for historical cycles would break those lags and shift every downstream number. That may well be more correct. It is also a model refit, and mixing a boundary correction into the same change as a refit makes it impossible to attribute which one moved the result. The register applies forward first; history is its own change, with its own before-and-after.
-4. **Build the vote transfer and backtest it.** Allocate 2024 precinct results onto 2026 boundaries via census blocks, with three separate confidence components per district — unsplit share, old-district-majority share, ungeocoded share — that are never collapsed into a single score. Then backtest it on Virginia 2020→2022, where the answer is already known, against two comparators: no prior at all, and the state-lean fallback. The sigma for a transferred prior comes out of that backtest **measured**, not assumed. Until that number exists, a redrawn seat has no honest prior.
+2. ~~**Split litigation risk from boundary confidence.**~~ Done. `boundary_confidence` now describes territory alone; `litigation_risk` is a separate flag the report prints and the routing ignores. Missouri's live case no longer costs it eight valid priors. A test flips only that flag and asserts the priors come back byte-identical.
+3. ~~**Wire the register into the projection.**~~ Done — and it moved the backtest, deliberately. Alabama, Louisiana and North Carolina each changed maps between 2022 and 2024 too, so the register applies to history as well as forward. That cost 27 district-cycles their lag and dropped model seat coverage from 89.9% to 84.4%. It was landed as two commits — plumbing with history pinned, then the flip — so the refit stayed attributable. House MAE moved by −0.000088 and president and Senate came back bit-identical, which is how I know the change touched only what it was supposed to.
+4. **Build the vote transfer and backtest it.** This is now the whole game. Allocate 2024 precinct results onto 2026 boundaries via census blocks, with three separate confidence components per district — unsplit share, old-district-majority share, ungeocoded share — that are never collapsed into a single score. Then backtest it on Virginia 2020→2022, where the answer is already known, against two comparators: no prior at all, and the state-lean fallback. The sigma for a transferred prior comes out of that backtest **measured**, not assumed. Until that number exists, a redrawn seat has no honest prior.
 
 Only then does the House band get re-reported, with the redrawn-seat count and its treatment stated in the text.
 
@@ -107,7 +114,11 @@ Which is precisely why the refusal has to be **engineered in advance**, before a
 
 A model's most valuable output is occasionally a refusal. But refusals do not survive contact with a deadline unless they are load-bearing infrastructure — a raised exception, a required argument, a printed count — rather than a resolution.
 
-So: the model produced a 2026 projection. It says Democrats are favoured for the House across every assumption in the band and that the Senate is unresolvable. It is not a forecast, it is not published as one, and the specific things that would have to be true before it could be are enumerated above, in order, with the first one being a few hours of somebody reading state government websites.
+So: the model produced a 2026 projection. It says Democrats are favoured for the House across every assumption in the band, and that the Senate is unresolvable. It is not published as a forecast.
+
+But the reason has changed while I was writing, and I would rather say so than leave the original framing standing. Three of the four items above are done. The boundary problem — the one this post was built around — went from an unbounded unknown to a measured 32% widening of the interval. What is left is a Senate band that no boundary work can fix and a two-seat arithmetic error in the party crosswalk.
+
+The refusal was right when the error could not be stated. Now that it can, the honest position is narrower and less comfortable: the House band is defensible and the Senate one is not, and the decision about what to do with that is a judgement rather than a constraint. The infrastructure did its job — it held the line until the evidence arrived, and then it got out of the way.
 
 That is the least glamorous critical path I have ever written down, and it is the real one.
 

@@ -32,7 +32,23 @@ sometimes a refusal.
 | 2 | [The Control Rods All Had Graphite Tips](posts/02-the-control-rods-all-had-graphite-tips.md) | Correlated error, design effect, cluster randomisation, effective sample size | 4 | **Ready** |
 | 3 | [The Parameter That Wasn't There](posts/03-the-parameter-that-wasnt-there.md) | Identification vs. sample size, sensitivity bands, pre-registration, data vintage | 5, 6 | **Ready** |
 | 4 | [Thirty-Four Races That Do Not Add Up](posts/04-thirty-four-races-that-do-not-add-up.md) | Exclusion criteria as researcher degrees of freedom, sensitivity analysis | 7 | **Ready** |
-| 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal | 6 | **Ready** |
+| 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal, and retiring it when the evidence arrives | 6 | **Ready** |
+
+### Post 5 was revised when its own premise expired
+
+The post was written while all 435 House seats carried `boundary_confidence = "unverified"`
+and the projection could only run behind an `allow_unverified` opt-in. Both are now false:
+the register supplies sourced confidence for every seat (262 `unchanged`, 173 `redrawn`),
+and the opt-in has been deleted from `scripts/project_2026.py`.
+
+Rather than patch the numbers around the old framing, the argument was re-grounded. The
+boundary objection — "I cannot state this forecast's error" — is retired and replaced with
+the measured cost of fixing it: the House 90% seat range widened from an average of 178 to
+235 seats (+32%), while the control-probability band *narrowed* from 51.8–79.2% to
+53.6–77.0%. The post now ends on the uncomfortable version: two of the original objections
+survive, the boundary one does not, and what remains is a judgement rather than a
+constraint. That is a better post than the one it replaced, and it is only available
+because the work got done.
 
 ### The sixth post is now unblocked
 

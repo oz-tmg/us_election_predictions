@@ -123,9 +123,11 @@ def main() -> None:
     # ---- district boundaries (RD-002) ----------------------------------------
     # A redrawn seat that has no prior on its new boundaries is projected from its state's
     # lean with a sigma widened by how much district leans vary *within* a state -- measured
-    # from the latest cycle's panel, not assumed. Until the plan-version register (RD-001)
-    # is compiled every House row is ``unverified``; opting in projects them as unchanged,
-    # and that assumption is printed with the incumbency one below.
+    # from the latest cycle's panel, not assumed. The plan-version register (RD-001) now
+    # supplies every House row's boundary_confidence, so `allow_unverified` is gone: a seat
+    # in a redrawn state loses its old-number prior instead of being silently projected as
+    # unchanged. If the register were ever missing, project_house would refuse outright,
+    # which is the behaviour we want.
     latest = house_panel[house_panel["cycle"] == house_panel["cycle"].max()].dropna(subset=["district_lean"])
     within = latest["district_lean"] - latest.groupby("state_po")["district_lean"].transform("mean")
     fallback_lean_sd = float((within**2).mean() ** 0.5)
@@ -141,7 +143,6 @@ def main() -> None:
             resid_sigma=hsigma,
             pres_reference=pres_ref,
             fallback_lean_sd=fallback_lean_sd,
-            allow_unverified=True,
         )
         hsim = _simulate(hproj, total_seats=house.VOTING_SEATS)
 
@@ -220,18 +221,28 @@ def main() -> None:
     print(f"district boundaries: {by_conf}   projected by source: {by_src}")
     if hcov["boundaries_assumed_unchanged"]:
         print(
-            f"boundaries assumed unchanged (not verified): {hcov['boundaries_assumed_unchanged']} House "
+            f"boundaries assumed unchanged (NOT verified): {hcov['boundaries_assumed_unchanged']} House "
             "seats are projected from their 2024 result on the assumption that the district is the same "
-            "territory. Several states use a different congressional map in 2026 than in 2024; until the "
-            "plan-version register (RD-001) is compiled this projection cannot tell which. "
-            "See docs/redistricting-change-plan.md."
+            "territory. The plan-version register (RD-001) should have supplied this; seeing it here "
+            "means the register was not loaded. See docs/redistricting-change-plan.md."
         )
     if hcov["redrawn_states"]:
+        n_redrawn = hcov["seats_by_boundary_confidence"].get("redrawn", 0)
         print(
-            f"redrawn/pending states: {', '.join(hcov['redrawn_states'])} -- seats without a transferred "
-            f"prior use the state presidential lean with sigma {hcov['fallback_sigma']:.4f} "
+            f"redrawn states (sourced, RD-001): {', '.join(hcov['redrawn_states'])} -- {n_redrawn} seats. "
+            "These use a different congressional map in 2026 than in 2024, so their 2024 result describes "
+            "different territory and is discarded rather than reused. With no transferred prior (RD-003 "
+            f"open) each falls back to its state's presidential lean with sigma {hcov['fallback_sigma']:.4f} "
             f"(residual {hcov['resid_sigma']:.4f} widened by within-state lean sd "
             f"{hcov['fallback_lean_sd']:.4f})."
+        )
+    if hcov.get("litigation_active_states"):
+        print(
+            f"litigation active: {', '.join(hcov['litigation_active_states'])} -- a court could still move "
+            "these maps before election day. This is reported, not routed on: it says nothing about whether "
+            "this cycle's territory matches last cycle's. Missouri is the case in point -- it is enjoined "
+            "from using its 2025 map and votes its 2022 map, so its territory is unchanged and its prior "
+            "is valid."
         )
 
 

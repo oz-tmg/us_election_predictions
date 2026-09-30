@@ -118,7 +118,7 @@ Everything above is a backtest. This is the forward-looking scaffold: which seat
 - appointed incumbents filling a vacancy
 - governor (returns not ingested; MEDSL splits them by year and geography level)
 - special elections (off-schedule by definition)
-- post-2022 mid-decade redistricting (F-008 open)
+- primary outcomes and renomination (boundary_confidence is sourced; candidacy is not)
 
 ## Quarantine sensitivity
 

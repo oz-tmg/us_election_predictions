@@ -128,7 +128,11 @@ def load_p1() -> dict:
 
 
 def load_band() -> dict:
-    return json.loads((REPORTS / "national_environment_2026-09-15.json").read_text())
+    """Newest committed band. Dated filenames are the audit trail; the figure tracks head."""
+    files = sorted(REPORTS.glob("national_environment_*.json"))
+    if not files:
+        raise FileNotFoundError("no reports/national_environment_*.json; run scripts/project_2026.py")
+    return json.loads(files[-1].read_text())
 
 
 # --------------------------------------------------------------------------------------
@@ -480,7 +484,7 @@ def fig06_band(band: dict) -> None:
         "general election. So the x-axis is an assumption we sweep, not a parameter we fitted. Read the whole line.",
         footer="Modelled projection for 2026-11-03, NOT published as a forecast · n = 8 compiled special elections, 2025-04-01 to 2026-06-16\n"
         "Uncertainty: shrinkage is an assumption with no historical calibration; plotted standard errors cover sampling across specials only.\n"
-        "All 435 House seats carry boundary_confidence = unverified. Source: compiled specials + MEDSL certified returns. Snapshot 2026-09-15.",
+        "All 435 House seats carry boundary_confidence = unverified. Source: compiled specials + MEDSL certified returns. Snapshot 2026-09-30.",
     )
     _frame(ax1)
     ax1.axhline(0.5, color=BASELINE, lw=1.4, ls=(0, (4, 3)), zorder=2)

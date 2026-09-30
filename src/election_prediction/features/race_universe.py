@@ -28,11 +28,22 @@ What is **not** derivable and is therefore left explicitly unknown rather than g
 * **Vacancies and appointments.** A seat whose holder resigned or died carries the last
   *elected* winner; returns cannot show a subsequent appointment.
 
-**Mid-decade redistricting is a live caveat for the House.** ``plan_era`` treats
-2022-2030 as one map, but several states have redrawn congressional maps since 2022. A
-2026 district keyed to its 2022-era number may not be the same territory. F-008
-(redistricting change / crosswalk confidence) is still open, and until it lands the
-House rows carry ``boundary_confidence = "unverified"``.
+**Mid-decade redistricting was a live caveat for the House and is now a sourced fact.**
+Every House row's ``boundary_confidence`` comes from the plan-version register (RD-001)
+via ``features.plan_versions``: ``unchanged`` where the territory behind the district
+number is the territory that produced its prior, ``redrawn`` where it is not. Nine states
+use a different congressional map in November 2026 than in 2024 — AL, CA, FL, LA, NC, OH,
+TN, TX, UT, 173 of 435 seats. Those seats may not be projected from their old-number prior
+at all (RD-002).
+
+``litigation_risk`` rides alongside and is deliberately *not* part of that judgement.
+Missouri is why: it enacted a 2025 map, is enjoined from using it, and votes its 2022 map
+in the general, so its territory is ``unchanged`` and its prior is valid even though its
+litigation is live.
+
+Without a register the builder falls back to ``boundary_confidence = "unverified"``, which
+``project_house`` refuses by default. That is the correct failure: a caller with no sourced
+map information should not get a silent guess.
 """
 
 from __future__ import annotations
@@ -43,6 +54,7 @@ import pandas as pd
 
 from ..models.baseline.house import NON_VOTING_JURISDICTIONS, VOTING_SEATS
 from .incumbency import TERM_YEARS, plan_era
+from .plan_versions import BOUNDARY_UNVERIFIED, LITIGATION_NONE
 
 CYCLE_TABLE_COLUMNS = [
     "cycle",
@@ -72,6 +84,7 @@ UNIVERSE_COLUMNS = [
     "prior_source",
     "incumbent_source",
     "boundary_confidence",
+    "litigation_risk",
 ]
 
 
@@ -233,12 +246,17 @@ def build_race_universe(
     *,
     cycle: int,
     seat_universe: pd.DataFrame | None = None,
+    plans: object | None = None,
 ) -> tuple[pd.DataFrame, dict]:
     """One row per federal seat on the ballot in ``cycle``, with its current holder.
 
     ``seat_universe`` is the House chamber built by ``models.baseline.house`` — passing
     it keeps the forecast and the race universe on the same 435 seats rather than two
     independently derived lists that can silently disagree.
+
+    ``plans`` is a ``features.plan_versions.PlanVersions``. With one, every House row gets a
+    sourced ``boundary_confidence`` and ``litigation_risk``; without one they fall back to
+    ``unverified``, which the projection refuses by default.
     """
     day = election_day(cycle)
     rows = []
@@ -266,7 +284,14 @@ def build_race_universe(
             house_winners.drop(columns=["state_po", "district_num"]), on="geography_id", how="left"
         )
         house["office"] = "us_house"
-        house["boundary_confidence"] = "unverified"  # mid-decade redraws; F-008 open
+        if plans is None:
+            # No sourced map information: say so rather than guessing. project_house refuses.
+            house["boundary_confidence"] = BOUNDARY_UNVERIFIED
+            house["litigation_risk"] = LITIGATION_NONE
+        else:
+            annotated = plans.annotate(house[["state_po"]], cycle=cycle, term=TERM_YEARS["us_house"])
+            house["boundary_confidence"] = annotated["boundary_confidence"].to_numpy()
+            house["litigation_risk"] = annotated["litigation_risk"].to_numpy()
         rows.append(house)
 
     # ---- Senate: the class whose term expires ----------------------------
@@ -275,6 +300,7 @@ def build_race_universe(
     senate = senate_winners[senate_winners["state_po"].isin(states)].copy()
     senate["office"] = "us_senate"
     senate["boundary_confidence"] = "n/a"  # statewide; no boundary risk
+    senate["litigation_risk"] = LITIGATION_NONE
     rows.append(senate)
 
     universe = pd.concat(rows, ignore_index=True)
@@ -329,6 +355,24 @@ def build_race_universe(
         # counted rather than hidden, because an unresolved party silently becomes a
         # third-party seat in any downstream count.
         "party_unresolved": int((universe["incumbent_party"] == "OTHER").sum()),
+        # Sourced from the plan-version register (RD-001), not assumed from the decade.
+        "house_by_boundary_confidence": (
+            universe.loc[universe["office"] == "us_house", "boundary_confidence"]
+            .value_counts()
+            .sort_index()
+            .to_dict()
+        ),
+        "redrawn_states": sorted(
+            universe.loc[
+                (universe["office"] == "us_house") & (universe["boundary_confidence"] == "redrawn"),
+                "state_po",
+            ]
+            .unique()
+            .tolist()
+        ),
+        "litigation_active_states": sorted(
+            universe.loc[universe["litigation_risk"] == "active", "state_po"].unique().tolist()
+        ),
         # Stated so a consumer cannot mistake this for a candidate list.
         "not_derivable": [
             "candidate filings / who is actually running (needs fec_api — registered, key required)",
@@ -336,7 +380,7 @@ def build_race_universe(
             "appointed incumbents filling a vacancy",
             "governor (returns not ingested; MEDSL splits them by year and geography level)",
             "special elections (off-schedule by definition)",
-            "post-2022 mid-decade redistricting (F-008 open)",
+            "primary outcomes and renomination (boundary_confidence is sourced; candidacy is not)",
         ],
     }
     return universe.reset_index(drop=True), coverage

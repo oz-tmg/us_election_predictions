@@ -381,6 +381,7 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         race_table,
         cycle=next_cycle,
         seat_universe=universe if len(house_preds) else None,
+        plans=plans,
     )
     universe_2026.to_parquet(gold_dir / f"race_universe_{next_cycle}.parquet", index=False)
 

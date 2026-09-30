@@ -13,7 +13,8 @@ enacted or were ordered into new congressional maps between 2024 and 2026, and u
 `plan_era` a redrawn district's 2024 result silently becomes its 2026 prior.
 
 The code already knows this. `race_universe.py` stamps every House row
-`boundary_confidence = "unverified"` and lists "post-2022 mid-decade redistricting" under
+`boundary_confidence = "unverified"` (now sourced from the register) and listed
+"post-2022 mid-decade redistricting" under
 `not_derivable`. But `projection.project_house` never reads that column, and
 `reports/projection_2026.txt` prints 435 projected seats with no boundary caveat. The flag
 exists; nothing consumes it.
@@ -99,8 +100,11 @@ compilation to a dozen rows rather than fifty.
 
 ### Acceptance criteria
 
-- No 2026 House row carries `boundary_confidence = "unverified"` once the register is
-  compiled; each `redrawn`/`pending` row traces to a `source_url`.
+- ✅ **Done 2026-09-30.** No 2026 House row carries `boundary_confidence = "unverified"`:
+  `features/race_universe.py` sources every row from the register via
+  `features/plan_versions.py`, and each `redrawn` row traces to a `source_url` and a
+  `verified_by`. `scripts/project_2026.py` no longer passes `allow_unverified`. The
+  `pending` value was retired — see the territory/litigation split below.
 - ~~`plan_id` for every 1976–2024 row equals the decennial default (a test pins this, so
   adding the register cannot move the backtest).~~ **Superseded 2026-09-30.** The register
   applies to every cycle, history included: AL, LA and NC each changed maps between 2022
