@@ -28,7 +28,7 @@ from .data import acquire, acs, source_validation
 from .data.manifest import SourceManifest
 from .data.privacy import PrivacyTier
 from .evaluation import forecast_eval
-from .features import fundamentals, race_universe
+from .features import fundamentals, plan_versions, race_universe
 from .features import incumbency as incumbency_features
 from .features.race_table import build_race_table
 from .geography import reference as geography_reference
@@ -300,9 +300,16 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
         latest = preds_demo[preds_demo["cycle"] == preds_demo["cycle"].max()]
         pres_sim = simulation.simulate_presidential(latest)
 
+    # ---- plan-version register (RD-001) ---------------------------------
+    # Sourced per-state map identity. Consulted for every cycle, including history
+    # (decision 2026-09-30): AL, LA and NC changed maps between 2022 and 2024, so the
+    # decennial assumption gave those districts a lag across changed territory.
+    plans = plan_versions.PlanVersions.load()
+    plan_report = plan_versions.validate_plan_versions(plans.register, cycles=[2022, 2024, 2026])
+
     # ---- incumbency (F-001) ---------------------------------------------
     incumbency_tables = {
-        office: incumbency_features.build_incumbency(p0["returns"], office)
+        office: incumbency_features.build_incumbency(p0["returns"], office, plans=plans)
         for office in ("us_house", "us_senate")
     }
     for office, table in incumbency_tables.items():
@@ -332,7 +339,7 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
     score.to_parquet(gold_dir / "house_partisanship_score.parquet", index=False)
 
     # District fundamentals model, then a *complete chamber* for the simulation.
-    house_panel = house.build_house_panel(race_table, p0["returns"])
+    house_panel = house.build_house_panel(race_table, p0["returns"], plans=plans)
     house_panel.to_parquet(gold_dir / "house_panel.parquet", index=False)
     house_preds, house_metrics = house.backtest(house_panel)
     house_eval = forecast_eval.evaluate_backtest(house_preds) if len(house_preds) else {}
@@ -400,6 +407,7 @@ def build(base: Path, *, allow_network: bool = True, require_live: bool = False)
             "simulation": _jsonable(senate_sim),
         },
         "incumbency": incumbency_stats,
+        "plan_versions": plan_report,
         "national_swing": {
             "pooled": swing_relationship,
             "by_plan_era": swing_by_era.to_dict(orient="records"),

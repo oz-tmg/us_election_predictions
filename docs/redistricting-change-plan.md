@@ -101,8 +101,34 @@ compilation to a dozen rows rather than fifty.
 
 - No 2026 House row carries `boundary_confidence = "unverified"` once the register is
   compiled; each `redrawn`/`pending` row traces to a `source_url`.
-- `plan_id` for every 1976–2024 row equals the decennial default (a test pins this, so
-  adding the register cannot move the backtest).
+- ~~`plan_id` for every 1976–2024 row equals the decennial default (a test pins this, so
+  adding the register cannot move the backtest).~~ **Superseded 2026-09-30.** The register
+  applies to every cycle, history included: AL, LA and NC each changed maps between 2022
+  and 2024, so pinning history to the decennial default knowingly gave 27 district-cycles a
+  lag across territory that had changed. The criterion was written to stop the register
+  moving the backtest *by accident*; it was landed in two commits instead, the first with
+  the plumbing and history provably unmoved, the second flipping the consumers and
+  reporting the delta.
+
+  Measured effect of the flip (`reports/p1_results.json`, leave-one-cycle-out):
+
+  | Quantity | Decennial | Register | Delta |
+  |---|---:|---:|---:|
+  | House MAE | 0.078782 | 0.078694 | −0.000088 |
+  | House Brier | 0.061393 | 0.061159 | −0.000234 |
+  | House ECE | 0.048012 | 0.048193 | +0.000181 |
+  | House 90% coverage | 0.903158 | 0.902723 | −0.000435 |
+  | Panel district-cycles | 7,662 | 7,638 | −24 |
+  | Redistricting breaks | 2,172 | 2,199 | +27 |
+  | Seats fit by the model | 391 | 367 | −24 |
+  | P(Dem control), 2024 sim | 0.4743 | 0.4892 | +0.0149 |
+
+  The model got marginally *better* on every headline accuracy measure, which is the
+  expected direction: the removed lags were comparisons across different territory, i.e.
+  noise. The real cost is coverage — 24 more seats now carry a partisanship prior instead
+  of a fitted one (model coverage 89.9% → 84.4%), which is honest rather than good.
+  President and Senate are bit-identical, confirming the change touched only House
+  boundaries.
 - `validate_plan_versions` fails the build on an overlapping or sourceless row.
 
 ### What would falsify this track

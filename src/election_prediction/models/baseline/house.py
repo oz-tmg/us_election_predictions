@@ -97,10 +97,31 @@ def _national_by_cycle(house: pd.DataFrame) -> pd.Series:
     )
 
 
-def build_house_panel(race_table: pd.DataFrame, returns: pd.DataFrame) -> pd.DataFrame:
-    """District x cycle panel: lagged lean, national environment, and incumbency."""
+def _plan_ids(house: pd.DataFrame, plans: object | None) -> pd.Series:
+    """Per-row plan identity: the register's if there is one, else the decennial era."""
+    if plans is None:
+        return house["plan_era"].astype(str)
+    pairs = house[["state_po", "cycle"]].drop_duplicates()
+    lookup = {(st, int(cy)): plans.plan_id(st, int(cy)) for st, cy in pairs.itertuples(index=False)}
+    return pd.Series(
+        [lookup[(st, int(cy))] for st, cy in zip(house["state_po"], house["cycle"], strict=True)],
+        index=house.index,
+    )
+
+
+def build_house_panel(
+    race_table: pd.DataFrame, returns: pd.DataFrame, *, plans: object | None = None
+) -> pd.DataFrame:
+    """District x cycle panel: lagged lean, national environment, and incumbency.
+
+    ``plans`` is a ``features.plan_versions.PlanVersions``. With one, a district's lag is
+    grouped by the *plan that actually governed it* rather than by decade, so a mid-decade
+    redraw breaks the lag exactly where the territory changed. Without one the decennial
+    assumption applies. See the module docstring and PROJECT_CONTEXT §13.
+    """
     house = race_table[race_table["office"] == "us_house"].dropna(subset=["two_party_dem_share"]).copy()
     house["plan_era"] = house["cycle"].map(plan_era)
+    house["plan_id"] = _plan_ids(house, plans)
 
     national = _national_by_cycle(house)
     house = house.merge(national, on="cycle", how="left")
@@ -108,7 +129,7 @@ def build_house_panel(race_table: pd.DataFrame, returns: pd.DataFrame) -> pd.Dat
     # Lag only within a plan era and only across consecutive cycles: a district number
     # does not survive a redraw.
     house = house.sort_values(["geography_id", "cycle"])
-    grp = house.groupby(["geography_id", "plan_era"])
+    grp = house.groupby(["geography_id", "plan_id"])
     house["lag_dem_share"] = grp["two_party_dem_share"].shift(1)
     house["prev_cycle"] = grp["cycle"].shift(1)
     house.loc[house["cycle"] - house["prev_cycle"] != 2, "lag_dem_share"] = np.nan
@@ -118,7 +139,7 @@ def build_house_panel(race_table: pd.DataFrame, returns: pd.DataFrame) -> pd.Dat
     lagged_national = house["prev_cycle"].map(national)
     house["district_lean"] = house["lag_dem_share"] - lagged_national
 
-    inc = build_incumbency(returns, "us_house")
+    inc = build_incumbency(returns, "us_house", plans=plans)
     house = house.merge(
         inc[["race_id", "incumbent_running", "incumbent_party", "open_seat"]], on="race_id", how="left"
     )

@@ -7,12 +7,14 @@ model — an incumbent is running, the seat is open, or the prior result is unus
 
 Two office-specific rules make the derivation valid:
 
-* **House — redistricting breaks the lookup.** District boundaries are redrawn for the
-  election two years after each decennial census (1972, 1982, ... 2022), so a district
-  number does not refer to the same territory across that boundary. Matching across one
-  would silently mislabel open seats in exactly the cycles that matter, so races in the
-  first cycle of a plan era are marked ``redistricting_break`` and get no incumbency
-  claim (CLAUDE.md §6, PROJECT_CONTEXT §16).
+* **House — redistricting breaks the lookup.** A district number does not refer to the
+  same territory across a redraw, so matching across one would silently mislabel open
+  seats in exactly the cycles that matter. Races whose territory changed are marked
+  ``redistricting_break`` and get no incumbency claim (CLAUDE.md §6, PROJECT_CONTEXT §16).
+  Which cycles those are is **sourced, not assumed**: pass a ``features.plan_versions``
+  register and the break is per-state, catching mid-decade redraws (AL, LA and NC all
+  changed maps between 2022 and 2024). With no register the old decennial rule applies —
+  every state breaks in 1972, 1982, ... 2022 — which is right most decades and wrong now.
 * **Senate — terms are six years, not two.** The prior election for the same seat is six
   cycles' worth of years earlier, which also keeps the two classes within a state
   distinct. Special elections are off-schedule and are excluded from the lookup rather
@@ -77,7 +79,30 @@ def _seat_key(row: pd.Series) -> str:
     return f"{row['office']}:{row['state_po']}"
 
 
-def build_incumbency(returns: pd.DataFrame, office: str) -> pd.DataFrame:
+def _house_redistricting_break(merged: pd.DataFrame, *, term: int, plans: object | None) -> pd.Series:
+    """Did this district's territory change since the prior contest?
+
+    Without a register this is the decennial function: every state breaks in 1972, 1982,
+    ... 2022 and nowhere else. With one (RD-001) it is per-state, because mid-decade redraws
+    are real -- AL, LA and NC each changed maps between 2022 and 2024, and nine states
+    changed for 2026. The register is the default from 2026-09-30; the year function stays
+    as the fallback for a caller that has no register.
+    """
+    if plans is None:
+        return merged["cycle"].map(plan_era) != merged["cycle"].sub(term).map(plan_era)
+
+    pairs = merged[["state_po", "cycle"]].drop_duplicates()
+    lookup = {
+        (st, int(cy)): plans.plan_id(st, int(cy)) != plans.plan_id(st, int(cy) - term)
+        for st, cy in pairs.itertuples(index=False)
+    }
+    return pd.Series(
+        [lookup[(st, int(cy))] for st, cy in zip(merged["state_po"], merged["cycle"], strict=True)],
+        index=merged.index,
+    )
+
+
+def build_incumbency(returns: pd.DataFrame, office: str, *, plans: object | None = None) -> pd.DataFrame:
     """Derive incumbency flags for every race of ``office`` in the silver returns.
 
     ``returns`` must carry the silver schema — the full candidate list is required,
@@ -126,9 +151,7 @@ def build_incumbency(returns: pd.DataFrame, office: str) -> pd.DataFrame:
 
     merged["prior_available"] = merged["incumbent_name"].notna()
     if office == "us_house":
-        merged["redistricting_break"] = merged["cycle"].map(plan_era) != merged["cycle"].sub(term).map(
-            plan_era
-        )
+        merged["redistricting_break"] = _house_redistricting_break(merged, term=term, plans=plans)
     else:
         merged["redistricting_break"] = False
 

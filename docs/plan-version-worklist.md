@@ -98,7 +98,7 @@ Three additional pre-2026 rows (NC_2022, LA_2022, AL_2021) document earlier mid-
 changes in those states and are marked `PRE-2026 ROW` in `notes` — see the second design
 question below for whether code will read them at all.
 
-## Open design question this surfaced (still open)
+## Design question this surfaced — RESOLVED 2026-09-30
 
 Missouri breaks the `boundary_confidence` vocabulary as written in the plan. The spec says
 `pending` means "a plan exists with status `enjoined`/`pending`", and RD-002 routes
@@ -111,13 +111,18 @@ prior cycle's*, given whichever plan is in effect — not whether litigation is 
 keeps the routing correct but drops a real signal: Missouri's boundaries could still move
 before November, and the 8th Circuit case is live.
 
-**Recommendation:** split the two ideas. Keep `boundary_confidence` about territory
-(`unchanged` / `redrawn` / `unverified`), and add a separate `litigation_risk` flag
-(`none` / `active`) that the report prints but the routing ignores. That needs your
-sign-off because it changes the RD-002 vocabulary, which is already implemented and
-tested.
+**Resolved: split the two ideas** (signed off 2026-09-30, implemented in
+`features/plan_versions.py`). `boundary_confidence` is territory only — `unchanged`,
+`redrawn`, `unverified` — and `pending` is gone from the vocabulary. A separate
+`litigation_risk` flag (`none` / `active`) rides on every seat, is printed in the
+projection's coverage report, and is never consulted by the routing; a test flips only that
+flag and asserts the priors come back byte-identical.
 
-## Second design question: does the register apply to history?
+⚠️ **`litigation_risk` values are not independently verified.** They are derived from each
+row's own verified notes — AL, LA, MO and TN read `active` — and need their own pass with
+the same discipline as the rest of the register before anything leans on them.
+
+## Second design question: does the register apply to history? — RESOLVED 2026-09-30
 
 The register now carries pre-2026 rows, because **AL, LA, and NC each changed maps between
 2022 and 2024 as well** — Louisiana under *Robinson*, Alabama under *Allen v. Milligan*,
@@ -139,10 +144,12 @@ The choice is yours:
 | **A. Register applies to 2026 forward only** | Backtest frozen; historical `plan_id` stays decennial | Isolates the change; the plan's stated criterion holds; historical error stays as it has always been |
 | **B. Register applies to all cycles** | AL/LA/NC lose their 2022→2024 lag; model refits | More accurate; but it re-opens the backtest at the same time as everything else, and the panel loses ~40 district-cycles |
 
-**Recommendation: A for now, B as a separate change with its own before/after comparison.**
-Mixing a boundary correction into the same commit as a model refit would make it impossible
-to attribute any change in the backtest. The pre-2026 rows stay in the register either way
-— they are documentation regardless of whether code reads them.
+**Resolved: Option B — the register applies to all cycles.** Landed as two commits rather
+than one so the refit stays attributable: the first added the plumbing with history provably
+unmoved, the second flipped the consumers and measured the delta. The full before/after table
+is in `docs/redistricting-change-plan.md`. Headline: House MAE improved by 0.000088, 27 more
+redistricting breaks, 24 fewer district-cycles in the panel, model seat coverage 89.9% → 84.4%,
+and president and Senate bit-identical.
 
 ## Also worth knowing
 

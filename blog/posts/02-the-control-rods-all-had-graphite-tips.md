@@ -42,14 +42,18 @@ So I ran the published 435-seat simulation twice. Same district means, same per-
 
 | Error structure | Mean Dem seats | 90% range | Width | P(Dem control) |
 |---|---:|---:|---:|---:|
-| Correlated (as published) | 214.6 | 117–315 | **198 seats** | **47.0%** |
-| Independent | 214.9 | 204–226 | **22 seats** | **35.0%** |
+| Correlated (as published) | 216.6 | 118–319 | **201 seats** | **48.6%** |
+| Independent | 216.9 | 206–228 | **22 seats** | **46.8%** |
 
-The means are the same to within a third of a seat, as they must be. The 90% range is **nine times wider** under correlation. And the control probability moves by twelve points in a direction that is not obvious until you look at the picture.
+The means are the same to within a third of a seat, as they must be. The 90% range is **nine times wider** under correlation.
 
-That last part is the bit I find genuinely instructive. The independent model is not merely overconfident in the abstract; it is confidently wrong in a *specific* way. Its distribution is a narrow spike centred at 215, three seats short of the 218 needed for control. So it concludes, with great precision, that Democrats fall just short — 35% and tidy. The correlated model has the same central estimate but knows that a single national miss of a couple of points drags the whole chamber with it, so a 214-seat mean and a genuine coin flip are perfectly compatible. Forty-seven percent.
+And the two control probabilities are nearly identical — which is the most treacherous row in the table, so let me be exact about why.
 
-Precision purchased by a false assumption does not just add error bars in the wrong place. It relocates the answer.
+That agreement is luck. The independent model's entire probability mass sits inside a 22-seat window straddling the 218 needed for control, so its answer is not really a probability: it is a read-out of where a narrow spike happens to fall relative to a threshold. I know precisely how fragile that is, because I ran this same comparison against an earlier fit of the same model, whose mean sat **two seats lower** at 214.9. On that fit the independent structure returned **35.0%** and the correlated one **47.0%**.
+
+So a two-seat shift in the central estimate moved the independent model's control probability by **11.8 points** and the correlated model's by **1.6**. Same shift, same data, seven times the sensitivity. The narrow model is not merely overconfident about the seat count — its *probability* is hostage to the last seat of its own point estimate, which is exactly the quantity nobody should be that sure of.
+
+Precision bought with a false assumption does not just put the error bars in the wrong place. It makes the headline number twitch.
 
 ## The same mistake, in a different building
 
@@ -83,11 +87,11 @@ The second assumption worth flagging: **regions are Census regions.** That is a 
 
 ## Where reality became inconvenient
 
-Forty-four of the 435 seats have no fitted model at all. They are districts that ran uncontested or whose returns failed vote-total reconciliation, and they are carried on a partisanship prior with roughly double the uncertainty — sigma 0.223 against 0.113 for modelled seats.
+Sixty-eight of the 435 seats have no fitted model at all. They are districts that ran uncontested or whose returns failed vote-total reconciliation, and they are carried on a partisanship prior with roughly double the uncertainty — sigma 0.225 against 0.113 for modelled seats.
 
-The temptation is to drop them. Resist it. A chamber simulated on 391 seats does not have 91% of the uncertainty of a 435-seat chamber; it has a *different chamber*, and its control probability is meaningless. Incomplete universes are how you produce a forecast of a legislature that does not exist. So the fallback seats stay in, carrying honest, wider uncertainty, and the coverage table in every report states how many seats came from where.
+The temptation is to drop them. Resist it. A chamber simulated on 367 seats does not have 84% of the uncertainty of a 435-seat chamber; it has a *different chamber*, and its control probability is meaningless. Incomplete universes are how you produce a forecast of a legislature that does not exist. So the fallback seats stay in, carrying honest, wider uncertainty, and the coverage table in every report states how many seats came from where.
 
-The other inconvenience is that I cannot validate this choice as cleanly as I would like. Calibrating a *chamber-level* probability requires chamber-level outcomes, and there have been about 25 House elections in the modelled era. Twenty-five observations is not a calibration set; it is an anecdote with a standard error. District-level calibration I can check against 7,662 district-cycles. Chamber-level calibration is, for now, an argument from structure rather than a measurement.
+The other inconvenience is that I cannot validate this choice as cleanly as I would like. Calibrating a *chamber-level* probability requires chamber-level outcomes, and there have been about 25 House elections in the modelled era. Twenty-five observations is not a calibration set; it is an anecdote with a standard error. District-level calibration I can check against 7,638 district-cycles. Chamber-level calibration is, for now, an argument from structure rather than a measurement.
 
 ## What I would change
 
@@ -106,4 +110,4 @@ The good news is that this is not a hard fix. It is one variance decomposition a
 
 ---
 
-*Figure generated by [`blog/figures/make_figures.py`](../figures/make_figures.py), re-simulating the published 435-seat House universe from `reports/p1_results.json` with 20,000 draws under two correlation structures. Per-seat sigma is recovered from that run's own published intervals, which reproduces its two documented regimes (0.113 for modelled seats, 0.223 for widened-prior seats); seats whose intervals hit a 0/1 bound are assigned the modelled sigma. The correlated re-simulation gives P(control) = 47.0% against the published run's 47.4% — the gap is draw count and sigma recovery, not a different model. Data: [MIT Election Data and Science Lab](https://electionlab.mit.edu/) certified federal returns 1976–2024. Historical backtest only — no live forecast is published.*
+*Figure generated by [`blog/figures/make_figures.py`](../figures/make_figures.py), re-simulating the published 435-seat House universe from `reports/p1_results.json` with 20,000 draws under two correlation structures. Per-seat sigma is recovered from that run's own published intervals, which reproduces its two documented regimes (0.113 for modelled seats, 0.225 for widened-prior seats); seats whose intervals hit a 0/1 bound are assigned the modelled sigma. The correlated re-simulation gives P(control) = 48.6% against the published run's 48.9% — the gap is draw count and sigma recovery, not a different model. Data: [MIT Election Data and Science Lab](https://electionlab.mit.edu/) certified federal returns 1976–2024. Historical backtest only — no live forecast is published.*
