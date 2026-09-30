@@ -32,25 +32,26 @@ sometimes a refusal.
 | 2 | [The Control Rods All Had Graphite Tips](posts/02-the-control-rods-all-had-graphite-tips.md) | Correlated error, design effect, cluster randomisation, effective sample size | 4 | **Ready** |
 | 3 | [The Parameter That Wasn't There](posts/03-the-parameter-that-wasnt-there.md) | Identification vs. sample size, sensitivity bands, pre-registration, data vintage | 5, 6 | **Ready** |
 | 4 | [Thirty-Four Races That Do Not Add Up](posts/04-thirty-four-races-that-do-not-add-up.md) | Exclusion criteria as researcher degrees of freedom, sensitivity analysis | 7 | **Ready** |
-| 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal | 6 | **Ready, with one condition** — see below |
+| 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal | 6 | **Ready** |
 
-### The condition on post 5
+### The sixth post is now unblocked
 
-Post 5 cites the draft plan-version register (nine states, 173 of 435 seats). **Every row of
-that register is unverified**, and the post says so four times, describes the figure as a
-lead rather than a finding, and never uses it to state a result. That framing is what makes
-it publishable now.
+The plan-version register was **verified row-by-row on 2026-09-30** against official state
+and court records. Post 5 was revised accordingly: it now states the nine-state, 173-seat
+count as a finding rather than a lead, and reports the two corrections verification
+produced (Alabama restored its struck-down 2023 legislative plan rather than enacting a new
+map; Missouri's 2022 plan governs the general and its cycle range must stay open).
 
-If the register is verified before publication, post 5 should be revised to state the
-verified count plainly — and a *sixth* post becomes available, which is the strongest story
-in the project and is currently unpublishable for exactly the same reason:
+That makes a **sixth post available** — the register itself, which is the strongest story in
+the project and was previously blocked on exactly this:
 
-> **Not ready: the redistricting register itself.** Nine states redrew; Missouri enacted a
-> map it is not using; Georgia, New York and Virginia did not redraw despite expectations.
-> This is genuinely newsworthy and nonpartisan as compiled. It cannot be published until
-> each row is checked against an official state or court record and `verified_by` is filled
-> in — four rows currently rest on secondary sources. Publishing unverified claims about
-> injunctions and stays is the one reputational risk this project cannot absorb.
+> **Draft-ready: the redistricting register.** Nine states redrew for 2026 (173 of 435
+> seats, 39.8% of the chamber); Missouri enacted a map it is not using; Alabama brought back
+> a map that had been struck down; Georgia, New York and Virginia did not redraw despite
+> expectations. Newsworthy, nonpartisan, and now sourced to official records. Write it
+> against `data/reference/house_plan_versions.csv` and
+> `docs/plan-version-worklist.md`, keeping the register's own discipline: it records what
+> was enacted, by whom, and where it says so — it groups no state by motive.
 
 ## Figures
 
