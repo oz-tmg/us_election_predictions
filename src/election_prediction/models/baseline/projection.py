@@ -31,9 +31,16 @@ not happened, which needs three inputs the backtest gets for free:
   unchanged     last result under the same plan         ``model``               residual
   redrawn       transferred share, if Track C built it  ``model_transferred``   widened
   redrawn       otherwise: state presidential lean      ``fallback_state_lean`` widened
-  pending       as redrawn (in-effect plan)             as redrawn              as redrawn
   unverified    **refused** unless ``allow_unverified``  ``model_unverified``    residual
   ============  ======================================  ======================  ===========
+
+  ``boundary_confidence`` is about **territory only**. It used to carry a fourth value,
+  ``pending``, routed exactly like ``redrawn``, which conflated "the territory moved" with
+  "a court might move it" -- and got Missouri backwards: Missouri enacted a 2025 map, is
+  enjoined from using it, and votes its 2022 map in the general, so its territory is
+  unchanged and its 2024 priors are valid. Routing on litigation would have discarded eight
+  good priors. Whether a map might still move is now ``litigation_risk``, which this module
+  reports and never routes on (decision 2026-09-30, PROJECT_CONTEXT §13).
 
   The fallback is honest about what is known: a redrawn district with no transferred prior
   is, to the model, a seat whose only known geography is its state, so it gets the state's
@@ -66,20 +73,20 @@ PROJECTION_COLUMNS = [
     "sigma",
     "source",
     "boundary_confidence",
+    "litigation_risk",
     "incumbent_party",
     "incumbency_assumed",
 ]
 
-# ``boundary_confidence`` vocabulary, written by ``features.race_universe`` and, once the
-# plan-version register exists (RD-001), by ``features.plan_versions``. Anything else is an
-# error, not a fifth category.
+# ``boundary_confidence`` vocabulary, written by ``features.plan_versions`` from the
+# plan-version register (RD-001). Territory only -- anything else is an error, not a fourth
+# category. ``litigation_risk`` is carried alongside and deliberately never routed on.
 BOUNDARY_UNCHANGED = "unchanged"
 BOUNDARY_REDRAWN = "redrawn"
-BOUNDARY_PENDING = "pending"
 BOUNDARY_UNVERIFIED = "unverified"
-BOUNDARY_CONFIDENCE_VALUES = frozenset(
-    {BOUNDARY_UNCHANGED, BOUNDARY_REDRAWN, BOUNDARY_PENDING, BOUNDARY_UNVERIFIED}
-)
+BOUNDARY_CONFIDENCE_VALUES = frozenset({BOUNDARY_UNCHANGED, BOUNDARY_REDRAWN, BOUNDARY_UNVERIFIED})
+
+LITIGATION_RISK_COLUMN = "litigation_risk"
 
 # Where Track C (RD-003) will write a prior placed on the *new* boundaries. Named here, on
 # the consumer, for the same reason as ``RESOLVED_PARTY_COLUMN``: the producer imports the
@@ -191,7 +198,8 @@ def project_house(
     sigma = float(resid_sigma) if resid_sigma else DEFAULT_SIGMA
 
     old_prior = pd.to_numeric(seats["prior_dem_share"], errors="coerce")
-    redrawn = conf.isin([BOUNDARY_REDRAWN, BOUNDARY_PENDING])
+    # Territory only. litigation_risk is never consulted here -- see the module docstring.
+    redrawn = conf == BOUNDARY_REDRAWN
 
     # ---- transferred prior (Track C), when present ----------------------------------
     transferred = pd.Series(np.nan, index=seats.index, dtype=float)
@@ -267,6 +275,11 @@ def project_house(
         "fallback_lean_sd": None if fallback_lean_sd is None else float(fallback_lean_sd),
         "fallback_sigma": None if math.isnan(fallback_sigma) else fallback_sigma,
         "boundaries_assumed_unchanged": int((conf == BOUNDARY_UNVERIFIED).sum()),
+        "litigation_active_states": (
+            sorted(seats.loc[seats[LITIGATION_RISK_COLUMN] == "active", "state_po"].unique().tolist())
+            if LITIGATION_RISK_COLUMN in seats.columns
+            else []
+        ),
         "incumbency_verified": False,
     }
     return out, coverage
