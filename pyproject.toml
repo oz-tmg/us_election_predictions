@@ -22,6 +22,9 @@ dependencies = [
 geo = ["geopandas>=0.14", "shapely>=2.0"]
 model = ["statsmodels>=0.14", "scikit-learn>=1.3"]
 dev = ["pytest>=7.4", "ruff>=0.4", "mypy>=1.8"]
+# Figures for public writing only; no modelling code imports these (CLAUDE.md §7).
+# matplotlib: PSF-style BSD-compatible licence (matplotlib/LICENSE).
+viz = ["matplotlib>=3.8"]
 
 [project.scripts]
 # Reproducible one-command builds.
@@ -29,6 +32,7 @@ ep-build-p0 = "election_prediction.pipelines_cli:main"   # data-and-entity found
 ep-build-p1 = "election_prediction.build_p1:main"        # baseline forecasting stack
 ep-build-p2 = "election_prediction.build_p2:main"        # polling + correlated simulation
 ep-build-governor = "election_prediction.build_governor:main"  # gubernatorial returns + coattails
+ep-build-fec = "election_prediction.build_fec:main"        # candidate crosswalk, filings, fundraising
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -48,3 +52,9 @@ warn_unused_ignores = true
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# Figure captions are prose that must match the rendered chart text verbatim
+# (period, unit, source, snapshot date — CLAUDE.md §6). Wrapping them to the
+# code line length splits sentences across literals and invites silent edits.
+"blog/figures/*.py" = ["E501"]

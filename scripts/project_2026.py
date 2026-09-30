@@ -7,7 +7,10 @@ reproducible from a clean checkout once ``ep-build-p1`` has run.
 
 from __future__ import annotations
 
+import json
 import sys
+from datetime import date
+from pathlib import Path
 
 import pandas as pd
 
@@ -16,13 +19,18 @@ sys.path.insert(0, "src")
 from election_prediction.data import special_elections as se  # noqa: E402
 from election_prediction.models import simulation  # noqa: E402
 from election_prediction.models.baseline import house, projection, senate  # noqa: E402
+from election_prediction.models.baseline import national_environment as ne  # noqa: E402
 
 GOLD = "data/gold"
+REPORTS = "reports"
 N_SIMS = 20_000
 
 
 def main() -> None:
-    # ---- national environment from specials -------------------------------
+    # ---- national environment: the estimator contract (NE-001) --------------
+    # The specials mean enters through ``national_environment.from_specials`` as a *band*
+    # over the shrinkage factor, never as a point: ``projectable`` refuses an unidentified
+    # point, so the loop below iterates a contract rather than a specials-specific frame.
     specials = se.compute_overperformance(se.read_compiled("data/reference/special_elections_2025_2026.csv"))
     est = se.national_environment_estimate(specials)
 
@@ -30,14 +38,21 @@ def main() -> None:
     nat = house_panel.groupby("cycle")["national_dem_share"].first()
     base_2024 = float(nat.loc[2024])
 
-    sweep = se.shrinkage_sensitivity(est, baseline_national_dem_share=base_2024)
+    env = ne.from_specials(
+        est,
+        baseline_national_dem_share=base_2024,
+        snapshot_date=str(specials["retrieved_on"].max()) if "retrieved_on" in specials else None,
+    )
+    sweep = ne.projectable(env)
+    prov = env.provenance
     print(
-        f"specials: n={est['n']}  mean overperformance {est['mean_overperformance']:+.4f} "
-        f"(se {est['std_error']:.4f})"
+        f"national environment: {env.estimator} (status={env.status}, identified={env.identified})\n"
+        f"specials: n={prov['n']}  mean overperformance {prov['mean_overperformance']:+.4f} "
+        f"(se {prov['std_error']:.4f})"
     )
     print(f"2024 House national two-party Dem share: {base_2024:.4f}\n")
     print("implied national environment by shrinkage factor")
-    print(sweep.round(4).to_string(index=False))
+    print(sweep.drop(columns=["assumption"]).round(4).to_string(index=False))
 
     # ---- fit the models on all history -----------------------------------
     hmodel = house.fit_full(house_panel)
@@ -49,6 +64,22 @@ def main() -> None:
 
     universe = pd.read_parquet(f"{GOLD}/race_universe_2026.parquet")
     lagged_nat = float(nat.loc[2022])  # basis for 2024 district leans
+
+    # ---- FEC filings layer (P0-003), when ep-build-fec has run -------------------
+    # ``projection`` reads ``RESOLVED_PARTY_COLUMN`` to fill a seat whose party the returns
+    # leave null (Lummis, WY). The FEC build writes that column to its own gold table, not
+    # back into the universe, so it has to be joined here or the fallback runs forever.
+    filings_path = Path(f"{GOLD}/incumbent_filings_2026.parquet")
+    if filings_path.is_file():
+        fil = pd.read_parquet(filings_path)[
+            ["geography_id", "office", "incumbent_status", projection.RESOLVED_PARTY_COLUMN]
+        ]
+        universe = universe.drop(columns=["incumbent_status"]).merge(
+            fil, on=["geography_id", "office"], how="left"
+        )
+        print(f"\nfilings joined: incumbent_status {universe['incumbent_status'].value_counts().to_dict()}")
+    else:
+        print("\nfilings NOT joined (run ep-build-fec): unlabelled incumbents project as open seats.")
 
     # ---- Senate holdovers, derived rather than asserted --------------------
     # 2026 is Class II. Classes III (elected 2022) and I (elected 2024) hold over, and
@@ -89,6 +120,16 @@ def main() -> None:
     p24["state_pres_lean"] = p24["two_party_dem_share"] - p24["national_dem_share"]
     pres_ref = p24[["state_po", "state_pres_lean"]].drop_duplicates("state_po")
 
+    # ---- district boundaries (RD-002) ----------------------------------------
+    # A redrawn seat that has no prior on its new boundaries is projected from its state's
+    # lean with a sigma widened by how much district leans vary *within* a state -- measured
+    # from the latest cycle's panel, not assumed. Until the plan-version register (RD-001)
+    # is compiled every House row is ``unverified``; opting in projects them as unchanged,
+    # and that assumption is printed with the incumbency one below.
+    latest = house_panel[house_panel["cycle"] == house_panel["cycle"].max()].dropna(subset=["district_lean"])
+    within = latest["district_lean"] - latest.groupby("state_po")["district_lean"].transform("mean")
+    fallback_lean_sd = float((within**2).mean() ** 0.5)
+
     # ---- project + simulate across the shrinkage band ----------------------
     rows = []
     for _, s in sweep.iterrows():
@@ -98,6 +139,9 @@ def main() -> None:
             national_dem_share=float(s["national_dem_share"]),
             lagged_national_dem_share=lagged_nat,
             resid_sigma=hsigma,
+            pres_reference=pres_ref,
+            fallback_lean_sd=fallback_lean_sd,
+            allow_unverified=True,
         )
         hsim = _simulate(hproj, total_seats=house.VOTING_SEATS)
 
@@ -115,6 +159,7 @@ def main() -> None:
         ssim = _simulate(sproj, total_seats=100, holdover_dem=dem_holdovers)
         rows.append(
             {
+                "assumption": s["assumption"],
                 "shrinkage": s["shrinkage"],
                 "nat_share": round(float(s["national_dem_share"]), 4),
                 "house_mean_seats": round(hsim["mean_dem_seats"], 1),
@@ -126,12 +171,68 @@ def main() -> None:
                 "sen_p_dem": round(ssim["p_dem_control"], 3),
             }
         )
+    results = pd.DataFrame(rows)
     print(
         f"\nhouse seats projected: {hcov['seats_projected']}/{hcov['seats_in_roster']}"
         f"   senate seats up: {scov['seats_projected']}\n"
     )
-    print(pd.DataFrame(rows).to_string(index=False))
-    print("\nincumbency assumed (not verified): every sitting member runs and is renominated.")
+    print(results.drop(columns=["assumption"]).to_string(index=False))
+
+    # ---- band-level conclusions, as text (NE-001 acceptance criterion) -------
+    # The band is the output. What it says about control is stated, not left for the
+    # reader to infer from the table -- and a flip inside the band is named as such.
+    conclusions = [
+        ne.control_conclusion(results, chamber="House", p_column="house_p_dem"),
+        ne.control_conclusion(results, chamber="Senate", p_column="sen_p_dem"),
+    ]
+    print()
+    for line in conclusions:
+        print(line)
+
+    # Machine-readable sibling so the band can be diffed across runs rather than re-read
+    # from formatted text.
+    stamp = date.today().isoformat()
+    payload = {
+        "generated_on": stamp,
+        "national_environment": env.to_dict(),
+        "band_results": results.to_dict(orient="records"),
+        "conclusions": conclusions,
+        "house_coverage": hcov,
+        "senate_coverage": scov,
+    }
+    out_path = Path(REPORTS) / f"national_environment_{stamp}.json"
+    out_path.write_text(json.dumps(payload, indent=2, default=str))
+    print(f"\nband written to {out_path}")
+    status = universe["incumbent_status"].value_counts().to_dict()
+    filed, not_found = status.get("filed", 0), status.get("not_found", 0)
+    if filed:
+        print(
+            f"\nincumbency: {filed} sitting members have an FEC filing for 2026; {not_found} were not "
+            "found in the roster (not spelled 'retired': absence misses most departures). "
+            "Renomination is assumed for all -- primaries are not compiled."
+        )
+    else:
+        print("\nincumbency assumed (not verified): every sitting member runs and is renominated.")
+
+    # ---- boundary treatment, stated as text (RD-002 acceptance criterion) -----
+    by_conf = hcov["seats_by_boundary_confidence"]
+    by_src = hcov["seats_by_source"]
+    print(f"district boundaries: {by_conf}   projected by source: {by_src}")
+    if hcov["boundaries_assumed_unchanged"]:
+        print(
+            f"boundaries assumed unchanged (not verified): {hcov['boundaries_assumed_unchanged']} House "
+            "seats are projected from their 2024 result on the assumption that the district is the same "
+            "territory. Several states use a different congressional map in 2026 than in 2024; until the "
+            "plan-version register (RD-001) is compiled this projection cannot tell which. "
+            "See docs/redistricting-change-plan.md."
+        )
+    if hcov["redrawn_states"]:
+        print(
+            f"redrawn/pending states: {', '.join(hcov['redrawn_states'])} -- seats without a transferred "
+            f"prior use the state presidential lean with sigma {hcov['fallback_sigma']:.4f} "
+            f"(residual {hcov['resid_sigma']:.4f} widened by within-state lean sd "
+            f"{hcov['fallback_lean_sd']:.4f})."
+        )
 
 
 def _simulate(proj: pd.DataFrame, *, total_seats: int, holdover_dem: int = 0) -> dict:

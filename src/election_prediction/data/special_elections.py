@@ -339,7 +339,11 @@ def national_environment_estimate(df: pd.DataFrame, *, weight: str = "equal", mi
 # shrinkage to the 2025-26 mean of +18.8 points implies a national House Democratic share
 # of 0.586 -- above every cycle since 1974 and well past 2018's 0.537. That is a
 # reductio, not a forecast, which is why this function refuses to return a bare number.
-SHRINKAGE_UNCALIBRATED = 0.5
+#
+# There is deliberately no default shrinkage (NE-001). A default is what lets a caller
+# obtain a bare number without choosing one; ``shrinkage`` is a required keyword, and the
+# honest presentation is the sweep over SHRINKAGE_SENSITIVITY, consumed through
+# ``models.baseline.national_environment.from_specials`` as a band.
 SHRINKAGE_SENSITIVITY = (0.25, 0.33, 0.5, 0.75, 1.0)
 
 
@@ -347,14 +351,15 @@ def implied_national_dem_share(
     estimate: dict,
     *,
     baseline_national_dem_share: float,
-    shrinkage: float = SHRINKAGE_UNCALIBRATED,
+    shrinkage: float,
 ) -> dict:
     """Translate a specials overperformance mean into a national two-party Dem share.
 
     ``estimate`` is a ``national_environment_estimate`` result. ``baseline_national_dem_share``
     is the share the swing is applied *to* — the House national two-party Democratic share
     of the last regular cycle, because that is the basis the House model's
-    ``national_dem_share`` feature is measured on.
+    ``national_dem_share`` feature is measured on. ``shrinkage`` has no default: it is the
+    unidentified parameter, and the caller must choose it explicitly.
 
     Overperformance is a *margin* difference, so it is halved to become a share shift.
 

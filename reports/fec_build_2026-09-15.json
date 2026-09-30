@@ -1,0 +1,253 @@
+{
+  "cycles": [
+    1980,
+    1982,
+    1984,
+    1986,
+    1988,
+    1990,
+    1992,
+    1994,
+    1996,
+    1998,
+    2000,
+    2002,
+    2004,
+    2006,
+    2008,
+    2010,
+    2012,
+    2014,
+    2016,
+    2018,
+    2020,
+    2022,
+    2024,
+    2026
+  ],
+  "projection_cycle": 2026,
+  "fec_candidates": {
+    "rows": 65975,
+    "validation": {
+      "schema.required_columns": true,
+      "schema.missing": [],
+      "rows": 65975,
+      "keys.candidate_id_present": true,
+      "keys.candidate_id_unique": false,
+      "office.known": true,
+      "party.rows_without_party": 86,
+      "filing.status_known": false,
+      "filing.rows_without_status": 4,
+      "privacy.no_address_fields": true,
+      "ok": false
+    }
+  },
+  "crosswalk": {
+    "validation": {
+      "schema.required_columns": true,
+      "schema.missing": [],
+      "rows": 35750,
+      "party.canonical": true,
+      "party.caucus_canonical": true,
+      "persons.artifacts_unmatched": true,
+      "persons.artifact_rows": 4239,
+      "caucus.overrides_only_on_minor_party": false,
+      "caucus.override_rows": 19,
+      "match.methods_known": true,
+      "ok": false
+    },
+    "summary": {
+      "rows": 35750,
+      "ballot_status_rows_excluded": 4239,
+      "party_by_source": {
+        "medsl_raw": 22897,
+        "medsl_simplified": 7324,
+        "fec": 5529
+      },
+      "party_unresolved": 0,
+      "caucus_overrides_applied": 19,
+      "fec_roster_cycles": [
+        1980,
+        1982,
+        1984,
+        1986,
+        1988,
+        1990,
+        1992,
+        1994,
+        1996,
+        1998,
+        2000,
+        2002,
+        2004,
+        2006,
+        2008,
+        2010,
+        2012,
+        2014,
+        2016,
+        2018,
+        2020,
+        2022,
+        2024
+      ],
+      "fec_matched": 28216,
+      "fec_match_rate": 0.9685236673188481,
+      "match_by_method": {
+        "token_set": 18074,
+        "last_first": 3114,
+        "last_initial": 2681,
+        "no_fec_roster": 2378,
+        "state_token_set": 2294,
+        "surname_unique": 1274,
+        "none": 835,
+        "state_last_initial": 326,
+        "state_last_first": 288,
+        "state_surname_unique": 119,
+        "ambiguous_token_set": 65,
+        "token_subset": 36,
+        "state_token_subset": 10,
+        "ambiguous_surname_unique": 9,
+        "ambiguous_last_initial": 5,
+        "ambiguous_last_first": 3
+      }
+    }
+  },
+  "filings": {
+    "validation": {
+      "schema.required_columns": true,
+      "schema.missing": [],
+      "rows": 468,
+      "status.known_vocabulary": true,
+      "status.no_unsupported_claims": true,
+      "status.rows_claiming_unsupported": 0,
+      "provenance.evidence_present": true,
+      "filed.has_candidate_id": true,
+      "ok": true
+    },
+    "summary": {
+      "seats": 468,
+      "by_status": {
+        "filed": 458,
+        "not_found": 10
+      },
+      "by_office": {
+        "filed": {
+          "us_house": 425,
+          "us_senate": 33
+        },
+        "not_found": {
+          "us_house": 10,
+          "us_senate": 0
+        }
+      },
+      "filed_share": 0.9786324786324786,
+      "match_methods": {
+        "token_set": 323,
+        "last_initial": 51,
+        "last_first": 51,
+        "surname_unique": 19,
+        "state_token_set": 10,
+        "none": 7,
+        "state_last_initial": 2,
+        "ambiguous_token_set": 2,
+        "token_subset": 1,
+        "ambiguous_surname_unique": 1,
+        "state_surname_unique": 1
+      },
+      "caveats": [
+        "'filed' means the member filed with the FEC, not that they were renominated.",
+        "'not_found' is not retirement: absence from the FEC roster missed ~88% of House departures between 2022 and 2024, and half the members it did flag had merely an incomplete FEC election_years array.",
+        "'nominated' needs primary results and is never emitted here.",
+        "'withdrawn' needs per-cycle filing history; FEC's status fields are current-state only and cannot support it."
+      ]
+    }
+  },
+  "fundraising": {
+    "fec_validation": {
+      "schema.required_columns": true,
+      "schema.missing": [],
+      "rows": 67025,
+      "keys.candidate_id_unique": false,
+      "money.nonnegative": false,
+      "coverage.end_date_present_when_funded": true,
+      "coverage.rows_without_end_date": 24166,
+      "coverage.funded_rows_without_end_date": 0,
+      "privacy.no_address_fields": true,
+      "ok": false
+    },
+    "validation": {
+      "schema.required_columns": true,
+      "schema.missing": [],
+      "rows": 11741,
+      "keys.one_row_per_seat": true,
+      "receipts.nonnegative": true,
+      "receipts.top_within_party_total": true,
+      "share.in_unit_interval": true,
+      "ratio.finite": true,
+      "provenance.unusable_reason_given": true,
+      "coverage.rows_post_election": 10889,
+      "coverage.rows_misaligned": 3488,
+      "usable_rows": 8230,
+      "ok": true
+    },
+    "summary": {
+      "rows": 11741,
+      "usable_rows": 8230,
+      "usable_share": 0.7009624393152202,
+      "cycles": [
+        1980,
+        1982,
+        1984,
+        1986,
+        1988,
+        1990,
+        1992,
+        1994,
+        1996,
+        1998,
+        2000,
+        2002,
+        2004,
+        2006,
+        2008,
+        2010,
+        2012,
+        2014,
+        2016,
+        2018,
+        2020,
+        2022,
+        2024,
+        2026
+      ],
+      "unusable_reasons": {
+        "one major party has no filer; a ratio is undefined; a party's nominee proxy raised nothing; a coverage window is missing": 1502,
+        "a party's nominee proxy raised nothing; a coverage window is missing": 1143,
+        "coverage windows differ by 92 days": 117,
+        "coverage windows differ by 184 days": 84,
+        "coverage windows differ by 77 days": 45,
+        "coverage windows differ by 275 days": 45,
+        "a party's nominee proxy raised nothing": 23,
+        "coverage windows differ by 46 days": 22,
+        "coverage windows differ by 366 days": 19,
+        "coverage windows differ by 78 days": 18
+      },
+      "post_election_coverage_rows": 10889,
+      "misaligned_coverage_rows": 3488,
+      "log_ratio_quantiles": {
+        "0.05": -3.529,
+        "0.25": -1.474,
+        "0.5": 0.041,
+        "0.75": 1.487,
+        "0.95": 3.578
+      },
+      "caveats": [
+        "Fundraising is endogenous: money follows expected closeness and expected winners, so this feature partly measures the outcome. Test it strictly.",
+        "The nominee is proxied by each party's top fundraiser; primary results are not available, and the best-funded primary candidate is not always the winner.",
+        "coverage_end_date is per candidate, so the two sides of a ratio can cover different periods; misaligned rows are marked unusable.",
+        "/candidates/totals/ offers no pre-election cutoff, so historical totals include post-election receipts. Backtests must exclude post_election_coverage rows or they are not measuring prediction."
+      ]
+    }
+  }
+}

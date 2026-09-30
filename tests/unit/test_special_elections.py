@@ -192,7 +192,15 @@ def test_the_sensitivity_sweep_spans_the_shrinkage_band():
 
 def test_an_unusable_estimate_does_not_yield_a_national_share():
     out = se.implied_national_dem_share(
-        {"status": "insufficient_data", "reason": "too few"}, baseline_national_dem_share=0.49
+        {"status": "insufficient_data", "reason": "too few"}, baseline_national_dem_share=0.49, shrinkage=0.5
     )
     assert out["status"] == "unavailable"
     assert "national_dem_share" not in out
+
+
+def test_shrinkage_has_no_default():
+    """NE-001: a bare number must not be obtainable without choosing the free parameter."""
+    est = {"status": "ok", "n": 8, "mean_overperformance": 0.20, "std_error": 0.02}
+    with pytest.raises(TypeError, match="shrinkage"):
+        se.implied_national_dem_share(est, baseline_national_dem_share=0.50)  # type: ignore[call-arg]
+    assert not hasattr(se, "SHRINKAGE_UNCALIBRATED")
