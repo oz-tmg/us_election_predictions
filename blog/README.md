@@ -33,6 +33,7 @@ sometimes a refusal.
 | 3 | [The Parameter That Wasn't There](posts/03-the-parameter-that-wasnt-there.md) | Identification vs. sample size, sensitivity bands, pre-registration, data vintage | 5, 6 | **Ready** |
 | 4 | [Thirty-Four Races That Do Not Add Up](posts/04-thirty-four-races-that-do-not-add-up.md) | Exclusion criteria as researcher degrees of freedom, sensitivity analysis | 7 | **Ready** |
 | 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal, and retiring it when the evidence arrives | 6 | **Ready** |
+| 6 | [The Map Is Not the Territory, and Neither Is the District Number](posts/06-the-map-is-not-the-territory-and-neither-is-the-number.md) | Sourcing versus recall; training-data edges; corrections that widen error bars | 8 | **Ready — publish before 2026-11-03** |
 
 ### Post 5 was revised when its own premise expired
 
@@ -50,7 +51,12 @@ survive, the boundary one does not, and what remains is a judgement rather than 
 constraint. That is a better post than the one it replaced, and it is only available
 because the work got done.
 
-### The sixth post is now unblocked
+### Post 6 is time-sensitive
+
+It is the only piece in the series that decays: the register is news until 2026-11-03 and
+history afterwards. If one post goes out this month, this is the one.
+
+### How post 6 came about
 
 The plan-version register was **verified row-by-row on 2026-09-30** against official state
 and court records. Post 5 was revised accordingly: it now states the nine-state, 173-seat
@@ -58,16 +64,13 @@ count as a finding rather than a lead, and reports the two corrections verificat
 produced (Alabama restored its struck-down 2023 legislative plan rather than enacting a new
 map; Missouri's 2022 plan governs the general and its cycle range must stay open).
 
-That makes a **sixth post available** — the register itself, which is the strongest story in
-the project and was previously blocked on exactly this:
-
-> **Draft-ready: the redistricting register.** Nine states redrew for 2026 (173 of 435
-> seats, 39.8% of the chamber); Missouri enacted a map it is not using; Alabama brought back
-> a map that had been struck down; Georgia, New York and Virginia did not redraw despite
-> expectations. Newsworthy, nonpartisan, and now sourced to official records. Write it
-> against `data/reference/house_plan_versions.csv` and
-> `docs/plan-version-worklist.md`, keeping the register's own discipline: it records what
-> was enacted, by whom, and where it says so — it groups no state by motive.
+Verification unblocked the sixth post, now written: nine states redrew for 2026 (173 of 435
+seats, 39.8%); Missouri enacted a map it is not using; Alabama restored one that had been
+struck down; Georgia, New York and Virginia did not redraw despite expectations. It keeps
+the register's own discipline — what was enacted, by whom, and where it says so, with no
+state grouped by motive — and its second half is about what the correction *cost*: a 32%
+wider seat interval, which is the part nobody wants to publish and the reason it is worth
+publishing.
 
 ## Figures
 
@@ -87,6 +90,7 @@ companion table in the post body.
 | `fig-05-swing-ratio-by-era.png` | Swing ratio by redistricting era, with the 2022 era unidentified |
 | `fig-06-shrinkage-band.png` | Chamber-control probability and House seat range across the swept assumption |
 | `fig-07-quarantine.png` | The 34 quarantined races by descriptive reason |
+| `fig-08-redrawn-and-its-cost.png` | Seats on new territory for 2026, and the interval widening that admitting it caused |
 
 ## Attribution required on publication
 
