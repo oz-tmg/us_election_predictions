@@ -106,6 +106,14 @@ to public writing more strictly than anywhere else:
 
 - Nonpartisan throughout. The posts model probability and uncertainty; they do not argue
   for an outcome, and framing, language and source selection stay neutral.
+- **No 2026 forecast is published, House included** (decision 2026-09-30). Sourced
+  boundaries made the House band defensible, but 173 of 435 seats still rest on a
+  state-lean fallback, so its 90% range spans 117–352 seats at the low end of the
+  shrinkage sweep. A number that wide is a statement that we do not know, and the half of
+  it that travels ("Democrats favoured for the House") is the half without the caveat. The
+  band is instead **pre-registered** at `reports/preregistration_2026-11-03.*`, which banks
+  the out-of-sample evidence without the publication risk. Revisit when RD-003 narrows the
+  redrawn seats, when NE-002 resolves the Senate, or after election day.
 - Close races look close. No probability is sharpened to carry a storyline.
 - Unofficial results, calls, estimates and certified returns are labelled distinctly and
   never share a sentence without one.

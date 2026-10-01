@@ -26,7 +26,7 @@ REPORTS = "reports"
 N_SIMS = 20_000
 
 
-def main() -> None:
+def main(*, preregister: bool = False) -> None:
     # ---- national environment: the estimator contract (NE-001) --------------
     # The specials mean enters through ``national_environment.from_specials`` as a *band*
     # over the shrinkage factor, never as a point: ``projectable`` refuses an unidentified
@@ -134,6 +134,7 @@ def main() -> None:
 
     # ---- project + simulate across the shrinkage band ----------------------
     rows = []
+    seat_frames = []  # per-seat predictions, kept for the pre-registration
     for _, s in sweep.iterrows():
         hproj, hcov = projection.project_house(
             universe,
@@ -144,7 +145,8 @@ def main() -> None:
             pres_reference=pres_ref,
             fallback_lean_sd=fallback_lean_sd,
         )
-        hsim = _simulate(hproj, total_seats=house.VOTING_SEATS)
+        hsim = _simulate(hproj, total_seats=house.VOTING_SEATS, with_win_probs=True)
+        hproj = hproj.assign(dem_win_prob=hsim.pop("dem_win_prob"))
 
         # The Senate model carries no national term, so the environment enters only as an
         # explicit uniform-swing scenario -- half the applied margin swing, in share points.
@@ -157,7 +159,14 @@ def main() -> None:
             resid_sigma=ssigma,
             uniform_swing=swing,
         )
-        ssim = _simulate(sproj, total_seats=100, holdover_dem=dem_holdovers)
+        ssim = _simulate(sproj, total_seats=100, holdover_dem=dem_holdovers, with_win_probs=True)
+        sproj = sproj.assign(dem_win_prob=ssim.pop("dem_win_prob"))
+
+        for frame, off in ((hproj, "us_house"), (sproj, "us_senate")):
+            keep = frame.copy()
+            keep["assumption"] = s["assumption"]
+            keep["office"] = off
+            seat_frames.append(keep)
         rows.append(
             {
                 "assumption": s["assumption"],
@@ -236,6 +245,18 @@ def main() -> None:
             f"(residual {hcov['resid_sigma']:.4f} widened by within-state lean sd "
             f"{hcov['fallback_lean_sd']:.4f})."
         )
+    if preregister:
+        _write_preregistration(
+            results=results,
+            seat_frames=seat_frames,
+            env=env,
+            hcov=hcov,
+            scov=scov,
+            conclusions=conclusions,
+            universe=universe,
+            specials=specials,
+        )
+
     if hcov.get("litigation_active_states"):
         print(
             f"litigation active: {', '.join(hcov['litigation_active_states'])} -- a court could still move "
@@ -246,7 +267,73 @@ def main() -> None:
         )
 
 
-def _simulate(proj: pd.DataFrame, *, total_seats: int, holdover_dem: int = 0) -> dict:
+def _declared_defects(hcov: dict, universe: pd.DataFrame) -> list[str]:
+    """What I expect to be wrong, written down before the event (see reporting.preregistration)."""
+    n_redrawn = hcov["seats_by_boundary_confidence"].get("redrawn", 0)
+    status = universe["incumbent_status"].value_counts().to_dict()
+    return [
+        f"{n_redrawn} House seats have no prior on their 2026 boundaries. They use their state's "
+        f"presidential lean with sigma {hcov['fallback_sigma']:.4f} against a modelled "
+        f"{hcov['resid_sigma']:.4f}. RD-003's vote transfer is unbuilt, so these seats are the "
+        "least informed part of the chamber and should show visibly worse per-seat scores.",
+        "The derived Democratic Senate caucus is 45 of 100, two short of the actual 47. The "
+        "candidate/party crosswalk (P0-003) cannot resolve every member's affiliation from "
+        "two-party share, so Senate Democratic seats are likely understated by about two.",
+        f"Renomination is assumed for every sitting member. {status.get('filed', 0)} have a 2026 FEC "
+        f"filing and {status.get('not_found', 0)} were not found; primaries are not compiled at all, "
+        "so retirements and primary defeats are invisible to this forecast.",
+        "The national environment is unidentified. The shrinkage factor is an assumption swept "
+        "over, not an estimate, and no historical calibration for it exists yet (NE-002 open).",
+        f"Maps in {', '.join(hcov.get('litigation_active_states', [])) or 'no states'} are under live "
+        "litigation and could move before election day. The register records the plan in effect at "
+        "the snapshot date; a late court order would invalidate those seats' boundaries.",
+        "The simulation's correlated-error split (45/25/30 national/regional/state) is asserted, "
+        "not estimated from residuals. Chamber-level interval width is sensitive to it.",
+    ]
+
+
+def _write_preregistration(
+    *, results, seat_frames, env, hcov, scov, conclusions, universe, specials
+) -> None:
+    from election_prediction.reporting import preregistration as prereg
+
+    seats = pd.concat(seat_frames, ignore_index=True)
+    for col in ("litigation_risk", "boundary_confidence"):
+        if col not in seats.columns:
+            seats[col] = pd.NA
+    payload = prereg.build(
+        election_date=str(universe["election_date"].iloc[0]),
+        band=results,
+        seats=seats,
+        environment=env.to_dict(),
+        house_coverage=hcov,
+        senate_coverage=scov,
+        conclusions=conclusions,
+        declared_defects=_declared_defects(hcov, universe),
+        data_snapshots={
+            "MEDSL certified returns": "2026-09-30 (cycles 1976-2024)",
+            "Census ACS 5-year": "vintage 2023",
+            "FEC filings": "2026-09-15",
+            "plan-version register (RD-001)": "verified 2026-09-30",
+            "compiled special elections": (
+                f"{len(specials)} rows compiled through {specials['election_date'].max()}; "
+                f"{env.provenance['n']} used after same-party and seat double-count gating"
+            ),
+        },
+    )
+    json_path, md_path = prereg.write(payload, REPORTS)
+    csv_path = Path(REPORTS) / f"preregistration_{payload['election_date']}_seats.csv"
+    seats[prereg.SEAT_COLUMNS].to_csv(csv_path, index=False)
+    print(f"\nPRE-REGISTERED -> {json_path}\n               -> {md_path}\n               -> {csv_path}")
+    print(f"predictions SHA-256: {payload['predictions_sha256']}")
+    print("This artefact is sealed. Scoring rules are fixed; see its evaluation_plan block.")
+
+
+def _simulate(
+    proj: pd.DataFrame, *, total_seats: int, holdover_dem: int = 0, with_win_probs: bool = False
+) -> dict:
+    """Seat distribution from correlated draws. ``with_win_probs`` adds the per-seat column,
+    which the pre-registration needs: a chamber total cannot be scored for calibration."""
     from election_prediction.geography import reference as ref
 
     regions = [ref.by_postal(s).census_region for s in proj["state_po"]]
@@ -254,6 +341,8 @@ def _simulate(proj: pd.DataFrame, *, total_seats: int, holdover_dem: int = 0) ->
         proj["mean_dem_share"].to_numpy(), proj["sigma"].to_numpy(), regions, n_sims=N_SIMS
     )
     dist = simulation.seat_distribution(sim, proj["state_po"].tolist(), total_seats=total_seats)
+    if with_win_probs:
+        dist = {**dist, "dem_win_prob": (sim > 0.5).mean(axis=0)}
     if holdover_dem:
         # Shift the whole distribution by seats not on the ballot, then re-derive control.
         dem = (sim > 0.5).sum(axis=1) + holdover_dem
@@ -268,4 +357,4 @@ def _simulate(proj: pd.DataFrame, *, total_seats: int, holdover_dem: int = 0) ->
 
 
 if __name__ == "__main__":
-    main()
+    main(preregister="--preregister" in sys.argv)
