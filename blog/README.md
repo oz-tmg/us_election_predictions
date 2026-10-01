@@ -99,6 +99,15 @@ Reproduce these lines wherever a post is published:
 - **Federal Election Commission** — candidate and committee filings. Aggregate use only;
   contributor fields are never used for solicitation, list-building or targeting.
 
+**Mandatory the moment any post uses Redistricting Data Hub data** (registered 2026-09-30;
+terms at `docs/terms_and_conditions/redistricting-datahub-data-download.md`). RDH requires
+these strings verbatim, and its licence is noncommercial, nonpartisan and explicitly
+anti-gerrymandering:
+
+- Analysis: *"This analysis was conducted using data from the Redistricting Data Hub."*
+- Map: *"This map was created using data from the Redistricting Data Hub."*
+- Reposting data: *"This data was obtained from the Redistricting Data Hub."*
+
 ## Editorial boundaries
 
 These are not stylistic preferences. They are the project's operating rules, and they apply
