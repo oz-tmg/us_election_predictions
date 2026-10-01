@@ -118,9 +118,47 @@ before November, and the 8th Circuit case is live.
 projection's coverage report, and is never consulted by the routing; a test flips only that
 flag and asserts the priors come back byte-identical.
 
-⚠️ **`litigation_risk` values are not independently verified.** They are derived from each
-row's own verified notes — AL, LA, MO and TN read `active` — and need their own pass with
-the same discipline as the rest of the register before anything leans on them.
+### Litigation researched 2026-10-01 — and it corrected five states
+
+The first pass derived `litigation_risk` from each row's own notes. That pass was **wrong
+in five of nine states, always in the same direction.** Researching each state against
+Loyola Law School's All About Redistricting trackers found pending cases in CA, FL, NC, TX
+and UT, all of which the register had recorded as `none`.
+
+The cause is worth naming because it is the same confusion one level down. Those notes
+recorded things like *"US Supreme Court denied an injunction"* (CA) and *"Federal panel
+declined to block it"* (NC). Both are true, and both settle **which map is in effect** —
+which is what the notes were written to establish. Neither settles **whether the case is
+over**. A denied preliminary injunction means the map stands *while the merits continue*.
+Reading one as the other is exactly the territory-versus-litigation conflation that
+`boundary_confidence` and `litigation_risk` were split apart to prevent, reappearing inside
+the very column created to hold it.
+
+Current state: **nine of ten register states have active litigation. Only Ohio does not** —
+its 2025 plan was adopted unanimously by the backup commission and no challenge is recorded.
+
+| State | Risk | Leading case(s) |
+|---|---|---|
+| AL | active | Singleton / Caster / Milligan v. Allen — all pending |
+| CA | active | Tangipa v. Newsom; Noyes v. Newsom — injunction denied 2026-01-14, merits pending |
+| FL | active | Equal Ground Education Fund v. Byrd — pending through the FL Supreme Court |
+| LA | active | Callais v. Landry; Garcia v. Landry and others after the primary suspension |
+| MO | active | Onder v. Missouri; Berry v. Hoskins; Prop A on the November ballot |
+| NC | active | Gallop v. Hirsch — constitution + VRA |
+| OH | **none** | No challenge recorded to the 2025 commission plan |
+| TN | active | TN NAACP v. Hargett; Sherman v. Hargett |
+| TX | active | LULAC v. Abbott — SCOTUS stayed the injunction 2025-12-04, case pending |
+| UT | active | League of Women Voters of Utah v. Utah State Legislature |
+
+⚠️ **Status is `researched_secondary`, not `verified`.** Every live row now carries a
+`litigation_source_url` and `litigation_retrieved_on`, but the source is a tracker, not a
+docket — and the register's own standard is an official state or court record. This is a
+real improvement on inference from our own notes and still short of the bar. A docket-level
+pass remains the human task; `verified_by` is deliberately unchanged.
+
+**The correction moved no projected number**, which is the design working: the band is
+bit-identical before and after, because routing never consults litigation. Five states
+changed status and not one seat changed prior.
 
 ## Second design question: does the register apply to history? — RESOLVED 2026-09-30
 

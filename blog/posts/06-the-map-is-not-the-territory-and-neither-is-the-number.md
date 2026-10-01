@@ -89,7 +89,23 @@ One result genuinely surprised me: the House *control probability* band **narrow
 
 - **`status` means standing today; the cycle range means which elections a plan actually governed.** A plan superseded in 2026 still ran the 2022 election. Conflating the two put Missouri briefly in a state where no map governed 2026 at all — the validator's first test now checks exactly that.
 - **The decennial fallback is still an assumption.** A state with no register row is assumed not to have redrawn. The register is only as complete as its compilation.
-- **`litigation_risk` is the weakest column in the table.** Its values are derived from each row's verified notes rather than independently checked. Alabama, Louisiana, Missouri and Tennessee read `active`, covering 30 seats. It needs its own verification pass, and until it gets one it is the one field here that does not meet the register's own standard. I would rather say that than let it pass.
+- **The decennial fallback still assumes absence of evidence is evidence of absence.** A state with no register row is assumed not to have redrawn. The register is only as complete as its compilation.
+
+## The same mistake, one level down
+
+I filled in `litigation_risk` by reading each row's own verified notes. Then I went and checked it against the case trackers, state by state, expecting to confirm a handful of details.
+
+**It was wrong in five of nine states, every time in the same direction.** California, Florida, North Carolina, Texas and Utah all had pending cases. My register said `none` for all five.
+
+The cause is the thing this whole post is about, wearing a smaller hat. Those notes said things like *"the US Supreme Court denied an injunction"* for California and *"a federal panel declined to block it"* for North Carolina. Both statements are true, and both were written to establish **which map is in effect** — which is what I needed them for at the time. Neither says anything about **whether the case is over**. A denied preliminary injunction means the map stands *while the merits carry on*.
+
+So I had built a column to separate "did the territory move?" from "could a court move it?", precisely because conflating those two gets Missouri backwards — and then populated the second column by misreading evidence about the first. The distinction I had just spent a design argument defending, I failed to apply inside the field created to hold it.
+
+Nine of the ten states in the register have live litigation. Only Ohio does not.
+
+The correction moved **no projected number at all** — the band is bit-identical before and after, because the routing never consults litigation. Five states changed status and not one seat changed prior. That is the split doing exactly its job, and it is also the reason the error was survivable: a column that nothing routes on can be wrong for a fortnight without corrupting a forecast. Had I wired litigation into the routing, as the original `pending` vocabulary did, those five states would have thrown away 115 seats' worth of perfectly good priors.
+
+One more honesty note: the new values are sourced to a case tracker, not a court docket, and the register's own standard is an official state or court record. So they carry `researched_secondary` rather than `verified`, with a URL and a retrieval date on every row. Better than my inference. Still not the bar.
 
 ## What I would do next
 
@@ -97,7 +113,7 @@ One result genuinely surprised me: the House *control probability* band **narrow
 
 **Then measure the transfer rather than trusting it.** Allocate old results onto new boundaries, backtest the method on Virginia 2020→2022 where the answer is already known, and take the uncertainty for a transferred prior from that backtest. Not from a plausible-sounding default.
 
-**And verify the litigation column**, to the same standard as everything else in the table.
+**Take the litigation column to a docket.** It is researched now rather than guessed, but a tracker is not a court record, and this is the column that has already proven it can be wrong in one direction five times over.
 
 ## The broader lesson
 

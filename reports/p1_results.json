@@ -5467,9 +5467,31 @@
     "oldest_retrieved_on": "2026-09-30",
     "litigation_active": [
       "AL",
+      "CA",
+      "FL",
       "LA",
       "MO",
-      "TN"
+      "NC",
+      "TN",
+      "TX",
+      "UT"
+    ],
+    "litigation_risk_by_status": {
+      "researched_secondary": 11,
+      "verified": 12
+    },
+    "litigation_rows_not_independently_verified": 11,
+    "litigation_sourced_to_a_tracker_not_a_docket": [
+      "AL",
+      "CA",
+      "FL",
+      "LA",
+      "MO",
+      "NC",
+      "OH",
+      "TN",
+      "TX",
+      "UT"
     ]
   },
   "national_swing": {
@@ -5676,9 +5698,14 @@
     ],
     "litigation_active_states": [
       "AL",
+      "CA",
+      "FL",
       "LA",
       "MO",
-      "TN"
+      "NC",
+      "TN",
+      "TX",
+      "UT"
     ],
     "not_derivable": [
       "candidate filings / who is actually running (needs fec_api \u2014 registered, key required)",

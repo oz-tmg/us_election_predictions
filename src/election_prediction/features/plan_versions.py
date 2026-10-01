@@ -49,6 +49,8 @@ REGISTER_COLUMNS = [
     "status",
     "litigation_risk",
     "litigation_risk_status",
+    "litigation_source_url",
+    "litigation_retrieved_on",
     "source_url",
     "baf_url",
     "retrieved_on",
@@ -86,9 +88,15 @@ LITIGATION_VALUES = {LITIGATION_NONE, LITIGATION_ACTIVE}
 # against an official state or court record; these are not yet, and the table says so
 # rather than letting a weaker standard pass as the same standard.
 LITIGATION_VERIFIED = "verified"
+LITIGATION_RESEARCHED = "researched_secondary"  # a tracker, not a docket; needs sign-off
 LITIGATION_DERIVED = "derived_from_notes"
 LITIGATION_UNVERIFIED = "unverified"
-LITIGATION_STATUS_VALUES = {LITIGATION_VERIFIED, LITIGATION_DERIVED, LITIGATION_UNVERIFIED}
+LITIGATION_STATUS_VALUES = {
+    LITIGATION_VERIFIED,
+    LITIGATION_RESEARCHED,
+    LITIGATION_DERIVED,
+    LITIGATION_UNVERIFIED,
+}
 
 DEFAULT_REGISTER = Path(__file__).resolve().parents[3] / "data" / "reference" / "house_plan_versions.csv"
 
@@ -221,6 +229,11 @@ def validate_plan_versions(register: pd.DataFrame, *, cycles: list[int] | None =
         "litigation_risk_by_status": register["litigation_risk_status"].value_counts().sort_index().to_dict(),
         "litigation_rows_not_independently_verified": int(
             (register["litigation_risk_status"] != LITIGATION_VERIFIED).sum()
+        ),
+        "litigation_sourced_to_a_tracker_not_a_docket": sorted(
+            register.loc[
+                register["litigation_risk_status"] == LITIGATION_RESEARCHED, "state_po"
+            ].unique().tolist()
         ),
     }
 

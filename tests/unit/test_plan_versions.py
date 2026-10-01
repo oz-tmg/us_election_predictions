@@ -22,7 +22,9 @@ BASE = {
     "enacted_on": "2022-05-18",
     "status": "in_effect",
     "litigation_risk": "active",
-    "litigation_risk_status": "derived_from_notes",
+    "litigation_risk_status": "researched_secondary",
+    "litigation_source_url": "https://redistricting.lls.edu/state/missouri/",
+    "litigation_retrieved_on": "2026-10-01",
     "source_url": "https://www.sos.mo.gov/example",
     "baf_url": "",
     "retrieved_on": "2026-09-30",
@@ -243,10 +245,32 @@ def test_alabama_2026_is_the_legislative_plan_not_the_remedial_one():
 # 6. litigation_risk provenance (open question 9)
 # --------------------------------------------------------------------------------------
 def test_litigation_values_carry_how_well_they_are_known():
-    """The rest of the register is checked against official records; this column is not yet."""
+    """Researched against a tracker on 2026-10-01 -- better than our own notes, short of a docket."""
     report = pv.validate_plan_versions(pv.load_register(), cycles=[2026])
-    assert report["litigation_rows_not_independently_verified"] == 23
-    assert report["litigation_risk_by_status"] == {"derived_from_notes": 23}
+    assert report["litigation_risk_by_status"]["researched_secondary"] == 11
+    # Every live row is sourced to a tracker and still awaits a docket-level sign-off.
+    assert report["litigation_sourced_to_a_tracker_not_a_docket"] == [
+        "AL", "CA", "FL", "LA", "MO", "NC", "OH", "TN", "TX", "UT"
+    ]
+
+
+def test_research_corrected_five_states_our_own_notes_had_called_quiet():
+    """CA, FL, NC, TX and UT all had pending cases while the register said `none`.
+
+    Each note recorded a *denied injunction* -- which settles which map is in effect, not
+    whether the case is over. Reading one as the other understated litigation in five of
+    nine states, always in the same direction.
+    """
+    report = pv.validate_plan_versions(pv.load_register(), cycles=[2026])
+    assert set(report["litigation_active"]) >= {"CA", "FL", "NC", "TX", "UT"}
+    assert "OH" not in report["litigation_active"]
+
+
+def test_every_live_litigation_row_cites_where_the_claim_came_from():
+    reg = pv.load_register()
+    live = reg[reg["litigation_risk_status"] == pv.LITIGATION_RESEARCHED]
+    assert live["litigation_source_url"].str.startswith("https://").all()
+    assert (live["litigation_retrieved_on"] == "2026-10-01").all()
 
 
 def test_an_unknown_litigation_status_is_refused():
@@ -272,7 +296,7 @@ def test_a_blank_litigation_status_reads_unverified_rather_than_verified(tmp_pat
 
 def test_litigation_status_never_affects_the_boundary_judgement():
     verified = _register([{"litigation_risk": "active", "litigation_risk_status": "verified"}])
-    derived = _register([{"litigation_risk": "active", "litigation_risk_status": "derived_from_notes"}])
+    derived = _register([{"litigation_risk": "active", "litigation_risk_status": "researched_secondary"}])
     assert pv.PlanVersions(verified).boundary_confidence("MO", 2026) == pv.PlanVersions(
         derived
     ).boundary_confidence("MO", 2026)

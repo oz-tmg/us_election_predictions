@@ -5,6 +5,39 @@ _Machinery built 2026-09-30 (`models/baseline/shrinkage_calibration.py`, 19 test
 `data/reference/shrinkage_calibration_pairs.csv` carries four rows, and
 `calibration_pairs` refuses them with "not yet compiled" rather than inventing a bound._
 
+## ⛔ BLOCKER found 2026-10-01: the specials half is not derivable from this repo
+
+Investigated before compiling. **MEDSL's House file contains 30 special-election rows in
+total, all from 2006.** For cycles 2016–2024 it contains none:
+
+```
+special flag on us_house rows:  {False: 31971, True: 30}
+special races by cycle >= 2016: NONE
+```
+
+So `specials_overperformance` cannot be computed from certified returns already on disk. It
+requires external compilation, and each row needs two sourced numbers, not one:
+
+1. **The special's result** — dem/rep/other votes, with `source_url` and `retrieved_on`.
+2. **`baseline_dem_share`** — that district's presidential two-party share, which is what
+   overperformance is measured against. The repo computes this only for **2024**
+   (`data/gold/cd_presidential_baseline_2024.parquet`, built by `features/cd_baseline.py`
+   from MEDSL precinct files). A 2017–18 special needs a **2016** baseline; a 2021–22
+   special needs **2020**. Neither exists here.
+
+That is a genuine multi-day data task, not a gap I can close by computing harder. **Three
+paths, and the choice is the project owner's:**
+
+| Path | What it costs | What it risks |
+|---|---|---|
+| **A. Hand-compile externally** | Compile each cycle's specials plus a cited presidential baseline per district (The Downballot / Split Ticket publish these; registered as `downballot_split_ticket`, cite per row) | Slow, and the baselines come from a Tier-B secondary source rather than our own precinct arithmetic |
+| **B. Extend `cd_baseline.py` to 2016 and 2020** | Ingest the 2016 (and confirm 2020) MEDSL precinct files and compute baselines ourselves | Engineering I can do, but it only solves half — the special results still need external compilation |
+| **C. Change the baseline definition** | Use each district's prior *House* result instead of its presidential share | **Breaks comparability.** The live 2026 estimate uses a presidential baseline; a bound measured against a different quantity does not constrain it. The worklist's own rule forbids this |
+
+Recommendation: **B then A.** Doing B first means the baselines are ours, computed the same
+way for every cycle, and the hand-compilation is then only the special results. C should not
+be taken — it would produce a number that looks like a bound and is not one.
+
 ## What is already done
 
 `general_margin_swing` is **derived from certified returns** already in the repo

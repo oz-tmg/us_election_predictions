@@ -158,7 +158,10 @@ def test_with_the_register_each_seat_gets_its_state_s_sourced_confidence():
     assert house.loc["MO", "boundary_confidence"] == "unchanged"
     assert house.loc["MO", "litigation_risk"] == "active"
     assert coverage["redrawn_states"] == ["TX"]
-    assert coverage["litigation_active_states"] == ["MO"]
+    # Texas joined this list when litigation was researched on 2026-10-01: LULAC v. Abbott
+    # is pending even though SCOTUS stayed the injunction, so the map stands AND the case
+    # is live. The register had read the stay as closure -- it is not.
+    assert coverage["litigation_active_states"] == ["MO", "TX"]
 
 
 def test_litigation_never_leaks_into_the_boundary_judgement():
