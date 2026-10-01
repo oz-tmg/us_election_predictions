@@ -110,6 +110,18 @@ class ShrinkageBound:
         }
 
 
+def _blank(series: pd.Series) -> pd.Series:
+    """True where a cell is empty, whatever shape 'empty' arrives in.
+
+    pandas 3 stopped rendering a missing float as the string "nan" under ``astype(str)``,
+    which silently defeated a string-comparison blank check here: an uncompiled column was
+    reported as "not numeric" (a bug) instead of "not yet compiled" (a to-do). Test
+    ``test_a_blank_cell_and_a_garbage_cell_are_reported_differently`` pins the distinction.
+    """
+    text = series.astype("string").fillna("").str.strip()
+    return series.isna() | text.isin(["", "nan", "None", "<NA>"])
+
+
 def validate_pairs(pairs: pd.DataFrame) -> None:
     """Every row must be sourced and checked, exactly as the plan-version register is."""
     missing_cols = [c for c in PAIR_COLUMNS if c not in pairs.columns]
@@ -118,13 +130,20 @@ def validate_pairs(pairs: pd.DataFrame) -> None:
 
     problems: list[str] = []
     for col in REQUIRED_NON_EMPTY:
-        blank = pairs[pairs[col].astype(str).str.strip().isin(["", "nan", "None"])]
-        for _, row in blank.iterrows():
+        for _, row in pairs[_blank(pairs[col])].iterrows():
             problems.append(f"{row['pair_id'] or '<no pair_id>'}: empty {col}")
 
+    # A blank cell is "not compiled yet" and a garbage cell is a mistake. Saying so
+    # separately is the difference between a to-do and a bug.
     for col in ("specials_overperformance", "general_margin_swing"):
-        bad = pairs[pd.to_numeric(pairs[col], errors="coerce").isna()]
-        for _, row in bad.iterrows():
+        blank = _blank(pairs[col])
+        numeric = pd.to_numeric(pairs[col], errors="coerce")
+        for _, row in pairs[blank].iterrows():
+            problems.append(
+                f"{row['pair_id']}: {col} is not yet compiled "
+                "(see docs/shrinkage-calibration-worklist.md)"
+            )
+        for _, row in pairs[~blank & numeric.isna()].iterrows():
             problems.append(f"{row['pair_id']}: {col} is not numeric")
 
     zero = pairs[pd.to_numeric(pairs["specials_overperformance"], errors="coerce") == 0]

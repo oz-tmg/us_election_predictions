@@ -30,6 +30,29 @@ that are never collapsed into one score**:
 A district can score well on one and badly on another. A single collapsed number would hide
 exactly the distinction a consumer needs.
 
+## The `baf_url` checklist — 9 states, 173 seats
+
+Generated from `data/reference/house_plan_versions.csv` on 2026-09-30. Every `baf_url` is
+empty; filling this column is the first collection task and the gate on everything below.
+The `source_url` column is the official portal already verified for the *plan*, which is
+the place to start looking for its block assignments — it is **not** itself a BAF.
+
+| State | Seats | Plan in effect 2026 | Authority | Enacted | Litigation live | `baf_url` | Verified plan source (start here) |
+|---|---:|---|---|---|---|---|---|
+| AL | 7 | `AL_2023_LEG` | legislature | 2026-05-08 | ⚠️ yes | _(empty)_ | https://www.sos.alabama.gov/alabama-votes/state-district-maps |
+| CA | 52 | `CA_2025` | referendum | 2025-11-04 | no | _(empty)_ | https://www.sos.ca.gov/elections/california-redistricting |
+| FL | 28 | `FL_2026` | legislature | 2026-05-04 | no | _(empty)_ | https://www.flsenate.gov/Session/Redistricting/Congressional |
+| LA | 6 | `LA_2026` | legislature | 2026-05-29 | ⚠️ yes | _(empty)_ | https://www.legis.la.gov/legis/CongressMaps.aspx |
+| NC | 14 | `NC_2025` | legislature | 2025-10-22 | no | _(empty)_ | https://www.ncleg.gov/BillLookup/2025/S249 |
+| OH | 15 | `OH_2025` | commission | 2025-10-31 | no | _(empty)_ | https://www.ohiosos.gov/elections/district-maps |
+| TN | 9 | `TN_2026` | legislature | 2026-05-07 | ⚠️ yes | _(empty)_ | https://sos.tn.gov/announcements/2026-congressional-redistricting |
+| TX | 38 | `TX_2025` | legislature | 2025-08-29 | no | _(empty)_ | https://www.sos.state.tx.us/elections/forms/2025-legislative-update-local-election-officials.pdf |
+| UT | 4 | `UT_2025` | court | 2025-11-10 | no | _(empty)_ | https://legacy.utcourts.gov/utc/news/2025/11/17/utah-judiciary-responds-to-threats-in-redistricting-case/ |
+
+Four of these states have live litigation, so a BAF collected today may describe a map a
+court moves before election day. Record `retrieved_on` for the BAF separately from the
+plan's — they are different claims with different expiry.
+
 ## Collection tasks, in order
 
 1. **Fill `baf_url` in the plan-version register.** It is empty on all 23 rows. Census

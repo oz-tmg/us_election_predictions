@@ -140,3 +140,28 @@ def test_to_dict_round_trips_without_losing_the_status():
     d = sc.band_from_pairs(_four()).to_dict()
     assert d["status"] == sc.STATUS_BOUND and d["n_pairs"] == 4
     assert len(d["realised"]) == 4
+
+
+# ---- the committed, half-compiled table ---------------------------------------------------
+
+
+def test_the_committed_pairs_table_is_refused_until_the_specials_half_is_compiled():
+    """general_margin_swing is derived from certified returns; the other half is a human task."""
+    pairs = pd.read_csv("data/reference/shrinkage_calibration_pairs.csv")
+    with pytest.raises(sc.CalibrationError, match="not yet compiled"):
+        sc.calibration_pairs(pairs)
+
+
+def test_the_committed_table_already_carries_sourced_general_swings():
+    pairs = pd.read_csv("data/reference/shrinkage_calibration_pairs.csv")
+    assert list(pairs["pair_id"]) == list(sc.EXPECTED_PAIRS)
+    assert pairs["general_margin_swing"].notna().all()
+    assert pairs["specials_overperformance"].isna().all()
+
+
+def test_a_blank_cell_and_a_garbage_cell_are_reported_differently():
+    """A to-do and a bug are different problems and must not share an error message."""
+    with pytest.raises(sc.CalibrationError, match="not yet compiled"):
+        sc.calibration_pairs(_pairs([{"general_margin_swing": ""}]))
+    with pytest.raises(sc.CalibrationError, match="not numeric"):
+        sc.calibration_pairs(_pairs([{"general_margin_swing": "about six points"}]))

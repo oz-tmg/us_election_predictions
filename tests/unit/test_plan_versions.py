@@ -22,6 +22,7 @@ BASE = {
     "enacted_on": "2022-05-18",
     "status": "in_effect",
     "litigation_risk": "active",
+    "litigation_risk_status": "derived_from_notes",
     "source_url": "https://www.sos.mo.gov/example",
     "baf_url": "",
     "retrieved_on": "2026-09-30",
@@ -236,3 +237,42 @@ def test_alabama_2026_is_the_legislative_plan_not_the_remedial_one():
     assert plans.plan_id("AL", 2026) == "AL_2023_LEG"
     assert plans.plan_id("AL", 2024) == "AL_2023"
     assert plans.boundary_confidence("AL", 2026) == pv.BOUNDARY_REDRAWN
+
+
+# --------------------------------------------------------------------------------------
+# 6. litigation_risk provenance (open question 9)
+# --------------------------------------------------------------------------------------
+def test_litigation_values_carry_how_well_they_are_known():
+    """The rest of the register is checked against official records; this column is not yet."""
+    report = pv.validate_plan_versions(pv.load_register(), cycles=[2026])
+    assert report["litigation_rows_not_independently_verified"] == 23
+    assert report["litigation_risk_by_status"] == {"derived_from_notes": 23}
+
+
+def test_an_unknown_litigation_status_is_refused():
+    reg = _register([{"litigation_risk_status": "probably fine"}])
+    with pytest.raises(pv.PlanRegisterError, match="unknown litigation_risk_status"):
+        pv.validate_plan_versions(reg)
+
+
+def test_a_blank_litigation_status_reads_unverified_rather_than_verified(tmp_path):
+    """Silence must never be read as a clean bill of health."""
+    src = tmp_path / "reg.csv"
+    header = ",".join(pv.REGISTER_COLUMNS)
+    row = {c: "" for c in pv.REGISTER_COLUMNS}
+    row.update(
+        state_po="MO", plan_id="MO_2022", first_cycle="2022", authority="legislature",
+        enacted_on="2022-05-18", status="in_effect", source_url="https://example.gov",
+        retrieved_on="2026-09-30", verified_by="AO",
+    )
+    src.write_text(header + "\n" + ",".join(row[c] for c in pv.REGISTER_COLUMNS) + "\n")
+    loaded = pv.load_register(src)
+    assert loaded["litigation_risk_status"].iloc[0] == pv.LITIGATION_UNVERIFIED
+
+
+def test_litigation_status_never_affects_the_boundary_judgement():
+    verified = _register([{"litigation_risk": "active", "litigation_risk_status": "verified"}])
+    derived = _register([{"litigation_risk": "active", "litigation_risk_status": "derived_from_notes"}])
+    assert pv.PlanVersions(verified).boundary_confidence("MO", 2026) == pv.PlanVersions(
+        derived
+    ).boundary_confidence("MO", 2026)

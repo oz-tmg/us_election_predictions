@@ -48,6 +48,7 @@ REGISTER_COLUMNS = [
     "enacted_on",
     "status",
     "litigation_risk",
+    "litigation_risk_status",
     "source_url",
     "baf_url",
     "retrieved_on",
@@ -81,6 +82,14 @@ LITIGATION_NONE = "none"
 LITIGATION_ACTIVE = "active"
 LITIGATION_VALUES = {LITIGATION_NONE, LITIGATION_ACTIVE}
 
+# How well a `litigation_risk` value is known. The register's other columns are checked
+# against an official state or court record; these are not yet, and the table says so
+# rather than letting a weaker standard pass as the same standard.
+LITIGATION_VERIFIED = "verified"
+LITIGATION_DERIVED = "derived_from_notes"
+LITIGATION_UNVERIFIED = "unverified"
+LITIGATION_STATUS_VALUES = {LITIGATION_VERIFIED, LITIGATION_DERIVED, LITIGATION_UNVERIFIED}
+
 DEFAULT_REGISTER = Path(__file__).resolve().parents[3] / "data" / "reference" / "house_plan_versions.csv"
 
 
@@ -106,6 +115,7 @@ def load_register(path: str | Path | None = None) -> pd.DataFrame:
     for col in ("first_cycle", "last_cycle"):
         df[col] = pd.to_numeric(df[col].replace("", pd.NA), errors="coerce").astype("Int64")
     df["litigation_risk"] = df["litigation_risk"].replace("", LITIGATION_NONE)
+    df["litigation_risk_status"] = df["litigation_risk_status"].replace("", LITIGATION_UNVERIFIED)
     return df[REGISTER_COLUMNS]
 
 
@@ -144,6 +154,14 @@ def validate_plan_versions(register: pd.DataFrame, *, cycles: list[int] | None =
     bad_lit = register.loc[~register["litigation_risk"].isin(LITIGATION_VALUES), "plan_id"].tolist()
     if bad_lit:
         problems.append(f"unknown litigation_risk on {bad_lit}; expected {sorted(LITIGATION_VALUES)}")
+
+    bad_lit_status = register.loc[
+        ~register["litigation_risk_status"].isin(LITIGATION_STATUS_VALUES), "plan_id"
+    ].tolist()
+    if bad_lit_status:
+        problems.append(
+            f"unknown litigation_risk_status on {bad_lit_status}; expected {sorted(LITIGATION_STATUS_VALUES)}"
+        )
 
     bad_url = register.loc[~register["source_url"].str.startswith("http"), "plan_id"].tolist()
     if bad_url:
@@ -198,6 +216,11 @@ def validate_plan_versions(register: pd.DataFrame, *, cycles: list[int] | None =
         "oldest_retrieved_on": min(register.loc[register["status"] != STATUS_SUPERSEDED, "retrieved_on"]),
         "litigation_active": sorted(
             register.loc[register["litigation_risk"] == LITIGATION_ACTIVE, "state_po"].unique().tolist()
+        ),
+        # Surfaced in every validation report so the weaker standard cannot go unnoticed.
+        "litigation_risk_by_status": register["litigation_risk_status"].value_counts().sort_index().to_dict(),
+        "litigation_rows_not_independently_verified": int(
+            (register["litigation_risk_status"] != LITIGATION_VERIFIED).sum()
         ),
     }
 

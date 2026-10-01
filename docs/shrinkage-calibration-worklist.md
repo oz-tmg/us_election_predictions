@@ -1,8 +1,53 @@
 # Shrinkage Calibration: Compilation Worklist (NE-002)
 
-_Machinery built 2026-09-30 (`models/baseline/shrinkage_calibration.py`, 16 tests). **No
-pairs are compiled yet.** `band_from_pairs` returns `status = "insufficient"` until they
-are, and refuses to produce a sweep rather than inventing one._
+_Machinery built 2026-09-30 (`models/baseline/shrinkage_calibration.py`, 19 tests).
+**Half of each pair is now compiled**; the specials half is the remaining human task.
+`data/reference/shrinkage_calibration_pairs.csv` carries four rows, and
+`calibration_pairs` refuses them with "not yet compiled" rather than inventing a bound._
+
+## What is already done
+
+`general_margin_swing` is **derived from certified returns** already in the repo
+(`data/gold/house_panel.parquet`, MEDSL 1976–2024), so no compilation is needed for it:
+
+| Pair | National two-party Dem share | Margin swing |
+|---|---|---:|
+| `2017_2018` | 0.502526 (2016) → 0.536674 (2018) | **+0.0683** |
+| `2019_2020` | 0.536674 (2018) → 0.521001 (2020) | **−0.0313** |
+| `2021_2022` | 0.521001 (2020) → 0.491987 (2022) | **−0.0580** |
+| `2023_2024` | 0.491987 (2022) → 0.492224 (2024) | **+0.0005** |
+
+What remains per row: `specials_overperformance`, `specials_n`, and `verified_by`.
+
+## ⚠️ What the derived half already suggests — read before compiling
+
+**The sign flips.** Two of the four generals moved toward Democrats and two moved toward
+Republicans. Special-election overperformance has been consistently *positive* for
+Democrats across these same cycles. If that holds when the specials are compiled, the
+realised shrinkage will be **negative in at least two of four pairs** — meaning the
+specials pointed one way and the general went the other.
+
+**And one pair is near-degenerate.** The 2022→2024 national swing was +0.0005, essentially
+zero. Divided by any non-trivial specials overperformance, its realised shrinkage is
+approximately zero regardless of what the specials half turns out to be.
+
+This is provisional — it is an inference from one half of the data, and the compilation may
+contradict it. But it changes what success looks like, so it should be said in advance
+rather than discovered afterwards:
+
+- The bound may **not narrow** the current 0.25–1.00 sweep. It may widen it, or shift it to
+  include zero and negative values.
+- A bound spanning negative to positive would say the specials-to-general relationship has
+  no consistent *direction*, not merely an uncertain magnitude. That would be a far more
+  damaging finding about the specials estimator than "we can't pin the number down", and it
+  would argue for demoting specials to a cross-check and prioritising NE-003 (generic
+  ballot) or NE-004 (economic fundamentals) as the primary estimator.
+- **Either outcome is a result.** A bound that fails to narrow the sweep is not a failed
+  piece of work; it is evidence that the current estimator is weaker than its band implies.
+  Record it, publish it, and change the plan accordingly.
+
+Compile the specials half before concluding any of this. The point of writing it down now
+is that neither outcome can then be treated as the one that was expected all along.
 
 ## Why this is the cheapest open item
 
