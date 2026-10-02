@@ -38,6 +38,75 @@ Recommendation: **B then A.** Doing B first means the baselines are ours, comput
 way for every cycle, and the hand-compilation is then only the special results. C should not
 be taken — it would produce a number that looks like a bound and is not one.
 
+### B attempted 2026-10-01 — and it does not reach far enough back
+
+`build_cd_baselines` is now a real build (`ep-build-cd-baselines --vintage YYYY`) rather
+than an ad-hoc call, and the national 2020 and 2024 tables replace a gold file that covered
+8 states. But **2016 cannot be built from any registered source**, which changes what A can
+cover.
+
+MEDSL's per-state precinct series (`medsl_precinct_by_state`) runs **2018, 2020, 2022,
+2024**. 2016 is not in it. A separate row, `mit_precinct_project`, is MEDSL's older precinct
+project and may cover 2016 with uneven state coverage — it is `identified`, unacquired, and
+would need its own registration and profiling before use.
+
+There is a second constraint that bites even where a baseline exists. A 2020 precinct file
+assigns precincts to districts from its own `us_house` rows, so a 2020 build is on
+**2012-era lines by construction**. A special held in 2022 or later sits on 2022-era lines
+and needs 2020 presidential vote *re-aggregated onto those lines* — which is RD-003's vote
+transfer, not this build.
+
+Putting both together, in-house baselines support:
+
+| Pair | Baseline needed | Available in-house? |
+|---|---|---|
+| `2017_2018` | 2016 presidential, 2012-era lines | ❌ no 2016 precinct source registered |
+| `2019_2020` | 2016 presidential, 2012-era lines | ❌ same |
+| `2021_2022` | 2020 presidential — 2012-era lines for 2021 specials, 2022-era for 2022 specials | ⚠️ partial: 2021 specials only |
+| `2023_2024` | 2020 presidential, 2022-era lines | ❌ needs RD-003 transfer |
+
+**So B does not unblock the historical pairs.** Path A for 2017–2020 would have to take its
+baselines from a cited third-party tracker (`downballot_split_ticket`, Tier B, cite per
+row) — which is the thing B was meant to avoid, and is a defensible choice only if it is
+labelled as such on every affected row.
+
+### What the national 2020 run actually found
+
+Running it nationally for the first time surfaced a bug that had been sitting in
+`cd_baseline.py` unexercised, because the only previous run covered 8 states:
+
+**Minnesota and North Dakota came out at 0.000 Democratic.** MEDSL's precinct files carry
+each state's own party name in `party_detailed` — `DEMOCRATIC FARMER LABOR` in Minnesota,
+`DEMOCRATIC-NPL` in North Dakota — and simplify both to `OTHER`. The module matched
+`party_simplified == "DEMOCRAT"` literally, so 1.7 million Biden votes in Minnesota counted
+as third-party. The state-level MEDSL file has no such problem, so nothing upstream caught
+it. Fixed; both now reconcile to four decimals.
+
+**The worse problem was that the build called this a success.** It counted files and rows
+and never checked whether the numbers were right. `ep-build-cd-baselines` now reconciles
+every state's CD aggregate against its certified state-level two-party share and marks
+anything more than a point off as `fails_reconciliation` — flagged, not dropped, because a
+short table invites a silent join while a flagged one forces a decision. A state missing
+from the certified panel fails too: unknown must never read as fine.
+
+Result for 2020: **42 of 49 states reconcile** (360 districts `ok`, 9 `under_covered`).
+Seven fail, in two distinct modes:
+
+| Mode | States | Evidence |
+|---|---|---|
+| **Under-coverage** — precincts not resolving to a district | AL, IN, MS, OK, VA, WA | 68–91% of the certified state vote recovered, against a 97.1% median among passing states |
+| **Double counting** | NC | 180% of the certified state vote recovered — almost certainly vote-mode rows not collapsed |
+
+Neither is fixed. Both are now *visible* and refused, which is the difference between a
+known gap and a silent error. Diagnosing them is per-state work and is scoped, not done.
+
+**What B did buy, and it is not nothing:** the live 2025–26 specials sit on 2022-era lines
+and their baseline is 2024 presidential, which *is* now buildable in-house nationally. Those
+rows currently take `baseline_dem_share` from a third-party tracker. Replacing that with our
+own precinct arithmetic removes a secondary source from the one estimator that currently
+feeds a live projection — a governance and quality win for the number actually in use, even
+though it leaves the historical bound where it was.
+
 ## What is already done
 
 `general_margin_swing` is **derived from certified returns** already in the repo

@@ -1,0 +1,88 @@
+{
+  "vintage": 2020,
+  "district_lines": 2012,
+  "generated_on": "2026-10-01",
+  "files_read": 51,
+  "files_ok": 50,
+  "files_errored": 1,
+  "districts": 441,
+  "states_covered": 49,
+  "baseline_quality": {
+    "fails_reconciliation": 72,
+    "ok": 360,
+    "under_covered": 9
+  },
+  "errors": [
+    {
+      "state": "DC",
+      "error": "KeyError: 1"
+    }
+  ],
+  "reconciliation": {
+    "tolerance": 0.01,
+    "states_checked": 49,
+    "states_failing": [
+      "AL",
+      "IN",
+      "MS",
+      "NC",
+      "OK",
+      "VA",
+      "WA"
+    ],
+    "median_abs_diff": 8.722978922587332e-05,
+    "worst": [
+      {
+        "state_po": "WA",
+        "cd_aggregate_share": 0.5264,
+        "state_certified_share": 0.5993,
+        "share_diff": -0.0728
+      },
+      {
+        "state_po": "VA",
+        "cd_aggregate_share": 0.4918,
+        "state_certified_share": 0.5515,
+        "share_diff": -0.0597
+      },
+      {
+        "state_po": "AL",
+        "cd_aggregate_share": 0.3232,
+        "state_certified_share": 0.3709,
+        "share_diff": -0.0477
+      },
+      {
+        "state_po": "MS",
+        "cd_aggregate_share": 0.384,
+        "state_certified_share": 0.4162,
+        "share_diff": -0.0321
+      },
+      {
+        "state_po": "IN",
+        "cd_aggregate_share": 0.4454,
+        "state_certified_share": 0.418,
+        "share_diff": 0.0273
+      },
+      {
+        "state_po": "OK",
+        "cd_aggregate_share": 0.3083,
+        "state_certified_share": 0.3306,
+        "share_diff": -0.0223
+      },
+      {
+        "state_po": "NC",
+        "cd_aggregate_share": 0.4815,
+        "state_certified_share": 0.4932,
+        "share_diff": -0.0117
+      },
+      {
+        "state_po": "NJ",
+        "cd_aggregate_share": 0.5716,
+        "state_certified_share": 0.5807,
+        "share_diff": -0.0091
+      }
+    ]
+  },
+  "states_missing": [
+    "DC"
+  ]
+}

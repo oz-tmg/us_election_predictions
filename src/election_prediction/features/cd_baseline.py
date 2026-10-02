@@ -91,6 +91,31 @@ def read_president_and_house(path: Path) -> pd.DataFrame:
     return out.reset_index(drop=True)
 
 
+def _major_party(df: pd.DataFrame) -> pd.Series:
+    """DEMOCRAT / REPUBLICAN / OTHER, not trusting ``party_simplified`` alone.
+
+    MEDSL's precinct files carry a state's own party name in ``party_detailed`` and
+    sometimes fail to map it: Minnesota's Democratic candidate is
+    ``DEMOCRATIC FARMER LABOR`` and North Dakota's is ``DEMOCRATIC-NPL``, both of which
+    arrive with ``party_simplified = OTHER``. Matching the simplified column literally put
+    **zero** Democratic votes in both states and produced baselines of 0.000 that looked
+    like data rather than like a bug -- the state-level file has no such problem, so
+    nothing upstream caught it.
+
+    So the simplified label is used when it already names a major party, and otherwise the
+    detailed label is consulted. The build's reconciliation gate is the backstop for
+    anything this still gets wrong.
+    """
+    simple = df.get("party_simplified", pd.Series("", index=df.index)).astype(str).str.upper().str.strip()
+    detailed = df.get("party_detailed", pd.Series("", index=df.index)).astype(str).str.upper().str.strip()
+    out = pd.Series("OTHER", index=df.index)
+    out[detailed.str.contains("DEMOCRAT", na=False)] = "DEMOCRAT"
+    out[detailed.str.contains("REPUBLICAN", na=False)] = "REPUBLICAN"
+    out[simple == "DEMOCRAT"] = "DEMOCRAT"
+    out[simple == "REPUBLICAN"] = "REPUBLICAN"
+    return out
+
+
 def _precinct_key(df: pd.DataFrame) -> pd.Series:
     parts = [
         df.get(c, pd.Series([""] * len(df), index=df.index)).fillna("").astype(str)
@@ -123,14 +148,15 @@ def presidential_by_cd(path: Path) -> tuple[pd.DataFrame, dict]:
 
     parties = pres.apply(medsl._canon_party, axis=1, result_type="expand")
     pres["party_simplified"] = parties[1]
+    pres["_major_party"] = _major_party(pres)
     pres["cycle"] = pd.to_numeric(pres.get("year"), errors="coerce").astype("Int64")
 
     grp = pres.groupby(["cycle", "state_po", "state_fips", "district_num"], dropna=False)
     out = grp.apply(
         lambda g: pd.Series(
             {
-                "dem_votes": g.loc[g["party_simplified"] == "DEMOCRAT", "candidatevotes"].sum(),
-                "rep_votes": g.loc[g["party_simplified"] == "REPUBLICAN", "candidatevotes"].sum(),
+                "dem_votes": g.loc[g["_major_party"] == "DEMOCRAT", "candidatevotes"].sum(),
+                "rep_votes": g.loc[g["_major_party"] == "REPUBLICAN", "candidatevotes"].sum(),
                 "n_precincts": g["_precinct"].nunique(),
             }
         ),
