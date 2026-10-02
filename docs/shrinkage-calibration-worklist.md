@@ -100,6 +100,14 @@ Seven fail, in two distinct modes:
 Neither is fixed. Both are now *visible* and refused, which is the difference between a
 known gap and a silent error. Diagnosing them is per-state work and is scoped, not done.
 
+**The party fix changed nothing in 2024, verified rather than assumed.** The live specials
+take `baseline_dem_share` from `cd_presidential_baseline_2024.parquet`, so the fix could
+have moved numbers the sealed pre-registration depends on. Rebuilding all 8 states of that
+file with the fix and diffing district by district: **172 of 172 districts identical, max
+change 0.0000000000.** None of those states has a DFL- or NPL-style affiliate label, so
+there was nothing for the fallback to recover — which is the expected result and is now a
+checked one. The ten districts with compiled specials are unchanged to six decimals.
+
 **What B did buy, and it is not nothing:** the live 2025–26 specials sit on 2022-era lines
 and their baseline is 2024 presidential, which *is* now buildable in-house nationally. Those
 rows currently take `baseline_dem_share` from a third-party tracker. Replacing that with our
