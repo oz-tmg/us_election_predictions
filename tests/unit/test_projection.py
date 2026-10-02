@@ -239,17 +239,46 @@ def test_a_redrawn_seat_without_stated_uncertainty_is_an_error_not_a_default():
         )
 
 
-def test_pending_is_routed_like_redrawn():
-    out, cov = projection.project_house(
-        _roster("pending"),
-        _fitted_house_model(),
+def test_pending_is_no_longer_a_boundary_confidence_value():
+    """`pending` conflated moved territory with live litigation; it was split 2026-09-30.
+
+    Missouri is why: it enacted a 2025 map, is enjoined from using it, and votes its 2022
+    map in the general. Routing `pending` like `redrawn` discarded eight valid priors.
+    """
+    assert "pending" not in projection.BOUNDARY_CONFIDENCE_VALUES
+    with pytest.raises(ValueError, match="unknown boundary_confidence"):
+        projection.project_house(
+            _roster("pending"),
+            _fitted_house_model(),
+            national_dem_share=0.52,
+            lagged_national_dem_share=0.49,
+            pres_reference=_PRES_REF,
+            fallback_lean_sd=0.15,
+        )
+
+
+def test_litigation_risk_is_reported_but_never_changes_routing():
+    """Same territory, opposite litigation flags -> identical priors, differing report."""
+    quiet, loud = _roster("unchanged"), _roster("unchanged")
+    quiet[projection.LITIGATION_RISK_COLUMN] = "none"
+    loud[projection.LITIGATION_RISK_COLUMN] = "active"
+
+    kwargs = dict(
         national_dem_share=0.52,
         lagged_national_dem_share=0.49,
         pres_reference=_PRES_REF,
         fallback_lean_sd=0.15,
     )
-    assert set(out["source"]) == {"fallback_state_lean"}
-    assert cov["seats_by_boundary_confidence"] == {"pending": 2}
+    out_q, cov_q = projection.project_house(quiet, _fitted_house_model(), **kwargs)
+    out_l, cov_l = projection.project_house(loud, _fitted_house_model(), **kwargs)
+
+    pd.testing.assert_frame_equal(
+        out_q.drop(columns=[projection.LITIGATION_RISK_COLUMN]),
+        out_l.drop(columns=[projection.LITIGATION_RISK_COLUMN]),
+    )
+    assert cov_q["litigation_active_states"] == []
+    # Only the projected voting seats: DC is a delegate and WY is a Senate row.
+    assert cov_l["litigation_active_states"] == ["GA"]
 
 
 def test_a_transferred_prior_is_preferred_over_the_fallback_and_needs_its_own_sigma():

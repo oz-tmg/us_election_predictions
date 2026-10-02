@@ -33,6 +33,7 @@ ep-build-p1 = "election_prediction.build_p1:main"        # baseline forecasting 
 ep-build-p2 = "election_prediction.build_p2:main"        # polling + correlated simulation
 ep-build-governor = "election_prediction.build_governor:main"  # gubernatorial returns + coattails
 ep-build-fec = "election_prediction.build_fec:main"        # candidate crosswalk, filings, fundraising
+ep-build-cd-baselines = "election_prediction.build_cd_baselines:main"  # presidential vote by congressional district
 
 [tool.setuptools.packages.find]
 where = ["src"]

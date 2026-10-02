@@ -113,3 +113,61 @@ def test_cycle_table_marks_governor_out_of_coverage_rather_than_omitting_it():
     assert table.loc["governor", "coverage"] == "out_of_coverage"
     assert table.loc["president", "election_type"] == "not_held", "2026 is not a presidential year"
     assert table.loc["us_house", "seats"] == 435
+
+
+# ---- RD-001: boundary confidence comes from the register, not the decade ----------------
+
+
+def _house_seats(states: list[tuple[str, int]]) -> pd.DataFrame:
+    """(state, district) -> the seat frame ``build_race_universe`` accepts."""
+    return pd.DataFrame(
+        [
+            {"geography_id": f"state:{st}|district:cong_{d:02d}", "state_po": st, "district_num": float(d)}
+            for st, d in states
+        ]
+    )
+
+
+def test_without_a_register_every_house_seat_is_unverified():
+    """No sourced map information means say so, not guess. project_house then refuses."""
+    universe, coverage = ru.build_race_universe(
+        _senate_rows([(2020, "AK", "HOLDER", "REPUBLICAN", 100, "gen", False)]),
+        pd.DataFrame(columns=["cycle", "office"]),
+        cycle=2026,
+        seat_universe=_house_seats([("TX", 1), ("GA", 1)]),
+    )
+    house = universe[universe["office"] == "us_house"]
+    assert set(house["boundary_confidence"]) == {"unverified"}
+    assert coverage["house_by_boundary_confidence"] == {"unverified": 2}
+
+
+def test_with_the_register_each_seat_gets_its_state_s_sourced_confidence():
+    from election_prediction.features import plan_versions as pv
+
+    universe, coverage = ru.build_race_universe(
+        _senate_rows([(2020, "AK", "HOLDER", "REPUBLICAN", 100, "gen", False)]),
+        pd.DataFrame(columns=["cycle", "office"]),
+        cycle=2026,
+        seat_universe=_house_seats([("TX", 1), ("GA", 1), ("MO", 1)]),
+        plans=pv.PlanVersions.load(),
+    )
+    house = universe[universe["office"] == "us_house"].set_index("state_po")
+    assert house.loc["TX", "boundary_confidence"] == "redrawn"
+    assert house.loc["GA", "boundary_confidence"] == "unchanged"  # no register row -> decennial
+    # Missouri: enjoined 2025 map, votes its 2022 map. Territory unchanged, litigation live.
+    assert house.loc["MO", "boundary_confidence"] == "unchanged"
+    assert house.loc["MO", "litigation_risk"] == "active"
+    assert coverage["redrawn_states"] == ["TX"]
+    # Texas joined this list when litigation was researched on 2026-10-01: LULAC v. Abbott
+    # is pending even though SCOTUS stayed the injunction, so the map stands AND the case
+    # is live. The register had read the stay as closure -- it is not.
+    assert coverage["litigation_active_states"] == ["MO", "TX"]
+
+
+def test_litigation_never_leaks_into_the_boundary_judgement():
+    """Missouri's prior is valid; a register that marked it redrawn would discard it."""
+    from election_prediction.features import plan_versions as pv
+
+    plans = pv.PlanVersions.load()
+    assert plans.litigation_risk("MO", 2026) == "active"
+    assert plans.boundary_confidence("MO", 2026) == "unchanged"

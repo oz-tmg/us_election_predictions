@@ -1,0 +1,182 @@
+{
+  "generated_on": "2026-09-30",
+  "national_environment": {
+    "estimator": "specials_band",
+    "status": "band",
+    "national_dem_share": null,
+    "band": [
+      {
+        "assumption": "shrinkage=0.25",
+        "shrinkage": 0.25,
+        "applied_margin_swing": 0.04693085471723762,
+        "national_dem_share": 0.5156889606871001,
+        "share_std_error": 0.0027469015774661525
+      },
+      {
+        "assumption": "shrinkage=0.33",
+        "shrinkage": 0.33,
+        "applied_margin_swing": 0.06194872822675366,
+        "national_dem_share": 0.5231978974418581,
+        "share_std_error": 0.0036259100822553215
+      },
+      {
+        "assumption": "shrinkage=0.5",
+        "shrinkage": 0.5,
+        "applied_margin_swing": 0.09386170943447524,
+        "national_dem_share": 0.5391543880457189,
+        "share_std_error": 0.005493803154932305
+      },
+      {
+        "assumption": "shrinkage=0.75",
+        "shrinkage": 0.75,
+        "applied_margin_swing": 0.14079256415171285,
+        "national_dem_share": 0.5626198154043377,
+        "share_std_error": 0.008240704732398458
+      },
+      {
+        "assumption": "shrinkage=1",
+        "shrinkage": 1.0,
+        "applied_margin_swing": 0.18772341886895047,
+        "national_dem_share": 0.5860852427629565,
+        "share_std_error": 0.01098760630986461
+      }
+    ],
+    "identified": false,
+    "assumptions": [
+      "shrinkage factor swept over [0.25, 0.33, 0.5, 0.75, 1.0]; it is an assumption, not an estimate",
+      "the specials swing is measured against presidential baselines and applied to a House basis"
+    ],
+    "caveats": [
+      "Specials are a non-random sample of seats; they occur where a vacancy happened.",
+      "Special-election turnout composition differs from a general electorate.",
+      "Overperformance is an association with the national environment, not a measure of it.",
+      "Margin-based, so it controls for turnout level but not turnout composition.",
+      "shrinkage is an assumption, not an estimate; no historical calibration exists yet",
+      "specials over-represent high-engagement voters, so the raw mean is biased upward",
+      "std_error covers sampling spread across specials only, not shrinkage error",
+      "the swing is measured against presidential baselines and applied to a House basis"
+    ],
+    "provenance": {
+      "source_id": "special_elections_compiled",
+      "snapshot_date": "2026-09-08",
+      "n": 8,
+      "date_range": [
+        "2025-04-01",
+        "2026-06-16"
+      ],
+      "mean_overperformance": 0.18772341886895047,
+      "std_error": 0.02197521261972922,
+      "baseline_national_dem_share": 0.4922235333284813
+    }
+  },
+  "band_results": [
+    {
+      "assumption": "shrinkage=0.25",
+      "shrinkage": 0.25,
+      "nat_share": 0.5157,
+      "house_mean_seats": 228.2,
+      "house_5th": 117.0,
+      "house_95th": 352.0,
+      "house_p_dem": 0.536,
+      "sen_dem_seats_up": 15.8,
+      "sen_mean_total": 47.8,
+      "sen_p_dem": 0.272
+    },
+    {
+      "assumption": "shrinkage=0.33",
+      "shrinkage": 0.33,
+      "nat_share": 0.5232,
+      "house_mean_seats": 233.1,
+      "house_5th": 122.0,
+      "house_95th": 357.0,
+      "house_p_dem": 0.562,
+      "sen_dem_seats_up": 16.3,
+      "sen_mean_total": 48.3,
+      "sen_p_dem": 0.298
+    },
+    {
+      "assumption": "shrinkage=0.5",
+      "shrinkage": 0.5,
+      "nat_share": 0.5392,
+      "house_mean_seats": 243.6,
+      "house_5th": 132.0,
+      "house_95th": 368.0,
+      "house_p_dem": 0.62,
+      "sen_dem_seats_up": 17.2,
+      "sen_mean_total": 49.2,
+      "sen_p_dem": 0.357
+    },
+    {
+      "assumption": "shrinkage=0.75",
+      "shrinkage": 0.75,
+      "nat_share": 0.5626,
+      "house_mean_seats": 259.3,
+      "house_5th": 148.0,
+      "house_95th": 383.0,
+      "house_p_dem": 0.701,
+      "sen_dem_seats_up": 18.7,
+      "sen_mean_total": 50.7,
+      "sen_p_dem": 0.45
+    },
+    {
+      "assumption": "shrinkage=1",
+      "shrinkage": 1.0,
+      "nat_share": 0.5861,
+      "house_mean_seats": 275.1,
+      "house_5th": 162.0,
+      "house_95th": 395.0,
+      "house_p_dem": 0.77,
+      "sen_dem_seats_up": 20.1,
+      "sen_mean_total": 52.1,
+      "sen_p_dem": 0.545
+    }
+  ],
+  "conclusions": [
+    "House: Democrats favored at every assumption in the band (P(control) 0.536\u20130.770).",
+    "Senate: control depends on the assumption -- Democrats favored only at shrinkage=1 (P(Dem control) 0.272\u20130.545). The band cannot resolve this chamber; narrowing it (NE-002) or an identified estimator (NE-003) would."
+  ],
+  "house_coverage": {
+    "seats_projected": 435,
+    "seats_in_roster": 435,
+    "seats_without_prior": 0,
+    "seats_by_boundary_confidence": {
+      "redrawn": 173,
+      "unchanged": 262
+    },
+    "seats_by_source": {
+      "fallback_state_lean": 173,
+      "model": 262
+    },
+    "redrawn_states": [
+      "AL",
+      "CA",
+      "FL",
+      "LA",
+      "NC",
+      "OH",
+      "TN",
+      "TX",
+      "UT"
+    ],
+    "national_dem_share": 0.5860852427629565,
+    "resid_sigma": 0.11214528266032361,
+    "fallback_lean_sd": 0.17042839044838032,
+    "fallback_sigma": 0.1450431555000947,
+    "boundaries_assumed_unchanged": 0,
+    "litigation_active_states": [
+      "AL",
+      "LA",
+      "MO",
+      "TN"
+    ],
+    "incumbency_verified": false
+  },
+  "senate_coverage": {
+    "seats_projected": 33,
+    "seats_in_roster": 33,
+    "midterm_penalty": 1.0,
+    "uniform_swing": 0.09386170943447524,
+    "resid_sigma": 0.12833967999474297,
+    "incumbency_verified": false
+  }
+}

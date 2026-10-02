@@ -98,7 +98,7 @@ Three additional pre-2026 rows (NC_2022, LA_2022, AL_2021) document earlier mid-
 changes in those states and are marked `PRE-2026 ROW` in `notes` — see the second design
 question below for whether code will read them at all.
 
-## Open design question this surfaced (still open)
+## Design question this surfaced — RESOLVED 2026-09-30
 
 Missouri breaks the `boundary_confidence` vocabulary as written in the plan. The spec says
 `pending` means "a plan exists with status `enjoined`/`pending`", and RD-002 routes
@@ -111,13 +111,56 @@ prior cycle's*, given whichever plan is in effect — not whether litigation is 
 keeps the routing correct but drops a real signal: Missouri's boundaries could still move
 before November, and the 8th Circuit case is live.
 
-**Recommendation:** split the two ideas. Keep `boundary_confidence` about territory
-(`unchanged` / `redrawn` / `unverified`), and add a separate `litigation_risk` flag
-(`none` / `active`) that the report prints but the routing ignores. That needs your
-sign-off because it changes the RD-002 vocabulary, which is already implemented and
-tested.
+**Resolved: split the two ideas** (signed off 2026-09-30, implemented in
+`features/plan_versions.py`). `boundary_confidence` is territory only — `unchanged`,
+`redrawn`, `unverified` — and `pending` is gone from the vocabulary. A separate
+`litigation_risk` flag (`none` / `active`) rides on every seat, is printed in the
+projection's coverage report, and is never consulted by the routing; a test flips only that
+flag and asserts the priors come back byte-identical.
 
-## Second design question: does the register apply to history?
+### Litigation researched 2026-10-01 — and it corrected five states
+
+The first pass derived `litigation_risk` from each row's own notes. That pass was **wrong
+in five of nine states, always in the same direction.** Researching each state against
+Loyola Law School's All About Redistricting trackers found pending cases in CA, FL, NC, TX
+and UT, all of which the register had recorded as `none`.
+
+The cause is worth naming because it is the same confusion one level down. Those notes
+recorded things like *"US Supreme Court denied an injunction"* (CA) and *"Federal panel
+declined to block it"* (NC). Both are true, and both settle **which map is in effect** —
+which is what the notes were written to establish. Neither settles **whether the case is
+over**. A denied preliminary injunction means the map stands *while the merits continue*.
+Reading one as the other is exactly the territory-versus-litigation conflation that
+`boundary_confidence` and `litigation_risk` were split apart to prevent, reappearing inside
+the very column created to hold it.
+
+Current state: **nine of ten register states have active litigation. Only Ohio does not** —
+its 2025 plan was adopted unanimously by the backup commission and no challenge is recorded.
+
+| State | Risk | Leading case(s) |
+|---|---|---|
+| AL | active | Singleton / Caster / Milligan v. Allen — all pending |
+| CA | active | Tangipa v. Newsom; Noyes v. Newsom — injunction denied 2026-01-14, merits pending |
+| FL | active | Equal Ground Education Fund v. Byrd — pending through the FL Supreme Court |
+| LA | active | Callais v. Landry; Garcia v. Landry and others after the primary suspension |
+| MO | active | Onder v. Missouri; Berry v. Hoskins; Prop A on the November ballot |
+| NC | active | Gallop v. Hirsch — constitution + VRA |
+| OH | **none** | No challenge recorded to the 2025 commission plan |
+| TN | active | TN NAACP v. Hargett; Sherman v. Hargett |
+| TX | active | LULAC v. Abbott — SCOTUS stayed the injunction 2025-12-04, case pending |
+| UT | active | League of Women Voters of Utah v. Utah State Legislature |
+
+⚠️ **Status is `researched_secondary`, not `verified`.** Every live row now carries a
+`litigation_source_url` and `litigation_retrieved_on`, but the source is a tracker, not a
+docket — and the register's own standard is an official state or court record. This is a
+real improvement on inference from our own notes and still short of the bar. A docket-level
+pass remains the human task; `verified_by` is deliberately unchanged.
+
+**The correction moved no projected number**, which is the design working: the band is
+bit-identical before and after, because routing never consults litigation. Five states
+changed status and not one seat changed prior.
+
+## Second design question: does the register apply to history? — RESOLVED 2026-09-30
 
 The register now carries pre-2026 rows, because **AL, LA, and NC each changed maps between
 2022 and 2024 as well** — Louisiana under *Robinson*, Alabama under *Allen v. Milligan*,
@@ -139,10 +182,12 @@ The choice is yours:
 | **A. Register applies to 2026 forward only** | Backtest frozen; historical `plan_id` stays decennial | Isolates the change; the plan's stated criterion holds; historical error stays as it has always been |
 | **B. Register applies to all cycles** | AL/LA/NC lose their 2022→2024 lag; model refits | More accurate; but it re-opens the backtest at the same time as everything else, and the panel loses ~40 district-cycles |
 
-**Recommendation: A for now, B as a separate change with its own before/after comparison.**
-Mixing a boundary correction into the same commit as a model refit would make it impossible
-to attribute any change in the backtest. The pre-2026 rows stay in the register either way
-— they are documentation regardless of whether code reads them.
+**Resolved: Option B — the register applies to all cycles.** Landed as two commits rather
+than one so the refit stays attributable: the first added the plumbing with history provably
+unmoved, the second flipped the consumers and measured the delta. The full before/after table
+is in `docs/redistricting-change-plan.md`. Headline: House MAE improved by 0.000088, 27 more
+redistricting breaks, 24 fewer district-cycles in the panel, model seat coverage 89.9% → 84.4%,
+and president and Senate bit-identical.
 
 ## Also worth knowing
 

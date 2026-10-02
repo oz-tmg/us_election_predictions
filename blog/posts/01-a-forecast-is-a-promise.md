@@ -18,7 +18,7 @@ The broader project is a nonpartisan U.S. election forecasting stack: ingest cer
 
 Here is the trap. You build a model, you check it against held-out data, it calls 92.9% of House winners correctly, and you feel excellent about yourself.
 
-Then you look at what you were competing against. Across 8,203 House races with a usable prior, an incumbent was running in 79.3% of them, and when an incumbent runs they win 95.6% of the time. Most congressional districts are not close and are not trying to be. Predicting a safe seat correctly is not skill; it is literacy.
+Then you look at what you were competing against. Across 8,176 House races with a usable prior, an incumbent was running in 79.3% of them, and when an incumbent runs they win 95.6% of the time. Most congressional districts are not close and are not trying to be. Predicting a safe seat correctly is not skill; it is literacy.
 
 This is the same failure that makes a lot of A/B test reporting useless. A test "wins" and everyone celebrates the lift, and nobody asks the two questions that determine whether the number survives contact with reality: *compared to what?* and *how often would this have happened anyway?* A metric without a benchmark is a press release.
 
@@ -34,7 +34,7 @@ Naive persistence is a genuinely hard opponent in electoral politics, because pa
 | Office | Unit | Naive MAE | Baseline MAE | Improvement | Winner accuracy | n |
 |---|---|---:|---:|---:|---:|---:|
 | President | State | 0.0422 | **0.0367** | −13.0% | 87.5% | 610 |
-| U.S. House | District | 0.0909 | **0.0788** | −13.3% | 92.9% | 7,662 |
+| U.S. House | District | 0.0907 | **0.0787** | −13.3% | 92.9% | 7,638 |
 | U.S. Senate | State | 0.1031 | **0.0853** | −17.3% | 80.1% | 858 |
 
 *Two-party Democratic vote share. Leave-one-cycle-out backtest on certified returns, 1976–2024.*
@@ -60,14 +60,14 @@ Here is what checking mine turned up.
 | Office | Brier ↓ | Log score ↓ | ECE ↓ | 90% coverage | 95% coverage |
 |---|---:|---:|---:|---:|---:|
 | President | 0.0939 | 0.3179 | 0.0411 | 84.9% | 90.5% |
-| U.S. House | 0.0614 | 0.2299 | 0.0480 | 90.3% | 92.9% |
+| U.S. House | 0.0612 | 0.2291 | 0.0482 | 90.3% | 92.9% |
 | U.S. Senate | 0.1480 | 0.4599 | 0.0759 | 92.8% | 94.3% |
 
 Brier score and log score are *proper scoring rules*, which is a technical way of saying they cannot be gamed by hedging. Under a proper scoring rule your best strategy is to state your true belief; say 50% on everything and you score badly, say 99% on everything and you score catastrophically the first time you are wrong. Expected calibration error (ECE) is the average gap between what the model said and what happened, weighted by how many races sat in each bin.
 
 All three are roughly calibrated. None is beautiful.
 
-The failure mode is consistent and worth naming: **the models are too bold about long shots.** The presidential model's 10–20% bin contains 45 state-cycles; it said 14% and 4% of them happened. The House model's 30–40% bin holds 223 district-cycles; it said 35% and 19% happened. The Senate's does the same at the same place. Underdogs the model rates as live are deader than it thinks, and — symmetrically — safe seats are safer than it thinks. The curve is S-shaped around the diagonal, which is the signature of a model whose residual variance is slightly too wide in the tails.
+The failure mode is consistent and worth naming: **the models are too bold about long shots.** The presidential model's 10–20% bin contains 45 state-cycles; it said 14% and 4% of them happened. The House model's 30–40% bin holds 220 district-cycles; it said 35% and 18% happened. The Senate's does the same at the same place. Underdogs the model rates as live are deader than it thinks, and — symmetrically — safe seats are safer than it thinks. The curve is S-shaped around the diagonal, which is the signature of a model whose residual variance is slightly too wide in the tails.
 
 That is an honest, fixable, unexciting finding. It is also exactly the kind of thing that never surfaces if you only report accuracy.
 
@@ -87,7 +87,7 @@ Three, and I would rather state them than have someone find them.
 
 **Leave-one-cycle-out is not a random holdout, and that is on purpose.** If you randomly split election-year data, you leak: 2020 Pennsylvania in training and 2020 Ohio in test are not independent observations, because they share a national environment. Holding out an entire cycle at a time is the electoral version of respecting your randomisation unit. Split by user, not by session; split by cycle, not by race. The same sin, the same fix.
 
-**The House backtest is graded on a curve it did not earn.** The national environment enters that model *contemporaneously* — it knows how the national vote actually broke in the cycle it is predicting. So the 0.0788 MAE measures district-level accuracy *given a correct national call*, which is an advantage no real forecast has. It is a Dr Manhattan assumption: the model is standing outside time, already knowing the thing that is hardest to know. Forecasting the national number is a separate, unsolved problem, and it is the subject of [another post in this series](03-the-parameter-that-wasnt-there.md).
+**The House backtest is graded on a curve it did not earn.** The national environment enters that model *contemporaneously* — it knows how the national vote actually broke in the cycle it is predicting. So the 0.0787 MAE measures district-level accuracy *given a correct national call*, which is an advantage no real forecast has. It is a Dr Manhattan assumption: the model is standing outside time, already knowing the thing that is hardest to know. Forecasting the national number is a separate, unsolved problem, and it is the subject of [another post in this series](03-the-parameter-that-wasnt-there.md).
 
 **Uncontested races are excluded from fitting and scoring.** A candidate who runs unopposed tells you about ballot access, not district preference, and letting those rows into the fit would teach the model that some districts are 100–0. They are 5.6% of races. They keep their seats in the seat simulation — carried on a partisanship prior with widened uncertainty — because a chamber simulated on fewer than 435 seats misstates control. Excluded from the fit; never dropped from the count.
 

@@ -32,9 +32,31 @@ sometimes a refusal.
 | 2 | [The Control Rods All Had Graphite Tips](posts/02-the-control-rods-all-had-graphite-tips.md) | Correlated error, design effect, cluster randomisation, effective sample size | 4 | **Ready** |
 | 3 | [The Parameter That Wasn't There](posts/03-the-parameter-that-wasnt-there.md) | Identification vs. sample size, sensitivity bands, pre-registration, data vintage | 5, 6 | **Ready** |
 | 4 | [Thirty-Four Races That Do Not Add Up](posts/04-thirty-four-races-that-do-not-add-up.md) | Exclusion criteria as researcher degrees of freedom, sensitivity analysis | 7 | **Ready** |
-| 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal | 6 | **Ready** |
+| 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal, and retiring it when the evidence arrives | 6 | **Ready** |
+| 6 | [The Map Is Not the Territory, and Neither Is the District Number](posts/06-the-map-is-not-the-territory-and-neither-is-the-number.md) | Sourcing versus recall; training-data edges; corrections that widen error bars | 8 | **Ready — publish before 2026-11-03** |
 
-### The sixth post is now unblocked
+### Post 5 was revised when its own premise expired
+
+The post was written while all 435 House seats carried `boundary_confidence = "unverified"`
+and the projection could only run behind an `allow_unverified` opt-in. Both are now false:
+the register supplies sourced confidence for every seat (262 `unchanged`, 173 `redrawn`),
+and the opt-in has been deleted from `scripts/project_2026.py`.
+
+Rather than patch the numbers around the old framing, the argument was re-grounded. The
+boundary objection — "I cannot state this forecast's error" — is retired and replaced with
+the measured cost of fixing it: the House 90% seat range widened from an average of 178 to
+235 seats (+32%), while the control-probability band *narrowed* from 51.8–79.2% to
+53.6–77.0%. The post now ends on the uncomfortable version: two of the original objections
+survive, the boundary one does not, and what remains is a judgement rather than a
+constraint. That is a better post than the one it replaced, and it is only available
+because the work got done.
+
+### Post 6 is time-sensitive
+
+It is the only piece in the series that decays: the register is news until 2026-11-03 and
+history afterwards. If one post goes out this month, this is the one.
+
+### How post 6 came about
 
 The plan-version register was **verified row-by-row on 2026-09-30** against official state
 and court records. Post 5 was revised accordingly: it now states the nine-state, 173-seat
@@ -42,16 +64,13 @@ count as a finding rather than a lead, and reports the two corrections verificat
 produced (Alabama restored its struck-down 2023 legislative plan rather than enacting a new
 map; Missouri's 2022 plan governs the general and its cycle range must stay open).
 
-That makes a **sixth post available** — the register itself, which is the strongest story in
-the project and was previously blocked on exactly this:
-
-> **Draft-ready: the redistricting register.** Nine states redrew for 2026 (173 of 435
-> seats, 39.8% of the chamber); Missouri enacted a map it is not using; Alabama brought back
-> a map that had been struck down; Georgia, New York and Virginia did not redraw despite
-> expectations. Newsworthy, nonpartisan, and now sourced to official records. Write it
-> against `data/reference/house_plan_versions.csv` and
-> `docs/plan-version-worklist.md`, keeping the register's own discipline: it records what
-> was enacted, by whom, and where it says so — it groups no state by motive.
+Verification unblocked the sixth post, now written: nine states redrew for 2026 (173 of 435
+seats, 39.8%); Missouri enacted a map it is not using; Alabama restored one that had been
+struck down; Georgia, New York and Virginia did not redraw despite expectations. It keeps
+the register's own discipline — what was enacted, by whom, and where it says so, with no
+state grouped by motive — and its second half is about what the correction *cost*: a 32%
+wider seat interval, which is the part nobody wants to publish and the reason it is worth
+publishing.
 
 ## Figures
 
@@ -71,6 +90,7 @@ companion table in the post body.
 | `fig-05-swing-ratio-by-era.png` | Swing ratio by redistricting era, with the 2022 era unidentified |
 | `fig-06-shrinkage-band.png` | Chamber-control probability and House seat range across the swept assumption |
 | `fig-07-quarantine.png` | The 34 quarantined races by descriptive reason |
+| `fig-08-redrawn-and-its-cost.png` | Seats on new territory for 2026, and the interval widening that admitting it caused |
 
 ## Attribution required on publication
 
@@ -83,6 +103,15 @@ Reproduce these lines wherever a post is published:
 - **Federal Election Commission** — candidate and committee filings. Aggregate use only;
   contributor fields are never used for solicitation, list-building or targeting.
 
+**Mandatory the moment any post uses Redistricting Data Hub data** (registered 2026-09-30;
+terms at `docs/terms_and_conditions/redistricting-datahub-data-download.md`). RDH requires
+these strings verbatim, and its licence is noncommercial, nonpartisan and explicitly
+anti-gerrymandering:
+
+- Analysis: *"This analysis was conducted using data from the Redistricting Data Hub."*
+- Map: *"This map was created using data from the Redistricting Data Hub."*
+- Reposting data: *"This data was obtained from the Redistricting Data Hub."*
+
 ## Editorial boundaries
 
 These are not stylistic preferences. They are the project's operating rules, and they apply
@@ -90,6 +119,14 @@ to public writing more strictly than anywhere else:
 
 - Nonpartisan throughout. The posts model probability and uncertainty; they do not argue
   for an outcome, and framing, language and source selection stay neutral.
+- **No 2026 forecast is published, House included** (decision 2026-09-30). Sourced
+  boundaries made the House band defensible, but 173 of 435 seats still rest on a
+  state-lean fallback, so its 90% range spans 117–352 seats at the low end of the
+  shrinkage sweep. A number that wide is a statement that we do not know, and the half of
+  it that travels ("Democrats favoured for the House") is the half without the caveat. The
+  band is instead **pre-registered** at `reports/preregistration_2026-11-03.*`, which banks
+  the out-of-sample evidence without the publication risk. Revisit when RD-003 narrows the
+  redrawn seats, when NE-002 resolves the Senate, or after election day.
 - Close races look close. No probability is sharpened to carry a storyline.
 - Unofficial results, calls, estimates and certified returns are labelled distinctly and
   never share a sentence without one.

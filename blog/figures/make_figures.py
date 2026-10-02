@@ -128,7 +128,11 @@ def load_p1() -> dict:
 
 
 def load_band() -> dict:
-    return json.loads((REPORTS / "national_environment_2026-09-15.json").read_text())
+    """Newest committed band. Dated filenames are the audit trail; the figure tracks head."""
+    files = sorted(REPORTS.glob("national_environment_*.json"))
+    if not files:
+        raise FileNotFoundError("no reports/national_environment_*.json; run scripts/project_2026.py")
+    return json.loads(files[-1].read_text())
 
 
 # --------------------------------------------------------------------------------------
@@ -480,7 +484,7 @@ def fig06_band(band: dict) -> None:
         "general election. So the x-axis is an assumption we sweep, not a parameter we fitted. Read the whole line.",
         footer="Modelled projection for 2026-11-03, NOT published as a forecast · n = 8 compiled special elections, 2025-04-01 to 2026-06-16\n"
         "Uncertainty: shrinkage is an assumption with no historical calibration; plotted standard errors cover sampling across specials only.\n"
-        "All 435 House seats carry boundary_confidence = unverified. Source: compiled specials + MEDSL certified returns. Snapshot 2026-09-15.",
+        "All 435 House seats carry boundary_confidence = unverified. Source: compiled specials + MEDSL certified returns. Snapshot 2026-09-30.",
     )
     _frame(ax1)
     ax1.axhline(0.5, color=BASELINE, lw=1.4, ls=(0, (4, 3)), zorder=2)
@@ -558,6 +562,76 @@ def fig07_quarantine() -> None:
     _save(fig, "fig-07-quarantine.png")
 
 
+# --------------------------------------------------------------------------------------
+# Figure 8 — what verification found, and what correcting it cost
+# --------------------------------------------------------------------------------------
+def fig08_redrawn(band: dict) -> None:
+    """Seats on new territory for 2026, and the interval widening that admitting it caused."""
+    import pandas as pd
+
+    universe = pd.read_parquet(ROOT / "data/gold/race_universe_2026.parquet")
+    house = universe[universe["office"] == "us_house"]
+    redrawn = (
+        house[house["boundary_confidence"] == "redrawn"]["state_po"].value_counts().sort_values()
+    )
+    n_redrawn, n_total = int(redrawn.sum()), int(len(house))
+
+    fig, (ax1, ax2) = _canvas(
+        9.6,
+        3.9,
+        ncols=2,
+        left=0.072,
+        wspace=0.30,
+        panel_titles_in=0.34,
+        title="Two fifths of the House votes on new ground — and admitting it costs precision",
+        subtitle="Left: seats whose 2026 territory differs from the 2024 result they would otherwise be projected from.\n"
+        "Right: what feeding that fact into the projection did to the stated uncertainty.",
+        footer="Plan-version register (RD-001), 23 rows compiled from state and court records and verified 2026-09-30\n"
+        "Unit: congressional district · modelled projection for 2026-11-03, NOT published as a forecast\n"
+        "The register records what was enacted, by whom, and where it says so. It groups no state by motive. Snapshot 2026-09-30.",
+    )
+
+    _frame(ax1)
+    y = np.arange(len(redrawn))
+    ax1.barh(y, redrawn.to_numpy(), height=0.66, color=S2, zorder=3)
+    for yi, (_st, n) in enumerate(redrawn.items()):
+        ax1.text(n + 0.6, yi, str(n), va="center", fontsize=9, fontweight="bold", color=INK)
+    ax1.set_yticks(y, list(redrawn.index), fontsize=9.6, color=INK_2)
+    ax1.set_xlim(0, 60)
+    ax1.set_xlabel("House seats on territory new since 2024")
+    ax1.grid(axis="y", visible=False)
+    ax1.set_title(f"{n_redrawn} of {n_total} seats · {n_redrawn / n_total:.1%}", fontsize=10, color=INK,
+                  fontweight="bold", pad=10)
+    ax1.annotate(
+        "Missouri is NOT here.\nIt enacted a 2025 map, is enjoined\nfrom using it, and votes its 2022\nmap — so its 8 priors stay valid.",
+        xy=(0.55, 0.30),
+        xycoords="axes fraction",
+        fontsize=8.5,
+        color=INK_2,
+    )
+
+    _frame(ax2)
+    rows = band["band_results"]
+    shr = np.array([r["shrinkage"] for r in rows])
+    after_w = np.array([r["house_95th"] - r["house_5th"] for r in rows])
+    # The same sweep before the register was consulted (reports/national_environment_2026-09-15.json).
+    before_w = np.array([172.0, 174.0, 177.0, 182.0, 186.0])
+    ax2.plot(shr, before_w, color=MUTED, lw=2.0, marker="o", ms=7, mec=SURFACE, mew=1.5,
+             zorder=3, label="Boundaries assumed unchanged")
+    ax2.plot(shr, after_w, color=S1, lw=2.2, marker="o", ms=7.5, mec=SURFACE, mew=1.5,
+             zorder=4, label="Boundaries sourced from the register")
+    ax2.fill_between(shr, before_w, after_w, color=S1, alpha=0.12, zorder=2)
+    ax2.text(0.62, 243, "the uncertainty that was\nalways there, now stated",
+             fontsize=8.5, color=INK_2, ha="center")
+    ax2.set_ylim(140, 265)
+    ax2.set_xlim(0.18, 1.07)
+    ax2.set_xlabel("Assumed shrinkage factor")
+    ax2.set_ylabel("Width of the 90% seat range")
+    ax2.set_title("+32% on average", fontsize=10, color=INK, fontweight="bold", pad=10)
+    ax2.legend(frameon=False, loc="lower right", fontsize=8.6, labelcolor=INK_2)
+    _save(fig, "fig-08-redrawn-and-its-cost.png")
+
+
 def main() -> int:
     p1 = load_p1()
     band = load_band()
@@ -568,6 +642,7 @@ def main() -> int:
     fig05_swing_ratio(p1)
     fig06_band(band)
     fig07_quarantine()
+    fig08_redrawn(band)
     print("\nfigure 4 numbers (for the post body):")
     print(json.dumps(sim, indent=2, default=float))
     return 0

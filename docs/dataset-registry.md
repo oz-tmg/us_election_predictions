@@ -175,6 +175,91 @@ This registry is the control document for every dataset acquired, downloaded, li
 
 ---
 
+## RD-003 geographic-reconciliation sources (registered 2026-09-30, before use)
+
+`docs/redistricting-change-plan.md` makes registration a **hard gate**: P.L. 94-171
+population, block-assignment files, and one precinct-boundary source must be registered
+before any transfer code runs. These are the profiles. Nothing below has been downloaded
+yet — status is `registered`, not `validated` — and `features/plan_transfer.py` refuses to
+run against an unregistered source.
+
+These three answer different questions and must not be conflated. P.L. 94-171 says **how
+many people** live in a block. BAFs say **which district** a block is in. Precinct
+boundaries say **how people voted** in an area that matches neither. The transfer is the
+join across all three, and its confidence components exist because that join is lossy.
+
+### `census_pl94171_2020`
+
+| Field | Value |
+|---|---|
+| Owner / URL | U.S. Census Bureau · <https://www.census.gov/programs-surveys/decennial-census/about/rdo/summary-files.html> |
+| Legal basis | U.S. Government work, **public domain** (17 U.S.C. §105). No licence required. |
+| Permitted use | Unrestricted, including redistribution and derived products. |
+| Prohibited use | None by licence. Census confidentiality protections (differential privacy in 2020) mean block counts are **noisy by construction** — see the caveat below. |
+| Coverage | Census block · 2020 decennial · total population, voting-age population, race/ethnicity (P.L. tables P1–P4) |
+| Sensitive fields | None at the published level. Block-level race data is Tier 1: public but sensitive, so small-cell results are suppressed in reporting. |
+| Privacy tier | 1 (public but sensitive aggregate) |
+| Attribution | "U.S. Census Bureau, 2020 Census P.L. 94-171 Redistricting Data Summary File." |
+| Retention / deletion | Snapshot retained with checksum under `data/raw/source=census_pl94171/`; deletable at will (reacquirable). |
+| Cost | Free |
+| Status | **registered** — not yet acquired |
+
+> **The 2020 file is differentially private.** Block-level counts carry injected noise and
+> do not necessarily sum consistently across geographies. For allocation weights this is
+> tolerable — errors are small relative to block size and partly cancel on aggregation —
+> but it is a real error source and belongs in the transfer's stated uncertainty, not
+> treated as ground truth. Use VAP rather than total population where the question is
+> electoral.
+
+### `census_baf_2020`
+
+| Field | Value |
+|---|---|
+| Owner / URL | U.S. Census Bureau Block Assignment Files · <https://www.census.gov/geographies/reference-files/time-series/geo/block-assignment-files.html> |
+| Legal basis | U.S. Government work, **public domain**. |
+| Permitted use | Unrestricted. |
+| Prohibited use | None by licence. |
+| Coverage | Census block → congressional district, per state, per plan vintage |
+| Sensitive fields | None — a crosswalk, no population or behaviour |
+| Privacy tier | 0 (public aggregate) |
+| Attribution | "U.S. Census Bureau Block Assignment Files." |
+| Retention / deletion | `data/raw/source=census_baf/`, checksummed, per plan vintage |
+| Cost | Free |
+| Status | **registered** — not yet acquired |
+
+> **Census publishes BAFs for plans it has ingested, which lags mid-decade redraws.** For
+> the nine states that redrew for 2026 the authoritative assignment may only exist as a
+> state legislative or court-published file. The register's `baf_url` column is empty on
+> every row precisely because this is unresolved; filling it is RD-003's first collection
+> task, and a state-published BAF must be registered individually before use.
+
+### `rdh_precinct_boundaries`
+
+Already present in the table above as `identified`; promoted to **registered** here because
+its terms carry obligations the one-line row cannot hold. Full text captured at
+`docs/terms_and_conditions/redistricting-datahub-data-download.md`.
+
+| Field | Value |
+|---|---|
+| Owner / URL | Redistricting Data Hub (New Venture Fund) · <https://redistrictingdatahub.org/> |
+| Legal basis | **Terms of use**, account required. Not public domain. |
+| Permitted use | Noncommercial, **nonpartisan**, and explicitly **not for gerrymandering** — defined in the terms as drawing a map to favour or disfavour an incumbent, candidate, donor or party, or to deny racial or language minorities equal opportunity to participate. Copying permitted for those purposes with marks and notices retained. |
+| Prohibited use | Resale; any commercial use; partisan use; map-drawing to advantage any party or incumbent; illegal or "nefarious" purposes. Any other use needs RDH's prior written consent. |
+| **Required attribution (verbatim)** | Analysis: *"This analysis was conducted using data from the Redistricting Data Hub."* · Map: *"This map was created using data from the Redistricting Data Hub."* · Reposting: *"This data was obtained from the Redistricting Data Hub."* |
+| Coverage | Precinct/VTD boundaries and precinct-level results; varies by state and cycle |
+| Sensitive fields | None at precinct level; Tier 1 because small-area results can identify small populations |
+| Privacy tier | 1 (public but sensitive aggregate) |
+| Retention / deletion | `data/raw/source=rdh/`, per state and vintage; delete on request if terms change |
+| Cost | Free with account |
+| Status | **registered** — not yet acquired |
+
+> **This project's use is squarely inside the permitted purposes and that is not an
+> accident.** The redistricting module is audit-only by design (`PROJECT_CONTEXT.md` §12):
+> it compares enacted plans to ensembles and never draws a map to advantage anyone. The
+> terms and the project's own constitution happen to prohibit the same thing. The
+> attribution strings above are **mandatory on any published output** that uses this data
+> and must be added to `blog/README.md`'s attribution block before the first such post.
+
 ## Dataset profile template
 
 Copy this section for each acquired dataset.

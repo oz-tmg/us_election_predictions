@@ -13,7 +13,8 @@ enacted or were ordered into new congressional maps between 2024 and 2026, and u
 `plan_era` a redrawn district's 2024 result silently becomes its 2026 prior.
 
 The code already knows this. `race_universe.py` stamps every House row
-`boundary_confidence = "unverified"` and lists "post-2022 mid-decade redistricting" under
+`boundary_confidence = "unverified"` (now sourced from the register) and listed
+"post-2022 mid-decade redistricting" under
 `not_derivable`. But `projection.project_house` never reads that column, and
 `reports/projection_2026.txt` prints 435 projected seats with no boundary caveat. The flag
 exists; nothing consumes it.
@@ -99,10 +100,39 @@ compilation to a dozen rows rather than fifty.
 
 ### Acceptance criteria
 
-- No 2026 House row carries `boundary_confidence = "unverified"` once the register is
-  compiled; each `redrawn`/`pending` row traces to a `source_url`.
-- `plan_id` for every 1976–2024 row equals the decennial default (a test pins this, so
-  adding the register cannot move the backtest).
+- ✅ **Done 2026-09-30.** No 2026 House row carries `boundary_confidence = "unverified"`:
+  `features/race_universe.py` sources every row from the register via
+  `features/plan_versions.py`, and each `redrawn` row traces to a `source_url` and a
+  `verified_by`. `scripts/project_2026.py` no longer passes `allow_unverified`. The
+  `pending` value was retired — see the territory/litigation split below.
+- ~~`plan_id` for every 1976–2024 row equals the decennial default (a test pins this, so
+  adding the register cannot move the backtest).~~ **Superseded 2026-09-30.** The register
+  applies to every cycle, history included: AL, LA and NC each changed maps between 2022
+  and 2024, so pinning history to the decennial default knowingly gave 27 district-cycles a
+  lag across territory that had changed. The criterion was written to stop the register
+  moving the backtest *by accident*; it was landed in two commits instead, the first with
+  the plumbing and history provably unmoved, the second flipping the consumers and
+  reporting the delta.
+
+  Measured effect of the flip (`reports/p1_results.json`, leave-one-cycle-out):
+
+  | Quantity | Decennial | Register | Delta |
+  |---|---:|---:|---:|
+  | House MAE | 0.078782 | 0.078694 | −0.000088 |
+  | House Brier | 0.061393 | 0.061159 | −0.000234 |
+  | House ECE | 0.048012 | 0.048193 | +0.000181 |
+  | House 90% coverage | 0.903158 | 0.902723 | −0.000435 |
+  | Panel district-cycles | 7,662 | 7,638 | −24 |
+  | Redistricting breaks | 2,172 | 2,199 | +27 |
+  | Seats fit by the model | 391 | 367 | −24 |
+  | P(Dem control), 2024 sim | 0.4743 | 0.4892 | +0.0149 |
+
+  The model got marginally *better* on every headline accuracy measure, which is the
+  expected direction: the removed lags were comparisons across different territory, i.e.
+  noise. The real cost is coverage — 24 more seats now carry a partisanship prior instead
+  of a fitted one (model coverage 89.9% → 84.4%), which is honest rather than good.
+  President and Senate are bit-identical, confirming the change touched only House
+  boundaries.
 - `validate_plan_versions` fails the build on an overlapping or sourceless row.
 
 ### What would falsify this track
