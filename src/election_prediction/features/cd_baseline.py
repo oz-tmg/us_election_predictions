@@ -158,6 +158,23 @@ def _major_party(df: pd.DataFrame) -> pd.Series:
     out[detailed.str.contains("REPUBLICAN", na=False)] = "REPUBLICAN"
     out[simple == "DEMOCRAT"] = "DEMOCRAT"
     out[simple == "REPUBLICAN"] = "REPUBLICAN"
+
+    # Fusion voting: one candidate on several party lines is one candidate, and the lines
+    # that are not the major-party line must not read as third-party votes. New York 2020 is
+    # the case -- Biden carried 386,627 votes on WORKING FAMILIES and Trump 296,360 on
+    # CONSERVATIVE -- and dropping them put New York's recovered two-party vote at 92.2% of
+    # certified. The *share* barely moved (+0.0046, because the two fusion blocks were of
+    # similar size), which is exactly why only the vote-*total* check caught it.
+    # docs/methodology.md lists fusion voting as requiring explicit handling;
+    # `medsl._collapse_fusion` does it for the state-level path and this module did not.
+    #
+    # The label is propagated by **candidate**, never by party, so two distinct candidates
+    # are never merged. A candidate with no major-party line anywhere stays OTHER.
+    if "candidate" in df.columns:
+        name = df["candidate"].fillna("").astype(str).str.upper().str.strip()
+        major = out.where(out != "OTHER")
+        resolved = major.groupby(name).transform(lambda g: g.dropna().iloc[0] if g.notna().any() else None)
+        out = out.where(resolved.isna(), resolved)
     return out
 
 

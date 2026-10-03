@@ -254,3 +254,22 @@ def test_an_uncontested_seat_absent_from_the_drop_is_named():
 def test_the_dc_delegate_is_not_counted_as_a_missing_district():
     cov = bcb.district_coverage(_baseline([("FL", 24, 1, "ok")]), _house([("FL", 24, 1), ("DC", 0, 1)]), 2020)
     assert cov["districts_missing"] == 0
+
+
+def test_a_district_with_zero_certified_house_vote_does_not_crash_the_build():
+    """Louisiana 2024's all-party primary leaves a district with no certified House vote.
+
+    Pandas evaluates nullable-integer arithmetic on the underlying data *including masked
+    slots*, so `Int64.where(> 0)` still carries a literal 0 into the division and raises
+    ZeroDivisionError. It killed the 2024 national build after forty minutes of work.
+    """
+    house = _house([("LA", 1, 0), ("NJ", 4, 424368)], cycle=2024)
+    house["candidatevotes"] = house["candidatevotes"].astype("Int64")
+    df, rep = bcb.flag_under_covered(
+        _baseline([("LA", 1, 300000, "ok"), ("NJ", 4, 281373, "ok")]), house, 2024
+    )
+    assert rep["districts_unjudgeable"] == 1
+    assert rep["districts_under_covered"] == 1
+    by_state = df.set_index("state_po")["baseline_quality"]
+    assert by_state["LA"] == "ok", "unjudgeable is not a failure"
+    assert by_state["NJ"] == bcb.QUALITY_UNDER_COVERED

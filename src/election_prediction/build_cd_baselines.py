@@ -169,8 +169,14 @@ def flag_under_covered(df: pd.DataFrame, house: pd.DataFrame, vintage: int) -> t
     out = df.copy()
     out["district_num"] = out["district_num"].astype(int)
     out = out.merge(totals, on=["state_po", "district_num"], how="left")
-    house_votes = pd.to_numeric(out["certified_house_votes"], errors="coerce")
-    out["coverage_vs_house_vote"] = (out["two_party_votes"] / house_votes.where(house_votes > 0)).round(4)
+    # Cast to float *before* masking. Pandas evaluates nullable-integer arithmetic on the
+    # underlying data including masked slots, so `Int64.where(> 0)` still carries a literal
+    # 0 into the division and raises ZeroDivisionError. A float NaN does not. Louisiana 2024
+    # is the live case: its all-party primary leaves a district with no certified House vote.
+    house_votes = pd.to_numeric(out["certified_house_votes"], errors="coerce").astype("float64")
+    house_votes = house_votes.where(house_votes > 0)
+    two_party = pd.to_numeric(out["two_party_votes"], errors="coerce").astype("float64")
+    out["coverage_vs_house_vote"] = (two_party / house_votes).round(4)
 
     short = out["coverage_vs_house_vote"] < MIN_COVERAGE_VS_HOUSE_VOTE
     rank = {q: i for i, q in enumerate(QUALITY_PRECEDENCE)}

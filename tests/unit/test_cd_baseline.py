@@ -240,3 +240,86 @@ def test_the_state_median_ratio_is_reported_but_no_longer_decides_quality(tmp_pa
     assert set(out["baseline_quality"]) == {cb.QUALITY_OK}, (
         "a low median ratio must not condemn a district on its own"
     )
+
+
+def test_a_candidates_fusion_lines_are_counted_as_that_candidates_votes(tmp_path):
+    """New York 2020: Biden carried 386,627 on WORKING FAMILIES, Trump 296,360 on CONSERVATIVE.
+
+    Classifying by party label alone made both third-party, which put New York's recovered
+    two-party vote at 92.2% of certified. The *share* moved only +0.0046 — the two fusion
+    blocks were of similar size — which is why the vote-total check is the one that caught
+    it, and why this module has both.
+    """
+    rows = [
+        {"office": "US HOUSE", "candidate": "H", "votes": 10, "district": "1"},
+        {
+            "office": "US PRESIDENT",
+            "candidate": "JOSEPH R BIDEN",
+            "votes": 800,
+            "party_detailed": "DEMOCRAT",
+            "party_simplified": "DEMOCRAT",
+        },
+        {
+            "office": "US PRESIDENT",
+            "candidate": "JOSEPH R BIDEN",
+            "votes": 100,
+            "party_detailed": "WORKING FAMILIES",
+            "party_simplified": "OTHER",
+        },
+        {
+            "office": "US PRESIDENT",
+            "candidate": "DONALD J TRUMP",
+            "votes": 500,
+            "party_detailed": "REPUBLICAN",
+            "party_simplified": "REPUBLICAN",
+        },
+        {
+            "office": "US PRESIDENT",
+            "candidate": "DONALD J TRUMP",
+            "votes": 100,
+            "party_detailed": "CONSERVATIVE",
+            "party_simplified": "OTHER",
+        },
+        # A genuine third party stays third party.
+        {
+            "office": "US PRESIDENT",
+            "candidate": "JO JORGENSEN",
+            "votes": 50,
+            "party_detailed": "LIBERTARIAN",
+            "party_simplified": "LIBERTARIAN",
+        },
+    ]
+    f = tmp_path / "2020-ny-precinct-general.csv"
+    _precinct_rows(rows).to_csv(f, index=False)
+    out, _ = cb.presidential_by_cd(f)
+
+    assert int(out["dem_votes"].iloc[0]) == 900
+    assert int(out["rep_votes"].iloc[0]) == 600
+    assert int(out["two_party_votes"].iloc[0]) == 1500, "the Libertarian must stay out"
+    assert out["baseline_dem_share"].iloc[0] == pytest.approx(0.6)
+
+
+def test_fusion_resolution_never_merges_two_different_candidates(tmp_path):
+    """Propagating by party instead of by candidate would pool distinct people."""
+    rows = [
+        {"office": "US HOUSE", "candidate": "H", "votes": 10, "district": "1"},
+        {
+            "office": "US PRESIDENT",
+            "candidate": "A",
+            "votes": 100,
+            "party_detailed": "DEMOCRAT",
+            "party_simplified": "DEMOCRAT",
+        },
+        {
+            "office": "US PRESIDENT",
+            "candidate": "B",
+            "votes": 70,
+            "party_detailed": "GREEN",
+            "party_simplified": "OTHER",
+        },
+    ]
+    f = tmp_path / "2020-ny-precinct-general.csv"
+    _precinct_rows(rows).to_csv(f, index=False)
+    out, _ = cb.presidential_by_cd(f)
+    assert int(out["dem_votes"].iloc[0]) == 100
+    assert int(out["two_party_votes"].iloc[0]) == 100, "B is a different candidate, not a Dem line"

@@ -15,7 +15,14 @@ These exist because three defects got through a build that reported "50 files ok
    touching a county on every precinct row in it, at zero votes for the ones the precinct
    is not in. Counting districts *present* made all 390 precincts of its split counties
    unresolvable.
-3. **A state was read twice.** The 2020 drop ships North Carolina as both
+3. **Fusion lines were counted as third-party vote.** New York lets a candidate appear on
+   several party lines; Biden carried 386,627 votes on ``WORKING FAMILIES`` and Trump
+   296,360 on ``CONSERVATIVE``. Classifying by party label alone dropped both from the
+   two-party count, so New York recovered **92.2%** of its certified two-party presidential
+   vote — at a *share* only 0.0046 off, because the two fusion blocks were of similar size.
+   This one is the reason both a share check and a total check exist here: the share check
+   cannot see it.
+4. **A state was read twice.** The 2020 drop ships North Carolina as both
    ``2020-nc-precinct-general.csv`` and a ``-sorted`` re-cut, and summing both put North
    Carolina's baselines at 180% of its certified vote.
 
@@ -56,6 +63,12 @@ CASES = [
     # the extreme case: 78% of New Jersey 2020 arrives as county-level blocks, so all 12
     # districts are flagged heavily_allocated -- it must still reconcile in aggregate
     ("NJ", 2020),
+    # failed the vote-*total* check while passing the share check: fusion voting put
+    # 386,627 Biden votes (WORKING FAMILIES) and 296,360 Trump votes (CONSERVATIVE) in the
+    # third-party bucket, so New York recovered 92.2% of its certified two-party vote at a
+    # share only 0.0046 off
+    ("NY", 2020),
+    ("CT", 2020),
     # controls: these reconciled before the fix and must still reconcile
     ("MN", 2020),
     ("ND", 2020),
