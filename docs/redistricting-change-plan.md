@@ -226,6 +226,25 @@ already exists at the old boundaries as a check. Either way, the historical and 
 must share one code path — a test should assert the 2020→2022 backtest and the 2026
 transfer call the same function.
 
+> **Decided 2026-10-02, by running the pilot: option 2.** The Virginia 2020→2022 transfer
+> moves the *presidential* vote, and the choice paid for itself in a way the plan did not
+> anticipate. Because `cd_presidential_baseline_2024` is the same quantity measured directly
+> on the new lines, it works as a **same-office control** — and that control is what
+> separates the two errors a single MAE conflates. Against certified 2022 House results the
+> transfer's MAE is 0.0314 (versus 0.1253 for the state-lean fallback in use today), but
+> against the directly measured presidential baseline on the same 2022 lines the mean error
+> is +0.019 and the standard deviation is 0.016. The mean is the 2020→2024 Democratic
+> decline; the standard deviation is the geography. A projection models a national swing
+> separately, so **0.016 is the quantity to hand `project_house`**, and option 1 could not
+> have produced it: there is no House-basis equivalent measured on the new lines to control
+> against.
+>
+> The second half of option 2 — mapping the transferred presidential share to a House-basis
+> lean through the fitted relationship, and adding that mapping's residual to the seat's
+> sigma — is **not yet done**. It is the next step, not a detail: the fitted model consumes
+> `lag_dem_share` on the House-vote basis, and handing it a presidential share would be a
+> basis error rather than a precision one.
+
 ### Architecture
 
 Inputs (all Tier 0/1; **each must be registered in `docs/dataset-registry.md` before
@@ -366,8 +385,11 @@ objective function; that remains P2–P3 and remains audit-only.
   spine stays on FIPS/GEOID (CLAUDE.md §3) and `plan_id` travels as a sibling column, so a
   redrawn district keeps its GEOID and any join that forgets `plan_id` is caught by the
   lag test rather than by an ID mismatch.
-- Which option in Track C's measurement trap (House-vote transfer vs presidential transfer
-  through the fitted relationship). Recommended: presidential; decide before the pilot.
+- ~~Which option in Track C's measurement trap.~~ **Decided 2026-10-02: presidential
+  transfer (option 2)**, by running the pilot; the reason it won is written up in Track C.
+  What remains open is the *second half* of option 2 — the presidential-to-House basis
+  mapping and its residual — which must land before a transferred prior reaches
+  `project_house`.
 - Whether `pending` seats should be projected under both plans and reported as two rows.
   Current position: one row on the in-effect plan, with the alternative named in the
   report; two rows would double-count a seat in the simulation.
