@@ -99,7 +99,9 @@ Reproduce these lines wherever a post is published:
 - **MIT Election Data and Science Lab** — certified U.S. federal returns, 1976–2024.
   <https://electionlab.mit.edu/>
 - **U.S. Census Bureau** — American Community Survey 5-year estimates (vintage 2023);
-  TIGER/Line boundary files (2024).
+  TIGER/Line Shapefiles (2022 tabulation blocks, 2023 118th-Congress districts, 2024
+  boundaries); Block Assignment Files. Public domain; cited because the chain of custody
+  matters, not because the licence demands it.
 - **Federal Election Commission** — candidate and committee filings. Aggregate use only;
   contributor fields are never used for solicitation, list-building or targeting.
 
@@ -111,6 +113,19 @@ anti-gerrymandering:
 - Analysis: *"This analysis was conducted using data from the Redistricting Data Hub."*
 - Map: *"This map was created using data from the Redistricting Data Hub."*
 - Reposting data: *"This data was obtained from the Redistricting Data Hub."*
+
+**Mandatory the moment any post uses the FiveThirtyEight polling archive** (NE-000,
+answered 2026-10-02; terms at
+`docs/terms_and_conditions/poll-topline-redistribution-terms.md`):
+
+- *"Data from FiveThirtyEight, used under CC BY 4.0."*
+
+**Never publishable from YouGov or the Roper Center.** YouGov's Public Data License
+prohibits ML and AI model development and prohibits incorporation into commercial datasets;
+Roper's subscriber agreement excludes "compilations or manipulations of data or datasets"
+from permitted derivative works. Neither may appear in a post as data, averaged or
+otherwise. Citing a published YouGov *finding* in prose is a different act from storing its
+topline, and only the first is available here.
 
 ## Editorial boundaries
 
