@@ -79,6 +79,16 @@ CD_BASELINE_COLUMNS = [
 
 HOUSE_OFFICES = frozenset({"US HOUSE", "US HOUSE OF REPRESENTATIVES"})
 
+# A single-district state's "district" is not a number, and not the same non-number twice.
+# MEDSL's 2020 files write Alaska, Delaware, Vermont and Wyoming as district ``000``; its
+# 2024 files write ``STATEWIDE`` (AK, VT) or ``AT-LARGE`` (DE, WY). Parsing the field as a
+# number drops the 2024 spelling to NaN, which deleted seven states from the 2024 national
+# build -- AK, DE, ND, SD, VT, WY and the District of Columbia -- while every other state
+# reconciled. They are mapped to **0**, the convention the rest of the stack already uses
+# (``medsl.py`` coerces an unparseable House district to 0 and ``geography_id`` renders it
+# ``cong_00``).
+AT_LARGE_LABELS = frozenset({"STATEWIDE", "AT-LARGE", "AT LARGE", "ATLARGE", "AL"})
+
 # How a district's recovered vote compares with its state's median district. **Reported,
 # never routed on.** It was once the under-coverage flag, on the reasoning that districts
 # are drawn to equal population, so a district far below the state median must be missing
@@ -193,6 +203,15 @@ def _precinct_key(df: pd.DataFrame) -> pd.Series:
 #: Island 2020 leaves ``county_fips`` blank on 0.18% of rows, which an all-or-nothing rule
 #: turned into a failure for the whole state.
 COUNTY_KEY_COLUMNS = ("county_fips", "county_name", "jurisdiction_fips", "jurisdiction_name")
+
+
+def _district_number(district: pd.Series | None) -> pd.Series:
+    """Parse a House district label, recognising a single-district state's spelling of 0."""
+    if district is None:
+        return pd.Series(dtype="float64")
+    label = district.fillna("").astype(str).str.strip().str.upper()
+    out = pd.to_numeric(label, errors="coerce")
+    return out.where(~label.isin(AT_LARGE_LABELS), 0.0)
 
 
 def _county_key(df: pd.DataFrame) -> pd.Series:
@@ -362,7 +381,7 @@ def _prepare(path: Path, *, collapse: bool = True) -> tuple[pd.DataFrame, pd.Dat
     collapsed["_county"] = _county_key(collapsed)
 
     house = collapsed[collapsed["office"] == "us_house"].copy()
-    house["district_num"] = pd.to_numeric(house.get("district"), errors="coerce")
+    house["district_num"] = _district_number(house.get("district"))
     house = house.dropna(subset=["district_num"])
     voted = house[house["candidatevotes"] > 0]
 
@@ -373,7 +392,10 @@ def _prepare(path: Path, *, collapse: bool = True) -> tuple[pd.DataFrame, pd.Dat
 
     # Fallback allocation weights: congressional turnout per county x district. Used only
     # for counties with no precinct-level presidential vote at all.
-    house_weights = _weights(voted, "candidatevotes") if len(voted) else pd.DataFrame()
+    # Same rule as the presidential weight: an empty county key is not a place, so those
+    # rows must not pool into one statewide bucket that then looks like a county.
+    with_county = voted[voted["_county"].ne("")] if len(voted) else voted
+    house_weights = _weights(with_county, "candidatevotes") if len(with_county) else pd.DataFrame()
 
     pres = collapsed[collapsed["office"] == "president"].copy()
     parties = pres.apply(medsl._canon_party, axis=1, result_type="expand")

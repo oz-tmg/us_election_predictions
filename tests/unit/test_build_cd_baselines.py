@@ -140,10 +140,28 @@ def test_a_discrepancy_outside_tolerance_fails():
     assert rep["states_failing"] == ["WA"]
 
 
-def test_a_state_absent_from_the_certified_panel_fails_rather_than_passing_by_default():
-    """Unknown must never read as fine."""
+def test_a_state_absent_from_the_certified_panel_does_not_pass_by_default():
+    """Unknown must never read as fine -- but it is not the same claim as "disagrees".
+
+    New York 2024 is the live case and it is nobody's bug. `data/quarantine.py` excludes a
+    race whose candidate votes do not *exactly* equal its reported total, and New York's
+    2024 files carry a `BLANK` ballot row the total excludes -- 874 votes in 8,381,429, or
+    0.010%. So New York has no 2024 presidential row in silver and this gate has nothing to
+    compare against, while its precinct file reconciles to 1.0025 of its own raw total.
+    Calling that `fails_reconciliation` reads as an accusation against the precinct data.
+    """
     df, rep = bcb.reconcile(_cd("XX", 50, 100), _panel([("AZ", 0.50)]), 2020)
-    assert rep["states_failing"] == ["XX"]
+    assert rep["states_failing"] == [], "absent is not disagreement"
+    assert rep["states_without_a_comparator"] == ["XX"]
+    assert df["baseline_quality"].iloc[0] == bcb.QUALITY_NO_COMPARATOR
+    assert df["baseline_quality"].iloc[0] != "ok"
+
+
+def test_a_state_that_disagrees_is_still_called_a_failure():
+    """The distinction must not become an excuse: Indiana's gap is a real failure."""
+    df, rep = bcb.reconcile(_cd("IN", 445, 1000), _panel([("IN", 0.418)]), 2020)
+    assert rep["states_failing"] == ["IN"]
+    assert rep["states_without_a_comparator"] == []
     assert df["baseline_quality"].iloc[0] == bcb.QUALITY_FAILS_RECONCILIATION
 
 

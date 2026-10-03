@@ -55,6 +55,19 @@ PRESIDENTIAL_VINTAGES = (2016, 2020, 2024)
 RECONCILIATION_TOLERANCE = 0.01
 QUALITY_FAILS_RECONCILIATION = "fails_reconciliation"
 
+# A state with no certified comparator is not a state whose data disagrees with one, and
+# flattening the two reads as an accusation against the precinct file. New York 2024 is the
+# case and it is nobody's bug: `data/quarantine.py` excludes a race whose candidate votes do
+# not *exactly* equal its reported total, and New York's 2024 files carry a `BLANK` ballot
+# row the total excludes — 874 votes in 8,381,429, or 0.010%. The exclusion is deliberate
+# (CLAUDE.md §6: a documented uniform exclusion, never a cause-specific patch), so New York
+# has no 2024 presidential row in silver, so this gate has nothing to compare against. Its
+# precinct file is fine: it reconciles to 1.0025 of its own raw two-party total.
+#
+# So "unknown" keeps its own label. It still refuses to read as fine — that was the point of
+# failing an absent state in the first place — without claiming the data is wrong.
+QUALITY_NO_COMPARATOR = "no_certified_comparator"
+
 # A district can be missing from a precinct drop without any state failing, because the
 # precinct-to-district map is read off ``US HOUSE`` rows and an **uncontested** House race
 # produces none. Florida's 25th in 2020 is the case: Mario Diaz-Balart ran unopposed, so the
@@ -87,6 +100,7 @@ QUALITY_UNDER_COVERED = "under_covered"
 # by estimate.
 QUALITY_PRECEDENCE = (
     QUALITY_FAILS_RECONCILIATION,
+    QUALITY_NO_COMPARATOR,
     QUALITY_UNDER_COVERED,
     cd_baseline.QUALITY_HEAVILY_ALLOCATED,
     cd_baseline.QUALITY_OK,
@@ -123,14 +137,25 @@ def reconcile(df: pd.DataFrame, panel: pd.DataFrame, vintage: int) -> tuple[pd.D
         on="state_po",
         how="left",
     )
-    failed = out["reconciles"].fillna(False).eq(False)
+    absent = out["state_certified_share"].isna()
+    failed = out["reconciles"].fillna(False).eq(False) & ~absent
     out.loc[failed, "baseline_quality"] = QUALITY_FAILS_RECONCILIATION
+    out.loc[absent, "baseline_quality"] = QUALITY_NO_COMPARATOR
 
     worst = agg.reindex(agg["share_diff"].abs().sort_values(ascending=False).index).head(8)
     report = {
         "tolerance": RECONCILIATION_TOLERANCE,
         "states_checked": int(agg["state_certified_share"].notna().sum()),
-        "states_failing": sorted(agg.loc[~agg["reconciles"].fillna(False), "state_po"].tolist()),
+        "states_failing": sorted(
+            agg.loc[
+                ~agg["reconciles"].fillna(False) & agg["state_certified_share"].notna(), "state_po"
+            ].tolist()
+        ),
+        # Reported separately: there is nothing to compare these against, which is a
+        # different claim from "they disagree".
+        "states_without_a_comparator": sorted(
+            agg.loc[agg["state_certified_share"].isna(), "state_po"].tolist()
+        ),
         "median_abs_diff": float(agg["share_diff"].abs().median()),
         "worst": [
             {
@@ -361,7 +386,12 @@ def main(argv: list[str] | None = None) -> int:
                 f"      {w['state_po']}: CD {w['cd_aggregate_share']} "
                 f"vs certified {w['state_certified_share']}"
             )
-    elif recon.get("states_checked"):
+    if recon.get("states_without_a_comparator"):
+        print(
+            f"  NO CERTIFIED COMPARATOR: {recon['states_without_a_comparator']} "
+            f"(quarantined upstream; the precinct file is not implicated)"
+        )
+    if not recon.get("states_failing") and recon.get("states_checked"):
         n = recon["states_checked"]
         print(f"  reconciles against certified state shares: {n}/{n}")
     print(f"  -> {out}\n  -> {rpt}")
