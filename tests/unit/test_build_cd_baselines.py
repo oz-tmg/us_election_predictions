@@ -22,9 +22,7 @@ def test_a_midterm_vintage_is_refused_rather_than_returning_nothing():
 
 @pytest.mark.parametrize("vintage", bcb.PRESIDENTIAL_VINTAGES)
 def test_presidential_vintages_are_accepted(vintage, monkeypatch):
-    monkeypatch.setattr(
-        bcb.cd_baseline, "build_cd_baselines", lambda *a, **k: (pd.DataFrame(), [])
-    )
+    monkeypatch.setattr(bcb.cd_baseline, "build_cd_baselines", lambda *a, **k: (pd.DataFrame(), []))
     df, report = bcb.build(Path("data/raw"), vintage)
     assert report["vintage"] == vintage
 
@@ -56,7 +54,12 @@ def test_errored_states_are_named_not_merely_counted(monkeypatch, tmp_path):
     monkeypatch.setattr(
         bcb.cd_baseline, "build_cd_baselines", lambda *a, **k: (df, _stats(["AZ"], ["CA", "TX"]))
     )
-    _, report = bcb.build(Path("data/raw"), 2020, panel_path=tmp_path / "none.parquet")
+    _, report = bcb.build(
+        Path("data/raw"),
+        2020,
+        panel_path=tmp_path / "none.parquet",
+        house_path=tmp_path / "none.parquet",
+    )
     assert report["files_errored"] == 2
     assert {e["state"] for e in report["errors"]} == {"CA", "TX"}
 
@@ -64,22 +67,26 @@ def test_errored_states_are_named_not_merely_counted(monkeypatch, tmp_path):
 def test_states_that_read_without_error_but_produced_no_rows_are_still_reported(monkeypatch, tmp_path):
     """The quiet failure: a file parses, yields nothing, and shortens the table unnoticed."""
     df = pd.DataFrame({"state_po": ["AZ"], "baseline_quality": ["ok"]})
-    monkeypatch.setattr(
-        bcb.cd_baseline, "build_cd_baselines", lambda *a, **k: (df, _stats(["AZ", "NV"], []))
+    monkeypatch.setattr(bcb.cd_baseline, "build_cd_baselines", lambda *a, **k: (df, _stats(["AZ", "NV"], [])))
+    _, report = bcb.build(
+        Path("data/raw"),
+        2020,
+        panel_path=tmp_path / "none.parquet",
+        house_path=tmp_path / "none.parquet",
     )
-    _, report = bcb.build(Path("data/raw"), 2020, panel_path=tmp_path / "none.parquet")
     assert report["files_errored"] == 0
     assert report["states_missing"] == ["NV"]
 
 
 def test_baseline_quality_is_carried_into_the_report(monkeypatch, tmp_path):
-    df = pd.DataFrame(
-        {"state_po": ["AZ", "AZ", "NV"], "baseline_quality": ["ok", "under_covered", "ok"]}
+    df = pd.DataFrame({"state_po": ["AZ", "AZ", "NV"], "baseline_quality": ["ok", "under_covered", "ok"]})
+    monkeypatch.setattr(bcb.cd_baseline, "build_cd_baselines", lambda *a, **k: (df, _stats(["AZ", "NV"], [])))
+    _, report = bcb.build(
+        Path("data/raw"),
+        2020,
+        panel_path=tmp_path / "none.parquet",
+        house_path=tmp_path / "none.parquet",
     )
-    monkeypatch.setattr(
-        bcb.cd_baseline, "build_cd_baselines", lambda *a, **k: (df, _stats(["AZ", "NV"], []))
-    )
-    _, report = bcb.build(Path("data/raw"), 2020, panel_path=tmp_path / "none.parquet")
     assert report["baseline_quality"] == {"ok": 2, "under_covered": 1}
     assert report["districts"] == 3
     assert report["states_covered"] == 2
@@ -97,9 +104,7 @@ def _cd(state, dem, two, quality="ok"):
 
 
 def _panel(rows, cycle=2020):
-    return pd.DataFrame(
-        [{"cycle": cycle, "state_po": s, "two_party_dem_share": v} for s, v in rows]
-    )
+    return pd.DataFrame([{"cycle": cycle, "state_po": s, "two_party_dem_share": v} for s, v in rows])
 
 
 def test_a_state_that_reconciles_keeps_its_quality_flag():
@@ -155,5 +160,97 @@ def test_build_without_a_certified_panel_says_the_table_is_unreconciled(monkeypa
     monkeypatch.setattr(
         bcb.cd_baseline, "build_cd_baselines", lambda *a, **k: (_cd("AZ", 50, 100), _stats(["AZ"], []))
     )
-    _, report = bcb.build(Path("data/raw"), 2020, panel_path=tmp_path / "nope.parquet")
+    _, report = bcb.build(
+        Path("data/raw"),
+        2020,
+        panel_path=tmp_path / "nope.parquet",
+        house_path=tmp_path / "nope.parquet",
+    )
     assert "UNRECONCILED" in report["reconciliation"]["skipped"]
+
+
+# ---- under-coverage, measured against each district's own certified House return -----------
+# This replaced an inference from the state median that produced four false positives
+# (AZ-07, CA-21, TX-29, TX-33, all of which recover 99-102% of their certified House vote)
+# and missed two real holes (NY-07 at 0.838, NJ-04 at 0.663).
+
+
+def _house(rows, cycle=2020):
+    return pd.DataFrame(
+        [
+            {
+                "office": "us_house",
+                "cycle": cycle,
+                "state_po": s,
+                "district_num": d,
+                "candidatevotes": v,
+            }
+            for s, d, v in rows
+        ]
+    )
+
+
+def _baseline(rows):
+    return pd.DataFrame(
+        [
+            {"state_po": s, "district_num": d, "two_party_votes": v, "baseline_quality": q}
+            for s, d, v, q in rows
+        ]
+    )
+
+
+def test_a_district_short_of_its_certified_house_vote_is_flagged():
+    df, rep = bcb.flag_under_covered(_baseline([("NJ", 4, 281373, "ok")]), _house([("NJ", 4, 424368)]), 2020)
+    assert rep["districts_under_covered"] == 1
+    assert df["baseline_quality"].iloc[0] == bcb.QUALITY_UNDER_COVERED
+    assert df["coverage_vs_house_vote"].iloc[0] == pytest.approx(0.663, abs=1e-3)
+
+
+def test_a_district_matching_its_certified_house_vote_is_left_alone():
+    """TX-29's 0.525 of the state median was turnout, not a hole."""
+    df, rep = bcb.flag_under_covered(
+        _baseline([("TX", 29, 159166, "ok")]), _house([("TX", 29, 156473)]), 2020
+    )
+    assert rep["districts_under_covered"] == 0
+    assert df["baseline_quality"].iloc[0] == "ok"
+
+
+def test_an_uncontested_house_race_is_not_mistaken_for_missing_vote():
+    """A low House total gives a *high* ratio, so the check is safe by direction."""
+    df, rep = bcb.flag_under_covered(_baseline([("FL", 25, 300000, "ok")]), _house([("FL", 25, 100)]), 2020)
+    assert rep["districts_under_covered"] == 0
+    assert df["coverage_vs_house_vote"].iloc[0] > 1
+
+
+def test_a_district_with_no_certified_house_return_is_not_condemned():
+    """Unjudgeable is reported as unjudgeable, not as a failure."""
+    df, rep = bcb.flag_under_covered(_baseline([("XX", 1, 1000, "ok")]), _house([("NJ", 4, 400000)]), 2020)
+    assert rep["districts_unjudgeable"] == 1
+    assert rep["districts_under_covered"] == 0
+    assert df["baseline_quality"].iloc[0] == "ok"
+
+
+def test_a_worse_flag_is_not_overwritten_by_under_coverage():
+    """A state failing reconciliation is wrong at a scale that makes its districts moot."""
+    df, _ = bcb.flag_under_covered(
+        _baseline([("IN", 4, 114851, bcb.QUALITY_FAILS_RECONCILIATION)]),
+        _house([("IN", 4, 338515)]),
+        2020,
+    )
+    assert df["baseline_quality"].iloc[0] == bcb.QUALITY_FAILS_RECONCILIATION
+
+
+def test_an_uncontested_seat_absent_from_the_drop_is_named():
+    """FL-25 2020: Diaz-Balart ran unopposed, so no House rows, so no precinct resolved."""
+    cov = bcb.district_coverage(
+        _baseline([("FL", 24, 1, "ok"), ("FL", 26, 1, "ok")]),
+        _house([("FL", 24, 1), ("FL", 25, 1), ("FL", 26, 1)]),
+        2020,
+    )
+    assert cov["districts_missing"] == 1
+    assert cov["missing_by_state"] == {"FL": [25]}
+
+
+def test_the_dc_delegate_is_not_counted_as_a_missing_district():
+    cov = bcb.district_coverage(_baseline([("FL", 24, 1, "ok")]), _house([("FL", 24, 1), ("DC", 0, 1)]), 2020)
+    assert cov["districts_missing"] == 0

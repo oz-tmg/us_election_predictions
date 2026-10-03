@@ -161,6 +161,18 @@ def is_real_candidate(candidate: object) -> bool:
 # Files in a precinct drop that are documentation, not returns.
 NON_DATA_STEMS = frozenset({"codebook", "readme", "changelog", "license", "notes"})
 
+# A drop sometimes ships the *same* state twice. MEDSL's 2020 release contains both
+# ``2020-nc-precinct-general.csv`` and ``2020-nc-precinct-general-sorted.csv``: 696,804
+# rows against 1,529,852, the same 19 offices and the same 2,144 precincts, differing only
+# in how finely the vote modes are broken out. Reading both summed North Carolina twice and
+# put its CD baselines at 180% of the certified vote while the build reported "51 files ok".
+#
+# The canonical file is the one that reconciles: its presidential total is 5,524,802
+# against a certified 5,524,802, while the ``-sorted`` variant's finer mode breakdown
+# totals 5,548,545 — 23,743 votes over. So the variant is excluded by marker, and the
+# build additionally refuses any state that still arrives twice (it must never be summed).
+REDUNDANT_STEM_MARKERS = ("-sorted", "_sorted")
+
 DATA_SUFFIXES = frozenset({".csv", ".tab", ".txt", ".tsv"})
 
 
@@ -174,6 +186,9 @@ def find_precinct_files(raw_dir: str | Path, vintage: int) -> list[Path]:
     5 of its 53 files. So any data-suffixed file is taken, documentation is excluded by
     stem, and the *state is read from the file's own contents* rather than its name
     (see ``read_precinct_file``).
+
+    Redundant re-cuts of a state already in the drop are excluded by marker; see
+    ``REDUNDANT_STEM_MARKERS``. Taking every file was double-counting North Carolina.
     """
     d = Path(raw_dir) / f"source=medsl/dataset={PRECINCT_DATASET}/vintage={vintage}"
     if not d.is_dir():
@@ -181,7 +196,10 @@ def find_precinct_files(raw_dir: str | Path, vintage: int) -> list[Path]:
     return sorted(
         p
         for p in d.iterdir()
-        if p.is_file() and p.suffix.lower() in DATA_SUFFIXES and p.stem.strip().lower() not in NON_DATA_STEMS
+        if p.is_file()
+        and p.suffix.lower() in DATA_SUFFIXES
+        and p.stem.strip().lower() not in NON_DATA_STEMS
+        and not any(m in p.stem.lower() for m in REDUNDANT_STEM_MARKERS)
     )
 
 

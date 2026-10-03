@@ -55,6 +55,43 @@ PRESIDENTIAL_VINTAGES = (2016, 2020, 2024)
 RECONCILIATION_TOLERANCE = 0.01
 QUALITY_FAILS_RECONCILIATION = "fails_reconciliation"
 
+# A district can be missing from a precinct drop without any state failing, because the
+# precinct-to-district map is read off ``US HOUSE`` rows and an **uncontested** House race
+# produces none. Florida's 25th in 2020 is the case: Mario Diaz-Balart ran unopposed, so the
+# file carries no House rows for it, so none of its precincts resolve -- and its presidential
+# vote is then allocated into the neighbouring districts that share its counties. The state
+# reconciles perfectly and a seat is simply absent, with its vote in the wrong place.
+#
+# Counting districts cannot catch that; only comparing against an independent list of which
+# districts existed can. The certified House returns in silver are that list
+# (``mit_us_house_returns``, 436 state-district pairs for 2020), so any district they carry
+# and the baseline does not is reported by name.
+HOUSE_RETURNS_PATH = Path("data/silver/election_returns.parquet")
+
+# A district's recovered two-party presidential vote, over the total vote its own certified
+# U.S. House return reports. The two are close by construction — the same ballots, minus
+# roll-off and third-party House votes — so across 402 districts in 2020 the ratio has a
+# median of 1.002 and a standard deviation of 0.062. Below 0.90 (the 5th percentile) the
+# district is missing vote, and this is the *measurement* that replaced an inference from
+# the state median, which produced four false positives and missed two real holes.
+#
+# Flags "verify before use", not "wrong". A district whose House race was uncontested has a
+# genuinely low House total and so a *high* ratio, which is never flagged — safe by
+# direction. A district with no certified House return at all cannot be judged and is left
+# alone rather than condemned.
+MIN_COVERAGE_VS_HOUSE_VOTE = 0.90
+QUALITY_UNDER_COVERED = "under_covered"
+
+# Worst first: a state that fails reconciliation is wrong at a scale that makes its
+# districts moot; a district missing vote is worse than one whose vote is present but placed
+# by estimate.
+QUALITY_PRECEDENCE = (
+    QUALITY_FAILS_RECONCILIATION,
+    QUALITY_UNDER_COVERED,
+    cd_baseline.QUALITY_HEAVILY_ALLOCATED,
+    cd_baseline.QUALITY_OK,
+)
+
 
 def _r4(v: object) -> float | None:
     return None if pd.isna(v) else round(float(v), 4)
@@ -108,11 +145,105 @@ def reconcile(df: pd.DataFrame, panel: pd.DataFrame, vintage: int) -> tuple[pd.D
     return out, report
 
 
+def flag_under_covered(df: pd.DataFrame, house: pd.DataFrame, vintage: int) -> tuple[pd.DataFrame, dict]:
+    """Compare each district's recovered vote with its own certified House return.
+
+    Adds ``certified_house_votes`` and ``coverage_vs_house_vote``, and downgrades the
+    district's ``baseline_quality`` where the ratio falls below
+    ``MIN_COVERAGE_VS_HOUSE_VOTE``. A state already failing reconciliation keeps that flag:
+    see ``QUALITY_PRECEDENCE``.
+    """
+    rows = house[(house["office"] == "us_house") & (house["cycle"] == vintage)]
+    if not len(rows) or not len(df):
+        return df, {"skipped": f"no certified us_house returns for {vintage}; coverage UNCHECKED"}
+
+    totals = (
+        rows.assign(district_num=pd.to_numeric(rows["district_num"], errors="coerce"))
+        .dropna(subset=["district_num"])
+        .groupby(["state_po", "district_num"], as_index=False)["candidatevotes"]
+        .sum()
+        .rename(columns={"candidatevotes": "certified_house_votes"})
+    )
+    totals["district_num"] = totals["district_num"].astype(int)
+
+    out = df.copy()
+    out["district_num"] = out["district_num"].astype(int)
+    out = out.merge(totals, on=["state_po", "district_num"], how="left")
+    house_votes = pd.to_numeric(out["certified_house_votes"], errors="coerce")
+    out["coverage_vs_house_vote"] = (out["two_party_votes"] / house_votes.where(house_votes > 0)).round(4)
+
+    short = out["coverage_vs_house_vote"] < MIN_COVERAGE_VS_HOUSE_VOTE
+    rank = {q: i for i, q in enumerate(QUALITY_PRECEDENCE)}
+    out.loc[short, "baseline_quality"] = [
+        q if rank.get(q, len(rank)) < rank[QUALITY_UNDER_COVERED] else QUALITY_UNDER_COVERED
+        for q in out.loc[short, "baseline_quality"]
+    ]
+
+    flagged = out.loc[short].sort_values("coverage_vs_house_vote")
+    return out, {
+        "threshold": MIN_COVERAGE_VS_HOUSE_VOTE,
+        "districts_checked": int(out["coverage_vs_house_vote"].notna().sum()),
+        "districts_unjudgeable": int(out["coverage_vs_house_vote"].isna().sum()),
+        "districts_under_covered": int(short.sum()),
+        "median_coverage": _r4(out["coverage_vs_house_vote"].median()),
+        "worst": [
+            {
+                "district": f"{r.state_po}-{int(r.district_num):02d}",
+                "coverage_vs_house_vote": _r4(r.coverage_vs_house_vote),
+                "two_party_votes": int(r.two_party_votes),
+                "certified_house_votes": int(r.certified_house_votes),
+            }
+            for r in flagged.head(10).itertuples()
+        ],
+    }
+
+
+def district_coverage(df: pd.DataFrame, house: pd.DataFrame, vintage: int) -> dict:
+    """Which districts the certified House returns carry that the baseline does not.
+
+    Reported per state and by name. The reverse direction is reported too: a district in the
+    baseline that no certified return mentions means the drop's own ``district`` values
+    disagree with the cycle's apportionment, which is a different bug and worth seeing.
+    """
+    # DC elects a non-voting delegate, not one of the 435 congressional districts. The
+    # certified House returns carry the race; the apportioned-seat universe does not.
+    rows = house[(house["office"] == "us_house") & (house["cycle"] == vintage) & (house["state_po"] != "DC")]
+    expected = {
+        (s, int(d))
+        for s, d in rows[["state_po", "district_num"]].dropna().drop_duplicates().itertuples(index=False)
+    }
+    if not expected:
+        return {"skipped": f"no certified us_house returns for {vintage}"}
+    have = (
+        {
+            (s, int(d))
+            for s, d in df[["state_po", "district_num"]].dropna().drop_duplicates().itertuples(index=False)
+        }
+        if len(df)
+        else set()
+    )
+    missing, extra = sorted(expected - have), sorted(have - expected)
+    by_state: dict[str, list[int]] = {}
+    for state, district in missing:
+        by_state.setdefault(state, []).append(district)
+    return {
+        "districts_expected": len(expected),
+        "districts_present": len(have),
+        "districts_missing": len(missing),
+        # Named, not counted. A missing district's presidential vote does not vanish: it is
+        # allocated into whichever districts share its counties, so the seats around it are
+        # wrong too.
+        "missing_by_state": by_state,
+        "districts_not_in_certified_returns": [f"{s}-{d:02d}" for s, d in extra],
+    }
+
+
 def build(
     raw_dir: Path,
     vintage: int,
     states: list[str] | None = None,
     panel_path: Path | None = None,
+    house_path: Path | None = None,
 ) -> tuple[pd.DataFrame, dict]:
     """Baselines for one cycle, with a coverage report that does not hide failures."""
     if vintage not in PRESIDENTIAL_VINTAGES:
@@ -128,6 +259,15 @@ def build(
     else:
         recon = {"skipped": f"no certified panel at {panel_path}; baselines are UNRECONCILED"}
 
+    house_path = house_path or HOUSE_RETURNS_PATH
+    if house_path.is_file():
+        house = pd.read_parquet(house_path)
+        coverage = district_coverage(df, house, vintage)
+        df, under = flag_under_covered(df, house, vintage)
+    else:
+        missing = f"no certified House returns at {house_path}; coverage UNCHECKED"
+        coverage, under = {"skipped": missing}, {"skipped": missing}
+
     ok = [s for s in stats if s.get("status") != "error"]
     errors = [s for s in stats if s.get("status") == "error"]
     report = {
@@ -139,15 +279,13 @@ def build(
         "files_errored": len(errors),
         "districts": int(len(df)),
         "states_covered": int(df["state_po"].nunique()) if len(df) else 0,
-        "baseline_quality": (
-            df["baseline_quality"].value_counts().sort_index().to_dict() if len(df) else {}
-        ),
+        "baseline_quality": (df["baseline_quality"].value_counts().sort_index().to_dict() if len(df) else {}),
         # Named, not counted: a state missing from a national baseline is a hole someone
         # downstream will otherwise discover as a silent join failure.
-        "errors": [
-            {"state": e.get("state"), "error": e.get("error")} for e in errors
-        ],
+        "errors": [{"state": e.get("state"), "error": e.get("error")} for e in errors],
         "reconciliation": recon,
+        "district_coverage": coverage,
+        "under_coverage": under,
         "states_missing": sorted(
             set(_expected_states(stats)) - set(df["state_po"].unique() if len(df) else [])
         ),
@@ -188,12 +326,30 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  ERRORED STATES: {[e['state'] for e in report['errors']]}")
     if report["states_missing"]:
         print(f"  MISSING FROM OUTPUT: {report['states_missing']}")
+    cov = report.get("district_coverage", {})
+    if cov.get("districts_missing"):
+        print(
+            f"  MISSING DISTRICTS: {cov['districts_missing']} of {cov['districts_expected']} "
+            f"-> {cov['missing_by_state']}"
+        )
+        print("      (an uncontested House race leaves no rows to map precincts by;")
+        print("       the seat's presidential vote lands in whichever districts share its counties)")
+    elif cov.get("districts_expected"):
+        print(f"  district coverage: {cov['districts_present']}/{cov['districts_expected']}")
+    und = report.get("under_coverage", {})
+    if und.get("districts_under_covered"):
+        print(
+            f"  UNDER-COVERED: {und['districts_under_covered']} districts below "
+            f"{und['threshold']:.0%} of their certified House vote"
+        )
+        for w in und["worst"][:5]:
+            print(
+                f"      {w['district']}: {w['two_party_votes']:,} presidential vs "
+                f"{w['certified_house_votes']:,} House ({w['coverage_vs_house_vote']:.3f})"
+            )
     recon = report.get("reconciliation", {})
     if recon.get("states_failing"):
-        print(
-            f"  FAILS RECONCILIATION (>{recon['tolerance']:.0%} off certified): "
-            f"{recon['states_failing']}"
-        )
+        print(f"  FAILS RECONCILIATION (>{recon['tolerance']:.0%} off certified): {recon['states_failing']}")
         for w in recon["worst"][:5]:
             print(
                 f"      {w['state_po']}: CD {w['cd_aggregate_share']} "

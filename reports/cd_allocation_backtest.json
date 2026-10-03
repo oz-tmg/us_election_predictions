@@ -1,0 +1,1086 @@
+{
+  "generated_on": "2026-10-02",
+  "method": "Pool a state's precinct-level early/absentee vote to county level, allocate it back with features.cd_baseline.allocate_within_county, and compare each district's two-party Democratic share against the file's own precinct detail.",
+  "test_beds": [
+    "NC 2024",
+    "AZ 2024"
+  ],
+  "runs": [
+    {
+      "status": "ok",
+      "state": "NC",
+      "cycle": 2024,
+      "pooled_modes": [
+        "ABSENTEE BY MAIL",
+        "EARLY VOTING",
+        "PROVISIONAL"
+      ],
+      "share_of_vote_pooled": 0.7577,
+      "districts_compared": 14,
+      "mae": 0.01005,
+      "max_abs_error": 0.05498,
+      "p90_abs_error": 0.01856,
+      "mean_error": -0.00072,
+      "votes_unallocatable": 0.0
+    },
+    {
+      "status": "ok",
+      "state": "NC",
+      "cycle": 2024,
+      "pooled_modes": [
+        "ABSENTEE BY MAIL"
+      ],
+      "share_of_vote_pooled": 0.0389,
+      "districts_compared": 14,
+      "mae": 0.00024,
+      "max_abs_error": 0.00137,
+      "p90_abs_error": 0.00077,
+      "mean_error": 6e-05,
+      "votes_unallocatable": 0.0
+    },
+    {
+      "status": "ok",
+      "state": "NC",
+      "cycle": 2024,
+      "pooled_modes": [
+        "EARLY VOTING"
+      ],
+      "share_of_vote_pooled": 0.7153,
+      "districts_compared": 14,
+      "mae": 0.00996,
+      "max_abs_error": 0.05498,
+      "p90_abs_error": 0.01761,
+      "mean_error": -0.00115,
+      "votes_unallocatable": 0.0
+    },
+    {
+      "status": "ok",
+      "state": "NC",
+      "cycle": 2024,
+      "pooled_modes": [
+        "PROVISIONAL"
+      ],
+      "share_of_vote_pooled": 0.0036,
+      "districts_compared": 14,
+      "mae": 2e-05,
+      "max_abs_error": 0.00014,
+      "p90_abs_error": 6e-05,
+      "mean_error": -0.0,
+      "votes_unallocatable": 0.0
+    },
+    {
+      "status": "ok",
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled_modes": [
+        "EARLY VOTING",
+        "LATE EARLY",
+        "PROVISIONAL"
+      ],
+      "share_of_vote_pooled": 0.7731,
+      "districts_compared": 9,
+      "mae": 0.05488,
+      "max_abs_error": 0.19393,
+      "p90_abs_error": 0.08834,
+      "mean_error": -0.01431,
+      "votes_unallocatable": 0.0
+    },
+    {
+      "status": "ok",
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled_modes": [
+        "EARLY VOTING"
+      ],
+      "share_of_vote_pooled": 0.7694,
+      "districts_compared": 9,
+      "mae": 0.05458,
+      "max_abs_error": 0.19364,
+      "p90_abs_error": 0.08767,
+      "mean_error": -0.01437,
+      "votes_unallocatable": 0.0
+    },
+    {
+      "status": "ok",
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled_modes": [
+        "LATE EARLY"
+      ],
+      "share_of_vote_pooled": 0.0005,
+      "districts_compared": 9,
+      "mae": 5e-05,
+      "max_abs_error": 0.00024,
+      "p90_abs_error": 0.00023,
+      "mean_error": -0.0,
+      "votes_unallocatable": 0.0
+    },
+    {
+      "status": "ok",
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled_modes": [
+        "PROVISIONAL"
+      ],
+      "share_of_vote_pooled": 0.0033,
+      "districts_compared": 9,
+      "mae": 0.00016,
+      "max_abs_error": 0.00032,
+      "p90_abs_error": 0.00027,
+      "mean_error": 3e-05,
+      "votes_unallocatable": 0.0
+    }
+  ],
+  "error_vs_allocated_share": [
+    {
+      "allocated_share_band": "-0.00-0.10",
+      "districts": 48,
+      "mae": 0.00012,
+      "p90_abs_error": 0.00025,
+      "max_abs_error": 0.00137
+    },
+    {
+      "allocated_share_band": "0.10-0.25",
+      "districts": 2,
+      "mae": 0.00428,
+      "p90_abs_error": 0.0043,
+      "max_abs_error": 0.00431
+    },
+    {
+      "allocated_share_band": "0.50-0.75",
+      "districts": 12,
+      "mae": 0.00641,
+      "p90_abs_error": 0.01782,
+      "max_abs_error": 0.01927
+    },
+    {
+      "allocated_share_band": "0.75-1.00",
+      "districts": 30,
+      "mae": 0.03933,
+      "p90_abs_error": 0.06125,
+      "max_abs_error": 0.19393
+    }
+  ],
+  "districts": [
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 1,
+      "truth_dem_share": 0.48383,
+      "est_dem_share": 0.48199,
+      "error": -0.00184,
+      "allocated_share": 0.76403
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 2,
+      "truth_dem_share": 0.61045,
+      "est_dem_share": 0.61045,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 3,
+      "truth_dem_share": 0.38982,
+      "est_dem_share": 0.38833,
+      "error": -0.00149,
+      "allocated_share": 0.78606
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 4,
+      "truth_dem_share": 0.76121,
+      "est_dem_share": 0.75781,
+      "error": -0.00341,
+      "allocated_share": 0.78843
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 5,
+      "truth_dem_share": 0.30981,
+      "est_dem_share": 0.30981,
+      "error": 0.0,
+      "allocated_share": 0.72187
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 6,
+      "truth_dem_share": 0.34646,
+      "est_dem_share": 0.36573,
+      "error": 0.01927,
+      "allocated_share": 0.70373
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 7,
+      "truth_dem_share": 0.43208,
+      "est_dem_share": 0.44323,
+      "error": 0.01116,
+      "allocated_share": 0.79326
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 8,
+      "truth_dem_share": 0.39182,
+      "est_dem_share": 0.40873,
+      "error": 0.01691,
+      "allocated_share": 0.75001
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 9,
+      "truth_dem_share": 0.41192,
+      "est_dem_share": 0.41377,
+      "error": 0.00185,
+      "allocated_share": 0.76079
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 10,
+      "truth_dem_share": 0.41023,
+      "est_dem_share": 0.39658,
+      "error": -0.01365,
+      "allocated_share": 0.80709
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 11,
+      "truth_dem_share": 0.45237,
+      "est_dem_share": 0.45259,
+      "error": 0.00022,
+      "allocated_share": 0.79253
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 12,
+      "truth_dem_share": 0.7353,
+      "est_dem_share": 0.68032,
+      "error": -0.05498,
+      "allocated_share": 0.80253
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 13,
+      "truth_dem_share": 0.39495,
+      "est_dem_share": 0.39691,
+      "error": 0.00196,
+      "allocated_share": 0.75871
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL+EARLY VOTING+PROVISIONAL",
+      "district_num": 14,
+      "truth_dem_share": 0.41554,
+      "est_dem_share": 0.42948,
+      "error": 0.01394,
+      "allocated_share": 0.79152
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 1,
+      "truth_dem_share": 0.48383,
+      "est_dem_share": 0.48383,
+      "error": -0.0,
+      "allocated_share": 0.02844
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 2,
+      "truth_dem_share": 0.61045,
+      "est_dem_share": 0.61045,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 3,
+      "truth_dem_share": 0.38982,
+      "est_dem_share": 0.38977,
+      "error": -6e-05,
+      "allocated_share": 0.03934
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 4,
+      "truth_dem_share": 0.76121,
+      "est_dem_share": 0.76097,
+      "error": -0.00024,
+      "allocated_share": 0.05659
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 5,
+      "truth_dem_share": 0.30981,
+      "est_dem_share": 0.30981,
+      "error": 0.0,
+      "allocated_share": 0.03231
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 6,
+      "truth_dem_share": 0.34646,
+      "est_dem_share": 0.34783,
+      "error": 0.00137,
+      "allocated_share": 0.04254
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 7,
+      "truth_dem_share": 0.43208,
+      "est_dem_share": 0.43255,
+      "error": 0.00047,
+      "allocated_share": 0.05243
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 8,
+      "truth_dem_share": 0.39182,
+      "est_dem_share": 0.39179,
+      "error": -3e-05,
+      "allocated_share": 0.02982
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 9,
+      "truth_dem_share": 0.41192,
+      "est_dem_share": 0.41214,
+      "error": 0.00022,
+      "allocated_share": 0.04847
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 10,
+      "truth_dem_share": 0.41023,
+      "est_dem_share": 0.40933,
+      "error": -0.0009,
+      "allocated_share": 0.05058
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 11,
+      "truth_dem_share": 0.45237,
+      "est_dem_share": 0.4524,
+      "error": 3e-05,
+      "allocated_share": 0.05891
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 12,
+      "truth_dem_share": 0.7353,
+      "est_dem_share": 0.7353,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 13,
+      "truth_dem_share": 0.39495,
+      "est_dem_share": 0.39494,
+      "error": -1e-05,
+      "allocated_share": 0.03999
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "ABSENTEE BY MAIL",
+      "district_num": 14,
+      "truth_dem_share": 0.41554,
+      "est_dem_share": 0.41551,
+      "error": -3e-05,
+      "allocated_share": 0.02568
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 1,
+      "truth_dem_share": 0.48383,
+      "est_dem_share": 0.48204,
+      "error": -0.00179,
+      "allocated_share": 0.73127
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 2,
+      "truth_dem_share": 0.61045,
+      "est_dem_share": 0.61045,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 3,
+      "truth_dem_share": 0.38982,
+      "est_dem_share": 0.38841,
+      "error": -0.00142,
+      "allocated_share": 0.73872
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 4,
+      "truth_dem_share": 0.76121,
+      "est_dem_share": 0.75534,
+      "error": -0.00588,
+      "allocated_share": 0.73012
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 5,
+      "truth_dem_share": 0.30981,
+      "est_dem_share": 0.30981,
+      "error": 0.0,
+      "allocated_share": 0.68554
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 6,
+      "truth_dem_share": 0.34646,
+      "est_dem_share": 0.36437,
+      "error": 0.01792,
+      "allocated_share": 0.65874
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 7,
+      "truth_dem_share": 0.43208,
+      "est_dem_share": 0.44274,
+      "error": 0.01066,
+      "allocated_share": 0.73611
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 8,
+      "truth_dem_share": 0.39182,
+      "est_dem_share": 0.40872,
+      "error": 0.0169,
+      "allocated_share": 0.71528
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 9,
+      "truth_dem_share": 0.41192,
+      "est_dem_share": 0.41098,
+      "error": -0.00094,
+      "allocated_share": 0.70624
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 10,
+      "truth_dem_share": 0.41023,
+      "est_dem_share": 0.39746,
+      "error": -0.01277,
+      "allocated_share": 0.75488
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 11,
+      "truth_dem_share": 0.45237,
+      "est_dem_share": 0.45256,
+      "error": 0.00019,
+      "allocated_share": 0.7296
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 12,
+      "truth_dem_share": 0.7353,
+      "est_dem_share": 0.68032,
+      "error": -0.05498,
+      "allocated_share": 0.80253
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 13,
+      "truth_dem_share": 0.39495,
+      "est_dem_share": 0.39691,
+      "error": 0.00196,
+      "allocated_share": 0.71522
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 14,
+      "truth_dem_share": 0.41554,
+      "est_dem_share": 0.42953,
+      "error": 0.01399,
+      "allocated_share": 0.76234
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 1,
+      "truth_dem_share": 0.48383,
+      "est_dem_share": 0.4838,
+      "error": -3e-05,
+      "allocated_share": 0.00426
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 2,
+      "truth_dem_share": 0.61045,
+      "est_dem_share": 0.61045,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 3,
+      "truth_dem_share": 0.38982,
+      "est_dem_share": 0.38982,
+      "error": -1e-05,
+      "allocated_share": 0.00793
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 4,
+      "truth_dem_share": 0.76121,
+      "est_dem_share": 0.7612,
+      "error": -1e-05,
+      "allocated_share": 0.00333
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 5,
+      "truth_dem_share": 0.30981,
+      "est_dem_share": 0.30981,
+      "error": 0.0,
+      "allocated_share": 0.00403
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 6,
+      "truth_dem_share": 0.34646,
+      "est_dem_share": 0.34646,
+      "error": 0.0,
+      "allocated_share": 0.00251
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 7,
+      "truth_dem_share": 0.43208,
+      "est_dem_share": 0.43215,
+      "error": 7e-05,
+      "allocated_share": 0.00489
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 8,
+      "truth_dem_share": 0.39182,
+      "est_dem_share": 0.39185,
+      "error": 3e-05,
+      "allocated_share": 0.00405
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 9,
+      "truth_dem_share": 0.41192,
+      "est_dem_share": 0.41178,
+      "error": -0.00014,
+      "allocated_share": 0.00393
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 10,
+      "truth_dem_share": 0.41023,
+      "est_dem_share": 0.41023,
+      "error": 0.0,
+      "allocated_share": 0.00156
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 11,
+      "truth_dem_share": 0.45237,
+      "est_dem_share": 0.45238,
+      "error": 1e-05,
+      "allocated_share": 0.00402
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 12,
+      "truth_dem_share": 0.7353,
+      "est_dem_share": 0.7353,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 13,
+      "truth_dem_share": 0.39495,
+      "est_dem_share": 0.39499,
+      "error": 4e-05,
+      "allocated_share": 0.00357
+    },
+    {
+      "state": "NC",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 14,
+      "truth_dem_share": 0.41554,
+      "est_dem_share": 0.41553,
+      "error": -1e-05,
+      "allocated_share": 0.00245
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 1,
+      "truth_dem_share": 0.48432,
+      "est_dem_share": 0.4797,
+      "error": -0.00461,
+      "allocated_share": 0.87877
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 2,
+      "truth_dem_share": 0.42501,
+      "est_dem_share": 0.4207,
+      "error": -0.00431,
+      "allocated_share": 0.17602
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 3,
+      "truth_dem_share": 0.70154,
+      "est_dem_share": 0.50761,
+      "error": -0.19393,
+      "allocated_share": 0.87873
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 4,
+      "truth_dem_share": 0.53381,
+      "est_dem_share": 0.48721,
+      "error": -0.0466,
+      "allocated_share": 0.87926
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 5,
+      "truth_dem_share": 0.39904,
+      "est_dem_share": 0.45342,
+      "error": 0.05438,
+      "allocated_share": 0.86202
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 6,
+      "truth_dem_share": 0.49621,
+      "est_dem_share": 0.51273,
+      "error": 0.01652,
+      "allocated_share": 0.8129
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 7,
+      "truth_dem_share": 0.61193,
+      "est_dem_share": 0.54999,
+      "error": -0.06194,
+      "allocated_share": 0.8532
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 8,
+      "truth_dem_share": 0.4176,
+      "est_dem_share": 0.47361,
+      "error": 0.05601,
+      "allocated_share": 0.87836
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING+LATE EARLY+PROVISIONAL",
+      "district_num": 9,
+      "truth_dem_share": 0.3433,
+      "est_dem_share": 0.39895,
+      "error": 0.05565,
+      "allocated_share": 0.8381
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 1,
+      "truth_dem_share": 0.48432,
+      "est_dem_share": 0.4796,
+      "error": -0.00472,
+      "allocated_share": 0.87711
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 2,
+      "truth_dem_share": 0.42501,
+      "est_dem_share": 0.42074,
+      "error": -0.00426,
+      "allocated_share": 0.17505
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 3,
+      "truth_dem_share": 0.70154,
+      "est_dem_share": 0.5079,
+      "error": -0.19364,
+      "allocated_share": 0.87707
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 4,
+      "truth_dem_share": 0.53381,
+      "est_dem_share": 0.48731,
+      "error": -0.0465,
+      "allocated_share": 0.87759
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 5,
+      "truth_dem_share": 0.39904,
+      "est_dem_share": 0.45317,
+      "error": 0.05414,
+      "allocated_share": 0.8596
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 6,
+      "truth_dem_share": 0.49621,
+      "est_dem_share": 0.51209,
+      "error": 0.01588,
+      "allocated_share": 0.8064
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 7,
+      "truth_dem_share": 0.61193,
+      "est_dem_share": 0.55076,
+      "error": -0.06117,
+      "allocated_share": 0.84434
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 8,
+      "truth_dem_share": 0.4176,
+      "est_dem_share": 0.47342,
+      "error": 0.05582,
+      "allocated_share": 0.87669
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "EARLY VOTING",
+      "district_num": 9,
+      "truth_dem_share": 0.3433,
+      "est_dem_share": 0.39843,
+      "error": 0.05513,
+      "allocated_share": 0.83032
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 1,
+      "truth_dem_share": 0.48432,
+      "est_dem_share": 0.48432,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 2,
+      "truth_dem_share": 0.42501,
+      "est_dem_share": 0.42501,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 3,
+      "truth_dem_share": 0.70154,
+      "est_dem_share": 0.70154,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 4,
+      "truth_dem_share": 0.53381,
+      "est_dem_share": 0.53381,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 5,
+      "truth_dem_share": 0.39904,
+      "est_dem_share": 0.39904,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 6,
+      "truth_dem_share": 0.49621,
+      "est_dem_share": 0.49621,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 7,
+      "truth_dem_share": 0.61193,
+      "est_dem_share": 0.6117,
+      "error": -0.00024,
+      "allocated_share": 0.00282
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 8,
+      "truth_dem_share": 0.4176,
+      "est_dem_share": 0.4176,
+      "error": 0.0,
+      "allocated_share": 0.0
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "LATE EARLY",
+      "district_num": 9,
+      "truth_dem_share": 0.3433,
+      "est_dem_share": 0.34353,
+      "error": 0.00023,
+      "allocated_share": 0.00224
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 1,
+      "truth_dem_share": 0.48432,
+      "est_dem_share": 0.48441,
+      "error": 9e-05,
+      "allocated_share": 0.00166
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 2,
+      "truth_dem_share": 0.42501,
+      "est_dem_share": 0.425,
+      "error": -1e-05,
+      "allocated_share": 0.00119
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 3,
+      "truth_dem_share": 0.70154,
+      "est_dem_share": 0.7014,
+      "error": -0.00014,
+      "allocated_share": 0.00167
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 4,
+      "truth_dem_share": 0.53381,
+      "est_dem_share": 0.53372,
+      "error": -9e-05,
+      "allocated_share": 0.00167
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 5,
+      "truth_dem_share": 0.39904,
+      "est_dem_share": 0.3992,
+      "error": 0.00017,
+      "allocated_share": 0.00243
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 6,
+      "truth_dem_share": 0.49621,
+      "est_dem_share": 0.49647,
+      "error": 0.00026,
+      "allocated_share": 0.00635
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 7,
+      "truth_dem_share": 0.61193,
+      "est_dem_share": 0.61161,
+      "error": -0.00032,
+      "allocated_share": 0.00638
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 8,
+      "truth_dem_share": 0.4176,
+      "est_dem_share": 0.41777,
+      "error": 0.00017,
+      "allocated_share": 0.00166
+    },
+    {
+      "state": "AZ",
+      "cycle": 2024,
+      "pooled": "PROVISIONAL",
+      "district_num": 9,
+      "truth_dem_share": 0.3433,
+      "est_dem_share": 0.34348,
+      "error": 0.00017,
+      "allocated_share": 0.00618
+    }
+  ]
+}
