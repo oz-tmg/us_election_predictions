@@ -39,6 +39,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+from election_prediction import build_cd_baselines as bcb_module
 from election_prediction.build_cd_baselines import RECONCILIATION_TOLERANCE
 from election_prediction.features import cd_baseline
 
@@ -63,6 +64,9 @@ CASES = [
     # the extreme case: 78% of New Jersey 2020 arrives as county-level blocks, so all 12
     # districts are flagged heavily_allocated -- it must still reconcile in aggregate
     ("NJ", 2020),
+    # passes the share gate at -0.4% and fails the vote-total gate at +13.4%: its file mixes
+    # precinct rows with municipality rows, counting 241,958 Bergen County votes twice
+    ("NJ", 2024),
     # failed the vote-*total* check while passing the share check: fusion voting put
     # 386,627 Biden votes (WORKING FAMILIES) and 296,360 Trump votes (CONSERVATIVE) in the
     # third-party bucket, so New York recovered 92.2% of its certified two-party vote at a
@@ -73,6 +77,11 @@ CASES = [
     ("MN", 2020),
     ("ND", 2020),
     ("GA", 2020),
+    # 2024 states the vote-total gate flags, pinned so that a re-download which fixes one
+    # fails this test and forces the exception list to be updated rather than left stale
+    ("LA", 2024),
+    ("OK", 2024),
+    ("IN", 2024),
     # 2024: AZ failed the gate; the rest were the closest calls
     ("AZ", 2024),
     ("FL", 2024),
@@ -88,6 +97,15 @@ CASES = [
 # recovers a county that is absent, so Indiana is expected to fail the gate and the point of
 # the test is that it is *flagged* rather than used. See docs/dataset-registry.md.
 EXPECTED_SOURCE_GAPS = {("IN", 2020)}
+
+# States whose *vote total* is wrong at source, so the total check is expected to fail and
+# the point of the test is that it does. Each is flagged by the build, never used quietly.
+#
+#   NJ 2024  +13.4%  mixes precinct rows with municipality rows (241,958 Bergen votes twice)
+#   LA 2024  -48.5%  the file carries 1,038,976 of ~1,975,375 certified presidential votes
+#   OK 2024  -12.2%  omits OK-03's House race, so a whole district cannot be resolved
+#   IN 2024   +5.1%  share lands at 0.4037 against 0.4035, so only the total sees it
+EXPECTED_VOTE_TOTAL_FAILURES = {("NJ", 2024), ("LA", 2024), ("OK", 2024), ("IN", 2024)}
 
 
 def _file(state: str, cycle: int) -> Path | None:
@@ -140,12 +158,13 @@ def test_state_cd_baselines_reconcile_to_the_certified_state_share(state, cycle,
     )
 
 
-# Tolerance for the vote-*total* check below. The share check above can hide a mode that is
-# double-counted for both parties alike; only totals catch that. Measured deviations across
-# the case list are 0.000% for ten states, 0.002% (NJ 2020), 0.031% (AZ 2024) and 0.059%
-# (VA 2024) — late canvass and overseas ballots, not arithmetic — so 0.2% is loose enough
-# to pass a correct collapse and far too tight to pass a duplicated mode.
-VOTE_TOTAL_TOLERANCE = 0.002
+# Tolerance for the vote-*total* check below, held identical to the build's own gate so the
+# two cannot disagree. The share check cannot see a duplication that is proportional across
+# parties; only totals catch that. Measured deviations across the case list are 0.00% for
+# most states and 0.25% at the top (New York 2020, whose files carry a `BLANK` ballot row its
+# total omits) against New Jersey 2024's **+13.4%**, so 1% separates the benign from the
+# broken with room to spare.
+VOTE_TOTAL_TOLERANCE = bcb_module.VOTE_TOTAL_TOLERANCE
 
 
 @pytest.fixture(scope="module")
@@ -177,10 +196,16 @@ def test_collapsing_vote_modes_neither_loses_nor_duplicates_votes(state, cycle, 
     df, _ = _aggregate(state, cycle)
     got = float(df["two_party_votes"].sum())
     want = float(certified_two_party_votes.loc[(cycle, state)])
-    assert got == pytest.approx(want, rel=VOTE_TOTAL_TOLERANCE), (
+    within = abs(got / want - 1) <= VOTE_TOTAL_TOLERANCE
+    detail = (
         f"{state} {cycle}: precinct two-party total {got:,.0f} vs certified {want:,.0f} "
         f"({got / want - 1:+.4%})"
     )
+    if (state, cycle) in EXPECTED_VOTE_TOTAL_FAILURES:
+        assert not within, f"{detail} — this was a known source defect; if it is fixed, "
+        "remove it from EXPECTED_VOTE_TOTAL_FAILURES rather than loosening the gate"
+    else:
+        assert within, detail
 
 
 @pytest.mark.parametrize(("state", "cycle"), CASES)

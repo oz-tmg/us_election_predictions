@@ -68,6 +68,27 @@ QUALITY_FAILS_RECONCILIATION = "fails_reconciliation"
 # failing an absent state in the first place — without claiming the data is wrong.
 QUALITY_NO_COMPARATOR = "no_certified_comparator"
 
+# A state's recovered two-party *total*, against the certified total. The share gate above
+# cannot see a duplication that is proportional across parties, and one state does exactly
+# that: New Jersey's 2024 file mixes two geographic levels. Bergen County publishes 562 real
+# precinct rows ("Allendale 1", "Allendale 2", ...) carrying both mode breakdowns and a
+# matching TOTAL, **and** 144 municipality rows ("Allendale", "Allendale Provisional")
+# carrying only a TOTAL -- the same 241,958 votes a second time. Summing both puts New
+# Jersey 13.4% over certified while its share lands within 0.4%, so a share-only gate passes
+# it and ships counts that are half fiction.
+#
+# This flags rather than de-duplicates. The only structural discriminator available is "a
+# key with a TOTAL and no breakdowns, in a county where other keys have both", and a genuine
+# small precinct whose votes all arrived by one mode would match that rule and be deleted.
+# Dropping real votes to tidy a total is worse than reporting the total as untrustworthy.
+#
+# The tolerance matches the share gate's. Measured deviations across the states checked are
+# 0.00% for most, 0.06% (VA 2024) and 0.25% (NY 2020, the BLANK-ballot-row quirk) at the
+# top, against New Jersey's 13.4% -- so 1% separates the benign from the broken with room to
+# spare.
+VOTE_TOTAL_TOLERANCE = 0.01
+QUALITY_FAILS_VOTE_TOTAL = "fails_vote_total"
+
 # A district can be missing from a precinct drop without any state failing, because the
 # precinct-to-district map is read off ``US HOUSE`` rows and an **uncontested** House race
 # produces none. Florida's 25th in 2020 is the case: Mario Diaz-Balart ran unopposed, so the
@@ -100,6 +121,7 @@ QUALITY_UNDER_COVERED = "under_covered"
 # by estimate.
 QUALITY_PRECEDENCE = (
     QUALITY_FAILS_RECONCILIATION,
+    QUALITY_FAILS_VOTE_TOTAL,
     QUALITY_NO_COMPARATOR,
     QUALITY_UNDER_COVERED,
     cd_baseline.QUALITY_HEAVILY_ALLOCATED,
@@ -168,6 +190,70 @@ def reconcile(df: pd.DataFrame, panel: pd.DataFrame, vintage: int) -> tuple[pd.D
         ],
     }
     return out, report
+
+
+def flag_vote_total_mismatch(
+    df: pd.DataFrame, returns: pd.DataFrame, vintage: int
+) -> tuple[pd.DataFrame, dict]:
+    """Compare each state's recovered two-party total with its certified two-party total.
+
+    Vote-total reconciliation, which the share gate cannot do: a duplication that is
+    proportional across parties leaves the share untouched and the total inflated. Adds
+    ``certified_two_party_votes`` and ``vote_total_ratio``; flags the state's districts
+    ``fails_vote_total`` beyond ``VOTE_TOTAL_TOLERANCE``. A state with no certified total
+    keeps whatever ``reconcile`` already said about it.
+    """
+    needed = {"office", "cycle", "state_po", "party_simplified", "candidatevotes"}
+    if not needed <= set(returns.columns) or not len(returns) or not len(df):
+        return df, {"skipped": f"no certified presidential totals for {vintage}; UNCHECKED"}
+    rows = returns[
+        (returns["office"] == "president")
+        & (returns["cycle"] == vintage)
+        & (returns["party_simplified"].isin(["DEMOCRAT", "REPUBLICAN"]))
+    ]
+    if not len(rows):
+        return df, {"skipped": f"no certified presidential totals for {vintage}; UNCHECKED"}
+
+    certified = (
+        rows.groupby("state_po", as_index=False)["candidatevotes"]
+        .sum()
+        .rename(columns={"candidatevotes": "certified_two_party_votes"})
+    )
+    out = df.merge(certified, on="state_po", how="left")
+    per_state = (
+        out.groupby("state_po")
+        .agg(got=("two_party_votes", "sum"), want=("certified_two_party_votes", "first"))
+        .dropna()
+    )
+    per_state["ratio"] = per_state["got"] / per_state["want"].where(per_state["want"] > 0)
+    failing = sorted(per_state.index[(per_state["ratio"] - 1).abs() > VOTE_TOTAL_TOLERANCE])
+
+    out["vote_total_ratio"] = out["state_po"].map(per_state["ratio"]).round(5)
+    bad = out["state_po"].isin(failing)
+    rank = {q: i for i, q in enumerate(QUALITY_PRECEDENCE)}
+    out.loc[bad, "baseline_quality"] = [
+        q if rank.get(q, len(rank)) < rank[QUALITY_FAILS_VOTE_TOTAL] else QUALITY_FAILS_VOTE_TOTAL
+        for q in out.loc[bad, "baseline_quality"]
+    ]
+    return out, {
+        "tolerance": VOTE_TOTAL_TOLERANCE,
+        "states_checked": int(len(per_state)),
+        "states_failing": failing,
+        "median_ratio": _r4(per_state["ratio"].median()),
+        "worst": [
+            {
+                "state_po": state,
+                "recovered_two_party_votes": int(r.got),
+                "certified_two_party_votes": int(r.want),
+                "ratio": _r4(r.ratio),
+            }
+            for state, r in per_state.reindex(
+                (per_state["ratio"] - 1).abs().sort_values(ascending=False).index
+            )
+            .head(6)
+            .iterrows()
+        ],
+    }
 
 
 def flag_under_covered(df: pd.DataFrame, house: pd.DataFrame, vintage: int) -> tuple[pd.DataFrame, dict]:
@@ -294,10 +380,11 @@ def build(
     if house_path.is_file():
         house = pd.read_parquet(house_path)
         coverage = district_coverage(df, house, vintage)
+        df, totals = flag_vote_total_mismatch(df, house, vintage)
         df, under = flag_under_covered(df, house, vintage)
     else:
         missing = f"no certified House returns at {house_path}; coverage UNCHECKED"
-        coverage, under = {"skipped": missing}, {"skipped": missing}
+        coverage, under, totals = ({"skipped": missing},) * 3
 
     ok = [s for s in stats if s.get("status") != "error"]
     errors = [s for s in stats if s.get("status") == "error"]
@@ -317,6 +404,7 @@ def build(
         "reconciliation": recon,
         "district_coverage": coverage,
         "under_coverage": under,
+        "vote_totals": totals,
         "states_missing": sorted(
             set(_expected_states(stats)) - set(df["state_po"].unique() if len(df) else [])
         ),
@@ -367,6 +455,17 @@ def main(argv: list[str] | None = None) -> int:
         print("       the seat's presidential vote lands in whichever districts share its counties)")
     elif cov.get("districts_expected"):
         print(f"  district coverage: {cov['districts_present']}/{cov['districts_expected']}")
+    tot = report.get("vote_totals", {})
+    if tot.get("states_failing"):
+        print(
+            f"  FAILS VOTE TOTAL (>{tot['tolerance']:.0%} off certified two-party votes): "
+            f"{tot['states_failing']}"
+        )
+        for w in tot["worst"][:3]:
+            print(
+                f"      {w['state_po']}: recovered {w['recovered_two_party_votes']:,} vs "
+                f"certified {w['certified_two_party_votes']:,} ({w['ratio']:.4f})"
+            )
     und = report.get("under_coverage", {})
     if und.get("districts_under_covered"):
         print(

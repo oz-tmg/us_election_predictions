@@ -149,6 +149,52 @@
       }
     ]
   },
+  "vote_totals": {
+    "tolerance": 0.01,
+    "states_checked": 49,
+    "states_failing": [
+      "IN"
+    ],
+    "median_ratio": 1.0,
+    "worst": [
+      {
+        "state_po": "IN",
+        "recovered_two_party_votes": 2106022,
+        "certified_two_party_votes": 2971935,
+        "ratio": 0.7086
+      },
+      {
+        "state_po": "NY",
+        "recovered_two_party_votes": 8497300,
+        "certified_two_party_votes": 8475783,
+        "ratio": 1.0025
+      },
+      {
+        "state_po": "FL",
+        "recovered_two_party_votes": 10952917,
+        "certified_two_party_votes": 10965776,
+        "ratio": 0.9988
+      },
+      {
+        "state_po": "MI",
+        "recovered_two_party_votes": 5450703,
+        "certified_two_party_votes": 5453892,
+        "ratio": 0.9994
+      },
+      {
+        "state_po": "NV",
+        "recovered_two_party_votes": 1372666,
+        "certified_two_party_votes": 1373376,
+        "ratio": 0.9995
+      },
+      {
+        "state_po": "TX",
+        "recovered_two_party_votes": 11146541,
+        "certified_two_party_votes": 11149473,
+        "ratio": 0.9997
+      }
+    ]
+  },
   "states_missing": [
     "DC"
   ]

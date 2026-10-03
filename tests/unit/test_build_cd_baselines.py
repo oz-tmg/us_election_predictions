@@ -291,3 +291,129 @@ def test_a_district_with_zero_certified_house_vote_does_not_crash_the_build():
     by_state = df.set_index("state_po")["baseline_quality"]
     assert by_state["LA"] == "ok", "unjudgeable is not a failure"
     assert by_state["NJ"] == bcb.QUALITY_UNDER_COVERED
+
+
+# ---- vote-total reconciliation, which the share gate cannot do ----------------------------
+# New Jersey 2024 is why this exists. Its file mixes two geographic levels -- Bergen County
+# publishes 562 real precinct rows with mode breakdowns and a matching TOTAL, plus 144
+# municipality rows carrying only a TOTAL, the same 241,958 votes again -- so the state lands
+# 13.4% over certified while its *share* is within 0.4%. A share-only gate passes it.
+
+
+def _pres(rows, cycle=2024):
+    return pd.DataFrame(
+        [
+            {
+                "office": "president",
+                "cycle": cycle,
+                "state_po": s,
+                "party_simplified": p,
+                "candidatevotes": v,
+            }
+            for s, p, v in rows
+        ]
+    )
+
+
+def test_a_proportional_duplication_is_caught_by_the_total_and_missed_by_the_share():
+    """Both parties doubled: the share is identical, the total is twice what it should be."""
+    cd = pd.DataFrame(
+        [
+            {
+                "state_po": "NJ",
+                "district_num": 1,
+                "dem_votes": 1060.0,
+                "rep_votes": 940.0,
+                "two_party_votes": 2000.0,
+                "baseline_quality": "ok",
+            }
+        ]
+    )
+    certified = _pres([("NJ", "DEMOCRAT", 530), ("NJ", "REPUBLICAN", 470)])
+
+    # The share gate sees nothing wrong.
+    _, share_rep = bcb.reconcile(cd, _panel([("NJ", 0.53)], cycle=2024), 2024)
+    assert share_rep["states_failing"] == []
+
+    # The total gate does.
+    out, rep = bcb.flag_vote_total_mismatch(cd, certified, 2024)
+    assert rep["states_failing"] == ["NJ"]
+    assert out["baseline_quality"].iloc[0] == bcb.QUALITY_FAILS_VOTE_TOTAL
+    assert out["vote_total_ratio"].iloc[0] == pytest.approx(2.0)
+
+
+def test_a_state_within_tolerance_keeps_its_flag():
+    """New York 2020's 0.25% is the largest benign deviation measured; it must pass."""
+    cd = pd.DataFrame(
+        [
+            {
+                "state_po": "NY",
+                "district_num": 1,
+                "dem_votes": 602.0,
+                "rep_votes": 400.0,
+                "two_party_votes": 1002.0,
+                "baseline_quality": "ok",
+            }
+        ]
+    )
+    out, rep = bcb.flag_vote_total_mismatch(
+        cd, _pres([("NY", "DEMOCRAT", 600), ("NY", "REPUBLICAN", 400)]), 2024
+    )
+    assert rep["states_failing"] == []
+    assert out["baseline_quality"].iloc[0] == "ok"
+
+
+def test_a_state_with_no_certified_total_keeps_what_reconcile_already_said():
+    cd = pd.DataFrame(
+        [
+            {
+                "state_po": "NY",
+                "district_num": 1,
+                "dem_votes": 1.0,
+                "rep_votes": 1.0,
+                "two_party_votes": 2.0,
+                "baseline_quality": bcb.QUALITY_NO_COMPARATOR,
+            }
+        ]
+    )
+    out, rep = bcb.flag_vote_total_mismatch(cd, _pres([("NJ", "DEMOCRAT", 1), ("NJ", "REPUBLICAN", 1)]), 2024)
+    assert rep["states_failing"] == []
+    assert out["baseline_quality"].iloc[0] == bcb.QUALITY_NO_COMPARATOR
+
+
+def test_a_share_failure_outranks_a_total_failure():
+    """If the share is wrong the baseline itself is wrong, which is the worse claim."""
+    cd = pd.DataFrame(
+        [
+            {
+                "state_po": "IN",
+                "district_num": 1,
+                "dem_votes": 2000.0,
+                "rep_votes": 2000.0,
+                "two_party_votes": 4000.0,
+                "baseline_quality": bcb.QUALITY_FAILS_RECONCILIATION,
+            }
+        ]
+    )
+    out, _ = bcb.flag_vote_total_mismatch(
+        cd, _pres([("IN", "DEMOCRAT", 500), ("IN", "REPUBLICAN", 500)]), 2024
+    )
+    assert out["baseline_quality"].iloc[0] == bcb.QUALITY_FAILS_RECONCILIATION
+
+
+def test_the_total_gate_is_skipped_rather_than_guessed_without_certified_returns():
+    cd = pd.DataFrame(
+        [
+            {
+                "state_po": "NJ",
+                "district_num": 1,
+                "dem_votes": 1.0,
+                "rep_votes": 1.0,
+                "two_party_votes": 2.0,
+                "baseline_quality": "ok",
+            }
+        ]
+    )
+    out, rep = bcb.flag_vote_total_mismatch(cd, _pres([], cycle=2024), 2024)
+    assert "skipped" in rep
+    assert out["baseline_quality"].iloc[0] == "ok"

@@ -9,10 +9,10 @@
   "states_covered": 49,
   "baseline_quality": {
     "fails_reconciliation": 4,
+    "fails_vote_total": 27,
     "heavily_allocated": 7,
     "no_certified_comparator": 26,
-    "ok": 386,
-    "under_covered": 7
+    "ok": 366
   },
   "errors": [],
   "reconciliation": {
@@ -173,6 +173,55 @@
         "coverage_vs_house_vote": 0.8811,
         "two_party_votes": 304645,
         "certified_house_votes": 345738
+      }
+    ]
+  },
+  "vote_totals": {
+    "tolerance": 0.01,
+    "states_checked": 48,
+    "states_failing": [
+      "IN",
+      "LA",
+      "NJ",
+      "OK"
+    ],
+    "median_ratio": 1.0,
+    "worst": [
+      {
+        "state_po": "LA",
+        "recovered_two_party_votes": 1018305,
+        "certified_two_party_votes": 1975375,
+        "ratio": 0.5155
+      },
+      {
+        "state_po": "NJ",
+        "recovered_two_party_votes": 4751982,
+        "certified_two_party_votes": 4188928,
+        "ratio": 1.1344
+      },
+      {
+        "state_po": "OK",
+        "recovered_two_party_votes": 1348065,
+        "certified_two_party_votes": 1535812,
+        "ratio": 0.8778
+      },
+      {
+        "state_po": "IN",
+        "recovered_two_party_votes": 3031468,
+        "certified_two_party_votes": 2883950,
+        "ratio": 1.0512
+      },
+      {
+        "state_po": "ME",
+        "recovered_two_party_votes": 807333,
+        "certified_two_party_votes": 813629,
+        "ratio": 0.9923
+      },
+      {
+        "state_po": "WA",
+        "recovered_two_party_votes": 3771609,
+        "certified_two_party_votes": 3776772,
+        "ratio": 0.9986
       }
     ]
   },
