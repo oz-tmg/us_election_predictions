@@ -107,6 +107,15 @@ EXPECTED_SOURCE_GAPS = {("IN", 2020)}
 #   IN 2024   +5.1%  share lands at 0.4037 against 0.4035, so only the total sees it
 EXPECTED_VOTE_TOTAL_FAILURES = {("NJ", 2024), ("LA", 2024), ("OK", 2024), ("IN", 2024)}
 
+# States whose *share* is wrong at source too. Only Oklahoma 2024: its file omits OK-03's
+# House race, so no precinct in a county wholly inside that district can be resolved to one
+# and 191,273 presidential votes are reported unallocatable. OK-03 is the state's most
+# Republican seat, so losing it pulls the recovered share toward the Democrats — 0.3390
+# against a certified 0.3253. Louisiana 2024 (-0.5%) and Indiana 2024 (+0.02%) stay inside
+# the share gate even though their totals are badly wrong, which is the whole reason the
+# total gate exists.
+EXPECTED_SHARE_FAILURES = {("OK", 2024)}
+
 
 def _file(state: str, cycle: int) -> Path | None:
     directory = RAW / f"source=medsl/dataset=precinct_by_state/vintage={cycle}"
@@ -151,11 +160,19 @@ def test_state_cd_baselines_reconcile_to_the_certified_state_share(state, cycle,
 
     got = df["dem_votes"].sum() / df["two_party_votes"].sum()
     want = float(expected["two_party_dem_share"].iloc[0])
-    assert got == pytest.approx(want, abs=RECONCILIATION_TOLERANCE), (
+    within = abs(got - want) <= RECONCILIATION_TOLERANCE
+    detail = (
         f"{state} {cycle}: CD aggregate {got:.4f} vs certified {want:.4f}; "
         f"{stats['share_directly_observed']:.1%} of the vote resolved directly, "
         f"{stats['votes_unallocatable']:,.0f} votes could not be allocated"
     )
+    if (state, cycle) in EXPECTED_SHARE_FAILURES:
+        assert not within, (
+            f"{detail} — this was a known source defect; if it is fixed, remove it from "
+            "EXPECTED_SHARE_FAILURES rather than loosening the gate"
+        )
+    else:
+        assert within, detail
 
 
 # Tolerance for the vote-*total* check below, held identical to the build's own gate so the
