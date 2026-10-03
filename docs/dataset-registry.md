@@ -132,7 +132,7 @@ This registry is the control document for every dataset acquired, downloaded, li
 | `mit_us_senate_returns` | U.S. Senate 1976-2024 Returns (`medsl_senate_1976_2024`) | MIT Election Data and Science Lab | Open (Harvard Dataverse doi:10.7910/DVN/PEJ5QU) | **validated** (3,749 rows / 860 races; totals reconcile 860/860; AL/AZ/OH 2022 totals match FEC) | public_aggregate | State | Race/candidate result | 1976-2024 | High | Extend official spot-checks across cycles during model validation |
 | `mit_us_house_returns` | U.S. House 1976-2024 Returns (`medsl_house_1976_2024`) | MIT Election Data and Science Lab | Open, **guestbook-gated** (Harvard Dataverse doi:10.7910/DVN/IG0UN2) | **validated** (manual snapshot 2026-08-31, size-verified; 32,148 silver rows; reconciles after quarantine) | public_aggregate | Congressional district | Race/candidate result | 1976-2024 | High | One-time manual download (tab-separated) per `pipelines/README.md`, then `ep-build-p0 --require-live` |
 | `medsl_state_office_2016` | State Office-Level Returns 2016 (incl. governor) | MIT Election Data and Science Lab | Open **CC0**, but **guestbook-gated** (doi:10.7910/DVN/XSOFHD) | **acquired_raw + profiled** 2026-09-01 (manual guestbook download; 66 governor rows / 12 states, plus ~12.4k state-legislative rows) | public_aggregate | State | Race/candidate result | 2016 only | High | **One-time manual download** to `data/raw/source=medsl/dataset=governor/manual/stateoffices2016.tab`, then wire a `MedslSource`. Schema is our exact silver layout (`office, candidate, party, candidatevotes, totalvotes, stage, special, writein, mode`). `office` values unconfirmed — verify GOVERNOR is present on first download. |
-| `medsl_precinct_by_state` | Precinct-Level Returns by Individual State, 2018/2020/2022/2024 | MIT Election Data and Science Lab | Open (doi:10.7910/DVN/NVQYMG, NT66Z3, UYQIEP, NYTPDU) | **acquired_raw + profiled** 2026-09-01 for 2020 and 2024 (53 + 50 state files, 5.3 GB; governor in 11 states each). 2018/2022 download pending | public_aggregate | Precinct | Precinct/candidate result | 2018, 2020, 2022, 2024 | Medium | Only route to governor returns for 2018-2024. ~53 files/cycle, **2.5 GB for 2022 alone**; vote column is `votes`, not `candidatevotes`. Needs precinct→state aggregation. 2022 filenames say `local`, so confirm statewide offices are included before committing to it. |
+| `medsl_precinct_by_state` | Precinct-Level Returns by Individual State, 2018/2020/2022/2024 | MIT Election Data and Science Lab | Open (doi:10.7910/DVN/NVQYMG, NT66Z3, UYQIEP, NYTPDU) | **acquired_raw + profiled** 2026-09-01 for 2020 and 2024 (53 + 50 state files, 5.3 GB; governor in 11 states each). 2018/2022 download pending | public_aggregate | Precinct | Precinct/candidate result | 2018, 2020, 2022, 2024 | Medium | Only route to governor returns for 2018-2024. ~53 files/cycle, **2.5 GB for 2022 alone**; vote column is `votes`, not `candidatevotes`. Needs precinct→state aggregation. 2022 filenames say `local`, so confirm statewide offices are included before committing to it. **Per-state coverage defects found 2026-10-02 while reconciling CD baselines** (`tests/data_quality/test_cd_baseline_reconciliation.py`): (a) **Indiana 2020 is incomplete at source** — 53 of 92 counties, 2,149,019 of ~3,030,000 presidential votes, and the gap is disproportionately Republican (Trump 1,168,807 of a certified 1,729,519; Biden 937,215 of 1,242,416). It fails the reconciliation gate and must not be used for 2020 district baselines; re-download or substitute before any use. (b) **North Carolina 2020 ships twice** — `2020-nc-precinct-general.csv` and a `-sorted` re-cut whose finer mode breakdown totals 5,548,545 against a certified 5,524,802. The canonical file reconciles exactly; the variant is excluded by `governor.REDUNDANT_STEM_MARKERS`. (c) **Fusion voting is per state** — New York reports a candidate's Working Families and Conservative lines as separate rows with `party_simplified = OTHER`, so classifying by party label alone discarded 386,627 Biden and 296,360 Trump votes and recovered 92.2% of New York's certified two-party vote. `features/cd_baseline._major_party` now propagates a major-party label by candidate. (d) **A single-district state's district label changes between drops** — the 2020 files write Alaska, Delaware, Vermont and Wyoming as district `000`; the 2024 files write `STATEWIDE` (AK, VT) or `AT-LARGE` (DE, WY). Parsing the field as a number dropped seven states out of the 2024 national build while every other state reconciled; `cd_baseline.AT_LARGE_LABELS` maps them to 0, the convention the rest of the stack uses. (e) **Louisiana 2024 and Kansas 2024 are incomplete at source** — Louisiana's file carries 1,038,976 presidential votes against ~1,975,375 certified (its six districts recover 49–57% of their certified House vote) and Kansas has no 2024 file in the drop at all. Both are flagged, not used. (f) **Oklahoma 2024 omits its 3rd district's House race**, so no precinct in a county wholly inside OK-03 can be resolved and 191,273 presidential votes are reported unallocatable — which biases the state's recovered share toward the Democrats (0.339 against a certified 0.3253) because OK-03 is its most Republican seat. Flagged; a fix needs the district's own boundary, not an inference. (g) **New Jersey 2024 mixes two geographic levels** — Bergen County publishes 562 real precinct rows (`Allendale 1`, `Allendale 2`, …) carrying mode breakdowns and a matching `TOTAL`, **plus** 144 municipality rows (`Allendale`, `Allendale Provisional`) carrying only a `TOTAL`: the same 241,958 votes a second time. The state lands **+13.4%** over its certified two-party total while its *share* is within 0.4%, so a share-only gate passes it. Flagged `fails_vote_total`, never de-duplicated: the only structural discriminator is "a key with a `TOTAL` and no breakdowns in a county where other keys have both", and a genuine small precinct whose votes all arrived by one mode would match that rule and be deleted. (h) **Indiana 2024 is +5.1% over its certified two-party total** at a share of 0.4037 against 0.4035 — another proportional defect only the total check can see. (i) **Early/absentee granularity varies by state and cycle** — VA/GA/MI/CO/NV/FL/PA/WI 2024 report one `TOTAL` per precinct, while AZ and NC 2024 break out early voting per precinct and VA/AL/WA 2020 report it only county-wide. County-wide blocks are allocated within their county by `features/cd_baseline.allocate_within_county`; the error that introduces is measured in `reports/cd_allocation_backtest.json`. |
 | `kaplan_us_governors` | United States Governors 1775-2020 | Jacob Kaplan (Harvard Dataverse doi:10.7910/DVN/RYY3OW) | Open **CC BY 4.0**, ungated | profiled 2026-09-01 (12,345 x 5 downloaded and inspected) | public_aggregate | State | Governor-year officeholder | 1775-2020 | Low-Medium | **No vote totals** — `governor, state, time_in_office, party, year`. Useful for incumbency/party-control features, not for a vote-share baseline. Attribution required (CC BY). |
 | `klarner_governors` | Governors Dataset | Carl Klarner (Harvard Dataverse doi:10.7910/DVN/PQ0Y1N) | Open **CC0**, ungated | profiled 2026-09-01 (4,600 x 81 downloaded and inspected) | public_aggregate | State | Governor-year characteristics | 1925-2016 | Low-Medium | **No vote totals.** Carries term limits, lame-duck status, years served, `state_midterm_penalty`, party control — good governor-model covariates. |
 | `klarner_state_leg_returns` | State Legislative Election Returns, 1967-2016 | Carl Klarner (Harvard Dataverse doi:10.7910/DVN/3WZFK9) | Open | identified 2026-09-01 — **not yet inspected** | public_aggregate | State-legislative district | Race/candidate result | 1967-2016 | Medium | Candidate source for backlog SL-001, which currently has none. Verify columns and vote coverage before relying on it. |
@@ -259,6 +259,71 @@ its terms carry obligations the one-line row cannot hold. Full text captured at
 > terms and the project's own constitution happen to prohibit the same thing. The
 > attribution strings above are **mandatory on any published output** that uses this data
 > and must be added to `blog/README.md`'s attribution block before the first such post.
+
+### Acquisition log — RD-003
+
+| Source | Acquired | Path | What it supplies |
+|---|---|---|---|
+| `census_baf_2020` | 2026-10-02 | `data/raw/source=census_baf/vintage=2020/BlockAssign_ST51_VA_2020.zip` | block → VTD (precinct) and block → 116th-Congress district, Virginia |
+| `census_baf_2020` | 2026-10-02 | `data/raw/source=census_baf/vintage=2010/BlockAssign_ST51_VA_2010.zip` | the 2010-vintage package, retained for the 2010-block comparison |
+| `census_tiger_cd` | 2026-10-02 | `data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_51_cd118.zip` | Virginia's 2022-round congressional districts (118th Congress) |
+| `census_tiger_cd` | 2026-10-02 | `data/raw/source=census_tiger/dataset=tabblock20/vintage=2022/tl_2022_51_tabblock20.zip` | 2020 census blocks with `POP20` and Census-published interior points |
+
+> **`rdh_precinct_boundaries` was not needed and remains unacquired.** The route planned for
+> RD-003 assumed precinct boundary polygons would be required to geocode results to blocks.
+> They are not: Census's own Block Assignment Files publish **block → VTD** directly, and a
+> state's returns name precincts by the same number the VTD code carries. So the
+> precinct-to-block link is an *authoritative assignment* rather than a spatial estimate,
+> and no account-gated or commercial boundary file enters the chain. RDH stays in
+> `plan_transfer.REQUIRED_SOURCES` anyway — the gate is about having reviewed a licence, and
+> removing a source from the gate to make a run succeed is the move the gate exists to stop.
+
+> **`census_pl94171_2020` was not needed either, and the substitution is measured.** The
+> plan specifies VAP rather than total population, on the correct reasoning that the
+> question is electoral. The build uses `POP20` from TIGER's block file instead, because
+> population weights bind **only on precincts that straddle a new district line** — every
+> other precinct is assigned whole. In the Virginia pilot the median district's
+> `unsplit_share` is 0.791, and the same-office control puts the whole transfer's geography
+> error at 0.016. Acquiring VAP would refine a weight that moves about a fifth of the vote
+> by a few points; it is a real improvement and it is not what stands between the 173
+> fallback seats and a prior. Recorded as a declared limitation, not as done.
+
+## NE-000: poll topline redistribution — **answered 2026-10-02**
+
+The gate `docs/national-environment-plan.md` sets on NE-003: nothing may store a real poll
+topline until the terms are read and the answer written down. The reading, with verbatim
+quotations and fetch dates, is at
+`docs/terms_and_conditions/poll-topline-redistribution-terms.md`. The answer:
+
+| Route | Store | Model on | Redistribute | Verdict |
+|---|:--:|:--:|:--:|---|
+| **538 archive** (CC BY 4.0) | ✅ | ✅ | ✅ with attribution | **Use — historical only.** The licence is clean and irrevocable; the data stops in 2025. |
+| **Pollster releases, hand compiled** | ✅ | ✅ | ✅ per-row citation | **Use — the live route.** Facts, cited individually, as `special_elections_compiled` already does. |
+| **YouGov / Economist** | ❌ | ❌ | ❌ | **Refused.** The Public Data License prohibits ML and AI model development, prohibits incorporation into commercial datasets, and prohibits automated extraction. |
+| **Roper Center** | ❌ | ❌ | ❌ | **Refused.** Subscriber agreement; "compilations or manipulations of data or datasets" are excluded from permitted derivative works. |
+| **Pew Research Center** | ✅ | ✅ | ✅ with attribution, not "in principal part" | Permitted, but Pew runs no regular congressional generic ballot — context and approval series only. |
+| **Wikipedia tables** (CC BY-SA 4.0) | ✅ | ✅ | ⚠️ share-alike | **Avoid.** Share-alike would bind this project's own derived outputs. |
+
+What this sets in code:
+
+- `redistribution_allowed=True` **only** for a CC BY 4.0 snapshot or a hand-compiled table
+  whose every row carries `source_url` and `retrieved_on`. `build_p2.py`'s current
+  `redistribution_allowed=synthetic` stays correct for anything else.
+- Required attribution on any published output using the 538 archive: *"Data from
+  FiveThirtyEight, used under CC BY 4.0."* Add to `blog/README.md` before first use.
+- The YouGov refusal is **structural, not a preference**. It is the most frequent US generic
+  ballot series and it is unavailable to a commercial forecaster. Any future "why is the
+  generic ballot thin?" question is answered here.
+
+**What remains a human sign-off, and it is narrow.** A CC BY 4.0 compilation grants the
+compiler's rights; it cannot grant rights the compiler did not hold in the pollsters'
+underlying releases. The analysis in the evidence file is that individual toplines are
+uncopyrightable facts under *Feist* and that a pollster's site terms are a contract binding
+only those who accept them — so taking a topline from a CC BY compilation is both the
+standard practice and the basis of academic replication files. That is a **legal
+conclusion**, and CLAUDE.md §5 makes the project owner the data steward. Sign off on that
+one paragraph, or route the live estimator entirely through hand-compiled pollster releases,
+which does not depend on it.
 
 ## Dataset profile template
 
