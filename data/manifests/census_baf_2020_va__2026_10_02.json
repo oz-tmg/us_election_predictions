@@ -1,0 +1,36 @@
+{
+  "acquired_at": "2026-10-03T03:45:54+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "87ebb3582232400286fb0ff4e6a51fdfb1449221c780c9d1a3a574f752010f36",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "Block Assignment Files, Virginia, 2020 Census blocks",
+  "election_cycle": "2020",
+  "file_format": "zip",
+  "geography_coverage": [
+    "census_block",
+    "congressional_district"
+  ],
+  "known_caveats": "The _CD member carries the 116th Congress -- 2010-era district lines expressed in 2020 blocks -- not the 2022 round. Census publishes no BAF for the 2022 round, so RD-003 derives that assignment from TIGER cd118 polygons. The _VTD member's DISTRICT field is not one format: some counties embed their own FIPS (Alleghany writes precinct 101 as 005101, Accomack as 000101).",
+  "license_or_terms": "U.S. Government work, public domain (17 U.S.C. \u00a7105). No licence required.",
+  "office_coverage": [
+    "us_house"
+  ],
+  "owner": "project-owner (data steward)",
+  "permitted_use": "Unrestricted, including redistribution and derived products.",
+  "privacy_tier": 0,
+  "prohibited_use": "None by licence. Do not present a derived transfer estimate as a certified result.",
+  "raw_path": "data/raw/source=census_baf/vintage=2020/BlockAssign_ST51_VA_2020.zip",
+  "redistribution_allowed": true,
+  "required_attribution": "U.S. Census Bureau Block Assignment Files.",
+  "review_date": "2027-10-02",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-02",
+  "source_id": "census_baf_2020_va",
+  "source_owner": "U.S. Census Bureau",
+  "source_url": "https://www2.census.gov/geo/docs/maps-data/data/baf2020/BlockAssign_ST51_VA.zip",
+  "unique_key": [],
+  "update_cadence": "per_decennial",
+  "validation_status": "passed"
+}

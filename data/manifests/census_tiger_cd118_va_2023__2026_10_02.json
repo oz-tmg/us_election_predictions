@@ -1,0 +1,35 @@
+{
+  "acquired_at": "2026-10-03T03:45:54+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "c628c7eab5ca4b9c3f79447bd6a5445abf1f1671a6aeb2ed30675b90f7da807e",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "TIGER/Line congressional districts, 118th Congress, Virginia",
+  "election_cycle": "2022",
+  "file_format": "shp_zip",
+  "geography_coverage": [
+    "congressional_district"
+  ],
+  "known_caveats": "The 118th Congress is Virginia's 2022-round plan, drawn by special masters. Used as the 'new' side of the RD-003 2020->2022 transfer backtest.",
+  "license_or_terms": "U.S. Government work, public domain (17 U.S.C. \u00a7105). No licence required.",
+  "office_coverage": [
+    "us_house"
+  ],
+  "owner": "project-owner (data steward)",
+  "permitted_use": "Unrestricted, including redistribution and derived products.",
+  "privacy_tier": 0,
+  "prohibited_use": "None by licence. Do not present a derived transfer estimate as a certified result.",
+  "raw_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_51_cd118.zip",
+  "redistribution_allowed": true,
+  "required_attribution": "U.S. Census Bureau, TIGER/Line Shapefiles.",
+  "review_date": "2027-10-02",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-02",
+  "source_id": "census_tiger_cd118_va_2023",
+  "source_owner": "U.S. Census Bureau",
+  "source_url": "https://www2.census.gov/geo/tiger/TIGER2023/CD/tl_2023_51_cd118.zip",
+  "unique_key": [],
+  "update_cadence": "per_decennial",
+  "validation_status": "passed"
+}

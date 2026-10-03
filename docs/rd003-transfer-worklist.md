@@ -1,8 +1,80 @@
 # Old-to-New Vote Transfer: Collection Worklist (RD-003)
 
-_Machinery built 2026-09-30 (`features/plan_transfer.py`, 11 tests). Sources **registered**
-2026-09-30 in `docs/dataset-registry.md`. **Nothing is downloaded yet**, and
-`plan_transfer.transfer` raises `UnregisteredSourceError` if asked to run without them._
+_Machinery built 2026-09-30 (`features/plan_transfer.py`). Sources **registered**
+2026-09-30. **Pilot run 2026-10-02**: Virginia 2020 → 2022 is built, scored against both
+comparators, and its sigma is measured. See "Pilot result" below._
+
+## Pilot result — Virginia 2020 → 2022 (2026-10-02)
+
+Built by `ep-build-plan-transfer`; report at `reports/plan_transfer_va_2020.json`.
+
+| | |
+|---|---:|
+| Two-party votes offered | 4,375,998 |
+| Placed on 2022 districts | 4,369,635 (**99.85%**) |
+| Precincts matched to a Census VTD | 2,443 of 2,453 real precincts |
+| Districts produced | 11 of 11 |
+| `unsplit_share` | min 0.304 · median 0.791 · max 0.938 |
+| `old_district_majority_share` | min 0.436 · median 0.727 · max 0.915 |
+| `geocoded_share` | 1.000 — every block placed, no coastal or water residual |
+
+**Scored against the two comparators the plan names**, on certified 2022 House results:
+
+| Comparator | MAE |
+|---|---:|
+| **Transfer** | **0.0314** |
+| No prior at all (chamber mean) | 0.1193 |
+| State presidential lean — the fallback in use today | 0.1253 |
+
+`transfer_sigma` = **0.0184**, measured, and `transfer_sigma_from_backtest` accepts it
+because the transfer beats the fallback by a factor of four.
+
+**Same-office control.** The comparison above conflates geography error with four years and
+a change of office. Scoring the transferred *presidential* prior against
+`cd_presidential_baseline_2024` — the same office measured directly on the same 2022 lines —
+separates them: mean error **+0.019**, which is the 2020→2024 Democratic decline and not a
+defect, and standard deviation **0.016**, which is the geography. A projection models a
+national swing separately, so 0.016 is the number it needs.
+
+### What the pilot changed about the method
+
+1. **No precinct shapefile is needed.** The plan assumed precinct boundaries would have to
+   be geocoded against blocks. Census's Block Assignment Files publish **block → VTD**
+   directly, and Virginia's returns name precincts by the number the VTD code carries, so
+   the precinct-to-block link is an authoritative assignment, not a spatial estimate.
+   `rdh_precinct_boundaries` was not acquired and is not on the path.
+2. **Census publishes no BAF for the 2022 round.** `baf2020/` carries the 116th Congress.
+   The 2022 assignment is derived by locating each block's Census-published interior point
+   inside a TIGER `cd118` polygon — 163,491 of 163,491 Virginia blocks placed, zero
+   unplaced.
+3. **A VTD code is not one format.** Accomack writes precinct 101 as `000101`; Alleghany
+   writes it as `005101`, embedding its county FIPS. Reading the field as a number dropped
+   twelve Alleghany precincts.
+4. **County-level ballots dominate and must be allocated, not dropped.** 63.7% of
+   Virginia's 2020 presidential vote sits in two pseudo-precincts per locality that belong
+   to no precinct at all. They are spread across their county's blocks by the *turnout*
+   already placed there, not by population — the same choice `features/cd_baseline` makes,
+   for the same reason.
+5. **`unsplit_share` in Virginia is driven by reporting mode, not by boundary splitting.**
+   A county absentee block genuinely does not lie inside one district, so the component is
+   correct; a reader comparing states should know that VA 2020's 0.79 median reflects how
+   Virginia reported, not how the special masters drew.
+
+### Still to do
+
+- **Extend to the nine 2026 states** (173 seats). Each needs its 2026 plan as a boundary
+  file, which for a mid-decade redraw Census has not ingested — `baf_url` below stays the
+  open collection task, and a state-published plan file must be registered individually.
+- **Hand `transfer_sigma` to `projection.project_house`** and re-report the band. Not done
+  in this pass: it changes the live 2026 projection, and the sealed pre-registration must
+  be left alone (`src/election_prediction/reporting/preregistration.py`).
+- **A second backtest state**, so sigma rests on more than Virginia.
+- VAP instead of `POP20` as the split weight — a refinement, quantified above as affecting
+  only the split fifth of the vote.
+
+---
+
+## Original plan (below) — kept for the record
 
 ## What this unblocks
 
