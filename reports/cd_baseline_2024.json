@@ -1,0 +1,182 @@
+{
+  "vintage": 2024,
+  "district_lines": 2022,
+  "generated_on": "2026-10-02",
+  "files_read": 50,
+  "files_ok": 50,
+  "files_errored": 0,
+  "districts": 430,
+  "states_covered": 49,
+  "baseline_quality": {
+    "fails_reconciliation": 4,
+    "heavily_allocated": 7,
+    "no_certified_comparator": 26,
+    "ok": 386,
+    "under_covered": 7
+  },
+  "errors": [],
+  "reconciliation": {
+    "tolerance": 0.01,
+    "states_checked": 48,
+    "states_failing": [
+      "OK"
+    ],
+    "states_without_a_comparator": [
+      "NY"
+    ],
+    "median_abs_diff": 2.0100190623040248e-08,
+    "worst": [
+      {
+        "state_po": "OK",
+        "cd_aggregate_share": 0.339,
+        "state_certified_share": 0.3253,
+        "share_diff": 0.0137
+      },
+      {
+        "state_po": "LA",
+        "cd_aggregate_share": 0.3932,
+        "state_certified_share": 0.3882,
+        "share_diff": 0.005
+      },
+      {
+        "state_po": "NJ",
+        "cd_aggregate_share": 0.5263,
+        "state_certified_share": 0.5301,
+        "share_diff": -0.0039
+      },
+      {
+        "state_po": "ME",
+        "cd_aggregate_share": 0.533,
+        "state_certified_share": 0.5354,
+        "share_diff": -0.0024
+      },
+      {
+        "state_po": "IN",
+        "cd_aggregate_share": 0.4037,
+        "state_certified_share": 0.4035,
+        "share_diff": 0.0002
+      },
+      {
+        "state_po": "CA",
+        "cd_aggregate_share": 0.6042,
+        "state_certified_share": 0.604,
+        "share_diff": 0.0002
+      },
+      {
+        "state_po": "WA",
+        "cd_aggregate_share": 0.5948,
+        "state_certified_share": 0.5946,
+        "share_diff": 0.0002
+      },
+      {
+        "state_po": "OR",
+        "cd_aggregate_share": 0.5742,
+        "state_certified_share": 0.5743,
+        "share_diff": -0.0002
+      }
+    ]
+  },
+  "district_coverage": {
+    "districts_expected": 408,
+    "districts_present": 430,
+    "districts_missing": 6,
+    "missing_by_state": {
+      "FL": [
+        20
+      ],
+      "KS": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "OK": [
+        3
+      ]
+    },
+    "districts_not_in_certified_returns": [
+      "ME-01",
+      "NY-01",
+      "NY-02",
+      "NY-03",
+      "NY-04",
+      "NY-05",
+      "NY-06",
+      "NY-07",
+      "NY-08",
+      "NY-09",
+      "NY-10",
+      "NY-11",
+      "NY-12",
+      "NY-13",
+      "NY-14",
+      "NY-15",
+      "NY-16",
+      "NY-17",
+      "NY-18",
+      "NY-19",
+      "NY-20",
+      "NY-21",
+      "NY-22",
+      "NY-23",
+      "NY-24",
+      "NY-25",
+      "NY-26",
+      "RI-00"
+    ]
+  },
+  "under_coverage": {
+    "threshold": 0.9,
+    "districts_checked": 402,
+    "districts_unjudgeable": 28,
+    "districts_under_covered": 7,
+    "median_coverage": 1.0097,
+    "worst": [
+      {
+        "district": "LA-01",
+        "coverage_vs_house_vote": 0.4883,
+        "two_party_votes": 174674,
+        "certified_house_votes": 357720
+      },
+      {
+        "district": "LA-05",
+        "coverage_vs_house_vote": 0.5072,
+        "two_party_votes": 162216,
+        "certified_house_votes": 319851
+      },
+      {
+        "district": "LA-02",
+        "coverage_vs_house_vote": 0.515,
+        "two_party_votes": 157165,
+        "certified_house_votes": 305184
+      },
+      {
+        "district": "LA-03",
+        "coverage_vs_house_vote": 0.5536,
+        "two_party_votes": 177533,
+        "certified_house_votes": 320682
+      },
+      {
+        "district": "LA-06",
+        "coverage_vs_house_vote": 0.565,
+        "two_party_votes": 167264,
+        "certified_house_votes": 296033
+      },
+      {
+        "district": "LA-04",
+        "coverage_vs_house_vote": 0.586,
+        "two_party_votes": 179452,
+        "certified_house_votes": 306248
+      },
+      {
+        "district": "IN-09",
+        "coverage_vs_house_vote": 0.8811,
+        "two_party_votes": 304645,
+        "certified_house_votes": 345738
+      }
+    ]
+  },
+  "states_missing": [
+    "DC"
+  ]
+}

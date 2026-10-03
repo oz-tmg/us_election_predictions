@@ -1,0 +1,132 @@
+{
+  "state": "VA",
+  "from_cycle": 2020,
+  "generated_on": "2026-10-02",
+  "sources": {
+    "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+    "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+    "rdh_precinct_boundaries": "registered 2026-09-30; not required by this path"
+  },
+  "precinct_votes": {
+    "precincts": 2718,
+    "two_party_votes": 4375998.0,
+    "pseudo_precincts": 265,
+    "share_in_pseudo_precincts": 0.6369
+  },
+  "block_to_new_district": {
+    "blocks": 163491,
+    "blocks_unplaced": 0,
+    "population_unplaced": 0,
+    "unplaced_blocks_with_land": 0,
+    "districts": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  "apportionment": {
+    "precincts_matched_to_vtd": 2443,
+    "precincts_unmatched": 10,
+    "votes_unmatched": 6363.0,
+    "unmatched_precincts": [
+      "51077|401 - FRIES",
+      "51095|104- BERKELEY D",
+      "51109|701 - SHELTONS MILL",
+      "51109|702 - SOUTH ANNA",
+      "51121|203 - PRECINCT B-3",
+      "51121|403 - PRECINCT D-3",
+      "51135|301 - PRECINCT 3-1",
+      "51153|106 - WESTGATE",
+      "51191|702 - WALLACE",
+      "51520|004 - FOURTH WARD"
+    ],
+    "votes_from_county_aggregates": 2787063.0,
+    "votes_unplaceable": 0.0,
+    "votes_offered": 4375998.0,
+    "votes_placed": 4369635.0
+  },
+  "old_district_rows": 488079,
+  "votes_without_an_old_district": 0.0,
+  "backtest": {
+    "n_districts": 11,
+    "transfer_mae": 0.03140304501348171,
+    "no_prior_mae": 0.11930221400918138,
+    "state_lean_fallback_mae": 0.12530839517296705,
+    "beats_no_prior": true,
+    "beats_fallback": true,
+    "transfer_sigma": 0.018435188089506484,
+    "confidence_components": {
+      "unsplit_share": {
+        "min": 0.3040661216630267,
+        "median": 0.7906626663986389
+      },
+      "old_district_majority_share": {
+        "min": 0.4361199058101625,
+        "median": 0.7266629916192483
+      },
+      "geocoded_share": {
+        "min": 1.0,
+        "median": 1.0
+      }
+    },
+    "scored_against": "certified us_house 2022"
+  },
+  "same_office_control": {
+    "compared_against": "cd_presidential_baseline_2024.parquet",
+    "n_districts": 11,
+    "mae": 0.01946,
+    "mean_error": 0.01863,
+    "sd_error": 0.01592,
+    "max_abs_error": 0.05543,
+    "worst": [
+      {
+        "new_district": 10,
+        "transferred": 0.5989,
+        "measured": 0.5435,
+        "error": 0.0554,
+        "unsplit_share": 0.7907,
+        "old_district_majority_share": 0.7294
+      },
+      {
+        "new_district": 11,
+        "transferred": 0.71,
+        "measured": 0.6765,
+        "error": 0.0334,
+        "unsplit_share": 0.3041,
+        "old_district_majority_share": 0.6546
+      },
+      {
+        "new_district": 8,
+        "transferred": 0.7791,
+        "measured": 0.7543,
+        "error": 0.0248,
+        "unsplit_share": 0.6814,
+        "old_district_majority_share": 0.9148
+      },
+      {
+        "new_district": 5,
+        "transferred": 0.4594,
+        "measured": 0.4377,
+        "error": 0.0217,
+        "unsplit_share": 0.8535,
+        "old_district_majority_share": 0.6393
+      },
+      {
+        "new_district": 2,
+        "transferred": 0.5204,
+        "measured": 0.4994,
+        "error": 0.0209,
+        "unsplit_share": 0.8659,
+        "old_district_majority_share": 0.6205
+      }
+    ]
+  }
+}

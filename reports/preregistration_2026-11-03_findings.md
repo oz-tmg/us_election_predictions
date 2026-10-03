@@ -55,6 +55,30 @@ exists to prevent. This finding is the audit trail: a reader can see that the in
 moved, by how much, and why it does not change the verdict — rather than discovering
 later that a dependency was quietly corrected underneath a sealed claim.
 
+**Re-verified 2026-10-02 against the final baselines.** The table above was computed before
+two further fixes landed (fusion lines, and the at-large district label). Re-running it
+against the rebuilt `cd_presidential_baseline_2024.parquet` reproduces every figure
+unchanged — neither fix touches a state holding one of these specials — and adds an
+independent check the earlier run could not make. Each district's recovered presidential
+vote now carries `coverage_vs_house_vote`, its ratio against its own certified House
+return:
+
+| special | coverage vs House vote |
+|---|---:|
+| `2025-fl-cd01` | 1.0049 |
+| `2025-fl-cd06` | 1.0134 |
+| `2025-tn-cd07` | 1.0036 |
+| `2025-va-cd11` | 0.9855 |
+| `2025-tx-cd18` | 1.0074 |
+| `2026-ca-cd01` | 0.9933 |
+| `2026-ca-cd14` | 1.0105 |
+| `2026-ga-cd13` | 1.0328 |
+| `2026-ga-cd14-r1` | 1.0008 |
+| `2026-ga-cd14-runoff` | 1.0008 |
+| `2026-nj-cd11` | 1.0241 |
+
+The range is **0.9855 to 1.0328** against a national median of 1.0021, so none of these ten districts is missing presidential vote. That is the thing a baseline has to be right about, and it is now measured against a comparator outside the precinct file rather than inferred from the file's own internal consistency.
+
 **What would have changed the disposition.** Had any scored district sat in New Jersey
 or Washington — where 2020-style county-level reporting puts `allocated_share` above
 0.5 and measured MAE above 0.039 — the baseline would have been materially wrong and

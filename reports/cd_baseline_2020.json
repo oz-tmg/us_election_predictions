@@ -10,8 +10,8 @@
   "baseline_quality": {
     "fails_reconciliation": 9,
     "heavily_allocated": 15,
-    "ok": 387,
-    "under_covered": 17
+    "ok": 401,
+    "under_covered": 3
   },
   "errors": [],
   "reconciliation": {
@@ -20,6 +20,7 @@
     "states_failing": [
       "IN"
     ],
+    "states_without_a_comparator": [],
     "median_abs_diff": 0.0,
     "worst": [
       {
@@ -27,12 +28,6 @@
         "cd_aggregate_share": 0.445,
         "state_certified_share": 0.418,
         "share_diff": 0.027
-      },
-      {
-        "state_po": "NY",
-        "cd_aggregate_share": 0.6217,
-        "state_certified_share": 0.6172,
-        "share_diff": 0.0046
       },
       {
         "state_po": "PA",
@@ -50,6 +45,12 @@
         "state_po": "FL",
         "cd_aggregate_share": 0.4832,
         "state_certified_share": 0.4831,
+        "share_diff": 0.0001
+      },
+      {
+        "state_po": "NY",
+        "cd_aggregate_share": 0.6173,
+        "state_certified_share": 0.6172,
         "share_diff": 0.0001
       },
       {
@@ -95,7 +96,7 @@
     "threshold": 0.9,
     "districts_checked": 428,
     "districts_unjudgeable": 0,
-    "districts_under_covered": 22,
+    "districts_under_covered": 8,
     "median_coverage": 1.0021,
     "worst": [
       {
@@ -145,18 +146,6 @@
         "coverage_vs_house_vote": 0.7603,
         "two_party_votes": 220483,
         "certified_house_votes": 290009
-      },
-      {
-        "district": "NY-07",
-        "coverage_vs_house_vote": 0.8378,
-        "two_party_votes": 197022,
-        "certified_house_votes": 235169
-      },
-      {
-        "district": "NY-20",
-        "coverage_vs_house_vote": 0.8615,
-        "two_party_votes": 318202,
-        "certified_house_votes": 369372
       }
     ]
   },
