@@ -6,23 +6,27 @@ permissions, please contact us at legal@yougov.com."_
 
 ## Why ask rather than decide
 
-The Public Data License's AI section is broader than its evident motive
-(`poll-topline-redistribution-terms.md`). Reasoning about what YouGov probably meant is not
-a licence; a reply from legal@yougov.com is. The cost of asking is one email, and the
-downside of a "no" is a position we already hold.
+Most of what this draft was written for has since resolved: the project is non-commercial
+and unaffiliated, so CC BY-NC's grant applies and the licence says permitted non-commercial
+use needs no permission. One sentence is left — the unqualified bar on using the data to
+"train, fine-tune, or develop" AI/ML, stated to apply independent of the licence. The
+contextual reading is that it targets training corpora, not a poll average; that reading is
+reasonable and it is an interpretation, and reasoning about what YouGov probably meant is
+not a licence. A reply from legal@yougov.com is. One email, and a "no" leaves the position
+already held.
 
 Three things to decide before sending, because they change the ask:
 
 1. **Which use is being requested** — the historical backtest only, the live 2026 estimator,
    or both. Asking for the narrower thing is more likely to succeed and may be all that is
-   needed, since the backtest can run on the FiveThirtyEight archive instead.
-2. **Whether to raise the NonCommercial question too.** It is separate from AI and would
-   survive an AI permission. Raising it invites a harder conversation; not raising it leaves
-   a known gap. Recommendation: raise it, because discovering it later is worse.
-3. **Whether the copyleft condition is acceptable** if granted on standard terms. "Any
-   modified or remixed work must be licensed under the same terms (CC BY-NC 4.0)" could
-   attach to derived forecasts. Ask for it to be addressed explicitly rather than assumed
-   away.
+   needed, since the backtest can run on the FiveThirtyEight archive instead. With the
+   non-commercial question resolved there is less reason to narrow it than there was.
+2. ~~Whether to raise the NonCommercial question.~~ **Resolved 2026-10-05:** the project is
+   non-commercial and unaffiliated, so the grant's own non-commercial permission applies and
+   the licence says no permission is needed for it. Do **not** raise it as a question — doing
+   so would invite doubt about something the licence already answers. State it as a fact.
+3. ~~Whether the copyleft condition is acceptable.~~ **Resolved:** inheriting CC BY-NC 4.0
+   costs nothing for work that is never sold. Mention it only as a commitment, not a query.
 
 ## Draft
 
@@ -34,11 +38,11 @@ Three things to decide before sending, because they change the ask:
 > I am writing under the "Contact & permissions" provision of your Public Data License
 > (last updated 7 March 2025), which directs AI-related permission requests to this address.
 >
-> **Who we are.** Savepoint Analytics runs a public, nonpartisan election-analysis project
-> that publishes forecasting methodology and calibration results. The work is research
-> output, published openly and not sold. Our own operating rules require nonpartisanship,
-> prohibit individualised political targeting, and prohibit any use of data for solicitation
-> or list-building.
+> **Who we are.** I run an independent, non-commercial, nonpartisan election-analysis
+> project that publishes forecasting methodology and calibration results openly. It is not
+> part of any company, nothing it produces is sold, and no part of it is used commercially.
+> Its own operating rules require nonpartisanship and prohibit individualised political
+> targeting and any use of data for solicitation or list-building.
 >
 > **What we would like to use.** Published congressional generic-ballot toplines — pollster,
 > field dates, sample size, population and the headline party numbers. Aggregate figures as
@@ -49,13 +53,15 @@ Three things to decide before sending, because they change the ask:
 > share. Each row would carry its source URL and your required attribution, "Source: YouGov
 > plc, [year], © All rights reserved", with a link to the original.
 >
-> **Why we are asking rather than relying on the non-commercial grant.** Your "Additional
-> restrictions on AI & automated data extraction" section prohibits using the Licensed Data
-> to "train, fine-tune, or develop" AI or ML, and separately prohibits incorporation into a
-> repository for "predictive analytics", and states that these restrictions apply to any use.
-> A statistical forecasting model is plainly within that language, whatever the intended
-> target of the clause, so we do not think the non-commercial permission covers us and we
-> have not proceeded on an optimistic reading.
+> **Why I am writing at all.** The non-commercial grant plainly covers this use, and your
+> terms say such use needs no permission. I am writing only because of one sentence in the
+> "Additional restrictions on AI & automated data extraction" section — "you may not use the
+> Licensed Data to train, fine-tune, or develop artificial intelligence (AI), machine
+> learning (ML), or large language models" — which is stated to apply independent of the
+> licence. Reading that section alongside its scraping bullet and your text-and-data-mining
+> opt-out, I take its target to be ingestion of your data as a training corpus rather than
+> the use of a published topline as an input to an ordinary statistical model. I would rather
+> have that confirmed than assume it.
 >
 > **What we would not do.** No republication of full datasets. No resale or sublicensing. No
 > training of generative models, no synthetic respondents or simulated panels, and no product
@@ -67,12 +73,9 @@ Three things to decide before sending, because they change the ask:
 >
 > 1. Would you grant written permission for the use described above — aggregate published
 >    toplines as an input to a published, attributed, nonpartisan statistical forecast?
-> 2. Does your NonCommercial grant extend to research published openly and without charge by
->    a commercial entity, where the research itself is not sold? We would rather have your
->    view than assume.
-> 3. If permission is granted, would the requirement that "any modified or remixed work must
->    be licensed under the same terms" attach to a derived forecast, or only to a
->    republication of the data itself?
+> 2. Is my reading of the AI restriction correct — that it addresses training corpora and
+>    model development rather than the use of published aggregate results as an input to a
+>    statistical forecast? If it is not, I will not use the data.
 >
 > We are happy to accept conditions — a stated attribution format, a cap on how many of your
 > toplines appear, a review of anything before publication, or a term limit.

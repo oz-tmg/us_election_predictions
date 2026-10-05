@@ -116,21 +116,86 @@ And if the competitive motive *is* the operative one, it points against this pro
 than for it: a forecasting product built on their toplines sits closer to competing with
 what they sell than any privacy concern would.
 
-### Two further issues that are not about AI at all
+### Second correction, 2026-10-05: this project is non-commercial, which resolves most of it
 
-**Is this project "non-commercial"?** CC BY-NC 4.0 defines NonCommercial as "not primarily
-intended for or directed towards commercial advantage or monetary compensation." Savepoint
-Analytics is a commercial entity, and `PROJECT_CONTEXT.md` §2 says this vertical "creates
-optionality toward future paid campaign/civic work." The blog is unpaid public research and
-looks NC-eligible; the platform's purpose is less clear-cut. This question exists
-independently of the AI clause and would survive any AI permission.
+The 2026-10-04 reading assumed, from `PROJECT_CONTEXT.md` §2, that this is a Savepoint
+Analytics vertical with "optionality toward future paid campaign/civic work." The project
+owner has corrected that: **this work is not part of Savepoint and is not used commercially
+in any way.** That is a fact about the project, not an interpretation, and it changes three
+of the four conclusions.
 
-**The licence is copyleft.** "Any modified or remixed work must be licensed under the same
-terms as this license (CC BY-NC 4.0)." If toplines entered the stack and a derived forecast
-counts as a modified or remixed work, the project's own outputs would inherit CC BY-NC — the
-same share-alike hazard flagged below for Wikipedia, sitting inside this licence too. Whether
-a forecast is a "remix" of an input dataset is arguable; that it is a hazard worth asking
-about is not.
+**1. The NonCommercial condition is satisfied, and no permission is needed for it.** The
+grant permits "non-commercial purposes (e.g. academic research, journalism, critique,
+personal blogs, and newsletters)", and the licence is explicit about process:
+
+> "If your intended use falls within the permitted non-commercial activities outlined in
+> these terms, **you do not need to seek permission**. This includes personal blogs, unpaid
+> newsletters, academic research, and standard journalistic reporting."
+
+An unaffiliated, non-commercial, openly published research project is squarely inside that
+list. This was raised as an issue that would "survive any AI permission"; it does not survive,
+because it was never an issue.
+
+**2. The copyleft condition stops being a cost.** "Any modified or remixed work must be
+licensed under the same terms (CC BY-NC 4.0)" is only painful for a commercial platform that
+needs to license its outputs freely. For work that is never sold, inheriting CC BY-NC costs
+nothing and arguably matches the project's own posture. Worth stating in an attribution block;
+not a blocker.
+
+**3. The "predictive analytics" hook falls away on a closer reading.** The third bullet is:
+
+> "**Aggregation into commercial datasets.** You may not incorporate the Licensed Data into
+> any dataset, database, or repository for **commercial** AI applications, predictive
+> analytics, or resale."
+
+The 2026-10-04 note treated "predictive analytics" as an unqualified prohibition. That reads
+the bullet wrongly. Its heading is "Aggregation into **commercial** datasets", its first
+listed item is "**commercial** AI applications", and its last is "resale", which is
+inherently commercial. The natural construction is that the whole bullet is scoped to
+commercial contexts. For non-commercial work it does not bite.
+
+**4. And the competitive-motive argument no longer cuts against this project.** The
+2026-10-04 note observed that if the clause exists to protect Profiles, BrandIndex and
+Parallax from competitors, that motive pointed against a forecasting product. It did —
+against a *commercial* one. A non-commercial research project competes with none of those
+product lines, so the clause's evident purpose does not reach it.
+
+### What is actually left: one sentence
+
+> "**AI model training & machine learning.** You may not use the Licensed Data to train,
+> fine-tune, or develop artificial intelligence (AI), machine learning (ML), or large
+> language models (LLMs)."
+
+This is the only remaining obstacle. It carries no commercial qualifier, and the section
+closes "These restrictions are independent of the CC BY-NC 4.0 license and apply to any use
+of the Licensed Data" — "independent of the licence" meaning independent of the very
+commercial/non-commercial distinction everything else turns on. So non-commercial status,
+which resolves the rest, does not resolve this by its own terms.
+
+The live question is whether the sentence *describes* fitting a poll average into a
+statistical forecast. Two defensible readings:
+
+- **Narrow (likely intended).** The section is titled "AI & automated data extraction." Its
+  other two bullets are about scraping and commercial AI datasets. The TDM section beside it
+  reserves rights against "text and data mining (TDM) for machine learning purposes." Read in
+  that company, the target is ingesting their data *as a training corpus* — the 2024-25
+  publisher posture against LLM scraping — not using published statistics as a covariate in a
+  regression. On this reading a weighted polling average and a hierarchical vote-share model
+  are ordinary statistics, which is what the data is published for.
+- **Broad (what the words permit).** "Develop ... machine learning" is wide enough to cover a
+  fitted model, and "apply to any use" is drafted to foreclose exactly the kind of exception
+  being argued for here.
+
+**Assessment.** The narrow reading is reasonable and probably right about intent. It is not
+certain, and the certainty is cheap: the licence names legal@yougov.com for "AI-related
+permissions", and the request from a non-commercial unaffiliated nonpartisan project that
+will cite them in their required form, store no respondent data, republish no datasets and
+sell nothing is about as easy to grant as such requests get. One email converts a defensible
+interpretation into a written answer. Draft at `yougov-permission-request-draft.md`.
+
+Independent of all of the above, the **scraping clause still stands**: "bots, crawlers, or
+automated scripts" need express written permission regardless of commercial status, so
+collection is manual either way.
 
 ### The correction that matters most: it is waivable, and nobody has asked
 

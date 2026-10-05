@@ -299,7 +299,7 @@ quotations and fetch dates, is at
 |---|:--:|:--:|:--:|---|
 | **538 archive** (CC BY 4.0) | ✅ | ✅ | ✅ with attribution | **Use — historical only.** The licence is clean and irrevocable; the data stops in 2025. |
 | **Pollster releases, hand compiled** | ✅ | ✅ | ✅ per-row citation | **Use — the live route.** Facts, cited individually, as `special_elections_compiled` already does. |
-| **YouGov / Economist** | ⚠️ | ⚠️ | ⚠️ | **Not permitted by default; waivable on request.** Grant is **CC BY-NC 4.0**, but a separate "Additional restrictions on AI & automated data extraction" section prohibits using the data to "train, fine-tune, or develop" AI/ML with *no commercial qualifier*, separately names **"predictive analytics"**, and states the restrictions "apply to any use." The licence directs AI-related permission requests to legal@yougov.com — so this is an unasked question, not a closed door. See the re-read of 2026-10-04. |
+| **YouGov / Economist** | ✅ | ⚠️ | ✅ with attribution | **Permitted non-commercially, except for one AI sentence.** Grant is **CC BY-NC 4.0**, and this project is non-commercial, so the grant's own terms apply and the licence states no permission is needed for "academic research" and unpaid publication. What remains is a single unqualified sentence in the "Additional restrictions" section — "you may not use the Licensed Data to train, fine-tune, or develop" AI/ML — which the licence says applies "independent of" CC BY-NC. Whether that describes fitting a poll average into a statistical forecast is arguable; `legal@yougov.com` is named for AI-related permissions and settles it. Derived work inherits CC BY-NC (costless here). Collection must be manual. See corrections of 2026-10-04 and 2026-10-05. |
 | **Roper Center** | ❌ | ❌ | ❌ | **Refused.** Subscriber agreement; "compilations or manipulations of data or datasets" are excluded from permitted derivative works. |
 | **Pew Research Center** | ✅ | ✅ | ✅ with attribution, not "in principal part" | Permitted, but Pew runs no regular congressional generic ballot — context and approval series only. |
 | **Wikipedia tables** (CC BY-SA 4.0) | ✅ | ✅ | ⚠️ share-alike | **Avoid.** Share-alike would bind this project's own derived outputs. |
@@ -311,18 +311,21 @@ What this sets in code:
   `redistribution_allowed=synthetic` stays correct for anything else.
 - Required attribution on any published output using the 538 archive: *"Data from
   FiveThirtyEight, used under CC BY 4.0."* Add to `blog/README.md` before first use.
-- The YouGov position was first recorded as "structural," which **overstated it** — see the
-  correction of 2026-10-04 in the evidence file. The accurate statement is: not permitted by
-  default, and explicitly waivable in writing. A draft request is at
-  `docs/terms_and_conditions/yougov-permission-request-draft.md`; sending it is the owner's
-  call. Until a grant exists the practical position is unchanged, which is why the generic
-  ballot is thin.
-- **Two YouGov questions survive any AI permission.** (a) CC BY-NC's NonCommercial condition
-  — "not primarily intended for or directed towards commercial advantage" — against a
-  commercial entity publishing unpaid research, and (b) the copyleft bullet, "any modified or
-  remixed work must be licensed under the same terms (CC BY-NC 4.0)," which could attach to a
-  derived forecast. Both are in the draft request as explicit questions rather than
-  assumptions.
+- The YouGov position was first recorded as a **structural refusal**, which was wrong twice
+  over. The 2026-10-04 re-read established it is waivable in writing, not structural. The
+  2026-10-05 correction establishes that **this project is non-commercial and unaffiliated**,
+  which satisfies CC BY-NC's NonCommercial condition outright — and the licence says
+  explicitly that permitted non-commercial use needs no permission at all. The copyleft
+  condition and the "predictive analytics" bullet both fall away too (the latter is scoped to
+  commercial contexts by its own heading).
+- **One sentence remains**, and only one: "you may not use the Licensed Data to train,
+  fine-tune, or develop artificial intelligence (AI), machine learning (ML), or large
+  language models." It carries no commercial qualifier and is stated to apply "independent of"
+  the licence. Read in context — a section about scraping and commercial AI datasets, beside
+  a text-and-data-mining opt-out — its target is plainly ingestion as a training corpus
+  rather than statistics published for exactly this purpose. That reading is reasonable and
+  not certain; `legal@yougov.com` is named for AI-related permissions and one email settles
+  it. Draft at `docs/terms_and_conditions/yougov-permission-request-draft.md`.
 - **Collection must be manual regardless.** The website terms prohibit "bots, crawlers, or
   automated scripts" without express written permission, independently of the data licence.
 
