@@ -299,7 +299,7 @@ quotations and fetch dates, is at
 |---|:--:|:--:|:--:|---|
 | **538 archive** (CC BY 4.0) | ✅ | ✅ | ✅ with attribution | **Use — historical only.** The licence is clean and irrevocable; the data stops in 2025. |
 | **Pollster releases, hand compiled** | ✅ | ✅ | ✅ per-row citation | **Use — the live route.** Facts, cited individually, as `special_elections_compiled` already does. |
-| **YouGov / Economist** | ❌ | ❌ | ❌ | **Refused.** The Public Data License prohibits ML and AI model development, prohibits incorporation into commercial datasets, and prohibits automated extraction. |
+| **YouGov / Economist** | ⚠️ | ⚠️ | ⚠️ | **Not permitted by default; waivable on request.** Grant is **CC BY-NC 4.0**, but a separate "Additional restrictions on AI & automated data extraction" section prohibits using the data to "train, fine-tune, or develop" AI/ML with *no commercial qualifier*, separately names **"predictive analytics"**, and states the restrictions "apply to any use." The licence directs AI-related permission requests to legal@yougov.com — so this is an unasked question, not a closed door. See the re-read of 2026-10-04. |
 | **Roper Center** | ❌ | ❌ | ❌ | **Refused.** Subscriber agreement; "compilations or manipulations of data or datasets" are excluded from permitted derivative works. |
 | **Pew Research Center** | ✅ | ✅ | ✅ with attribution, not "in principal part" | Permitted, but Pew runs no regular congressional generic ballot — context and approval series only. |
 | **Wikipedia tables** (CC BY-SA 4.0) | ✅ | ✅ | ⚠️ share-alike | **Avoid.** Share-alike would bind this project's own derived outputs. |
@@ -311,9 +311,26 @@ What this sets in code:
   `redistribution_allowed=synthetic` stays correct for anything else.
 - Required attribution on any published output using the 538 archive: *"Data from
   FiveThirtyEight, used under CC BY 4.0."* Add to `blog/README.md` before first use.
-- The YouGov refusal is **structural, not a preference**. It is the most frequent US generic
-  ballot series and it is unavailable to a commercial forecaster. Any future "why is the
-  generic ballot thin?" question is answered here.
+- The YouGov position was first recorded as "structural," which **overstated it** — see the
+  correction of 2026-10-04 in the evidence file. The accurate statement is: not permitted by
+  default, and explicitly waivable in writing. A draft request is at
+  `docs/terms_and_conditions/yougov-permission-request-draft.md`; sending it is the owner's
+  call. Until a grant exists the practical position is unchanged, which is why the generic
+  ballot is thin.
+- **Two YouGov questions survive any AI permission.** (a) CC BY-NC's NonCommercial condition
+  — "not primarily intended for or directed towards commercial advantage" — against a
+  commercial entity publishing unpaid research, and (b) the copyleft bullet, "any modified or
+  remixed work must be licensed under the same terms (CC BY-NC 4.0)," which could attach to a
+  derived forecast. Both are in the draft request as explicit questions rather than
+  assumptions.
+- **Collection must be manual regardless.** The website terms prohibit "bots, crawlers, or
+  automated scripts" without express written permission, independently of the data licence.
+
+**Correction, 2026-10-04.** The first pass read YouGov's licence from a summarised fetch
+rather than the raw page. The quotations were accurate but the grant was not identified as
+CC BY-NC 4.0 and the conclusion was stated too strongly. The decision table above is
+corrected. The lesson is procedural and worth keeping: a licence is read from its own text,
+not from a summary of it, because the whole value of the exercise is the exact wording.
 
 **What remains a human sign-off, and it is narrow.** A CC BY 4.0 compilation grants the
 compiler's rights; it cannot grant rights the compiler did not hold in the pollsters'
