@@ -120,20 +120,24 @@ answered 2026-10-02; terms at
 
 - *"Data from FiveThirtyEight, used under CC BY 4.0."*
 
-**Not publishable from YouGov or the Roper Center without written permission.** YouGov's
-Public Data License grants CC BY-NC 4.0 but adds restrictions that prohibit using the data
-to "train, fine-tune, or develop" AI/ML and prohibit incorporation into a repository for
-"predictive analytics," stating that these "apply to any use"; Roper's subscriber agreement
-excludes "compilations or manipulations of data or datasets" from permitted derivative
-works. Neither may appear in a post as data, averaged or otherwise, unless a grant is
-obtained — YouGov's licence names legal@yougov.com for that, and a draft request is at
-`docs/terms_and_conditions/yougov-permission-request-draft.md`.
+**YouGov is available non-commercially, with one open question.** Its Public Data License
+grants CC BY-NC 4.0, and this project is non-commercial, so the grant applies and the licence
+states that permitted non-commercial use — "academic research", unpaid publication — needs no
+permission. Required attribution, verbatim, plus a link to the original source:
 
-Citing a published YouGov *finding* in prose, with their attribution string, is a different
-act from storing its topline in the stack, and the first is available here. If a grant is
-ever obtained, note that YouGov's licence is **copyleft** — "any modified or remixed work
-must be licensed under the same terms (CC BY-NC 4.0)" — so check what that attaches to
-before publishing a derived figure.
+- *"Source: YouGov plc, [Year], © All rights reserved"*
+
+Two caveats attach. The licence is **copyleft** — "any modified or remixed work must be
+licensed under the same terms (CC BY-NC 4.0)" — which costs nothing for work that is never
+sold but should be stated where a derived figure is published. And one sentence in its
+"Additional restrictions" section bars using the data to "train, fine-tune, or develop"
+AI/ML, stated to apply independent of the licence; `docs/terms_and_conditions/` sets out why
+that most likely targets training corpora rather than a poll average, and why one email to
+legal@yougov.com would settle it before a post leans on the data.
+
+**The Roper Center remains closed.** Its subscriber agreement excludes "compilations or
+manipulations of data or datasets" from permitted derivative works, so a stored topline
+panel is the excluded category regardless of commercial status.
 
 ## Editorial boundaries
 
