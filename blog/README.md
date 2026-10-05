@@ -120,12 +120,20 @@ answered 2026-10-02; terms at
 
 - *"Data from FiveThirtyEight, used under CC BY 4.0."*
 
-**Never publishable from YouGov or the Roper Center.** YouGov's Public Data License
-prohibits ML and AI model development and prohibits incorporation into commercial datasets;
-Roper's subscriber agreement excludes "compilations or manipulations of data or datasets"
-from permitted derivative works. Neither may appear in a post as data, averaged or
-otherwise. Citing a published YouGov *finding* in prose is a different act from storing its
-topline, and only the first is available here.
+**Not publishable from YouGov or the Roper Center without written permission.** YouGov's
+Public Data License grants CC BY-NC 4.0 but adds restrictions that prohibit using the data
+to "train, fine-tune, or develop" AI/ML and prohibit incorporation into a repository for
+"predictive analytics," stating that these "apply to any use"; Roper's subscriber agreement
+excludes "compilations or manipulations of data or datasets" from permitted derivative
+works. Neither may appear in a post as data, averaged or otherwise, unless a grant is
+obtained — YouGov's licence names legal@yougov.com for that, and a draft request is at
+`docs/terms_and_conditions/yougov-permission-request-draft.md`.
+
+Citing a published YouGov *finding* in prose, with their attribution string, is a different
+act from storing its topline in the stack, and the first is available here. If a grant is
+ever obtained, note that YouGov's licence is **copyleft** — "any modified or remixed work
+must be licensed under the same terms (CC BY-NC 4.0)" — so check what that attaches to
+before publishing a derived figure.
 
 ## Editorial boundaries
 

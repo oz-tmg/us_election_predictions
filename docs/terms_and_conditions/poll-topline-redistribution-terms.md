@@ -24,42 +24,134 @@ A source can permit (1) and forbid (2). One of them does, explicitly.
 
 ---
 
-## YouGov — the restrictive case, and it is decisive for the direct route
+## YouGov — re-read in full 2026-10-04, and the first reading was wrong in one way that matters
 
-Website terms: <https://yougov.com/en-us/about/terms/website> (fetched 2026-10-02)
+> **Correction.** The 2026-10-02 reading of this licence came from a summarised fetch, not
+> the raw page. The quotations in it were accurate, but two things were not: the grant was
+> not identified as a standard Creative Commons licence, and the conclusion was stated as
+> "refused, structurally." It is not structural. The licence names an address for exactly
+> this request. What follows is from the raw page text.
 
-> "systematically scrape, crawl, harvest, retrieve, or otherwise gather by electronic means
-> any data or other content from our sites to copy, create, acquire or compile … a
-> collection compilation, database directory or similar."
+Public Data License: <https://yougov.com/en-gb/about/terms/public-data-license> and
+<https://yougov.com/en-us/about/terms/public-data-license> — identical text, **last updated
+07 March 2025**, fetched 2026-10-04. Website terms: last updated 18 December 2025.
 
-> "modify, copy, reproduce, create derivative works, republish, display, upload, post,
-> transmit, or distribute in any way the content, materials and information made available
-> on our site except in accordance with the Public Data License"
+### The grant is CC BY-NC 4.0
 
-Public Data License: <https://yougov.com/en-gb/about/terms/public-data-license> (fetched
-2026-10-02). It **permits** non-commercial use, sharing and adaptation, and use in
-commercial journalistic content, with attribution. It **prohibits**:
+> "We provide the data available on our public websites (the "Licensed Data") under the
+> Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."
 
-> "You may not use the Licensed Data to train, fine-tune, or develop artificial
-> intelligence (AI), machine learning (ML), or large language models"
+Permitted, verbatim:
 
-> "purely commercial purposes (e.g., resale, AI model development, or integration into
-> commercial datasets)"
+> "✅ Use, share, and adapt the Licensed Data for non-commercial purposes (e.g. academic
+> research, journalism, critique, personal blogs, and newsletters)."
 
-> "You may not incorporate the Licensed Data into any dataset, database, or repository for
-> commercial AI applications"
+> "✅ Modify and remix the Licensed Data, as long as you provide appropriate attribution to
+> us and a link to the original data source. **Any modified or remixed work must be licensed
+> under the same terms as this license (CC BY-NC 4.0).**"
 
-Required attribution, where use is permitted:
+Refused under the grant, verbatim:
 
-> "Source: YouGov plc, [Year], © All rights reserved"
+> "❌ Use the Licensed Data for **purely commercial purposes** (e.g., resale, AI model
+> development, or integration into commercial datasets) **without our prior written
+> consent**."
 
-**Reading.** The Economist/YouGov weekly generic ballot is the most frequent US series and
-the one a 2026 live estimator would most want. Collecting it from YouGov's own site is
-**not available to this project**: Savepoint Analytics is a commercial entity, the
-prohibition on ML/model development is explicit, and a forecasting model is squarely what
-the clause describes whether or not one calls a hierarchical regression "AI". The
-scraping clause closes the automated route independently. This is a clear no, not a
-judgement call.
+Note what that bullet actually does: "AI model development" is an *example* of a purely
+commercial purpose, and the whole bullet is conditioned on absence of consent. Read alone, it
+would leave room for a non-commercial forecaster.
+
+### But a second, independent section closes that room
+
+> "**Additional restrictions on AI & automated data extraction.** While the Licensed Data is
+> available under CC BY-NC 4.0, the following additional restrictions apply:
+>
+> **AI model training & machine learning.** You may not use the Licensed Data to train,
+> fine-tune, or develop artificial intelligence (AI), machine learning (ML), or large
+> language models (LLMs).
+>
+> **Automated scraping & crawling.** You may not use bots, crawlers, or automated scripts to
+> extract or copy the Licensed Data without our express written permission.
+>
+> **Aggregation into commercial datasets.** You may not incorporate the Licensed Data into
+> any dataset, database, or repository for commercial AI applications, **predictive
+> analytics**, or resale.
+>
+> **These restrictions are independent of the CC BY-NC 4.0 license and apply to any use of
+> the Licensed Data.**"
+
+And the TDM section:
+
+> "We explicitly reserve our rights to opt out of text and data mining (TDM) for machine
+> learning purposes. Any use of the Licensed Data for automated data mining is prohibited
+> unless expressly authorised."
+
+### Reading it against the obvious objection
+
+The objection is a good one and it is half right: clauses like this are normally aimed at
+(a) privacy exposure from individual-level inference and (b) stopping third parties from
+rebuilding the publisher's product. A nonpartisan aggregate forecast does neither.
+
+**The motive reading is almost certainly correct, and YouGov's own site is the evidence.**
+The same navigation that links this licence also sells *Profiles API & MCP* — "Ingest YouGov
+Profiles data directly into your systems, AI models, agentic workflows" — and *BrandIndex
+API* — "Infuse BrandIndex data directly into your in-house systems, AI models, and
+solutions" — and *Parallax*, "AI twins answer all your questions instantly." YouGov monetises
+AI ingestion and sells synthetic respondents. The AI clause protects a product line. That is
+exactly the competitive motive, not a privacy one.
+
+**But three things stop that from being a defence here.**
+
+1. **Nothing in the clause is privacy-scoped.** There is no individual-level language in it,
+   and there could not usefully be: the Licensed Data is published aggregate results with no
+   respondent records. "We are not connecting it to individuals" is true and is not the
+   condition the clause sets. The privacy rationale is simply absent from the text.
+2. **The ML bullet carries no commercial qualifier**, unlike the two bullets either side of
+   it, and the section closes by saying the restrictions "apply to **any use**." That
+   sentence is written to defeat precisely the non-commercial defence.
+3. **There are two independent hooks, not one.** Even granting the argument that a
+   hierarchical regression is not "AI/ML" in the sense intended, the third bullet separately
+   names **"predictive analytics"** — which an election forecast is, without strain.
+
+And if the competitive motive *is* the operative one, it points against this project rather
+than for it: a forecasting product built on their toplines sits closer to competing with
+what they sell than any privacy concern would.
+
+### Two further issues that are not about AI at all
+
+**Is this project "non-commercial"?** CC BY-NC 4.0 defines NonCommercial as "not primarily
+intended for or directed towards commercial advantage or monetary compensation." Savepoint
+Analytics is a commercial entity, and `PROJECT_CONTEXT.md` §2 says this vertical "creates
+optionality toward future paid campaign/civic work." The blog is unpaid public research and
+looks NC-eligible; the platform's purpose is less clear-cut. This question exists
+independently of the AI clause and would survive any AI permission.
+
+**The licence is copyleft.** "Any modified or remixed work must be licensed under the same
+terms as this license (CC BY-NC 4.0)." If toplines entered the stack and a derived forecast
+counts as a modified or remixed work, the project's own outputs would inherit CC BY-NC — the
+same share-alike hazard flagged below for Wikipedia, sitting inside this licence too. Whether
+a forecast is a "remix" of an input dataset is arguable; that it is a hazard worth asking
+about is not.
+
+### The correction that matters most: it is waivable, and nobody has asked
+
+> "**Contact & permissions.** If your intended use falls within the permitted non-commercial
+> activities outlined in these terms, you do not need to seek permission. This includes
+> personal blogs, unpaid newsletters, academic research, and standard journalistic reporting.
+>
+> For commercial use requests **or AI-related permissions**, please contact us at
+> legal@yougov.com."
+
+So the position is **not permitted by default, and explicitly available on request** — not
+closed. The earlier "structural" framing was wrong. A written grant from legal@yougov.com
+would convert this from a reading of ambiguous text into a document, and the ask is
+unusually easy to say yes to: nonpartisan, public-interest, attributed in their required
+form, no republication of whole datasets, no resale, no synthetic respondents, no overlap
+with Profiles, BrandIndex or Parallax. A draft request is at
+`docs/terms_and_conditions/yougov-permission-request-draft.md`.
+
+Independent of any permission, the **scraping clause survives**: collection would have to be
+manual, because "bots, crawlers, or automated scripts" need express written permission even
+for otherwise-permitted use.
 
 ## Roper Center — also closed, for a different reason
 
