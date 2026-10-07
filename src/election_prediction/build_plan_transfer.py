@@ -56,6 +56,23 @@ SOURCES = {
 #: Virginia uses, not by name matching, so a renamed absentee precinct still lands here.
 PSEUDO_PRECINCT_PREFIXES = ("#",)
 
+#: A transfer that places less than this share of a state's vote is **not written**.
+#:
+#: The precinct-to-block link depends on a state's returns naming precincts by their Census
+#: VTD code, and that is state-specific in a way nothing warns you about:
+#:
+#:     Virginia        100.0%   precinct "101 - CHINCOTEAGUE" -> VTD 000101
+#:     North Carolina   86.3%   alphanumeric codes, plus unmatched one-stop batches
+#:     Florida          82.5%   2024 precinct names against 2020-vintage VTDs
+#:     Alabama           5.2%   names like "PREC 4010 - GARDENDALE CIVIC C", no code
+#:     Texas             0.0%   no precinct matched any VTD at all
+#:
+#: Texas is why this gate exists rather than a warning. Its transfer placed **zero** votes,
+#: produced an empty table, and the build wrote `data/gold/plan_transfer_tx_2024.parquet`
+#: and exited 0. A downstream join on that file would have given 38 seats no prior with
+#: nothing anywhere saying so. A gold artefact that exists is a claim that it is usable.
+MIN_PLACED_SHARE = 0.90
+
 
 def precinct_votes(path: Path) -> tuple[pd.DataFrame, dict]:
     """Two-party presidential votes per precinct for one state's precinct file.
@@ -323,6 +340,7 @@ def build(
     plan_zip: Path,
     raw_dir: Path,
     state_fips: str,
+    district_column: str | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     """The transferred prior for one state, plus the block-level table it rests on."""
     plan_transfer.assert_sources_registered(SOURCES)
@@ -338,7 +356,9 @@ def build(
     votes, vote_stats = precinct_votes(files[0])
     block_vtd = block_crosswalk.block_to_vtd(baf_zip, state_fips)
     block_old = block_crosswalk.block_to_old_district(baf_zip)
-    block_new, new_stats = block_crosswalk.block_to_new_district(block_zip, plan_zip)
+    block_new, new_stats = block_crosswalk.block_to_new_district(
+        block_zip, plan_zip, district_column=district_column
+    )
 
     at_block, apportion_stats = apportion_to_blocks(votes, block_vtd, block_new)
     at_block = at_block.merge(block_old, on="block_id", how="left")
@@ -374,7 +394,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--from-cycle", type=int, default=2020)
     ap.add_argument("--baf", type=Path, required=True, help="BlockAssign_ST<ff>_<XX>.zip")
     ap.add_argument("--blocks", type=Path, required=True, help="tl_<yyyy>_<ff>_tabblock20.zip")
-    ap.add_argument("--plan", type=Path, required=True, help="tl_<yyyy>_<ff>_cd<nnn>.zip")
+    ap.add_argument("--plan", type=Path, required=True, help="tl_<yyyy>_<ff>_cd<nnn>.zip, or a state plan")
+    ap.add_argument(
+        "--district-column",
+        default=None,
+        help="district field in --plan; Census uses CD<nnn>FP, states vary (Florida: DISTRICT)",
+    )
     ap.add_argument("--raw-dir", type=Path, default=Path("data/raw"))
     ap.add_argument("--gold-dir", type=Path, default=Path("data/gold"))
     ap.add_argument("--reports-dir", type=Path, default=Path("reports"))
@@ -408,6 +433,7 @@ def main(argv: list[str] | None = None) -> int:
         args.plan,
         args.raw_dir,
         args.state_fips,
+        args.district_column,
     )
 
     if args.backtest:
@@ -442,13 +468,33 @@ def main(argv: list[str] | None = None) -> int:
     if args.control_baseline and args.control_baseline.is_file():
         report["same_office_control"] = same_office_control(args.control_baseline, transferred, args.state)
 
-    args.gold_dir.mkdir(parents=True, exist_ok=True)
-    out = args.gold_dir / f"plan_transfer_{args.state.lower()}_{args.from_cycle}.parquet"
-    transferred.to_parquet(out, index=False)
+    # The gate. The report is written either way -- the diagnosis is the useful part of a
+    # failure -- but the gold prior is written only if it is usable.
+    apportion = report["apportionment"]
+    offered = float(apportion["votes_offered"]) or 1.0
+    placed_share = float(apportion["votes_placed"]) / offered
+    expected = set(report["block_to_new_district"]["districts"])
+    produced = set(transferred["new_district"].astype(int).tolist()) if len(transferred) else set()
+    report["usability"] = {
+        "placed_share": round(placed_share, 4),
+        "min_placed_share": MIN_PLACED_SHARE,
+        "districts_expected": len(expected),
+        "districts_produced": len(produced),
+        "districts_missing": sorted(expected - produced),
+        "usable": placed_share >= MIN_PLACED_SHARE and not (expected - produced),
+    }
 
     args.reports_dir.mkdir(parents=True, exist_ok=True)
     rpt = args.reports_dir / f"plan_transfer_{args.state.lower()}_{args.from_cycle}.json"
     rpt.write_text(json.dumps(report, indent=2, default=str))
+
+    usability = report["usability"]
+    out = args.gold_dir / f"plan_transfer_{args.state.lower()}_{args.from_cycle}.parquet"
+    if usability["usable"]:
+        args.gold_dir.mkdir(parents=True, exist_ok=True)
+        transferred.to_parquet(out, index=False)
+    else:
+        out.unlink(missing_ok=True)
 
     v = report["precinct_votes"]
     a = report["apportionment"]
@@ -495,6 +541,22 @@ def main(argv: list[str] | None = None) -> int:
             f"    mean {c['mean_error']:+.4f}  (the national swing between cycles)\n"
             f"    sd   {c['sd_error']:.4f}  (the geography error)"
         )
+    if not usability["usable"]:
+        print(
+            f"\n  REFUSED: placed {usability['placed_share']:.1%} of the vote "
+            f"(floor {MIN_PLACED_SHARE:.0%}), {usability['districts_produced']} of "
+            f"{usability['districts_expected']} districts produced"
+        )
+        if usability["districts_missing"]:
+            print(f"      districts with no transferred vote: {usability['districts_missing']}")
+        print(
+            "      No prior written. This state's returns do not name precincts by their\n"
+            "      Census VTD code, so the precinct-to-block link cannot be made from the\n"
+            "      BAF alone; it needs a precinct-boundary source for this state."
+        )
+        print(f"  -> {rpt}")
+        return 1
+
     print(f"\n  -> {out}\n  -> {rpt}")
     return 0
 

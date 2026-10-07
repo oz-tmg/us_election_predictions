@@ -213,3 +213,30 @@ def test_actual_shares_come_from_certified_returns_on_a_two_party_basis(tmp_path
     returns.to_parquet(path, index=False)
     out = bpt._actual_from_house_returns(path, "VA", 2022)
     assert out["actual_dem_share"].iloc[0] == pytest.approx(0.6), "third parties distort raw margins"
+
+
+# ---- the usability gate -------------------------------------------------------------------
+# Texas is why this exists. Its transfer placed zero votes, produced an empty table, and the
+# build wrote data/gold/plan_transfer_tx_2024.parquet and exited 0. A gold artefact that
+# exists is a claim that it is usable.
+
+
+def test_the_placement_floor_is_high_enough_to_catch_a_total_failure():
+    """Measured placement by state: VA 100%, NC 86%, FL 82%, AL 5%, TX 0%."""
+    assert bpt.MIN_PLACED_SHARE >= 0.90
+    assert 0.052 < bpt.MIN_PLACED_SHARE and 0.0 < bpt.MIN_PLACED_SHARE
+
+
+def test_a_state_whose_precincts_do_not_carry_vtd_codes_places_almost_nothing():
+    """Alabama's returns name precincts "PREC 4010 - GARDENDALE CIVIC C" -- not a code.
+
+    The join is by code, so it finds nothing, and the honest output is a refusal rather than
+    a prior built from the 5% that happened to match.
+    """
+    votes = _votes([("01073", "PREC 4010 - GARDENDALE CIVIC C", 900.0, 100.0)])
+    bv = _block_vtd([("b1", "01073", "4010")])
+    bp = _block_pop([("b1", 10.0)])
+    out, stats = bpt.apportion_to_blocks(votes, bv, bp)
+    # "PREC" is the leading token, so no code matches and nothing can be placed.
+    assert stats["votes_unplaceable"] == pytest.approx(1000.0)
+    assert out.empty

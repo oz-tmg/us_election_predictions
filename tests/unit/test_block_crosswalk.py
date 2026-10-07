@@ -186,3 +186,36 @@ def test_read_baf_is_case_insensitive_about_the_member_name(tmp_path):
     with zipfile.ZipFile(z, "w") as zf:
         zf.writestr("blockassign_st51_va_vtd.txt", "BLOCKID|COUNTYFP|DISTRICT\n1|001|000101\n")
     assert len(bx._read_baf(z, "vtd")) == 1
+
+
+def test_a_shapefile_nested_in_a_subdirectory_is_found(tmp_path):
+    """Texas publishes planc2333.zip containing PLANC2333/PLANC2333.shp.
+
+    Handing that archive straight to GDAL fails with "not recognized as being in a supported
+    file format", which reads like a corrupt download rather than a nested path.
+    """
+    z = tmp_path / "planc2333.zip"
+    with zipfile.ZipFile(z, "w") as zf:
+        zf.writestr("PLANC2333/PLANC2333.shp", "x")
+        zf.writestr("PLANC2333/PLANC2333.dbf", "x")
+    assert bx._shapefile_uri(z) == f"zip://{z}!PLANC2333/PLANC2333.shp"
+
+
+def test_a_root_level_shapefile_opens_as_the_bare_archive(tmp_path):
+    z = tmp_path / "tl_2023_51_cd118.zip"
+    with zipfile.ZipFile(z, "w") as zf:
+        zf.writestr("tl_2023_51_cd118.shp", "x")
+    assert bx._shapefile_uri(z) == str(z)
+
+
+def test_an_archive_with_several_shapefiles_is_refused_rather_than_guessed(tmp_path):
+    z = tmp_path / "two.zip"
+    with zipfile.ZipFile(z, "w") as zf:
+        zf.writestr("a/a.shp", "x")
+        zf.writestr("b/b.shp", "x")
+    with pytest.raises(ValueError, match="name the one to use"):
+        bx._shapefile_uri(z)
+
+
+def test_a_missing_path_is_left_for_the_reader_to_report(tmp_path):
+    assert bx._shapefile_uri(tmp_path / "nope.zip") == str(tmp_path / "nope.zip")

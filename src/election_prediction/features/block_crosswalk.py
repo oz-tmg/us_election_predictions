@@ -138,6 +138,34 @@ def block_to_old_district(baf_zip: Path) -> pd.DataFrame:
     ).dropna(subset=["old_district"])
 
 
+def _shapefile_uri(path: Path) -> str:
+    """A path GDAL can open, including a zip whose shapefile sits in a subdirectory.
+
+    Census ships its shapefiles at the root of the archive and ``gpd.read_file`` opens those
+    directly. States do not: Texas publishes ``planc2333.zip`` containing
+    ``PLANC2333/PLANC2333.shp``, and handing the archive straight to GDAL fails with
+    "not recognized as being in a supported file format" — which reads like a corrupt
+    download rather than a nested path.
+    """
+    path = Path(path)
+    if path.suffix.lower() != ".zip" or not path.is_file():
+        # Not an archive, or not there at all: hand it over and let the reader raise the
+        # real error. A path helper should not be the thing that reports a missing file.
+        return str(path)
+    with zipfile.ZipFile(path) as zf:
+        shapes = [n for n in zf.namelist() if n.lower().endswith(".shp")]
+    if not shapes:
+        raise FileNotFoundError(f"{path.name} contains no .shp member")
+    if len(shapes) > 1:
+        raise ValueError(
+            f"{path.name} contains {len(shapes)} shapefiles {sorted(shapes)}; "
+            "name the one to use rather than letting the choice be arbitrary"
+        )
+    member = shapes[0]
+    # A root-level member opens fine as the bare archive; only nesting needs the zip:// form.
+    return str(path) if "/" not in member else f"zip://{path}!{member}"
+
+
 def block_to_new_district(
     block_zip: Path, district_zip: Path, *, district_column: str | None = None
 ) -> tuple[pd.DataFrame, dict]:
@@ -154,7 +182,7 @@ def block_to_new_district(
     """
     import geopandas as gpd
 
-    plan = gpd.read_file(district_zip)
+    plan = gpd.read_file(_shapefile_uri(district_zip))
     if district_column is None:
         candidates = [c for c in plan.columns if re.fullmatch(r"CD\d+FP", c)]
         if not candidates:

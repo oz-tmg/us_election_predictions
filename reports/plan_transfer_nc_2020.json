@@ -73,61 +73,14 @@
   },
   "old_district_rows": 1196031,
   "votes_without_an_old_district": 0.0,
-  "backtest": {
-    "n_districts": 13,
-    "transfer_mae": 0.030963557324671487,
-    "no_prior_mae": 0.1029623044682442,
-    "state_lean_fallback_mae": 0.10514518989858569,
-    "beats_no_prior": true,
-    "beats_fallback": true,
-    "transfer_sigma": 0.046080001282654125,
-    "confidence_components": {
-      "unsplit_share": {
-        "min": 0.6600271678192874,
-        "median": 0.9234653259124308
-      },
-      "old_district_majority_share": {
-        "min": 0.4314338509901225,
-        "median": 0.5628108604703012
-      },
-      "geocoded_share": {
-        "min": 1.0,
-        "median": 1.0
-      }
-    },
-    "scored_against": "certified us_house 2022"
-  },
-  "backtest_basis_mapped": {
-    "n_districts": 13,
-    "transfer_mae": 0.0460792534631769,
-    "no_prior_mae": 0.1029623044682442,
-    "state_lean_fallback_mae": 0.10514518989858569,
-    "beats_no_prior": true,
-    "beats_fallback": true,
-    "transfer_sigma": 0.05332768751259088,
-    "confidence_components": {
-      "unsplit_share": {
-        "min": 0.6600271678192874,
-        "median": 0.9234653259124308
-      },
-      "old_district_majority_share": {
-        "min": 0.4314338509901225,
-        "median": 0.5628108604703012
-      },
-      "geocoded_share": {
-        "min": 1.0,
-        "median": 1.0
-      }
-    },
-    "scored_against": "certified us_house, after the presidential-to-House basis map",
-    "basis_map": {
-      "intercept": 0.009528,
-      "slope": 1.143412,
-      "residual_sd": 0.071309,
-      "cycles": [
-        2020,
-        2024
-      ]
-    }
+  "usability": {
+    "placed_share": 0.8629,
+    "min_placed_share": 0.9,
+    "districts_expected": 14,
+    "districts_produced": 13,
+    "districts_missing": [
+      2
+    ],
+    "usable": false
   }
 }

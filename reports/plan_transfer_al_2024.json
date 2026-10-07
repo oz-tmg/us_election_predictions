@@ -1,0 +1,69 @@
+{
+  "state": "AL",
+  "from_cycle": 2024,
+  "generated_on": "2026-10-07",
+  "sources": {
+    "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+    "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+    "rdh_precinct_boundaries": "registered 2026-09-30; not required by this path"
+  },
+  "precinct_votes": {
+    "precincts": 2085,
+    "two_party_votes": 2235028.0,
+    "pseudo_precincts": 0,
+    "share_in_pseudo_precincts": 0.0
+  },
+  "block_to_new_district": {
+    "blocks": 185976,
+    "blocks_unplaced": 0,
+    "population_unplaced": 0,
+    "unplaced_blocks_with_land": 0,
+    "districts": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "apportionment": {
+    "precincts_matched_to_vtd": 50,
+    "precincts_unmatched": 2035,
+    "votes_unmatched_to_a_vtd": 2156083.0,
+    "unmatched_precincts": [
+      "01001|100 TRINITY METHODIST",
+      "01001|110 CENTRAL AL ELECTRIC",
+      "01001|140 AUTAUGAVILLE VFD",
+      "01001|150 PRATTMONT BAPTIST",
+      "01001|160 DOSTER COMM CTR",
+      "01001|170 CAMELLIA BAPTIST",
+      "01001|180 OLD KINGSTON VFD",
+      "01001|20 HERITAGE BAPTIST",
+      "01001|220 UPPER KINGSTON",
+      "01001|230 COUNTY LINE BAPTIST",
+      "01001|240 GLYNWOOD BAPTIST",
+      "01001|30 BILLINGSLEY COMM CTR",
+      "01001|40 CENTRAL AL COMM COLLEGE",
+      "01001|50 WHITE CITY VFD",
+      "01001|60 MARBURY MIDDLE SCHOOL",
+      "01001|70 BOONE'S CHAPEL",
+      "01001|80 FRIENDSHIP BAPTIST",
+      "01001|90 BOOTH VFD",
+      "01001|ABSENTEE",
+      "01001|PROVISIONAL",
+      "01003|ABSENTEE",
+      "01003|BARNWELL VFD",
+      "01003|BAY MINETTE CITY HALL/CIVIC",
+      "01003|BELFOREST CHRISTIAN CH",
+      "01003|BON SECOUR FISHERMAN BAPT"
+    ],
+    "votes_from_county_aggregates": 37401.0,
+    "votes_unplaceable": 2118682.0,
+    "votes_offered": 2235028.0,
+    "votes_placed": 116346.0
+  },
+  "old_district_rows": 25687,
+  "votes_without_an_old_district": 0.0
+}

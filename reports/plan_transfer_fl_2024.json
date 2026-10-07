@@ -1,0 +1,100 @@
+{
+  "state": "FL",
+  "from_cycle": 2024,
+  "generated_on": "2026-10-07",
+  "sources": {
+    "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+    "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+    "rdh_precinct_boundaries": "registered 2026-09-30; not required by this path"
+  },
+  "precinct_votes": {
+    "precincts": 5712,
+    "two_party_votes": 10793164.0,
+    "pseudo_precincts": 0,
+    "share_in_pseudo_precincts": 0.0
+  },
+  "block_to_new_district": {
+    "blocks": 390066,
+    "blocks_unplaced": 0,
+    "population_unplaced": 0,
+    "unplaced_blocks_with_land": 0,
+    "districts": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ]
+  },
+  "apportionment": {
+    "precincts_matched_to_vtd": 2538,
+    "precincts_unmatched": 3174,
+    "votes_unmatched_to_a_vtd": 5733595.0,
+    "unmatched_precincts": [
+      "12001|101",
+      "12001|102",
+      "12001|103",
+      "12001|104",
+      "12001|107",
+      "12001|108",
+      "12001|111",
+      "12001|112",
+      "12001|113",
+      "12001|114",
+      "12001|115",
+      "12001|116",
+      "12001|117",
+      "12001|118",
+      "12001|119",
+      "12001|61",
+      "12001|72",
+      "12001|75",
+      "12001|76",
+      "12001|80",
+      "12001|81",
+      "12001|82",
+      "12001|85",
+      "12001|86",
+      "12001|87"
+    ],
+    "votes_from_county_aggregates": 3839782.0,
+    "votes_unplaceable": 1893813.0,
+    "votes_offered": 10793164.0,
+    "votes_placed": 8899351.0
+  },
+  "old_district_rows": 9589935,
+  "votes_without_an_old_district": 0.0,
+  "usability": {
+    "placed_share": 0.8245,
+    "min_placed_share": 0.9,
+    "districts_expected": 28,
+    "districts_produced": 27,
+    "districts_missing": [
+      23
+    ],
+    "usable": false
+  }
+}
