@@ -11,23 +11,23 @@ import pandas as pd
 import pytest
 
 from election_prediction import build_plan_transfer as bpt
-from election_prediction.features import plan_transfer
+from election_prediction.features import block_crosswalk, plan_transfer
 
 
 def _votes(rows):
     """rows: (county_fips, precinct, dem, rep)."""
     df = pd.DataFrame(rows, columns=["county_fips", "precinct", "dem_votes", "rep_votes"])
     df["is_pseudo"] = df["precinct"].str.startswith(bpt.PSEUDO_PRECINCT_PREFIXES)
-    df["vtd_number"] = pd.to_numeric(df["precinct"].str.extract(r"^(\d+)", expand=False), errors="coerce")
-    df.loc[df["is_pseudo"], "vtd_number"] = pd.NA
+    df["vtd_key"] = df["precinct"].map(block_crosswalk.normalise_precinct_code)
+    df.loc[df["is_pseudo"], "vtd_key"] = None
     df["precinct_id"] = df["county_fips"] + "|" + df["precinct"]
     return df
 
 
 def _block_vtd(rows):
-    """rows: (block_id, county_fips, vtd_number)."""
-    return pd.DataFrame(rows, columns=["block_id", "county_fips", "vtd_number"]).assign(
-        vtd_code=lambda d: d["vtd_number"].astype(str)
+    """rows: (block_id, county_fips, vtd_key)."""
+    return pd.DataFrame(rows, columns=["block_id", "county_fips", "vtd_key"]).assign(
+        vtd_key=lambda d: d["vtd_key"].astype(str), vtd_code=lambda d: d["vtd_key"]
     )
 
 
@@ -37,7 +37,7 @@ def _block_pop(rows):
 
 def test_a_precincts_votes_are_split_across_its_blocks_by_population():
     votes = _votes([("51001", "101 - A", 300.0, 100.0)])
-    bv = _block_vtd([("b1", "51001", 101), ("b2", "51001", 101)])
+    bv = _block_vtd([("b1", "51001", "101"), ("b2", "51001", "101")])
     bp = _block_pop([("b1", 300.0), ("b2", 100.0)])
     out, stats = bpt.apportion_to_blocks(votes, bv, bp)
 
@@ -50,7 +50,7 @@ def test_a_precincts_votes_are_split_across_its_blocks_by_population():
 def test_a_precinct_whose_blocks_are_all_unpopulated_is_split_evenly_not_dropped():
     """It still cast votes. A zero-population block is a Census artefact, not an absence."""
     votes = _votes([("51001", "101 - A", 10.0, 10.0)])
-    bv = _block_vtd([("b1", "51001", 101), ("b2", "51001", 101)])
+    bv = _block_vtd([("b1", "51001", "101"), ("b2", "51001", "101")])
     bp = _block_pop([("b1", 0.0), ("b2", 0.0)])
     out, stats = bpt.apportion_to_blocks(votes, bv, bp)
     assert out["dem_votes"].sum() == pytest.approx(10.0)
@@ -71,7 +71,7 @@ def test_county_level_ballots_are_spread_by_turnout_not_by_population():
             ("51001", "# AB - CENTRAL ABSENTEE PRECINCT", 40.0, 10.0),
         ]
     )
-    bv = _block_vtd([("b1", "51001", 101)])
+    bv = _block_vtd([("b1", "51001", "101")])
     bp = _block_pop([("b1", 1.0), ("b2", 999.0)])
     out, stats = bpt.apportion_to_blocks(votes, bv, bp)
 
@@ -88,21 +88,28 @@ def test_votes_in_a_county_with_no_placed_turnout_are_reported_not_spread_statew
             ("51003", "# AB - CENTRAL ABSENTEE PRECINCT", 70.0, 0.0),
         ]
     )
-    bv = _block_vtd([("b1", "51001", 101)])
+    bv = _block_vtd([("b1", "51001", "101")])
     bp = _block_pop([("b1", 10.0)])
     out, stats = bpt.apportion_to_blocks(votes, bv, bp)
     assert stats["votes_unplaceable"] == pytest.approx(70.0)
     assert out["dem_votes"].sum() == pytest.approx(100.0), "they must not land in another county"
 
 
-def test_a_precinct_with_no_matching_vtd_is_named_not_silently_dropped():
+def test_a_precinct_with_no_matching_vtd_is_allocated_by_county_not_dropped():
+    """North Carolina's one-stop batches carry real vote and no VTD code.
+
+    Dropping them cost 47% of the state. A precinct whose code does not resolve knows its
+    county and not its blocks, which is the same position as a central absentee block.
+    """
     votes = _votes([("51001", "101 - A", 10.0, 0.0), ("51001", "999 - GHOST", 5.0, 0.0)])
-    bv = _block_vtd([("b1", "51001", 101)])
+    bv = _block_vtd([("b1", "51001", "101")])
     bp = _block_pop([("b1", 1.0)])
-    _, stats = bpt.apportion_to_blocks(votes, bv, bp)
+    out, stats = bpt.apportion_to_blocks(votes, bv, bp)
     assert stats["precincts_unmatched"] == 1
-    assert stats["votes_unmatched"] == pytest.approx(5.0)
+    assert stats["votes_unmatched_to_a_vtd"] == pytest.approx(5.0)
     assert "51001|999 - GHOST" in stats["unmatched_precincts"]
+    assert stats["votes_unplaceable"] == 0.0, "its county is known, so it is placeable"
+    assert out["dem_votes"].sum() == pytest.approx(15.0), "no vote may be lost"
 
 
 def test_the_source_gate_refuses_a_run_whose_licences_were_not_reviewed():

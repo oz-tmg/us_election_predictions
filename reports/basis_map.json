@@ -1,0 +1,22 @@
+{
+  "fitted_on": "2026-10-07",
+  "intercept": 0.009528,
+  "slope": 1.143412,
+  "residual_sd": 0.071309,
+  "loco_residual_sd": 0.071564,
+  "mae": 0.035816,
+  "n_districts": 770,
+  "cycles": [
+    2020,
+    2024
+  ],
+  "raw_pres_vs_house_mae": 0.03512,
+  "pres_reference_by_cycle": {
+    "2020": 0.527756,
+    "2024": 0.506944
+  },
+  "districts_per_cycle": {
+    "2020": 394,
+    "2024": 376
+  }
+}

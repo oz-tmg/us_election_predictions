@@ -38,6 +38,7 @@ import pandas as pd
 
 from .data import governor, medsl
 from .features import block_crosswalk, cd_baseline, plan_transfer
+from .models.baseline import basis_mapping, projection
 
 #: Registry ids, asserted by ``plan_transfer.assert_sources_registered`` before any run.
 #: ``rdh_precinct_boundaries`` is registered but **not used**: Census's own Block Assignment
@@ -82,8 +83,10 @@ def precinct_votes(path: Path) -> tuple[pd.DataFrame, dict]:
         .sum()
     )
     out["is_pseudo"] = out["precinct"].str.startswith(PSEUDO_PRECINCT_PREFIXES)
-    out["vtd_number"] = pd.to_numeric(out["precinct"].str.extract(r"^(\d+)", expand=False), errors="coerce")
-    out.loc[out["is_pseudo"], "vtd_number"] = pd.NA
+    # Normalised identically to the crosswalk side; a numeric parse destroyed North
+    # Carolina's alphanumeric codes and left 55% of its votes unplaced.
+    out["vtd_key"] = out["precinct"].map(block_crosswalk.normalise_precinct_code)
+    out.loc[out["is_pseudo"], "vtd_key"] = None
     out["precinct_id"] = out["county_fips"] + "|" + out["precinct"]
     two_party = out["dem_votes"] + out["rep_votes"]
     return out, {
@@ -106,12 +109,11 @@ def apportion_to_blocks(
     blocks = block_vtd.merge(block_pop[["block_id", "pop"]], on="block_id", how="left")
     blocks["pop"] = blocks["pop"].fillna(0.0)
 
-    real = votes[~votes["is_pseudo"] & votes["vtd_number"].notna()]
-    keyed = blocks.dropna(subset=["vtd_number"]).copy()
-    keyed["vtd_number"] = keyed["vtd_number"].astype(int)
+    real = votes[~votes["is_pseudo"] & votes["vtd_key"].notna()]
+    keyed = blocks.dropna(subset=["vtd_key"])
     merged = real.merge(
-        keyed[["block_id", "county_fips", "vtd_number", "pop"]],
-        on=["county_fips", "vtd_number"],
+        keyed[["block_id", "county_fips", "vtd_key", "pop"]],
+        on=["county_fips", "vtd_key"],
         how="inner",
     )
 
@@ -131,11 +133,18 @@ def apportion_to_blocks(
     )
 
     matched_ids = set(merged["precinct_id"])
+    # Reported for visibility, then allocated by county in pass 2 rather than discarded.
     unmatched = real[~real["precinct_id"].isin(matched_ids)]
 
-    # Pass 2: county-level ballots, weighted by the turnout pass 1 placed in each block.
-    pseudo = votes[votes["is_pseudo"] | votes["vtd_number"].isna()]
-    pseudo = pseudo[~pseudo["precinct_id"].isin(matched_ids)]
+    # Pass 2: everything pass 1 could not place, weighted by the turnout it did place.
+    #
+    # This is *anything* unplaced, not only the precincts marked pseudo. A precinct whose
+    # code does not resolve to a VTD is in exactly the same epistemic position as a
+    # county-level absentee block: its county is known and its blocks are not. Dropping it
+    # instead cost North Carolina 47% of its vote, because its one-stop and absentee batches
+    # ("ABSEN 1-40", "OSAP 1-40", "ABSENTEE BY MAIL") are real vote carrying no VTD code and
+    # do not begin with the "#" marker Virginia uses.
+    pseudo = votes[~votes["precinct_id"].isin(matched_ids)]
     county_blocks = (
         placed.assign(two_party=placed["dem_votes"] + placed["rep_votes"])
         .groupby(["county_fips", "block_id"], as_index=False)["two_party"]
@@ -165,7 +174,9 @@ def apportion_to_blocks(
     return out, {
         "precincts_matched_to_vtd": int(len(matched_ids)),
         "precincts_unmatched": int(len(unmatched)),
-        "votes_unmatched": float((unmatched["dem_votes"] + unmatched["rep_votes"]).sum()),
+        # Did not resolve to a VTD. Not a loss: these go through county allocation below,
+        # and what truly could not be placed is `votes_unplaceable`.
+        "votes_unmatched_to_a_vtd": float((unmatched["dem_votes"] + unmatched["rep_votes"]).sum()),
         "unmatched_precincts": sorted(unmatched["precinct_id"].tolist())[:25],
         "votes_from_county_aggregates": float((allocated["dem_votes"] + allocated["rep_votes"]).sum()),
         "votes_unplaceable": float((unplaceable["dem_votes"] + unplaceable["rep_votes"]).sum()),
@@ -253,6 +264,46 @@ def same_office_control(baseline_path: Path, transferred: pd.DataFrame, state: s
     }
 
 
+def _mapped_backtest(
+    transferred: pd.DataFrame,
+    actual: pd.DataFrame,
+    state_lean: pd.DataFrame,
+    basis_map_path: Path,
+    from_cycle: int,
+) -> tuple[pd.DataFrame | None, dict]:
+    """Re-score the transfer after converting it onto the House-vote basis."""
+    if not basis_map_path.is_file():
+        return None, {"skipped": f"no basis map at {basis_map_path}"}
+    spec = json.loads(basis_map_path.read_text())
+    reference = (spec.get("pres_reference_by_cycle") or {}).get(str(from_cycle))
+    if reference is None:
+        return None, {
+            "skipped": (
+                f"the basis map has no presidential reference for {from_cycle}; "
+                "refit it with that cycle's CD baseline rather than substituting another"
+            )
+        }
+    bmap = basis_mapping.BasisMap(
+        intercept=float(spec["intercept"]),
+        slope=float(spec["slope"]),
+        residual_sd=float(spec["residual_sd"]),
+        n=int(spec["n_districts"]),
+        cycles=tuple(spec["cycles"]),
+        mae=float(spec["mae"]),
+    )
+    mapped = transferred.copy()
+    mapped[projection.TRANSFERRED_PRIOR_COLUMN] = basis_mapping.to_house_basis(
+        mapped[projection.TRANSFERRED_PRIOR_COLUMN],
+        basis_map=bmap,
+        national_pres_share=float(reference),
+        lagged_national_house_share=float(actual["actual_dem_share"].mean()),
+    )
+    score = plan_transfer.backtest_transfer(mapped, actual, state_lean_fallback=state_lean)
+    score["scored_against"] = "certified us_house, after the presidential-to-House basis map"
+    score["basis_map"] = {k: spec.get(k) for k in ("intercept", "slope", "residual_sd", "cycles")}
+    return mapped, score
+
+
 def _state_lean(panel_path: Path, state: str, cycle: int) -> pd.DataFrame:
     """The comparator the projection uses today: the state's presidential lean."""
     panel = pd.read_parquet(panel_path)
@@ -335,6 +386,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     ap.add_argument("--returns", type=Path, default=Path("data/silver/election_returns.parquet"))
     ap.add_argument(
+        "--basis-map",
+        type=Path,
+        default=None,
+        help="basis_map.json from ep-fit-basis-map: re-scores the transfer on the House basis",
+    )
+    ap.add_argument(
         "--control-baseline",
         type=Path,
         default=None,
@@ -360,6 +417,28 @@ def main(argv: list[str] | None = None) -> int:
         score["scored_against"] = f"certified us_house {args.backtest}"
         report["backtest"] = score
 
+        # The same backtest with the presidential-to-House basis map applied first.
+        #
+        # This is the number to hand `project_house`, and the reason is a double-count that
+        # is easy to miss: the raw backtest above compares a *presidential* transfer against
+        # *House* results, so its residual spread already contains the basis error. Adding
+        # `basis_mapping.residual_sd` on top of it would charge for the same uncertainty
+        # twice. What the map is needed for is the **level** -- its slope of 1.14 and
+        # non-zero intercept mean an uncorrected presidential lean is systematically wrong
+        # in the mean, which a standard deviation cannot see because it removes the mean.
+        #
+        # So: map to fix the bias, then take sigma from the mapped residual.
+        if args.basis_map:
+            mapped, mapped_score = _mapped_backtest(
+                transferred, actual, lean, args.basis_map, args.from_cycle
+            )
+            report["backtest_basis_mapped"] = mapped_score
+            if mapped is not None:
+                out_mapped = args.gold_dir / (
+                    f"plan_transfer_{args.state.lower()}_{args.from_cycle}_house_basis.parquet"
+                )
+                mapped.to_parquet(out_mapped, index=False)
+
     if args.control_baseline and args.control_baseline.is_file():
         report["same_office_control"] = same_office_control(args.control_baseline, transferred, args.state)
 
@@ -378,7 +457,7 @@ def main(argv: list[str] | None = None) -> int:
         f"  precincts: {v['precincts']} ({v['pseudo_precincts']} county-level pseudo-precincts "
         f"holding {v['share_in_pseudo_precincts']:.1%} of the vote)\n"
         f"  matched to a Census VTD: {a['precincts_matched_to_vtd']}, "
-        f"unmatched: {a['precincts_unmatched']} ({a['votes_unmatched']:,.0f} votes)\n"
+        f"by county instead: {a['precincts_unmatched']} ({a['votes_unmatched_to_a_vtd']:,.0f} votes)\n"
         f"  votes placed: {a['votes_placed']:,.0f} of {a['votes_offered']:,.0f} offered "
         f"({a['votes_placed'] / a['votes_offered']:.4%})\n"
         f"  new districts: {len(transferred)}"
@@ -397,6 +476,17 @@ def main(argv: list[str] | None = None) -> int:
             f"beaten: {b['beats_fallback']}\n"
             f"    transfer_sigma          {b['transfer_sigma']:.4f}"
         )
+    bmap = report.get("backtest_basis_mapped", {})
+    if bmap.get("n_districts"):
+        print(
+            f"\n  ON THE HOUSE BASIS (what project_house consumes)\n"
+            f"    transfer MAE            {bmap['transfer_mae']:.4f}\n"
+            f"    state-lean fallback MAE {bmap['state_lean_fallback_mae']:.4f}   "
+            f"beaten: {bmap['beats_fallback']}\n"
+            f"    transfer_sigma          {bmap['transfer_sigma']:.4f}  <- hand this over"
+        )
+    elif bmap.get("skipped"):
+        print(f"\n  basis map not applied: {bmap['skipped']}")
     c = report.get("same_office_control", {})
     if c.get("n_districts"):
         print(

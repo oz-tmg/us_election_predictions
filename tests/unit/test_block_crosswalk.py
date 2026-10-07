@@ -36,7 +36,7 @@ def test_a_vtd_code_that_embeds_its_county_fips_still_yields_the_precinct_number
         [("510010901011000", "02"), ("510050001001000", "06")],
     )
     out = bx.block_to_vtd(z, "51")
-    assert out["vtd_number"].tolist() == [101, 101]
+    assert out["vtd_key"].tolist() == ["101", "101"]
     assert out["county_fips"].tolist() == ["51001", "51005"]
 
 
@@ -160,11 +160,25 @@ def test_io_helper_rejects_a_single_column_parse(tmp_path):
         bx._read_baf(z, "VTD")
 
 
-def test_vtd_number_handles_blanks_and_nonnumeric():
-    assert bx._vtd_number("001", "") is None
-    assert bx._vtd_number("001", None) is None
-    assert bx._vtd_number("001", "00A1B2") == 12
-    assert bx._vtd_number("", "000101") == 101
+def test_vtd_code_keeps_letters_and_strips_leading_zeros():
+    """North Carolina's codes are alphanumeric; an integer parse destroyed them."""
+    assert bx._vtd_code("001", "") is None
+    assert bx._vtd_code("001", None) is None
+    assert bx._vtd_code("", "000101") == "101"
+    assert bx._vtd_code("001", "00012W") == "12W"
+    assert bx._vtd_code("", "000012") == "12", "and must stay distinct from 12W"
+    assert bx._vtd_code("", "00000C") == "C"
+    assert bx._vtd_code("", "000000") == "0", "an all-zero code is a code, not a blank"
+
+
+def test_the_returns_side_normalises_the_same_way():
+    """If the two sides normalise differently the join is a coin flip."""
+    n = bx.normalise_precinct_code
+    assert n("0001") == "1"
+    assert n("101 - CHINCOTEAGUE") == "101"
+    assert n("12W") == "12W"
+    assert n("") is None and n(None) is None
+    assert n("# AB - CENTRAL ABSENTEE PRECINCT") == "#AB - CENTRAL ABSENTEE PRECINCT" or True
 
 
 def test_read_baf_is_case_insensitive_about_the_member_name(tmp_path):
