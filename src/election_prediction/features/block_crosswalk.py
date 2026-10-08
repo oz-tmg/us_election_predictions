@@ -55,28 +55,59 @@ def _read_baf(zip_path: Path, suffix: str) -> pd.DataFrame:
     raise ValueError(f"{zip_path.name}:{names[0]} parsed to a single column")
 
 
-def _vtd_number(county_fp: str, district: str) -> int | None:
-    """The precinct number inside a Census VTD code.
+def _vtd_code(county_fp: str, district: str) -> str | None:
+    """The precinct identifier inside a Census VTD code, normalised to a string.
 
-    The ``DISTRICT`` field is not one format. Accomack County writes precinct 101 as
-    ``000101``; Alleghany writes it as ``005101``, embedding its own county FIPS. Reading
-    the whole field as a number matches the first and misses the second, which silently
-    dropped twelve Alleghany precincts. So an embedded county prefix is stripped first.
+    The ``DISTRICT`` field is not one format, in two separate ways.
+
+    **It is not always a number.** North Carolina's VTD codes are alphanumeric -- ``00012W``,
+    ``00000C``, ``00000H`` -- and parsing them as integers collapsed ``00012W`` and
+    ``000012`` onto one value while discarding the letter. Only 1,126 of North Carolina's
+    3,065 precincts matched and 55% of its votes went unplaced, which read as a failure of
+    the transfer method and was a failure to parse an identifier.
+
+    **Some counties embed their own FIPS.** Accomack County, Virginia writes precinct 101 as
+    ``000101``; Alleghany writes it as ``005101``. Reading the field whole matches the first
+    and misses the second, which dropped twelve Alleghany precincts.
+
+    So the code is normalised as a *string*: strip an embedded county prefix, strip leading
+    zeros, upper-case. ``000101`` and ``005101`` both become ``101``; ``00012W`` becomes
+    ``12W`` and stays distinct from ``000012``'s ``12``.
     """
     if not isinstance(district, str) or not district.strip():
         return None
-    code = district.strip()
+    code = district.strip().upper()
     if county_fp and code.startswith(county_fp) and len(code) > len(county_fp):
         code = code[len(county_fp) :]
-    digits = re.sub(r"\D", "", code)
-    return int(digits) if digits else None
+    code = code.lstrip("0")
+    return code or "0"
+
+
+def normalise_precinct_code(value: object) -> str | None:
+    """Normalise a state's own precinct identifier onto the same footing as a VTD code.
+
+    The returns side needs identical treatment to the crosswalk side or the join is a coin
+    flip: North Carolina writes ``0001`` where Census writes ``000001``, and Virginia writes
+    ``101 - CHINCOTEAGUE`` where Census writes ``000101``.
+    """
+    if value is None:
+        return None
+    text = str(value).strip().upper()
+    if not text:
+        return None
+    # A state may append a name after the code ("101 - CHINCOTEAGUE"); take the leading token.
+    head = re.split(r"[\s\-_]", text, maxsplit=1)[0]
+    candidate = head if re.fullmatch(r"[0-9A-Z]+", head or "") else text
+    candidate = candidate.lstrip("0")
+    return candidate or "0"
 
 
 def block_to_vtd(baf_zip: Path, state_fips: str) -> pd.DataFrame:
     """``block_id, county_fips, vtd_code, vtd_number`` from a BAF package.
 
-    ``vtd_number`` is the integer a state's own returns use to name the precinct, which is
-    what makes the join to election results possible without a name match.
+    ``vtd_key`` is the normalised string a state's own returns use to name the precinct,
+    which is what makes the join to election results possible without a name match. Use
+    ``normalise_precinct_code`` on the returns side so both sides normalise identically.
     """
     df = _read_baf(baf_zip, "VTD")
     cols = {c.upper(): c for c in df.columns}
@@ -88,7 +119,7 @@ def block_to_vtd(baf_zip: Path, state_fips: str) -> pd.DataFrame:
         }
     )
     out["county_fips"] = str(state_fips).zfill(2) + out["county_fp"]
-    out["vtd_number"] = [_vtd_number(c, d) for c, d in zip(out["county_fp"], out["vtd_code"], strict=True)]
+    out["vtd_key"] = [_vtd_code(c, d) for c, d in zip(out["county_fp"], out["vtd_code"], strict=True)]
     return out.drop(columns=["county_fp"])
 
 
@@ -107,6 +138,34 @@ def block_to_old_district(baf_zip: Path) -> pd.DataFrame:
     ).dropna(subset=["old_district"])
 
 
+def _shapefile_uri(path: Path) -> str:
+    """A path GDAL can open, including a zip whose shapefile sits in a subdirectory.
+
+    Census ships its shapefiles at the root of the archive and ``gpd.read_file`` opens those
+    directly. States do not: Texas publishes ``planc2333.zip`` containing
+    ``PLANC2333/PLANC2333.shp``, and handing the archive straight to GDAL fails with
+    "not recognized as being in a supported file format" — which reads like a corrupt
+    download rather than a nested path.
+    """
+    path = Path(path)
+    if path.suffix.lower() != ".zip" or not path.is_file():
+        # Not an archive, or not there at all: hand it over and let the reader raise the
+        # real error. A path helper should not be the thing that reports a missing file.
+        return str(path)
+    with zipfile.ZipFile(path) as zf:
+        shapes = [n for n in zf.namelist() if n.lower().endswith(".shp")]
+    if not shapes:
+        raise FileNotFoundError(f"{path.name} contains no .shp member")
+    if len(shapes) > 1:
+        raise ValueError(
+            f"{path.name} contains {len(shapes)} shapefiles {sorted(shapes)}; "
+            "name the one to use rather than letting the choice be arbitrary"
+        )
+    member = shapes[0]
+    # A root-level member opens fine as the bare archive; only nesting needs the zip:// form.
+    return str(path) if "/" not in member else f"zip://{path}!{member}"
+
+
 def block_to_new_district(
     block_zip: Path, district_zip: Path, *, district_column: str | None = None
 ) -> tuple[pd.DataFrame, dict]:
@@ -123,7 +182,7 @@ def block_to_new_district(
     """
     import geopandas as gpd
 
-    plan = gpd.read_file(district_zip)
+    plan = gpd.read_file(_shapefile_uri(district_zip))
     if district_column is None:
         candidates = [c for c in plan.columns if re.fullmatch(r"CD\d+FP", c)]
         if not candidates:

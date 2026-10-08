@@ -35,6 +35,8 @@ ep-build-governor = "election_prediction.build_governor:main"  # gubernatorial r
 ep-build-fec = "election_prediction.build_fec:main"        # candidate crosswalk, filings, fundraising
 ep-build-cd-baselines = "election_prediction.build_cd_baselines:main"  # presidential vote by congressional district
 ep-build-plan-transfer = "election_prediction.build_plan_transfer:main"  # old-to-new vote transfer (RD-003)
+ep-fit-basis-map = "election_prediction.fit_basis_map:main"  # presidential -> House basis conversion
+ep-results-2026 = "election_prediction.build_results_2026:main"  # capture 2026 results as they certify
 
 [tool.setuptools.packages.find]
 where = ["src"]

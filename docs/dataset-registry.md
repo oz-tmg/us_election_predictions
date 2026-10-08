@@ -288,6 +288,47 @@ its terms carry obligations the one-line row cannot hold. Full text captured at
 > by a few points; it is a real improvement and it is not what stands between the 173
 > fallback seats and a prior. Recorded as a declared limitation, not as done.
 
+### `state_canvass_us_house_2026` — registered 2026-10-07, before use
+
+The only source that can score the sealed pre-registration, and the only one in this
+registry whose data **cannot be re-acquired later**.
+
+| Field | Value |
+|---|---|
+| Owner / URL | The 51 state and territorial election authorities, each cited per row |
+| Legal basis | Official government election returns; public records in every jurisdiction. No licence. |
+| Permitted use | Unrestricted. |
+| Prohibited use | None by licence. **Never present an uncertified count as certified** (CLAUDE.md §5) — which is why `certified` is captured as the source reported it, never inferred from how complete a count looks. |
+| Coverage | Congressional district and state · 2026 general · U.S. House and U.S. Senate |
+| Sensitive fields | None — aggregate returns |
+| Privacy tier | 0 (public aggregate) |
+| Attribution | Per row, via `source_url` |
+| Retention / deletion | `data/raw/source=state_canvass/dataset=us_house_2026/snapshot=<date>.csv`, append-only. **Do not delete**: a snapshot is the only record of what was certified on its date. |
+| Cost | Free |
+| Status | **registered — capture not yet begun** (the election is 2026-11-03) |
+
+> **This is the one dataset in the project that is time-perishable.** The registration
+> pre-committed to "a seat with no certified result by `as_of` is excluded and counted",
+> which requires knowing *which seats were certified on a given date*. A state's canvass page
+> shows today's status, not last week's, so if nobody records that Pennsylvania had certified
+> and Georgia had not on 12 November, no later download recovers it — and the scoring date
+> silently becomes a free parameter, the exact failure the seal exists to prevent.
+>
+> So capture is a **ledger**: `ep-results-2026 capture` appends a dated snapshot that is
+> never overwritten, and `certified_on` is derived as the earliest snapshot in which a seat
+> was first seen certified. The evidence for "this seat certified on the 18th" is a file
+> written on the 18th.
+>
+> **Compiled by hand, with provenance per row**, like `special_elections_compiled`: fifty-one
+> publishing authorities, no common API, no upstream checksum. Scraping is deliberately out
+> of scope — live result pages change format mid-count, and a scraper silently returning
+> yesterday's HTML would corrupt the one artefact that cannot be rebuilt.
+>
+> The path is rehearsed end to end by `scripts/dry_run_scoring.py`, which scores the seal
+> against 2024 results reshaped into this schema. It has already earned its keep twice:
+> it caught a missing required argument and a Senate geography key that would have left 33
+> of the registration's 468 seats silently unscored.
+
 ## NE-000: poll topline redistribution — **answered 2026-10-02**
 
 The gate `docs/national-environment-plan.md` sets on NE-003: nothing may store a real poll

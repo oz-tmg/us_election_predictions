@@ -83,19 +83,24 @@ def validate_silver_returns(df: pd.DataFrame, *, required_columns: list[str]) ->
         neg = int((df["candidatevotes"] < 0).sum())
         rep.add("votes.nonnegative", neg == 0, "" if neg == 0 else f"{neg} negative vote rows")
 
-    # 5. vote-total reconciliation: sum(candidatevotes) == totalvotes per race
+    # 5. vote-total reconciliation: sum(candidatevotes) == totalvotes per race.
+    #
+    # Delegated to `quarantine.unreconciled_races` so this gate and the quarantine cannot
+    # disagree about what reconciles -- they are the same question asked twice, and when
+    # they were implemented separately they drifted: exact equality here excluded 32 races
+    # the quarantine had already been corrected to accept. The rule allows either of the two
+    # conventions MEDSL uses for blank and void ballots; see that module.
     if {"race_id", "candidatevotes", "totalvotes"}.issubset(df.columns):
-        agg = df.groupby("race_id").agg(
-            sum_cand=("candidatevotes", "sum"),
-            reported_total=("totalvotes", "max"),
-        )
-        # MEDSL totalvotes is the race total; allow exact match on races where it is populated
-        recon = agg[agg["reported_total"] > 0]
-        mism = int((recon["sum_cand"] != recon["reported_total"]).sum())
+        from . import quarantine as _q
+
+        unreconciled, n_checked = _q.unreconciled_races(df)
+        mism = len(unreconciled)
         rep.add(
             "votes.reconcile_to_total",
             mism == 0,
-            "" if mism == 0 else f"{mism}/{len(recon)} races where candidate sum != totalvotes",
+            ""
+            if mism == 0
+            else f"{mism}/{n_checked} races where candidate sum != totalvotes under either convention",
         )
 
     # 6. vote share in [0, 1]

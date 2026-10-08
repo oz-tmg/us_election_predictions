@@ -60,6 +60,51 @@ national swing separately, so 0.016 is the number it needs.
    correct; a reader comparing states should know that VA 2020's 0.79 median reflects how
    Virginia reported, not how the special masters drew.
 
+### Extended to five states 2026-10-07, and only Virginia passes
+
+Placement rate by state, which turns out to be the binding constraint on the whole method:
+
+| State | From → to | Votes placed | Prior written? |
+|---|---|---:|---|
+| Virginia | 2020 → 2022 | **100.0%** | yes |
+| North Carolina | 2020 → 2022 | 86.3% | no — below the 90% floor |
+| Florida | 2024 → 2026 | 82.5% | no — and FL-23 got no vote at all |
+| Alabama | 2024 → 2026 | 5.2% | no |
+| Texas | 2024 → 2026 | **0.0%** | no |
+
+**The precinct-to-block link only works where a state's returns name precincts by their
+Census VTD code.** Virginia writes `101 - CHINCOTEAGUE` against VTD `000101`. Alabama writes
+`PREC 4010 - GARDENDALE CIVIC C` — a place, not a code. Texas matches nothing at all.
+
+Texas is why `MIN_PLACED_SHARE = 0.90` now gates the gold write rather than warning: its
+transfer placed zero votes, produced an empty table, and the build wrote
+`data/gold/plan_transfer_tx_2024.parquet` and exited 0.
+
+**This reverses the pilot's conclusion about `rdh_precinct_boundaries`.** The 2026-10-02 note
+recorded that it "was not needed and remains unacquired" because Census's Block Assignment
+Files supply the precinct-to-block link directly. That is true of Virginia, and generalising
+it from Virginia was wrong. A precinct-boundary source — spatial, not code-matched — is
+required for every state whose returns do not carry VTD codes, which on this evidence is
+most of them. RDH is registered, its terms fit a non-commercial nonpartisan audit-only
+project, and it needs an account this session does not have.
+
+North Carolina's backtest is still informative even without a written prior: on the 86.3%
+it placed, MAE is **0.0310** against a state-lean fallback of 0.1051, so the method beats the
+fallback 3.4x on a second state. Its geography sigma of 0.0788 is the conservative bound and
+is partly an artefact of the 13.7% it could not place.
+
+### Two parsing bugs that masqueraded as method failures
+
+Both found by extending past Virginia, and both mine:
+
+1. **VTD codes are not integers.** North Carolina's are alphanumeric (`00012W`, `00000C`);
+   an integer parse collapsed `00012W` and `000012` onto one value and discarded the letter.
+   Now normalised as a string on both sides.
+2. **An unresolved precinct was dropped rather than allocated by county.** North Carolina's
+   one-stop and absentee batches carry real vote, no VTD code, and not the `#` marker
+   Virginia uses. They now take the same county path as a central absentee block — which
+   also took Virginia from 99.85% to 100.0%.
+
 ### Still to do
 
 - **Extend to the nine 2026 states** (173 seats). Each needs its 2026 plan as a boundary

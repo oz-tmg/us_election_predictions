@@ -1,0 +1,86 @@
+{
+  "state": "NC",
+  "from_cycle": 2020,
+  "generated_on": "2026-10-07",
+  "sources": {
+    "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+    "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+    "rdh_precinct_boundaries": "registered 2026-09-30; not required by this path"
+  },
+  "precinct_votes": {
+    "precincts": 3065,
+    "two_party_votes": 5443065.0,
+    "pseudo_precincts": 0,
+    "share_in_pseudo_precincts": 0.0
+  },
+  "block_to_new_district": {
+    "blocks": 236638,
+    "blocks_unplaced": 0,
+    "population_unplaced": 0,
+    "unplaced_blocks_with_land": 0,
+    "districts": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ]
+  },
+  "apportionment": {
+    "precincts_matched_to_vtd": 2300,
+    "precincts_unmatched": 765,
+    "votes_unmatched_to_a_vtd": 2560581.0,
+    "unmatched_precincts": [
+      "37001|104",
+      "37001|10S1",
+      "37001|1210",
+      "37001|TRANSFER",
+      "37005|ABSENTEE",
+      "37005|ONE STOP",
+      "37005|PROVISIONAL",
+      "37009|ABSENTEE",
+      "37009|ONE STOP",
+      "37009|PROVISIONAL",
+      "37009|TRANSFER",
+      "37011|ABSENTEE",
+      "37011|ABSENTEE SUPPLEMENTAL",
+      "37011|ONE STOP",
+      "37011|PROVISIONAL",
+      "37013|ABSENTEE",
+      "37013|AURORA OS",
+      "37013|BELHAVEN OS",
+      "37013|BOE OS",
+      "37013|PROVISIONAL",
+      "37013|TRANSFER",
+      "37015|ABSENTEE BY MAIL",
+      "37015|OS LOB",
+      "37015|OS LW",
+      "37015|OS POW"
+    ],
+    "votes_from_county_aggregates": 1814445.0,
+    "votes_unplaceable": 746136.0,
+    "votes_offered": 5443065.0,
+    "votes_placed": 4696929.0
+  },
+  "old_district_rows": 1196031,
+  "votes_without_an_old_district": 0.0,
+  "usability": {
+    "placed_share": 0.8629,
+    "min_placed_share": 0.9,
+    "districts_expected": 14,
+    "districts_produced": 13,
+    "districts_missing": [
+      2
+    ],
+    "usable": false
+  }
+}

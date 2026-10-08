@@ -8,12 +8,12 @@
 - **Office / geography:** U.S. President · state (two-party Democratic vote share)
 - **Type:** transparent fundamentals baseline (polls-free), OLS
 - **Privacy tier:** 0 (public aggregate)
-- **Owner:** project-owner (data steward) · **Review date:** 2026-10-01
+- **Owner:** project-owner (data steward) · **Review date:** 2026-10-07
 
 ## Data
 
 - **Sources:** MEDSL president returns (state, two-party basis); Census ACS 5-year state demographics. Snapshot dates recorded in `data/manifests/`.
-- **Training cycles:** backtested leave-one-cycle-out (n=610 state-cycles).
+- **Training cycles:** backtested leave-one-cycle-out (n=612 state-cycles).
 - **Target:** state two-party Democratic vote share.
 - **Features:** previous-cycle state share (F-002), national environment, college share (F-006).
 
@@ -25,11 +25,11 @@
 
 ## Backtest (leave-one-cycle-out)
 
-- **MAE (vote share):** 0.0367  ·  **RMSE:** 0.0489
-- **Naive persistence MAE:** 0.0422 (baseline the model must beat)
-- **Winner accuracy:** 0.875
-- **Brier (win prob):** 0.0939  ·  **Log score:** 0.3179
-- **ECE (calibration):** 0.0411  ·  **90% interval coverage:** 0.849
+- **MAE (vote share):** 0.0368  ·  **RMSE:** 0.0489
+- **Naive persistence MAE:** 0.0421 (baseline the model must beat)
+- **Winner accuracy:** 0.876
+- **Brier (win prob):** 0.0938  ·  **Log score:** 0.3177
+- **ECE (calibration):** 0.0456  ·  **90% interval coverage:** 0.851
 
 ## Failure modes
 
