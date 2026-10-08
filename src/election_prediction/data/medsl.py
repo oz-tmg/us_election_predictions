@@ -65,6 +65,7 @@ SILVER_COLUMNS = [
     "certified_flag",
     "stage",
     "special",
+    "runoff",
     "source_id",
     "snapshot_date",
 ]
@@ -386,6 +387,12 @@ def collapse_vote_modes(
             "district",
             "stage",
             "special",
+            # A runoff is a distinct contest, for the same reason `special` is in this key.
+            # Omitting it merged Louisiana 2002's October primary and December runoff before
+            # `_race_id` could separate them, so splitting the race afterwards assigned
+            # Fletcher's and Alexander's primary votes to the runoff -- 270,692 against a
+            # reported 172,462 -- and turned one quarantined race into two.
+            "runoff",
             "candidate",
             "party_detailed",
             "party",
@@ -518,6 +525,11 @@ def standardize_silver_with_stats(bronze: pd.DataFrame, office: str) -> tuple[pd
     out["writein"] = truthy("writein")
     out["stage"] = col("stage", "gen").fillna("gen").astype(str).str.strip().str.lower()
     out["special"] = truthy("special")
+    # A runoff is a separate election with its own electorate and its own reported total.
+    # `_race_id` has always *said* runoffs are distinct races; until 2026-10-07 it did not
+    # make them so, which collapsed Louisiana's 2002 open primary and its December runoff
+    # into one race and summed 184,657 + 172,462 against a total of 184,657.
+    out["runoff"] = truthy("runoff")
     # MEDSL historical returns are certified unless an 'unofficial' flag says otherwise.
     out["certified_flag"] = ~truthy("unofficial")
 
@@ -543,8 +555,28 @@ def standardize_silver_with_stats(bronze: pd.DataFrame, office: str) -> tuple[pd
     return out, stats
 
 
+def _truthy_value(value: object) -> bool:
+    """MEDSL's booleans arrive as TRUE/FALSE strings as often as as bools."""
+    if isinstance(value, str):
+        return value.strip().upper() in {"TRUE", "T", "YES", "Y", "1"}
+    return bool(value) and not pd.isna(value)
+
+
 def _race_id(df: pd.DataFrame) -> pd.Series:
-    """Stable race key. Specials and runoffs are distinct races from the regular one."""
+    """Stable race key. Specials and runoffs are distinct races from the regular one.
+
+    **The runoff half of that sentence was aspirational until 2026-10-07.** Louisiana's 2002
+    5th district ran an all-party primary in October and a runoff in December, and both land
+    under ``stage = GEN``. Collapsed into one race, its candidate votes summed 357,119
+    against a reported total of 184,657 and it was quarantined as "multi_round contest
+    suspected". Split on the ``runoff`` flag the file already carries, each round reconciles
+    **exactly**: seven candidates to 184,657 and two to 172,462. No new data was needed —
+    only using a column that had been read and discarded.
+
+    This matters beyond one 2002 race. ``evaluation/score_preregistration`` registered the
+    rule that "Georgia and Louisiana can run to a December runoff", so a 2026 runoff would
+    have hit the same collapse while scoring the sealed forecast.
+    """
 
     def mk(r):
         base = f"{r['cycle']}_{r['office']}_{r['state_po']}".lower()
@@ -553,8 +585,13 @@ def _race_id(df: pd.DataFrame) -> pd.Series:
             base += f"_{int(district):02d}" if pd.notna(district) else "_na"
         stage = str(r.get("stage") or "gen").strip().lower().replace(" ", "_")
         base += f"_{stage}"
-        if bool(r.get("special")):
+        # `_truthy_value`, not `bool`: a caller handing over the raw string "FALSE" would
+        # otherwise get `_special` appended, because `bool("FALSE")` is True. Production
+        # coerces these upstream, but a key-building function should not depend on that.
+        if _truthy_value(r.get("special")):
             base += "_special"
+        if _truthy_value(r.get("runoff")):
+            base += "_runoff"
         return base
 
     return df.apply(mk, axis=1)

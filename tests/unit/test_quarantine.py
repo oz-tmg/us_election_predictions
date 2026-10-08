@@ -111,3 +111,74 @@ def test_unnamed_party_line_rows_are_not_duplicates():
     frame = validate_silver_returns(dupe, required_columns=[]).to_frame()
     key = frame[frame["check"] == "keys.unique_race_candidate_party"]
     assert key.iloc[0]["status"] == "FAIL"
+
+
+# ---- runoffs are distinct contests ---------------------------------------------------------
+# Louisiana's 2002 5th district ran an all-party primary in October and a runoff in December,
+# both under stage GEN. Collapsed into one race its candidate votes summed 357,119 against a
+# reported total of 184,657. Split on the `runoff` flag the file already carried, each round
+# reconciles exactly: seven candidates to 184,657 and two to 172,462.
+#
+# This matters forward, not just for 2002: `score_preregistration` registered the rule that
+# "Georgia and Louisiana can run to a December runoff", so a 2026 runoff would hit the same
+# collapse while scoring the sealed forecast.
+
+
+def _la_2002_rows():
+    """The real Louisiana 2002 5th district rows, both rounds."""
+    primary = [
+        ("CLYDE C HOLLOWAY", 42573),
+        ("JACK WRIGHT", 3581),
+        ("LEE FLETCHER", 45278),
+        ("ROBERT J BARHAM", 34533),
+        ("RODNEY ALEXANDER", 52952),
+        ("SAM HOUSTON MELTON JR", 4595),
+        ("VINSON MOUSER", 1145),
+    ]
+    runoff = [("LEE FLETCHER", 85744), ("RODNEY ALEXANDER", 86718)]
+    rows = [
+        {
+            "year": "2002",
+            "state_po": "LA",
+            "office": "US HOUSE",
+            "district": "5",
+            "stage": "GEN",
+            "special": "FALSE",
+            "runoff": flag,
+            "candidate": name,
+            "party": "OTHER",
+            "writein": "FALSE",
+            "mode": "TOTAL",
+            "candidatevotes": votes,
+            "totalvotes": total,
+        }
+        for flag, total, bloc in (("FALSE", 184657, primary), ("TRUE", 172462, runoff))
+        for name, votes in bloc
+    ]
+    return pd.DataFrame(rows)
+
+
+def test_a_runoff_is_a_separate_race_from_the_round_that_preceded_it():
+    """Also pins that the key reads MEDSL's TRUE/FALSE strings, since `bool("FALSE")` is True."""
+    from election_prediction.data import medsl
+
+    df = _la_2002_rows()
+    df["cycle"] = 2002
+    df["district_num"] = 5
+    df["office"] = "us_house"
+    ids = medsl._race_id(df)  # strings left as the file writes them, deliberately
+    assert ids.nunique() == 2
+    assert set(ids) == {"2002_us_house_la_05_gen", "2002_us_house_la_05_gen_runoff"}
+
+
+def test_the_mode_collapse_key_separates_the_rounds_too():
+    """Omitting `runoff` here merged the rounds *before* the race key could split them,
+    which assigned Fletcher's and Alexander's primary votes to the runoff and turned one
+    quarantined race into two."""
+    from election_prediction.data import medsl
+
+    out, _ = medsl.collapse_vote_modes(_la_2002_rows())
+    assert len(out) == 9, "no row may be merged across rounds"
+    by_round = out.groupby("runoff")["candidatevotes"].sum().to_dict()
+    assert by_round["FALSE"] == 184657
+    assert by_round["TRUE"] == 172462
