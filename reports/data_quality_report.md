@@ -1,6 +1,6 @@
 # Data-Quality Report — P0 Foundation
 
-_Generated: 2026-10-07T23:22:55+00:00Z_
+_Generated: 2026-10-08T04:42:42+00:00Z_
 
 > Scope: loaded MEDSL federal returns (silver), model-ready race table (gold),
 > and the canonical geography spine. Nonpartisan; historical/certified returns.
@@ -13,8 +13,8 @@ _Generated: 2026-10-07T23:22:55+00:00Z_
 
 ## Coverage
 
-- Returns rows: **40,663**
-- Distinct races: **12,390**
+- Returns rows: **40,672**
+- Distinct races: **12,392**
 - Cycles: 1976, 1978, 1980, 1982, 1984, 1986, 1988, 1990, 1992, 1994, 1996, 1998, 2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016, 2018, 2020, 2021, 2022, 2024
 - Offices: president, us_house, us_senate
 - States covered: 51
@@ -28,16 +28,15 @@ _Generated: 2026-10-07T23:22:55+00:00Z_
 
 ## Vote-total reconciliation
 
-- Races checked (totalvotes populated): 12,386
+- Races checked (totalvotes populated): 12,388
 - Races where candidate sum ≠ reported total: **32** (0.258%, tolerance 0.5%)
 
 ## Quarantined races (excluded from the modeling layer)
 
-- Races excluded: **2** of 12,392 (0.016%)
+- Races excluded: **1** of 12,393 (0.008%)
 
 These races' candidate votes do not sum to the jurisdiction's reported total. The causes are heterogeneous and state-specific, so they are excluded uniformly and retained at `data/silver/quarantined_races.csv` with a reason, rather than corrected by cause-specific rules (CLAUDE.md §6). The reason labels below are descriptive: confirming why any given race fails requires the state's certified return, not an inference from the discrepancy.
 
-- 1 — multi_round_contest_suspected (candidate sum ~2x total)
 - 1 — candidate_sum_below_total
 
 ## Standardization decisions
@@ -45,7 +44,7 @@ These races' candidate votes do not sum to the jurisdiction's reported total. Th
 What the raw → silver transform dropped or merged, per source:
 
 - `president` — dropped non general: 0, mode rows collapsed: 0, fusion candidates merged: 42, unreported vote races: 0, rows: 4,775
-- `us_house` — dropped non general: 60, mode rows collapsed: 107, fusion candidates merged: 1,134, unreported vote races: 3, rows: 32,148
+- `us_house` — dropped non general: 60, mode rows collapsed: 105, fusion candidates merged: 1,134, unreported vote races: 3, rows: 32,150
 - `us_senate` — dropped non general: 9, mode rows collapsed: 129, fusion candidates merged: 41, unreported vote races: 0, rows: 3,749
 
 Primaries and other non-general stages are excluded so comparisons stay like-for-like; fusion-voting lines are summed per candidate so a candidate's own vote is not split across party lines.

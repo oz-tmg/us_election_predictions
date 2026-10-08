@@ -1,5 +1,5 @@
 {
-  "acquired_at": "2026-10-07T23:22:33+00:00",
+  "acquired_at": "2026-10-08T04:42:19+00:00",
   "acquisition_method": "manual_export",
   "checksum_sha256": "76eec42483ee9f0fc5cf6e377442c783d1ae6eefa929729fd6561a69bab47f2a",
   "contains_personal_data": false,
@@ -23,7 +23,7 @@
   "redistribution_allowed": true,
   "required_attribution": "MIT Election Data and Science Lab (MEDSL), Harvard Dataverse.",
   "review_date": "2027-10-07",
-  "row_count": 32148,
+  "row_count": 32150,
   "schema_version": "1.0",
   "snapshot_date": "2026-10-07",
   "source_id": "medsl_house_1976_2024",
