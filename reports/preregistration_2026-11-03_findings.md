@@ -169,3 +169,74 @@ through that, 26 seats of the 2026 forecast. The uniform-exclusion principle is 
 equality against an inconsistent `totalvotes` is the wrong way to operationalise it. This
 moves the threshold question in `PROJECT_CONTEXT.md` §15 from an open question to a known
 cost with a number attached.
+
+---
+
+## F-3 (2026-10-11) — the live model no longer matches the seal, and the two chambers moved in opposite directions
+
+**Why this exists.** F-2 recorded that New York's 26 seats were priced off 2022 because its
+2024 House results were quarantined. That quarantine was corrected on 2026-10-07. This is
+the measurement of what the correction did, taken **before the election** so the movement is
+on the record as a prediction rather than as hindsight. `PROJECT_CONTEXT.md` §8 requires
+every number to be reproducible from a clean checkout; the seal is reproducible at its own
+commit (`9e4e512`) and current `HEAD` produces something different, which is what follows.
+
+### The band, sealed against now
+
+| shrinkage | House mean seats | | House P(Dem) | | Senate P(Dem) | |
+|---|---:|---:|---:|---:|---:|---:|
+| | sealed | now | sealed | now | sealed | now |
+| 0.25 | 228.2 | **232.8** | 0.536 | **0.563** | 0.272 | **0.262** |
+| 0.33 | 233.1 | **237.8** | 0.562 | **0.592** | 0.298 | **0.287** |
+| 0.50 | 243.6 | **248.3** | 0.620 | **0.649** | 0.357 | **0.346** |
+| 0.75 | 259.3 | **263.9** | 0.701 | **0.726** | 0.450 | **0.438** |
+| 1.00 | 275.1 | **279.7** | 0.770 | **0.793** | 0.545 | **0.534** |
+
+The House gains **+4.6 to +4.7** mean seats at every assumption and 2.3 to 3.0 points of
+control probability. The Senate **loses** 0.1 to 0.2 mean seats and about 1.1 points of
+control probability. The 90% seat range is unchanged to within a seat or two (233-236 sealed,
+231-235 now), so this is a shift in location, not in stated uncertainty.
+
+### Both registered conclusions survive
+
+- *"House: Democrats favored at every assumption in the band"* — minimum P(Dem) is now
+  **0.563**, still above 0.5. **Holds.**
+- *"Senate: Democrats favored only at shrinkage=1"* — P(Dem) is **0.534** at shrinkage 1 and
+  **0.438** at 0.75. **Holds**, and the margin at shrinkage 1 is thinner than it was.
+
+So the correction moved the numbers and changed neither verdict. That is the useful thing to
+know: had a verdict flipped, the honest response would have been a new registration.
+
+### Why the chambers moved in opposite directions
+
+This looked wrong and is not. It is a denominator effect, and it is worth writing down
+because it would read as a bug if anyone found it later.
+
+**The House.** Restoring New York's 26 districts raises the 2024 national House two-party
+Democratic share from **0.4819 to 0.4869**, +0.0050. Every assumption in the band is that
+baseline plus a shrinkage multiple of the same specials swing, so the whole band shifts
++0.0052 uniformly — and the swing itself is unchanged to seven decimal places. New York's own
+districts are in the House universe, so the chamber gains both the shift and the seats.
+
+**The Senate.** The Senate model conditions on each state's *presidential* lean, which is
+that state's share minus the national presidential share. Restoring New York (0.5634
+Democratic) and the District of Columbia (0.9331) raises the 2024 national presidential
+two-party Democratic share from **0.4875 to 0.4925**, also +0.0050. **New York's Senate seat
+is not up in 2026 and the District has none.** So all 33 seats on the ballot had their lean
+move 0.0050 *less* Democratic, with no restored seat to offset it.
+
+Restoring missing data therefore made the Senate forecast slightly less Democratic, because
+the restored jurisdictions are far more Democratic than average and are not themselves on
+the Senate ballot. Mechanically correct; counter-intuitive; now documented.
+
+### Scoring disposition, unchanged
+
+**Score the registration as sealed.** The sealed band is what was predicted and the seal's
+digest still verifies (`6d51f52d…` unchanged on disk; `predictions_sha256` intact). F-2's
+prediction stands too: New York's seats in the *sealed* forecast remain priced off 2022, so
+they should still score visibly worse than the chamber, and the four sub-50% seats are still
+where to look. What F-3 adds is that the defect is fixed **going forward**, and by how much,
+stated before the outcome.
+
+Artefacts: `reports/projection_2026-10-11.txt` is the new run;
+`reports/projection_2026.txt` is left untouched as the run that corresponds to the seal.
