@@ -25,6 +25,16 @@ dev = ["pytest>=7.4", "ruff>=0.4", "mypy>=1.8"]
 # Figures for public writing only; no modelling code imports these (CLAUDE.md §7).
 # matplotlib: PSF-style BSD-compatible licence (matplotlib/LICENSE).
 viz = ["matplotlib>=3.8"]
+# Dashboard (docs/deployment-plan.md). Never imported by modelling code. Licences:
+# dash, plotly, gunicorn, PyJWT: MIT; cryptography: Apache-2.0/BSD-3-Clause;
+# google-cloud-storage: Apache-2.0.
+dashboard = [
+  "dash>=2.17",
+  "plotly>=5.22",
+  "gunicorn>=22",
+  "pyjwt[crypto]>=2.8",
+  "google-cloud-storage>=2.16",
+]
 
 [project.scripts]
 # Reproducible one-command builds.
@@ -37,9 +47,14 @@ ep-build-cd-baselines = "election_prediction.build_cd_baselines:main"  # preside
 ep-build-plan-transfer = "election_prediction.build_plan_transfer:main"  # old-to-new vote transfer (RD-003)
 ep-fit-basis-map = "election_prediction.fit_basis_map:main"  # presidential -> House basis conversion
 ep-results-2026 = "election_prediction.build_results_2026:main"  # capture 2026 results as they certify
+ep-export-dashboard = "election_prediction.dashboard.export:main"  # build artefacts -> run bundles
+ep-dashboard = "election_prediction.dashboard.wsgi:main"  # run the dashboard locally
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"election_prediction.dashboard" = ["assets/*.css"]
 
 [tool.ruff]
 line-length = 110
