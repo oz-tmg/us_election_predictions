@@ -1,0 +1,242 @@
+{
+  "as_of": "2026-10-29",
+  "status": "cross-check only; not blended into the projection",
+  "source_id": "texas_polls_2026_compiled",
+  "snapshot": "data/raw/source=texas_polls_2026_compiled/snapshot=2026-10-29/sha256=8556da19d0d9cc5e68b03449843ddbe130219aceea5206cc263567486ad35bff/texas_polls_2026.csv",
+  "snapshot_sha256": "8556da19d0d9cc5e68b03449843ddbe130219aceea5206cc263567486ad35bff",
+  "validation": {
+    "required_columns": true,
+    "poll_id_unique": true,
+    "required_values_present": true,
+    "dates_valid": true,
+    "sample_size_positive": true,
+    "major_shares_valid": true,
+    "house_effect_valid": true,
+    "population_known": true,
+    "state_known": true,
+    "publication_valid": true,
+    "source_urls_present": true,
+    "n_polls": 11,
+    "ok": true
+  },
+  "excluded_from_average": [],
+  "method": {
+    "average": "polling.average.average_polls: exponential time decay, sqrt sample size, LV 1.0 / RV 0.85",
+    "half_lives_days": [
+      21.0,
+      10.0
+    ],
+    "house_effects": "not estimated (P2-003 unbuilt); none applied",
+    "poll_error_floor": 0.025
+  },
+  "averages": {
+    "half_life_21d_all": [
+      {
+        "office": "governor",
+        "cycle": 2026,
+        "geography_id": "state:48",
+        "state_po": "TX",
+        "district_num": null,
+        "as_of": "2026-10-29",
+        "poll_mean_dem_share": 0.48374444907630343,
+        "poll_sigma": 0.02636392615024904,
+        "n_polls": 5,
+        "n_pollsters": 4,
+        "effective_polls": 2.8985961668551496,
+        "first_field_start": "2026-08-05",
+        "last_field_end": "2026-10-18",
+        "house_effects_applied": false
+      },
+      {
+        "office": "us_senate",
+        "cycle": 2026,
+        "geography_id": "state:48",
+        "state_po": "TX",
+        "district_num": null,
+        "as_of": "2026-10-29",
+        "poll_mean_dem_share": 0.5127035472776642,
+        "poll_sigma": 0.026733651509619996,
+        "n_polls": 6,
+        "n_pollsters": 5,
+        "effective_polls": 3.673593183567805,
+        "first_field_start": "2026-08-05",
+        "last_field_end": "2026-10-18",
+        "house_effects_applied": false
+      }
+    ],
+    "half_life_21d_likely_voters_only": [
+      {
+        "office": "governor",
+        "cycle": 2026,
+        "geography_id": "state:48",
+        "state_po": "TX",
+        "district_num": null,
+        "as_of": "2026-10-29",
+        "poll_mean_dem_share": 0.48422811898881213,
+        "poll_sigma": 0.026327400514846104,
+        "n_polls": 4,
+        "n_pollsters": 3,
+        "effective_polls": 2.7065371823149045,
+        "first_field_start": "2026-08-09",
+        "last_field_end": "2026-10-18",
+        "house_effects_applied": false
+      },
+      {
+        "office": "us_senate",
+        "cycle": 2026,
+        "geography_id": "state:48",
+        "state_po": "TX",
+        "district_num": null,
+        "as_of": "2026-10-29",
+        "poll_mean_dem_share": 0.5125224862036039,
+        "poll_sigma": 0.026792653721584948,
+        "n_polls": 5,
+        "n_pollsters": 4,
+        "effective_polls": 3.466693901151935,
+        "first_field_start": "2026-08-09",
+        "last_field_end": "2026-10-18",
+        "house_effects_applied": false
+      }
+    ],
+    "half_life_10d_all": [
+      {
+        "office": "governor",
+        "cycle": 2026,
+        "geography_id": "state:48",
+        "state_po": "TX",
+        "district_num": null,
+        "as_of": "2026-10-29",
+        "poll_mean_dem_share": 0.4844301281132891,
+        "poll_sigma": 0.02665855147520022,
+        "n_polls": 5,
+        "n_pollsters": 4,
+        "effective_polls": 2.222445204421183,
+        "first_field_start": "2026-08-05",
+        "last_field_end": "2026-10-18",
+        "house_effects_applied": false
+      },
+      {
+        "office": "us_senate",
+        "cycle": 2026,
+        "geography_id": "state:48",
+        "state_po": "TX",
+        "district_num": null,
+        "as_of": "2026-10-29",
+        "poll_mean_dem_share": 0.51439721617457,
+        "poll_sigma": 0.026923192086236444,
+        "n_polls": 6,
+        "n_pollsters": 5,
+        "effective_polls": 2.652972323348219,
+        "first_field_start": "2026-08-05",
+        "last_field_end": "2026-10-18",
+        "house_effects_applied": false
+      }
+    ],
+    "half_life_10d_likely_voters_only": [
+      {
+        "office": "governor",
+        "cycle": 2026,
+        "geography_id": "state:48",
+        "state_po": "TX",
+        "district_num": null,
+        "as_of": "2026-10-29",
+        "poll_mean_dem_share": 0.48448266270331586,
+        "poll_sigma": 0.026656956721878306,
+        "n_polls": 4,
+        "n_pollsters": 3,
+        "effective_polls": 2.2057410024051602,
+        "first_field_start": "2026-08-09",
+        "last_field_end": "2026-10-18",
+        "house_effects_applied": false
+      },
+      {
+        "office": "us_senate",
+        "cycle": 2026,
+        "geography_id": "state:48",
+        "state_po": "TX",
+        "district_num": null,
+        "as_of": "2026-10-29",
+        "poll_mean_dem_share": 0.5143830809777962,
+        "poll_sigma": 0.026933010293063588,
+        "n_polls": 5,
+        "n_pollsters": 4,
+        "effective_polls": 2.634948922233491,
+        "first_field_start": "2026-08-09",
+        "last_field_end": "2026-10-18",
+        "house_effects_applied": false
+      }
+    ]
+  },
+  "fundamentals_senate": {
+    "refresh": [
+      {
+        "assumption": "shrinkage=0.25",
+        "mean_dem_share": 0.4723492570217887,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.40975
+      },
+      {
+        "assumption": "shrinkage=0.33",
+        "mean_dem_share": 0.4808261808841872,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.43465
+      },
+      {
+        "assumption": "shrinkage=0.5",
+        "mean_dem_share": 0.4988396440917841,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.49155
+      },
+      {
+        "assumption": "shrinkage=0.75",
+        "mean_dem_share": 0.5253300311617797,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.576
+      },
+      {
+        "assumption": "shrinkage=1",
+        "mean_dem_share": 0.5518204182317751,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.65615
+      }
+    ],
+    "south_texas_scenario": [
+      {
+        "assumption": "shrinkage=0.25",
+        "mean_dem_share": 0.4736188613708327,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.4139
+      },
+      {
+        "assumption": "shrinkage=0.33",
+        "mean_dem_share": 0.4820957852332313,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.4386
+      },
+      {
+        "assumption": "shrinkage=0.5",
+        "mean_dem_share": 0.5001092484408282,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.49585
+      },
+      {
+        "assumption": "shrinkage=0.75",
+        "mean_dem_share": 0.5265996355108237,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.5795
+      },
+      {
+        "assumption": "shrinkage=1",
+        "mean_dem_share": 0.5530900225808191,
+        "sigma": 0.1254165985836632,
+        "dem_win_prob": 0.65985
+      }
+    ]
+  },
+  "governor_history_two_party_dem": {
+    "2018": 0.43234552495135664,
+    "2022": 0.4447985821589418
+  },
+  "governor_model": "none: no governor projection exists; history is context, not a prior",
+  "git_commit": "ddc23f4d9f3ded9756ee9465497b2c3134399e3f"
+}

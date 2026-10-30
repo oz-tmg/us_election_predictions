@@ -1,0 +1,36 @@
+{
+  "acquired_at": "2026-10-30T00:35:24+00:00",
+  "acquisition_method": "manual_compilation",
+  "checksum_sha256": "8556da19d0d9cc5e68b03449843ddbe130219aceea5206cc263567486ad35bff",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "texas_polls_2026.csv",
+  "election_cycle": "2026",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Topline facts cited per row; no release prose or crosstabs reproduced (NE-000 route).",
+  "office_coverage": [
+    "us_senate",
+    "governor"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; cross-check beside the fundamentals band.",
+  "privacy_tier": 0,
+  "prohibited_use": "No blending into the forecast without a backtested weight; no respondent data.",
+  "raw_path": "data/raw/source=texas_polls_2026_compiled/snapshot=2026-10-29/sha256=8556da19d0d9cc5e68b03449843ddbe130219aceea5206cc263567486ad35bff/texas_polls_2026.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "Each pollster as named per row",
+  "review_date": "2027-10-29",
+  "row_count": 11,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-29",
+  "source_id": "texas_polls_2026_compiled_8556da19d0d9",
+  "source_owner": "Pollsters named per row (hand-compiled by Savepoint Analytics)",
+  "source_url": "source_url per compiled row",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

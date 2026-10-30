@@ -1,0 +1,22 @@
+# texas_polls_2026_compiled — hand-compiled 2026 Texas Senate and governor toplines (docs/dataset-registry.md, October 29 intake).
+# Every row was read on the pollster's own release on retrieved_on; percentages are the release's headline ballot.
+# Cross-check only: averaged beside the fundamentals band, never blended into it.
+# Excluded, with reason:
+#   Fox News Poll (Sep 24-28) governor ballot: release does not state the population for the governor question.
+#   NYT/Siena (posted 2026-06-30): release page states no field dates, sample size or population.
+#   Emerson College Polling (Oct 17-19): pollster release not located; news accounts disagree on the Senate topline.
+#   UT/Texas Politics Project (Sep 25-Oct 5): pollster release could not be opened; figures seen only in news coverage.
+#   Texas Southern University (Sep 15-19; reported Oct 29 wave): pollster release not located.
+#   GBAO (Hinojosa campaign) and other campaign-released polls: partisan sponsor.
+poll_id,pollster,sponsor,sponsor_partisan,internal,office,cycle,geography_id,state_po,district_num,field_start,field_end,published_on,sample_size,population,mode,dem_pct,rep_pct,other_pct,undecided_pct,source_url,retrieved_on,note
+tx-sen-2026-emerson-0810,Emerson College Polling,Nexstar Media,NONE,False,us_senate,2026,state:48,TX,,2026-08-09,2026-08-10,2026-08-13,1000,LV,text-to-web panel,46,47,2,5,https://emersoncollegepolling.com/texas-2026-poll-paxton-and-talarico/,2026-10-29,
+tx-gov-2026-emerson-0810,Emerson College Polling,Nexstar Media,NONE,False,governor,2026,state:48,TX,,2026-08-09,2026-08-10,2026-08-13,1000,LV,text-to-web panel,45,49,,4,https://emersoncollegepolling.com/texas-2026-poll-paxton-and-talarico/,2026-10-29,other not stated on release
+tx-sen-2026-uttpp-0813,UT/Texas Politics Project,University of Texas at Austin,NONE,False,us_senate,2026,state:48,TX,,2026-08-05,2026-08-13,2026-08-24,1200,RV,online (fielded by YouGov),42,39,3,14,https://texaspolitics.utexas.edu/blog/new-ut-texas-politics-project-poll-finds-talarico-leading-paxton-abbott-leading-hinojosa-continued-resistance-to-data-centers-2,2026-10-29,registered voters
+tx-gov-2026-uttpp-0813,UT/Texas Politics Project,University of Texas at Austin,NONE,False,governor,2026,state:48,TX,,2026-08-05,2026-08-13,2026-08-24,1200,RV,online (fielded by YouGov),40,45,5,10,https://texaspolitics.utexas.edu/blog/new-ut-texas-politics-project-poll-finds-talarico-leading-paxton-abbott-leading-hinojosa-continued-resistance-to-data-centers-2,2026-10-29,registered voters
+tx-sen-2026-emerson-0914,Emerson College Polling,Nexstar Media,NONE,False,us_senate,2026,state:48,TX,,2026-09-12,2026-09-14,2026-09-17,1000,LV,text-to-web panel,47,46,2,4,https://emersoncollegepolling.com/texas-2026-poll-talarico-and-paxton-in-dead-heat-abbott-maintains-edge/,2026-10-29,
+tx-gov-2026-emerson-0914,Emerson College Polling,Nexstar Media,NONE,False,governor,2026,state:48,TX,,2026-09-12,2026-09-14,2026-09-17,1000,LV,text-to-web panel,46,49,2,4,https://emersoncollegepolling.com/texas-2026-poll-talarico-and-paxton-in-dead-heat-abbott-maintains-edge/,2026-10-29,
+tx-sen-2026-fox-0928,Fox News Poll (Beacon Research / Shaw & Company),Fox News,NONE,False,us_senate,2026,state:48,TX,,2026-09-24,2026-09-28,2026-10-01,881,LV,live phone + text-to-online,51,49,,,https://www.foxnews.com/politics/fox-news-poll-its-lone-star-senate-showdown-between-talarico-paxton,2026-10-29,likely-voter subsample of 1203 registered voters
+tx-sen-2026-uhhobby-1014,UH Hobby School of Public Affairs,University of Houston,NONE,False,us_senate,2026,state:48,TX,,2026-10-10,2026-10-14,2026-10-19,2000,LV,SMS-to-online,48,46,3,3,https://www.uh.edu/hobby/texas2026/,2026-10-29,
+tx-gov-2026-uhhobby-1014,UH Hobby School of Public Affairs,University of Houston,NONE,False,governor,2026,state:48,TX,,2026-10-10,2026-10-14,2026-10-19,2000,LV,SMS-to-online,46,49,2,3,https://www.uh.edu/hobby/texas2026/,2026-10-29,
+tx-sen-2026-tpor-1018,Texas Public Opinion Research,,NONE,False,us_senate,2026,state:48,TX,,2026-10-15,2026-10-18,2026-10-23,969,LV,not stated,51,47,2,,https://texaspublicopinionresearch.substack.com/p/october-poll-in-texas-general-election,2026-10-29,undecided pushed to a choice
+tx-gov-2026-tpor-1018,Texas Public Opinion Research,,NONE,False,governor,2026,state:48,TX,,2026-10-15,2026-10-18,2026-10-23,969,LV,not stated,48,51,1,,https://texaspublicopinionresearch.substack.com/p/october-poll-in-texas-general-election,2026-10-29,undecided pushed to a choice

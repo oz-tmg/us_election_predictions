@@ -1,5 +1,11 @@
 # Dataset Registry
 
+## October 29 Texas Poll Cross-Check Intake (registered before use)
+
+| dataset_id | Primary provider/source | Terms and permitted use | Coverage and gate |
+|---|---|---|---|
+| `texas_polls_2026_compiled` | Savepoint Analytics, hand-compiled from each pollster's own release (Emerson College Polling, Fox News Poll / Beacon Research & Shaw & Company, UH Hobby School of Public Affairs, Texas Public Opinion Research, UT/Texas Politics Project); exact URL per row in `data/reference/texas_polls_2026.csv` | Route approved by NE-000: topline facts only, cited per row with retrieval date, no release prose or crosstab tables reproduced. Tier 0 public aggregate; no respondent records. News coverage, aggregators and Wikipedia are **not** sources: a row enters only if its toplines, field dates, sample size and population were read on the pollster's own release. UT/Texas Politics Project waves are fielded by YouGov but published by UT, which states it makes results available for public use and states no data licence; the YouGov Public Data License restrictions (NE-000) attach to YouGov's own publications, so these rows are admitted and flagged for steward confirmation. | 2026 Texas U.S. Senate and governor, statewide. **Cross-check only**: averaged and shown beside the fundamentals band, never blended into it — no backtested poll/fundamentals weight exists, and pollster house effects are not estimated. Campaign-released or partisan-sponsored polls are excluded from the average. Rows lacking sample size, field dates or population on the original release are excluded and listed in the file header. Snapshot copied to `data/raw/source=texas_polls_2026_compiled/` with SHA-256 manifest. |
+
 ## October 25 Manual Polling Archive Intake
 
 Later October 25 review: the supplied `senate_polls(1).csv` has 40 answer rows for
