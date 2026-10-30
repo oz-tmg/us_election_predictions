@@ -30,6 +30,23 @@ duplicate was created. Check the next actual trigger and keep the manual fallbac
 saved configuration is not proof of unattended execution. See `scheduler_audit.json`
 in the October 22 report. The prompt includes round/revocation safeguards and this checklist.
 
+**Measured 2026-10-29: the automation fires at about 22:00 UTC, not 22:00 Vancouver.**
+Its five readiness reports (October 25-29) are stamped 22:06, 22:01, 21:57, 21:59 and
+22:02 UTC — about 15:00 Vancouver every day. The saved "22:00 America/Vancouver" setting
+is not what executes. Consequences, unless it is fixed in the app:
+
+- November 3 run: about 15:00 Vancouver, before any polls close. Readiness only.
+- November 4 run: about 15:00 Vancouver on November 4 (UTC day November 4). It sees the
+  morning-after unofficial totals, not the election-night release.
+- The election-night release is therefore **manual**: run the capture on the night of
+  November 3 Vancouver (after 05:00 UTC November 4 the UTC day is already November 4, so
+  that manual capture and the automated 22:00 UTC run fall on the same UTC day and the
+  ledger accepts only one; preserve both raw releases, capture the evening one, and keep
+  the afternoon one as preserved evidence only).
+- Fix options in the app: set the time to 05:00 UTC (22:00 Vancouver, since B.C. stays at
+  UTC-7), or keep 22:00 UTC and treat election night as manual. Confirm with the next
+  report's timestamp, not the saved configuration.
+
 B.C. remains at UTC-7 this November; there is **no November 1 fall-back** in Vancouver.
 The local timezone database agrees: November 3 at 22:00 is November 4 at 05:00 UTC,
 not 06:00 UTC. Do not apply a U.S. Pacific winter offset to this schedule.
@@ -107,6 +124,41 @@ The scorer takes the sealed JSON and actual CSV, refuses to overwrite a score re
 requires either an explicit no-void assertion or `--void-geographies` with a sourced JSON
 mapping. Use its `--as-of` cutoff. Never regenerate or edit
 `reports/preregistration_2026-11-03.{json,md}` or its `_seats.csv` sibling.
+
+## Scored Comparison Set (frozen 2026-10-29)
+
+`reports/comparison_set_2026-11-03.json` fixes which runs are scored and records each
+file's SHA-256 and the commit that holds it:
+
+| Run | Role |
+|---|---|
+| `preregistration_2026-11-03` | The scored holdout, sealed 2026-09-30 |
+| `refresh_2026-10-22` | Last refresh before the Senate specification change |
+| `refresh_2026-10-29` | Final pre-election refresh (`v1_open_seat_holder`) |
+| `scenario_south_texas_2026-10-29` | Scenario; scored for information only, not a forecast |
+
+No further refresh joins this set. A rerun is allowed only to correct a registered data or
+code defect: new dated directory, labelled a correction with the defect named, scored beside
+(never instead of) the runs above. Every run is scored on the same certified returns and
+`as_of` dates with every assumption reported; choosing the best run or assumption afterwards
+is forking paths. The Texas poll cross-check is reported beside them for information.
+
+## Rehearsal Log
+
+**2026-10-29 (Vancouver; 2026-10-30 UTC).** Operator path rehearsed outside production,
+in a scratch directory: a real historical aggregate file (Virginia 2024 certified House and
+Senate, 12 seats, labelled with its true MEDSL provenance rather than an official state URL)
+was preserved with `results_sources.preserve_source`, captured with `--source-evidence`
+(observed on the UTC day, 2026-10-30), a same-day repeat was refused as designed, and
+`actual` assembled 12/12 certified seats. `scripts/dry_run_scoring.py` passed end to end;
+the chamber failure condition correctly reported `not_evaluable_incomplete_chamber`. The
+seal verified unchanged and no production canvass directory was created.
+
+Not rehearsed, and still the main risk: **state extraction**. All 50 extraction paths are
+`manual_review_pending`, and the October 28 probe could read neither listed landing for 11
+states (AK, AZ, ME, MA, MI, MO, MT, NH, OH, TN, WI). Certification status must be observed
+as it happens; vote extraction for certified results can follow later from the preserved
+releases.
 
 ## Interpretation
 
