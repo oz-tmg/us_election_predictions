@@ -7,6 +7,7 @@ reproducible from a clean checkout once ``ep-build-p1`` has run.
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from datetime import date
@@ -17,6 +18,15 @@ import pandas as pd
 sys.path.insert(0, "src")
 
 from election_prediction.data import special_elections as se  # noqa: E402
+from election_prediction.features import (
+    candidacy,
+    plan_versions,
+    race_universe,
+    senate_roster,
+    transferred_priors,
+)  # noqa: E402
+from election_prediction.features.incumbency import normalize_name  # noqa: E402
+from election_prediction.geography import reference as ref  # noqa: E402
 from election_prediction.models import simulation  # noqa: E402
 from election_prediction.models.baseline import house, projection, senate  # noqa: E402
 from election_prediction.models.baseline import national_environment as ne  # noqa: E402
@@ -26,7 +36,16 @@ REPORTS = "reports"
 N_SIMS = 20_000
 
 
-def main(*, preregister: bool = False) -> None:
+def main(
+    *,
+    preregister: bool = False,
+    as_of: str | None = None,
+    reports_dir: Path = Path(REPORTS),
+    correlation_params: simulation.CorrelationParams | None = None,
+    senate_correlation_params: simulation.CorrelationParams | None = None,
+) -> dict:
+    stamp = as_of or date.today().isoformat()
+    reports_dir.mkdir(parents=True, exist_ok=True)
     # ---- national environment: the estimator contract (NE-001) --------------
     # The specials mean enters through ``national_environment.from_specials`` as a *band*
     # over the shrinkage factor, never as a point: ``projectable`` refuses an unidentified
@@ -50,7 +69,7 @@ def main(*, preregister: bool = False) -> None:
         f"specials: n={prov['n']}  mean overperformance {prov['mean_overperformance']:+.4f} "
         f"(se {prov['std_error']:.4f})"
     )
-    print(f"2024 House national two-party Dem share: {base_2024:.4f}\n")
+    print(f"2024 House national model input (contested races, total-vote weighted): {base_2024:.4f}\n")
     print("implied national environment by shrinkage factor")
     print(sweep.drop(columns=["assumption"]).round(4).to_string(index=False))
 
@@ -63,7 +82,48 @@ def main(*, preregister: bool = False) -> None:
     print(f"\nfitted resid sigma: house {hsigma:.4f}  senate {ssigma:.4f}")
 
     universe = pd.read_parquet(f"{GOLD}/race_universe_2026.parquet")
-    lagged_nat = float(nat.loc[2022])  # basis for 2024 district leans
+    roster_paths = sorted(
+        p
+        for p in Path("data/reference").glob("senate_roster_*.csv")
+        if p.stem.removeprefix("senate_roster_") <= stamp
+    )
+    if not roster_paths:
+        raise ValueError("a dated official Senate roster is required for a current projection")
+    roster = senate_roster.load_roster(roster_paths[-1])
+    specials_schedule = pd.read_csv("data/reference/senate_specials_2026.csv")
+    universe, _ = race_universe.build_race_universe(
+        pd.read_parquet("data/silver/election_returns.parquet"),
+        pd.read_parquet(f"{GOLD}/race_results.parquet"),
+        cycle=2026,
+        seat_universe=universe[universe.office.eq("us_house")],
+        plans=plan_versions.PlanVersions.load(),
+        senate_roster=roster,
+        senate_specials=specials_schedule,
+    )
+    lagged_nat = base_2024  # the universe's prior is the 2024 result; match its national basis
+    prior_cycles = pd.to_numeric(
+        universe["prior_source"].str.extract(r"last_result_(\d{4})", expand=False), errors="coerce"
+    )
+    universe[projection.PRIOR_NATIONAL_COLUMN] = prior_cycles.map(nat)
+
+    current_house_paths = sorted(
+        p
+        for p in Path("data/reference").glob("house_roster_*.csv")
+        if p.stem.removeprefix("house_roster_") <= stamp
+    )
+    if current_house_paths:
+        current_house = pd.read_csv(current_house_paths[-1]).fillna("")
+        current_house["geography_id"] = [
+            f"state:{ref.by_postal(s).fips}|district:cong_{int(d):02d}"
+            for s, d in zip(current_house.state_po, current_house.district_num, strict=True)
+        ]
+        if len(current_house) != 435 or current_house.geography_id.duplicated().any():
+            raise ValueError("current House roster must cover exactly 435 unique voting districts")
+        for column in ("incumbent_name", "incumbent_party"):
+            mapping = current_house.set_index("geography_id")[column]
+            changed = universe.office.eq("us_house") & universe.geography_id.isin(mapping.index)
+            universe.loc[changed, column] = universe.loc[changed, "geography_id"].map(mapping)
+        universe.loc[universe.incumbent_name.eq(""), "incumbent_name"] = "VACANT"
 
     # ---- FEC filings layer (P0-003), when ep-build-fec has run -------------------
     # ``projection`` reads ``RESOLVED_PARTY_COLUMN`` to fill a seat whose party the returns
@@ -72,45 +132,44 @@ def main(*, preregister: bool = False) -> None:
     filings_path = Path(f"{GOLD}/incumbent_filings_2026.parquet")
     if filings_path.is_file():
         fil = pd.read_parquet(filings_path)[
-            ["geography_id", "office", "incumbent_status", projection.RESOLVED_PARTY_COLUMN]
-        ]
+            ["geography_id", "office", "incumbent_name", "incumbent_status", projection.RESOLVED_PARTY_COLUMN]
+        ].rename(columns={"incumbent_name": "filing_incumbent_name"})
         universe = universe.drop(columns=["incumbent_status"]).merge(
-            fil, on=["geography_id", "office"], how="left"
+            fil, on=["geography_id", "office"], how="left", validate="one_to_one"
         )
+        same_holder = universe.incumbent_name.map(normalize_name).eq(
+            universe.filing_incumbent_name.map(normalize_name)
+        )
+        universe.loc[~same_holder, "incumbent_status"] = "unknown"
+        universe.loc[~same_holder, projection.RESOLVED_PARTY_COLUMN] = pd.NA
         print(f"\nfilings joined: incumbent_status {universe['incumbent_status'].value_counts().to_dict()}")
     else:
         print("\nfilings NOT joined (run ep-build-fec): unlabelled incumbents project as open seats.")
 
-    # ---- Senate holdovers, derived rather than asserted --------------------
-    # 2026 is Class II. Classes III (elected 2022) and I (elected 2024) hold over, and
-    # every one of those seats is a regular election in our returns -- so the non-2026
-    # composition comes from our own data rather than an external tally. Counting is by
-    # *seat*, not by state: a state holds two seats in different classes.
-    race_table = pd.read_parquet(f"{GOLD}/race_results.parquet")
-    sen = race_table[(race_table["office"] == "us_senate") & (race_table["cycle"].isin([2022, 2024]))]
-    holdovers = sen[~sen["race_id"].str.contains("special")].copy()
-    caucus_dem = [
-        (r["state_po"], int(r["cycle"])) in projection.INDEPENDENT_DEM_CAUCUS for _, r in holdovers.iterrows()
-    ]
-    dem_holdovers = int(
-        ((holdovers["two_party_dem_share"] > 0.5) | pd.Series(caucus_dem, index=holdovers.index)).sum()
+    universe, candidacy_coverage = candidacy.attach(
+        universe, Path("data/reference/candidacy_2026.csv"), as_of=stamp
     )
-    print(f"\nsenate holdover seats not up in 2026: {len(holdovers)}  Democratic-held: {dem_holdovers}")
-    print(f"  (includes {len(projection.INDEPENDENT_DEM_CAUCUS)} independents who caucus with Democrats)")
+    universe, transfer_provenance = transferred_priors.attach(
+        universe,
+        Path("data/reference/transferred_priors_2026.csv"),
+        cycle=2026,
+        plans=plan_versions.PlanVersions.load(),
+    )
+    print(f"candidacy evidence: {candidacy_coverage}")
 
-    # Reconciliation, printed whether or not it closes. Derived composition = Democratic
-    # holdovers + Democratic-held seats on the 2026 ballot. It currently lands 2 short of
-    # the chamber's actual Democratic caucus, which is the unresolved candidate/party
-    # crosswalk (P0-003) showing up again: two-party share cannot identify every member's
-    # affiliation. The projection therefore likely understates Democratic Senate seats by
-    # about two, and that is reported rather than absorbed into the numbers.
-    sen_up = universe[universe["office"] == "us_senate"]
-    dem_up_now = int((sen_up["incumbent_party"] == "DEMOCRAT").sum())
+    # Class II and the sourced special-election seats are removed from the holdover roster.
+    composition = senate_roster.reconcile(roster, universe[universe.office.eq("us_senate")])
+    dem_holdovers = composition["democratic_holdovers"]
     print(
-        f"  derived current Democratic caucus: {dem_holdovers} holdover + {dem_up_now} up "
-        f"= {dem_holdovers + dem_up_now} of {len(holdovers) + len(sen_up)} seats"
+        f"\nsenate holdover seats not up in 2026: {composition['holdovers']}  "
+        f"Democratic-held: {dem_holdovers}"
     )
-    print("  NOTE: 2 seats short of the actual Democratic caucus -- unresolved party crosswalk (P0-003).")
+
+    # Composition comes from the dated official roster, including independents' caucuses.
+    print(
+        f"  official roster caucuses: Democratic {composition['current_democratic_caucus']}, "
+        f"Republican {composition['current_republican_caucus']}; 100 seats reconciled"
+    )
 
     # State presidential lean must cover all 50 states, so it comes from the presidential
     # panel. senate_panel only holds states that had a Senate race in a given cycle, which
@@ -145,7 +204,9 @@ def main(*, preregister: bool = False) -> None:
             pres_reference=pres_ref,
             fallback_lean_sd=fallback_lean_sd,
         )
-        hsim = _simulate(hproj, total_seats=house.VOTING_SEATS, with_win_probs=True)
+        hsim = _simulate(
+            hproj, total_seats=house.VOTING_SEATS, with_win_probs=True, params=correlation_params
+        )
         hproj = hproj.assign(dem_win_prob=hsim.pop("dem_win_prob"))
 
         # The Senate model carries no national term, so the environment enters only as an
@@ -159,7 +220,13 @@ def main(*, preregister: bool = False) -> None:
             resid_sigma=ssigma,
             uniform_swing=swing,
         )
-        ssim = _simulate(sproj, total_seats=100, holdover_dem=dem_holdovers, with_win_probs=True)
+        ssim = _simulate(
+            sproj,
+            total_seats=100,
+            holdover_dem=dem_holdovers,
+            with_win_probs=True,
+            params=senate_correlation_params,
+        )
         sproj = sproj.assign(dem_win_prob=ssim.pop("dem_win_prob"))
 
         for frame, off in ((hproj, "us_house"), (sproj, "us_senate")):
@@ -201,7 +268,6 @@ def main(*, preregister: bool = False) -> None:
 
     # Machine-readable sibling so the band can be diffed across runs rather than re-read
     # from formatted text.
-    stamp = date.today().isoformat()
     payload = {
         "generated_on": stamp,
         "national_environment": env.to_dict(),
@@ -209,8 +275,16 @@ def main(*, preregister: bool = False) -> None:
         "conclusions": conclusions,
         "house_coverage": hcov,
         "senate_coverage": scov,
+        "senate_composition": composition,
+        "correlation_parameters": {
+            "house": vars(correlation_params or simulation.CorrelationParams()),
+            "senate": vars(senate_correlation_params or simulation.CorrelationParams()),
+        },
+        "candidacy_coverage": candidacy_coverage,
+        "transfer_provenance": transfer_provenance,
+        "seats": pd.concat(seat_frames, ignore_index=True).to_dict(orient="records"),
     }
-    out_path = Path(REPORTS) / f"national_environment_{stamp}.json"
+    out_path = reports_dir / f"national_environment_{stamp}.json"
     out_path.write_text(json.dumps(payload, indent=2, default=str))
     print(f"\nband written to {out_path}")
     status = universe["incumbent_status"].value_counts().to_dict()
@@ -219,7 +293,8 @@ def main(*, preregister: bool = False) -> None:
         print(
             f"\nincumbency: {filed} sitting members have an FEC filing for 2026; {not_found} were not "
             "found in the roster (not spelled 'retired': absence misses most departures). "
-            "Renomination is assumed for all -- primaries are not compiled."
+            f"Candidacy verified for {candidacy_coverage['verified']}; "
+            f"assumed for {candidacy_coverage['unknown']} remaining seats."
         )
     else:
         print("\nincumbency assumed (not verified): every sitting member runs and is renominated.")
@@ -237,11 +312,13 @@ def main(*, preregister: bool = False) -> None:
         )
     if hcov["redrawn_states"]:
         n_redrawn = hcov["seats_by_boundary_confidence"].get("redrawn", 0)
+        n_fallback = hcov["seats_by_source"].get("fallback_state_lean", 0)
         print(
             f"redrawn states (sourced, RD-001): {', '.join(hcov['redrawn_states'])} -- {n_redrawn} seats. "
             "These use a different congressional map in 2026 than in 2024, so their 2024 result describes "
-            "different territory and is discarded rather than reused. With no transferred prior (RD-003 "
-            f"open) each falls back to its state's presidential lean with sigma {hcov['fallback_sigma']:.4f} "
+            "different territory and is discarded rather than reused. "
+            f"{n_fallback} seats still lack a transferred prior and fall back to state lean "
+            f"with sigma {hcov['fallback_sigma']:.4f} "
             f"(residual {hcov['resid_sigma']:.4f} widened by within-state lean sd "
             f"{hcov['fallback_lean_sd']:.4f})."
         )
@@ -265,36 +342,34 @@ def main(*, preregister: bool = False) -> None:
             "from using its 2025 map and votes its 2022 map, so its territory is unchanged and its prior "
             "is valid."
         )
+    return payload
 
 
 def _declared_defects(hcov: dict, universe: pd.DataFrame) -> list[str]:
     """What I expect to be wrong, written down before the event (see reporting.preregistration)."""
-    n_redrawn = hcov["seats_by_boundary_confidence"].get("redrawn", 0)
+    n_fallback = hcov["seats_by_source"].get("fallback_state_lean", 0)
     status = universe["incumbent_status"].value_counts().to_dict()
+    unknown = int(universe["incumbent_running"].isna().sum())
     return [
-        f"{n_redrawn} House seats have no prior on their 2026 boundaries. They use their state's "
+        f"{n_fallback} House seats have no prior on their 2026 boundaries. They use their state's "
         f"presidential lean with sigma {hcov['fallback_sigma']:.4f} against a modelled "
-        f"{hcov['resid_sigma']:.4f}. RD-003's vote transfer is unbuilt, so these seats are the "
+        f"{hcov['resid_sigma']:.4f}. Live vote transfer remains incomplete, so these seats are the "
         "least informed part of the chamber and should show visibly worse per-seat scores.",
-        "The derived Democratic Senate caucus is 45 of 100, two short of the actual 47. The "
-        "candidate/party crosswalk (P0-003) cannot resolve every member's affiliation from "
-        "two-party share, so Senate Democratic seats are likely understated by about two.",
-        f"Renomination is assumed for every sitting member. {status.get('filed', 0)} have a 2026 FEC "
-        f"filing and {status.get('not_found', 0)} were not found; primaries are not compiled at all, "
-        "so retirements and primary defeats are invisible to this forecast.",
+        f"Renomination remains assumed for {unknown} seats without dated candidacy evidence. "
+        f"{status.get('filed', 0)} holders have a 2026 FEC filing and "
+        f"{status.get('not_found', 0)} were not found. A filing is not nomination evidence.",
         "The national environment is unidentified. The shrinkage factor is an assumption swept "
         "over, not an estimate, and no historical calibration for it exists yet (NE-002 open).",
         f"Maps in {', '.join(hcov.get('litigation_active_states', [])) or 'no states'} are under live "
         "litigation and could move before election day. The register records the plan in effect at "
         "the snapshot date; a late court order would invalidate those seats' boundaries.",
         "The simulation's correlated-error split (45/25/30 national/regional/state) is asserted, "
-        "not estimated from residuals. Chamber-level interval width is sensitive to it.",
+        "not promoted from residual estimates: full-universe validation is incomplete. "
+        "Chamber-level interval width is sensitive to it.",
     ]
 
 
-def _write_preregistration(
-    *, results, seat_frames, env, hcov, scov, conclusions, universe, specials
-) -> None:
+def _write_preregistration(*, results, seat_frames, env, hcov, scov, conclusions, universe, specials) -> None:
     from election_prediction.reporting import preregistration as prereg
 
     seats = pd.concat(seat_frames, ignore_index=True)
@@ -330,7 +405,12 @@ def _write_preregistration(
 
 
 def _simulate(
-    proj: pd.DataFrame, *, total_seats: int, holdover_dem: int = 0, with_win_probs: bool = False
+    proj: pd.DataFrame,
+    *,
+    total_seats: int,
+    holdover_dem: int = 0,
+    with_win_probs: bool = False,
+    params: simulation.CorrelationParams | None = None,
 ) -> dict:
     """Seat distribution from correlated draws. ``with_win_probs`` adds the per-seat column,
     which the pre-registration needs: a chamber total cannot be scored for calibration."""
@@ -338,7 +418,7 @@ def _simulate(
 
     regions = [ref.by_postal(s).census_region for s in proj["state_po"]]
     sim = simulation.simulate_shares(
-        proj["mean_dem_share"].to_numpy(), proj["sigma"].to_numpy(), regions, n_sims=N_SIMS
+        proj["mean_dem_share"].to_numpy(), proj["sigma"].to_numpy(), regions, n_sims=N_SIMS, params=params
     )
     dist = simulation.seat_distribution(sim, proj["state_po"].tolist(), total_seats=total_seats)
     if with_win_probs:
@@ -357,4 +437,9 @@ def _simulate(
 
 
 if __name__ == "__main__":
-    main(preregister="--preregister" in sys.argv)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--preregister", action="store_true")
+    parser.add_argument("--as-of", default=None)
+    parser.add_argument("--reports-dir", type=Path, default=Path(REPORTS))
+    args = parser.parse_args()
+    main(preregister=args.preregister, as_of=args.as_of, reports_dir=args.reports_dir)

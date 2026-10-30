@@ -59,8 +59,7 @@ SEAT_COLUMNS = [
 # Fixed before the event. Changing any of these after 2026-11-03 voids the exercise.
 EVALUATION_PLAN = {
     "scored_on": (
-        "2026-11-03 certified returns, once available from the states "
-        "(not calls, not unofficial counts)"
+        "2026-11-03 certified returns, once available from the states (not calls, not unofficial counts)"
     ),
     "unit": "congressional district (House), state (Senate)",
     "basis": "two-party Democratic vote share; uncontested races handled as in the backtest, never as 100-0",

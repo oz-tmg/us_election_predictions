@@ -51,6 +51,8 @@ def average_polls(
         raise ValueError("poll_error_floor must be positive")
     as_of = pd.Timestamp(reference_date).normalize()
     eligible = polls[polls["field_end"] <= as_of].copy()
+    if "published_on" in eligible:
+        eligible = eligible[eligible.published_on.notna() & eligible.published_on.le(as_of)]
     if eligible.empty:
         raise ValueError(f"No polls were complete by the {as_of.date()} reference date")
     weighted = _poll_weights(eligible, reference_date=as_of, half_life_days=half_life_days)

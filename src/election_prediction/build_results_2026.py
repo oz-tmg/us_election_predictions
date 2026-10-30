@@ -18,12 +18,13 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import date
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
 
-from .data import results_2026
+from .data import results_2026, results_sources
+from .data.manifest import sha256_file
 from .geography import reference as ref
 
 
@@ -34,7 +35,18 @@ def _state_fips_map() -> dict[str, str]:
 
 def capture(args: argparse.Namespace) -> int:
     frame = pd.read_csv(args.snapshot, dtype=str)
+    evidence = args.source_evidence or []
+    production = (
+        args.directory or results_2026.SNAPSHOT_DIR
+    ).resolve() == results_2026.SNAPSHOT_DIR.resolve()
+    if production and not evidence:
+        raise ValueError("production capture requires --source-evidence from preserved raw releases")
+    if evidence:
+        results_sources.verify_evidence(frame, evidence)
     path = results_2026.write_snapshot(frame, observed_on=args.observed_on, directory=args.directory)
+    manifest = {"compiled_sha256": sha256_file(path), "source_evidence": [str(p.resolve()) for p in evidence]}
+    with path.with_suffix(".manifest.json").open("x") as handle:
+        json.dump(manifest, handle, indent=2)
     stored = pd.read_csv(path)
     certified = stored["certified"].astype(str).str.upper().isin({"TRUE", "T", "Y", "YES", "1"})
     print(
@@ -55,27 +67,32 @@ def actual(args: argparse.Namespace) -> int:
         )
         return 1
 
-    ledger = results_2026.certification_ledger(snapshots)
+    as_of = pd.Timestamp(args.as_of) if args.as_of else pd.Timestamp(datetime.now(UTC).date())
+    ledger = results_2026.certification_ledger(snapshots, as_of=str(as_of.date()))
     frame = results_2026.to_actual(ledger, state_fips=_state_fips_map())
 
-    as_of = pd.Timestamp(args.as_of) if args.as_of else pd.Timestamp(date.today())
     certified_on = pd.to_datetime(frame["certified_on"], errors="coerce")
     scoreable = certified_on.notna() & (certified_on <= as_of)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(args.out, index=False)
+    used_snapshots = sorted(
+        snapshots.loc[pd.to_datetime(snapshots["observed_on"]) <= as_of, "observed_on"].unique().tolist()
+    )
     summary = {
         "as_of": str(as_of.date()),
         "seats": int(len(frame)),
         "certified_by_as_of": int(scoreable.sum()),
         "not_yet_certified": int((~scoreable).sum()),
-        "snapshots": sorted(snapshots["observed_on"].unique().tolist()),
+        "snapshots": used_snapshots,
+        "missing_states": sorted(set(ref.STATES) - {"DC", "PR"} - set(frame.state_po)),
+        "coverage_is_complete": False,
     }
     (args.out.with_suffix(".summary.json")).write_text(json.dumps(summary, indent=2))
     print(
         f"as of {summary['as_of']}: {summary['certified_by_as_of']} of {summary['seats']} seats "
         f"certified, {summary['not_yet_certified']} unscored\n"
-        f"  built from {len(summary['snapshots'])} snapshot(s)\n  -> {args.out}"
+        f"  built from {len(used_snapshots)} snapshot(s)\n  -> {args.out}"
     )
     return 0
 
@@ -88,7 +105,27 @@ def main(argv: list[str] | None = None) -> int:
     cap.add_argument("--snapshot", type=Path, required=True, help="compiled CSV")
     cap.add_argument("--observed-on", default=None, help="defaults to today")
     cap.add_argument("--directory", type=Path, default=None)
+    cap.add_argument("--source-evidence", nargs="+", type=Path, help="preserved release .source.json files")
     cap.set_defaults(func=capture)
+
+    source = sub.add_parser("preserve-source", help="preserve a manually reviewed public aggregate release")
+    source.add_argument("--file", type=Path, required=True)
+    source.add_argument("--state", required=True)
+    source.add_argument("--url", required=True)
+    source.add_argument("--retrieved-at", required=True, help="actual ISO retrieval timestamp with timezone")
+    source.add_argument("--aggregate-only", action="store_true", required=True)
+    source.set_defaults(
+        func=lambda a: (
+            print(
+                results_sources.preserve_source(a.file, state=a.state, url=a.url, retrieved_at=a.retrieved_at)
+            )
+            or 0
+        )
+    )
+
+    probe = sub.add_parser("check-sources", help="probe 50-state landing pages without collecting results")
+    probe.add_argument("--out", type=Path, required=True)
+    probe.set_defaults(func=lambda a: results_sources.probe_catalog(output=a.out) and 0)
 
     act = sub.add_parser("actual", help="assemble the frame the scorer consumes")
     act.add_argument("--as-of", default=None, help="defaults to today")

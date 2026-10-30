@@ -8,9 +8,7 @@ from election_prediction.features.cd_baseline import _major_party
 
 
 def _rows(pairs):
-    return pd.DataFrame(
-        [{"party_detailed": d, "party_simplified": s} for d, s in pairs]
-    )
+    return pd.DataFrame([{"party_detailed": d, "party_simplified": s} for d, s in pairs])
 
 
 def test_state_affiliate_labels_are_recovered():

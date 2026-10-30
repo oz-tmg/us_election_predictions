@@ -33,6 +33,11 @@ used by the presidential baseline.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ...features.plan_versions import PlanVersions
+
 import numpy as np
 import pandas as pd
 
@@ -97,7 +102,7 @@ def _national_by_cycle(house: pd.DataFrame) -> pd.Series:
     )
 
 
-def _plan_ids(house: pd.DataFrame, plans: object | None) -> pd.Series:
+def _plan_ids(house: pd.DataFrame, plans: PlanVersions | None) -> pd.Series:
     """Per-row plan identity: the register's if there is one, else the decennial era."""
     if plans is None:
         return house["plan_era"].astype(str)
@@ -110,7 +115,7 @@ def _plan_ids(house: pd.DataFrame, plans: object | None) -> pd.Series:
 
 
 def build_house_panel(
-    race_table: pd.DataFrame, returns: pd.DataFrame, *, plans: object | None = None
+    race_table: pd.DataFrame, returns: pd.DataFrame, *, plans: PlanVersions | None = None
 ) -> pd.DataFrame:
     """District x cycle panel: lagged lean, national environment, and incumbency.
 

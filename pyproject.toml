@@ -22,6 +22,8 @@ dependencies = [
 geo = ["geopandas>=0.14", "shapely>=2.0"]
 model = ["statsmodels>=0.14", "scikit-learn>=1.3"]
 dev = ["pytest>=7.4", "ruff>=0.4", "mypy>=1.8"]
+# Official ballot PDFs/HTML and precinct workbooks; licenses in docs/dependencies.md.
+intake = ["pypdf>=5", "openpyxl>=3.1", "beautifulsoup4>=4.12", "lxml>=5"]
 # Figures for public writing only; no modelling code imports these (CLAUDE.md §7).
 # matplotlib: PSF-style BSD-compatible licence (matplotlib/LICENSE).
 viz = ["matplotlib>=3.8"]
@@ -37,6 +39,9 @@ ep-build-cd-baselines = "election_prediction.build_cd_baselines:main"  # preside
 ep-build-plan-transfer = "election_prediction.build_plan_transfer:main"  # old-to-new vote transfer (RD-003)
 ep-fit-basis-map = "election_prediction.fit_basis_map:main"  # presidential -> House basis conversion
 ep-results-2026 = "election_prediction.build_results_2026:main"  # capture 2026 results as they certify
+ep-build-ballots = "election_prediction.build_ballots:main"
+ep-build-economics = "election_prediction.build_economics:main"
+ep-build-generic-ballot = "election_prediction.build_generic_ballot:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

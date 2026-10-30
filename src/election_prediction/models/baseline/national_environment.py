@@ -133,8 +133,12 @@ def projectable(est: NationalEnvironment) -> pd.DataFrame:
     if est.status == "unavailable":
         raise ContractError(f"{est.estimator} is unavailable: {'; '.join(est.caveats) or 'no estimate'}")
     if est.status == "band":
+        if est.band is None:
+            raise ContractError("band data missing")
         return est.band.copy().reset_index(drop=True)
     if est.identified or est.estimator == "scenario":
+        if est.national_dem_share is None:
+            raise ContractError("point share missing")
         return pd.DataFrame(
             [
                 {

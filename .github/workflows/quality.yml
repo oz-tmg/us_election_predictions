@@ -1,0 +1,37 @@
+name: Quality Gates
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      live_data:
+        description: Run the local registered-data reconciliation suite
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '.[dev,geo,model,intake]'
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy src/election_prediction
+      - run: pytest -q tests/unit tests/integration
+      - run: python pipelines/validate/check_no_restricted_data.py --all
+  live-data:
+    if: github.event_name == 'workflow_dispatch' && inputs.live_data && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: [self-hosted, elections-data]
+    env:
+      EP_REQUIRE_LIVE_DATA: '1'
+      EP_DATA_ROOT: ${{ vars.ELECTION_DATA_ROOT }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install -e '.[dev,geo,model,intake]'
+      - run: python scripts/check_live_runner.py
+      - run: python -m pytest -q tests/data_quality

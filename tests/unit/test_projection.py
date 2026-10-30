@@ -320,6 +320,29 @@ def test_an_unknown_confidence_value_is_rejected():
         )
 
 
+def test_each_prior_uses_its_own_election_national_reference():
+    roster = _roster()
+    roster[projection.PRIOR_NATIONAL_COLUMN] = [0.49, 0.47, 0.50, 0.50]
+    out, _ = projection.project_house(
+        roster, _fitted_house_model(), national_dem_share=0.52, lagged_national_dem_share=0.49
+    )
+    flat, _ = projection.project_house(
+        _roster(), _fitted_house_model(), national_dem_share=0.52, lagged_national_dem_share=0.49
+    )
+    beta = projection._lean_coefficient(_fitted_house_model())
+    assert (out.mean_dem_share - flat.mean_dem_share).tolist() == pytest.approx([0.0, beta * 0.02])
+
+
+def test_nonfinite_transfer_uncertainty_is_rejected():
+    roster = _roster("redrawn")
+    roster[projection.TRANSFERRED_PRIOR_COLUMN] = [0.6, None, None, None]
+    roster[projection.TRANSFER_SIGMA_COLUMN] = float("inf")
+    with pytest.raises(ValueError, match="transfer_sigma"):
+        projection.project_house(
+            roster, _fitted_house_model(), national_dem_share=0.52, lagged_national_dem_share=0.49
+        )
+
+
 def test_uniform_swing_is_additive_and_separate_from_the_senate_model():
     train = pd.DataFrame(
         {

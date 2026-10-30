@@ -27,6 +27,11 @@ string matching, so a heavier alias crosswalk (P0-003) is not on the critical pa
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .plan_versions import PlanVersions
+
 import re
 
 import pandas as pd
@@ -79,7 +84,7 @@ def _seat_key(row: pd.Series) -> str:
     return f"{row['office']}:{row['state_po']}"
 
 
-def _house_redistricting_break(merged: pd.DataFrame, *, term: int, plans: object | None) -> pd.Series:
+def _house_redistricting_break(merged: pd.DataFrame, *, term: int, plans: PlanVersions | None) -> pd.Series:
     """Did this district's territory change since the prior contest?
 
     Without a register this is the decennial function: every state breaks in 1972, 1982,
@@ -102,7 +107,9 @@ def _house_redistricting_break(merged: pd.DataFrame, *, term: int, plans: object
     )
 
 
-def build_incumbency(returns: pd.DataFrame, office: str, *, plans: object | None = None) -> pd.DataFrame:
+def build_incumbency(
+    returns: pd.DataFrame, office: str, *, plans: PlanVersions | None = None
+) -> pd.DataFrame:
     """Derive incumbency flags for every race of ``office`` in the silver returns.
 
     ``returns`` must carry the silver schema — the full candidate list is required,

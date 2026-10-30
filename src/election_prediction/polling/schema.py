@@ -29,6 +29,7 @@ POLL_COLUMNS = [
     "district_num",
     "field_start",
     "field_end",
+    "published_on",
     "sample_size",
     "population",
     "mode",
@@ -142,6 +143,10 @@ def standardize_polls(
     df["district_num"] = pd.to_numeric(df["district_num"], errors="coerce").astype("Int64")
     df["field_start"] = pd.to_datetime(df["field_start"], errors="coerce").dt.normalize()
     df["field_end"] = pd.to_datetime(df["field_end"], errors="coerce").dt.normalize()
+    # Old synthetic fixtures assume immediate publication; live generic intake requires it explicitly.
+    df["published_on"] = pd.to_datetime(
+        df.get("published_on", df["field_end"]), errors="coerce"
+    ).dt.normalize()
     df["sample_size"] = pd.to_numeric(df["sample_size"], errors="coerce").astype("Int64")
     population = _string(df["population"]).str.upper()
     df["population"] = population.map(POPULATION_ALIASES).fillna(population)
@@ -200,7 +205,26 @@ def validate_polls(polls: pd.DataFrame) -> dict[str, bool | int]:
             if "population" in polls
             else False
         ),
-        "state_known": bool(polls["state_po"].isin(known_states).all()) if "state_po" in polls else False,
+        "state_known": (
+            bool(
+                (
+                    polls["state_po"].isin(known_states)
+                    | (
+                        polls["state_po"].eq("US")
+                        & polls["office"].eq("us_house_generic")
+                        & polls["geography_id"].eq("nation:us")
+                        & polls["district_num"].isna()
+                    )
+                ).all()
+            )
+            if {"state_po", "office", "geography_id", "district_num"}.issubset(polls)
+            else False
+        ),
+        "publication_valid": (
+            bool(polls.published_on.notna().all() & (polls.published_on >= polls.field_end).all())
+            if "published_on" in polls
+            else False
+        ),
         "source_urls_present": (
             bool(polls["source_url"].str.match(r"^https?://", na=False).all())
             if "source_url" in polls

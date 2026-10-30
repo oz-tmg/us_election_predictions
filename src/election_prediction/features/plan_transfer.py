@@ -73,7 +73,9 @@ class TransferSigmaUnmeasured(ValueError):
     """A transferred prior was requested before the backtest measured its uncertainty."""
 
 
-def assert_sources_registered(sources: dict[str, str]) -> None:
+def assert_sources_registered(
+    sources: dict[str, str], *, required: tuple[str, ...] = REQUIRED_SOURCES
+) -> None:
     """Every required source must be present and carry a registry status.
 
     The point is not the string check — it is that acquiring geographic data for this
@@ -81,7 +83,7 @@ def assert_sources_registered(sources: dict[str, str]) -> None:
     explicitly anti-gerrymandering), and a pipeline that can silently run without one is a
     governance hole regardless of what the docs say.
     """
-    missing = [s for s in REQUIRED_SOURCES if not sources.get(s)]
+    missing = [s for s in required if not sources.get(s)]
     if missing:
         raise UnregisteredSourceError(
             f"sources {missing} are not registered. See docs/dataset-registry.md "
@@ -106,13 +108,15 @@ class TransferInputs:
     precincts: pd.DataFrame
 
 
-def transfer(inputs: TransferInputs, *, sources: dict[str, str]) -> pd.DataFrame:
+def transfer(
+    inputs: TransferInputs, *, sources: dict[str, str], required_sources: tuple[str, ...] = REQUIRED_SOURCES
+) -> pd.DataFrame:
     """Place old precinct results onto new districts, carrying three confidence components.
 
     Returns one row per new district. ``transferred_dem_share`` is a two-party share, on the
     same basis as everything else in the stack (CLAUDE.md §6).
     """
-    assert_sources_registered(sources)
+    assert_sources_registered(sources, required=required_sources)
 
     blocks, assign, prec = inputs.blocks, inputs.assignments, inputs.precincts
     for frame, cols in (
@@ -164,8 +168,8 @@ def transfer(inputs: TransferInputs, *, sources: dict[str, str]) -> pd.DataFrame
                 "n_source_old_districts": int(by_old.size),
             }
         )
-    return pd.DataFrame(out)[TRANSFER_COLUMNS].sort_values(["state_po", "new_district"]).reset_index(
-        drop=True
+    return (
+        pd.DataFrame(out)[TRANSFER_COLUMNS].sort_values(["state_po", "new_district"]).reset_index(drop=True)
     )
 
 

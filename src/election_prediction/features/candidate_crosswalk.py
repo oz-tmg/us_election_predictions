@@ -49,6 +49,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from typing import Any, cast
 
 import pandas as pd
 
@@ -332,13 +333,13 @@ def caucus_party_for(
     """
     d: int | None
     try:
-        d = None if district_num is None or pd.isna(district_num) else int(district_num)
+        d = None if district_num is None or pd.isna(district_num) else int(cast(Any, district_num))
     except (TypeError, ValueError):
         d = None
     if str(office) == "us_senate":
         d = None
     try:
-        c = int(cycle)
+        c = int(cast(Any, cycle))
     except (TypeError, ValueError):
         return ballot_party, False, ""
     surname, _ = split_name(name, comma_is_surname_first=False)
@@ -522,12 +523,12 @@ def _seat_key(
     """
     c: int | None
     try:
-        c = None if cycle is None or pd.isna(cycle) else int(cycle)
+        c = None if cycle is None or pd.isna(cycle) else int(cast(Any, cycle))
     except (TypeError, ValueError):
         c = None
     d: int | None
     try:
-        d = None if district_num is None or pd.isna(district_num) else int(district_num)
+        d = None if district_num is None or pd.isna(district_num) else int(cast(Any, district_num))
     except (TypeError, ValueError):
         d = None
     if str(office) == "us_senate":
@@ -639,7 +640,7 @@ class RosterIndex:
 
     def covers(self, cycle: object, office: object) -> bool:
         try:
-            return (int(cycle), str(office)) in self.covered
+            return (int(cast(Any, cycle)), str(office)) in self.covered
         except (TypeError, ValueError):
             return False
 

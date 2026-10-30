@@ -1,0 +1,436 @@
+state_po,district_num,incumbent_name,incumbent_party,roster_published_on,source_url,retrieved_on
+AK,0,Nicholas J. Begich III,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AL,1,Barry Moore,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AL,2,Shomari Figures,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AL,3,Mike Rogers,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AL,4,Robert B. Aderholt,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AL,5,Dale W. Strong,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AL,6,Gary J. Palmer,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AL,7,Terri A. Sewell,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AR,1,"Eric A. ""Rick"" Crawford",REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AR,2,J. French Hill,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AR,3,Steve Womack,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AR,4,Bruce Westerman,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,1,David Schweikert,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,2,Elijah Crane,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,3,Yassamin Ansari,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,4,Greg Stanton,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,5,Andy Biggs,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,6,Juan Ciscomani,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,7,Adelita S. Grijalva,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,8,Abraham J. Hamadeh,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+AZ,9,Paul A. Gosar,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,1,James Gallagher,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,2,Jared Huffman,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,3,Kevin Kiley,OTHER,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,4,Mike Thompson,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,5,Tom McClintock,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,6,Ami Bera,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,7,Doris O. Matsui,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,8,John Garamendi,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,9,Josh Harder,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,10,Mark DeSaulnier,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,11,Nancy Pelosi,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,12,Lateefah Simon,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,13,Adam Gray,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,14,Aisha Wahab,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,15,Kevin Mullin,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,16,Sam T. Liccardo,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,17,Ro Khanna,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,18,Zoe Lofgren,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,19,Jimmy Panetta,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,20,Vince Fong,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,21,Jim Costa,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,22,David G. Valadao,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,23,Jay Obernolte,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,24,Salud O. Carbajal,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,25,Raul Ruiz,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,26,Julia Brownley,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,27,George Whitesides,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,28,Judy Chu,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,29,Luz M. Rivas,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,30,Laura Friedman,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,31,"Gilbert Ray Cisneros, Jr.",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,32,Brad Sherman,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,33,Pete Aguilar,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,34,Jimmy Gomez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,35,Norma J. Torres,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,36,Ted Lieu,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,37,Sydney Kamlager-Dove,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,38,Linda T. Sánchez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,39,Mark Takano,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,40,Young Kim,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,41,Ken Calvert,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,42,Robert Garcia,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,43,Maxine Waters,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,44,Nanette Diaz Barragán,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,45,Derek Tran,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,46,J. Luis Correa,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,47,Dave Min,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,48,Darrell Issa,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,49,Mike Levin,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,50,Scott H. Peters,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,51,Sara Jacobs,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CA,52,Juan Vargas,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CO,1,Diana DeGette,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CO,2,Joe Neguse,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CO,3,Jeff Hurd,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CO,4,Lauren Boebert,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CO,5,Jeff Crank,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CO,6,Jason Crow,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CO,7,Brittany Pettersen,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CO,8,Gabe Evans,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CT,1,John B. Larson,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CT,2,Joe Courtney,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CT,3,Rosa L. DeLauro,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CT,4,James A. Himes,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+CT,5,Jahana Hayes,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+DE,0,Sarah McBride,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,1,Jimmy Patronis,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,2,Neal P. Dunn,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,3,Kat Cammack,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,4,Aaron Bean,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,5,John H. Rutherford,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,6,Randy Fine,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,7,Cory Mills,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,8,Mike Haridopolos,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,9,Darren Soto,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,10,Maxwell Frost,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,11,Daniel Webster,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,12,Gus M. Bilirakis,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,13,Anna Paulina Luna,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,14,Kathy Castor,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,15,Laurel M. Lee,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,16,Vern Buchanan,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,17,W. Gregory Steube,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,18,Scott Franklin,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,19,Byron Donalds,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,20,,OTHER,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,21,Brian J. Mast,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,22,Lois Frankel,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,23,Jared Moskowitz,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,24,Frederica S. Wilson,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,25,Debbie Wasserman Schultz,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,26,Mario Diaz-Balart,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,27,Maria Elvira Salazar,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+FL,28,Carlos A. Gimenez,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,1,"Earl L. ""Buddy"" Carter",REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,2,"Sanford D. Bishop, Jr.",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,3,Brian Jack,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,4,"Henry C. ""Hank"" Johnson, Jr.",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,5,Nikema Williams,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,6,Lucy McBath,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,7,Richard McCormick,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,8,Austin Scott,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,9,Andrew S. Clyde,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,10,Mike Collins,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,11,Barry Loudermilk,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,12,Rick W. Allen,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,13,Everton Blair Jr.,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+GA,14,Clay Fuller,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+HI,1,Ed Case,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+HI,2,Jill N. Tokuda,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IA,1,Mariannette Miller-Meeks,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IA,2,Ashley Hinson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IA,3,Zachary Nunn,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IA,4,Randy Feenstra,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+ID,1,Russ Fulcher,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+ID,2,Michael K. Simpson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,1,Jonathan L. Jackson,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,2,Robin L. Kelly,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,3,Delia C. Ramirez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,4,"Jesús G. ""Chuy"" García",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,5,Mike Quigley,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,6,Sean Casten,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,7,Danny K. Davis,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,8,Raja Krishnamoorthi,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,9,Janice D. Schakowsky,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,10,Bradley Scott Schneider,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,11,Bill Foster,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,12,Mike Bost,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,13,Nikki Budzinski,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,14,Lauren Underwood,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,15,Mary E. Miller,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,16,Darin LaHood,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IL,17,Eric Sorensen,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,1,Frank J. Mrvan,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,2,Rudy Yakym III,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,3,Marlin A. Stutzman,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,4,James R. Baird,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,5,Victoria Spartz,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,6,Jefferson Shreve,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,7,André Carson,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,8,Mark B. Messmer,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+IN,9,Erin Houchin,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KS,1,Tracey Mann,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KS,2,Derek Schmidt,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KS,3,Sharice Davids,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KS,4,Ron Estes,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KY,1,James Comer,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KY,2,Brett Guthrie,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KY,3,Morgan McGarvey,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KY,4,Thomas Massie,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KY,5,Harold Rogers,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+KY,6,Andy Barr,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+LA,1,Steve Scalise,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+LA,2,Troy A. Carter,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+LA,3,Clay Higgins,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+LA,4,Mike Johnson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+LA,5,Julia Letlow,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+LA,6,Cleo Fields,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,1,Richard E. Neal,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,2,James P. McGovern,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,3,Lori Trahan,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,4,Jake Auchincloss,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,5,Katherine M. Clark,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,6,Seth Moulton,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,7,Ayanna Pressley,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,8,Stephen F. Lynch,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MA,9,William R. Keating,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MD,1,Andy Harris,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MD,2,"Johnny Olszewski, Jr.",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MD,3,Sarah Elfreth,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MD,4,Glenn Ivey,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MD,5,Steny H. Hoyer,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MD,6,April McClain Delaney,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MD,7,Kweisi Mfume,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MD,8,Jamie Raskin,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+ME,1,Chellie Pingree,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+ME,2,Jared F. Golden,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,1,Jack Bergman,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,2,John R. Moolenaar,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,3,Hillary J. Scholten,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,4,Bill Huizenga,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,5,Tim Walberg,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,6,Debbie Dingell,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,7,Tom Barrett,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,8,Kristen McDonald Rivet,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,9,Lisa C. McClain,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,10,John James,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,11,Haley M. Stevens,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,12,Rashida Tlaib,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MI,13,Shri Thanedar,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MN,1,Brad Finstad,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MN,2,Angie Craig,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MN,3,Kelly Morrison,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MN,4,Betty McCollum,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MN,5,Ilhan Omar,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MN,6,Tom Emmer,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MN,7,Michelle Fischbach,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MN,8,Pete Stauber,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MO,1,Wesley Bell,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MO,2,Ann Wagner,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MO,3,"Robert F. Onder, Jr.",REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MO,4,Mark Alford,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MO,5,Emanuel Cleaver,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MO,6,Sam Graves,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MO,7,Eric Burlison,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MO,8,Jason Smith,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MS,1,Trent Kelly,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MS,2,Bennie G. Thompson,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MS,3,Michael Guest,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MS,4,Mike Ezell,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MT,1,Ryan K. Zinke,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+MT,2,Troy Downing,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,1,Donald G. Davis,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,2,Deborah K. Ross,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,3,Gregory F. Murphy,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,4,Valerie P. Foushee,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,5,Virginia Foxx,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,6,Addison P. McDowell,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,7,David Rouzer,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,8,Mark Harris,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,9,Richard Hudson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,10,Pat Harrigan,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,11,Chuck Edwards,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,12,Alma S. Adams,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,13,Brad Knott,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NC,14,Tim Moore,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+ND,0,Julie Fedorchak,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NE,1,Mike Flood,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NE,2,Don Bacon,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NE,3,Adrian Smith,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NH,1,Chris Pappas,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NH,2,Maggie Goodlander,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,1,Donald Norcross,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,2,Jefferson Van Drew,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,3,"Herbert C. Conaway, Jr.",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,4,Christopher H. Smith,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,5,Josh Gottheimer,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,6,"Frank Pallone, Jr.",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,7,"Thomas H. Kean, Jr.",REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,8,Robert Menendez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,9,Nellie Pou,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,10,LaMonica McIver,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,11,Analilia Mejia,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NJ,12,Bonnie Watson Coleman,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NM,1,Melanie A. Stansbury,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NM,2,Gabe Vasquez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NM,3,Teresa Leger Fernandez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NV,1,Dina Titus,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NV,2,Mark E. Amodei,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NV,3,Susie Lee,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NV,4,Steven Horsford,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,1,Nick LaLota,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,2,Andrew R. Garbarino,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,3,Thomas R. Suozzi,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,4,Laura Gillen,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,5,Gregory W. Meeks,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,6,Grace Meng,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,7,Nydia M. Velázquez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,8,Hakeem S. Jeffries,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,9,Yvette D. Clarke,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,10,Daniel S. Goldman,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,11,Nicole Malliotakis,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,12,Jerrold Nadler,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,13,Adriano Espaillat,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,14,Alexandria Ocasio-Cortez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,15,Ritchie Torres,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,16,George Latimer,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,17,Michael Lawler,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,18,Patrick Ryan,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,19,Josh Riley,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,20,Paul Tonko,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,21,Elise M. Stefanik,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,22,John W. Mannion,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,23,Nicholas A. Langworthy,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,24,Claudia Tenney,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,25,Joseph D. Morelle,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+NY,26,Timothy M. Kennedy,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,1,Greg Landsman,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,2,David J. Taylor,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,3,Joyce Beatty,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,4,Jim Jordan,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,5,Robert E. Latta,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,6,Michael A. Rulli,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,7,Max L. Miller,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,8,Warren Davidson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,9,Marcy Kaptur,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,10,Michael R. Turner,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,11,Shontel M. Brown,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,12,Troy Balderson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,13,Emilia Strong Sykes,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,14,David P. Joyce,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OH,15,Mike Carey,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OK,1,Kevin Hern,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OK,2,Josh Brecheen,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OK,3,Frank D. Lucas,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OK,4,Tom Cole,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OK,5,Stephanie I. Bice,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OR,1,Suzanne Bonamici,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OR,2,Cliff Bentz,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OR,3,Maxine Dexter,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OR,4,Val T. Hoyle,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OR,5,Janelle S. Bynum,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+OR,6,Andrea Salinas,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,1,Brian K. Fitzpatrick,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,2,Brendan F. Boyle,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,3,Dwight Evans,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,4,Madeleine Dean,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,5,Mary Gay Scanlon,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,6,Chrissy Houlahan,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,7,Ryan Mackenzie,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,8,"Robert P. Bresnahan, Jr.",REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,9,Daniel Meuser,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,10,Scott Perry,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,11,Lloyd Smucker,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,12,Summer L. Lee,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,13,John Joyce,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,14,Guy Reschenthaler,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,15,Glenn Thompson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,16,Mike Kelly,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+PA,17,Christopher R. Deluzio,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+RI,1,Gabe Amo,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+RI,2,Seth Magaziner,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+SC,1,Nancy Mace,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+SC,2,Joe Wilson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+SC,3,Sheri Biggs,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+SC,4,William R. Timmons IV,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+SC,5,Ralph Norman,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+SC,6,James E. Clyburn,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+SC,7,Russell Fry,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+SD,0,Dusty Johnson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,1,Diana Harshbarger,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,2,Tim Burchett,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,3,"Charles J. ""Chuck"" Fleischmann",REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,4,Scott DesJarlais,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,5,Andrew Ogles,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,6,John W. Rose,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,7,Matt Van Epps,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,8,David Kustoff,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TN,9,Steve Cohen,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,1,Nathaniel Moran,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,2,Dan Crenshaw,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,3,Keith Self,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,4,Pat Fallon,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,5,Lance Gooden,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,6,Jake Ellzey,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,7,Lizzie Fletcher,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,8,Morgan Luttrell,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,9,Al Green,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,10,Michael T. McCaul,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,11,August Pfluger,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,12,Craig A. Goldman,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,13,Ronny Jackson,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,14,"Randy K. Weber, Sr.",REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,15,Monica De La Cruz,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,16,Veronica Escobar,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,17,Pete Sessions,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,18,Christian D. Menefee,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,19,Jodey C. Arrington,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,20,Joaquin Castro,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,21,Chip Roy,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,22,Troy E. Nehls,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,23,,OTHER,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,24,Beth Van Duyne,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,25,Roger Williams,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,26,Brandon Gill,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,27,Michael Cloud,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,28,Henry Cuellar,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,29,Sylvia R. Garcia,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,30,Jasmine Crockett,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,31,John R. Carter,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,32,Julie Johnson,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,33,Marc A. Veasey,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,34,Vicente Gonzalez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,35,Greg Casar,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,36,Brian Babin,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,37,Lloyd Doggett,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+TX,38,Wesley Hunt,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+UT,1,Blake D. Moore,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+UT,2,Celeste Maloy,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+UT,3,Mike Kennedy,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+UT,4,Burgess Owens,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,1,Robert J. Wittman,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,2,Jennifer A. Kiggans,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,3,"Robert C. ""Bobby"" Scott",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,4,Jennifer L. McClellan,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,5,John J. McGuire III,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,6,Ben Cline,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,7,Eugene Simon Vindman,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,8,"Donald S. Beyer, Jr.",DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,9,H. Morgan Griffith,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,10,Suhas Subramanyam,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VA,11,James R. Walkinshaw,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+VT,0,Becca Balint,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,1,Suzan K. DelBene,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,2,Rick Larsen,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,3,Marie Gluesenkamp Perez,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,4,Dan Newhouse,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,5,Michael Baumgartner,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,6,Emily Randall,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,7,Pramila Jayapal,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,8,Kim Schrier,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,9,Adam Smith,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WA,10,Marilyn Strickland,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WI,1,Bryan Steil,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WI,2,Mark Pocan,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WI,3,Derrick Van Orden,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WI,4,Gwen Moore,DEMOCRAT,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WI,5,Scott Fitzgerald,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WI,6,Glenn Grothman,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WI,7,Thomas P. Tiffany,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WI,8,Tony Wied,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WV,1,Carol D. Miller,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WV,2,Riley M. Moore,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21
+WY,0,Harriet M. Hageman,REPUBLICAN,"October 1, 2026",https://clerk.house.gov/xml/lists/MemberData.xml,2026-10-21

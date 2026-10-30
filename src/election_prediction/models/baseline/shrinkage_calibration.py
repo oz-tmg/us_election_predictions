@@ -95,6 +95,8 @@ class ShrinkageBound:
                 "no bound available; compile the calibration pairs "
                 "(docs/shrinkage-calibration-worklist.md) before narrowing the sweep"
             )
+        if self.low is None or self.high is None:
+            raise CalibrationError("a bound requires both interval endpoints")
         return tuple(round(float(x), 4) for x in np.linspace(self.low, self.high, n))
 
     def to_dict(self) -> dict:
@@ -140,8 +142,7 @@ def validate_pairs(pairs: pd.DataFrame) -> None:
         numeric = pd.to_numeric(pairs[col], errors="coerce")
         for _, row in pairs[blank].iterrows():
             problems.append(
-                f"{row['pair_id']}: {col} is not yet compiled "
-                "(see docs/shrinkage-calibration-worklist.md)"
+                f"{row['pair_id']}: {col} is not yet compiled (see docs/shrinkage-calibration-worklist.md)"
             )
         for _, row in pairs[~blank & numeric.isna()].iterrows():
             problems.append(f"{row['pair_id']}: {col} is not numeric")

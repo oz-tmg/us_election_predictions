@@ -1,0 +1,12 @@
+state_po,office,ballot_name,incumbent_name,same_person,source_url,retrieved_on,evidence_name,notes
+CA,us_house,Gil Cisneros,"Gilbert Ray Cisneros, Jr.",True,https://cisneros.house.gov/about,2026-10-22,Gilbert R. Cisneros,Official member biography and House Clerk identify the same CA31 member
+CA,us_house,Lou Correa,J. Luis Correa,True,https://correa.house.gov/about/biography,2026-10-22,Lou Correa,Official member biography and House Clerk identify the same CA46 member
+FL,us_house,Greg Steube,W. Gregory Steube,True,https://steube.house.gov/,2026-10-22,Greg Steube,Official member site and House Clerk identify the same FL17 member
+MD,us_house,"John ""Johnny O"" Olszewski, Jr.","Johnny Olszewski, Jr.",True,https://olszewski.house.gov/about,2026-10-22,Olszewski,Official member biography and House Clerk identify the same MD02 member
+NC,us_house,Don Davis,Donald G. Davis,True,https://dondavis.house.gov/,2026-10-22,Don Davis,Official member site and House Clerk identify the same NC01 member
+NC,us_house,Greg Murphy,Gregory F. Murphy,True,https://murphy.house.gov/,2026-10-22,Greg Murphy,Official member site and House Clerk identify the same NC03 member
+NY,us_house,Nicholas J. Lalota,Nick LaLota,True,https://lalota.house.gov/about,2026-10-22,Nick LaLota,Official member biography and House Clerk identify the same NY01 member
+NY,us_house,Mike Lawler,Michael Lawler,True,https://lawler.house.gov/,2026-10-22,Mike Lawler,Official member site and House Clerk identify the same NY17 member
+NY,us_house,Pat Ryan,Patrick Ryan,True,https://patryan.house.gov/,2026-10-22,Pat Ryan,Official member site and House Clerk identify the same NY18 member
+TX,us_house,TREVER NEHLS,Troy E. Nehls,False,https://nehls.house.gov/,2026-10-22,Troy E. Nehls,Official incumbent is Troy; certified general ballot names distinct given name Trever; never alias them
+DE,us_senate,CHRIS COONS,Christopher A. Coons,True,https://www.coons.senate.gov/,2026-10-22,Chris Coons,Official Senator site and Senate roster identify the same Delaware member

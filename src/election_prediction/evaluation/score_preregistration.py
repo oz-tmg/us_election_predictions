@@ -42,8 +42,10 @@ its own predictions is not evidence of anything.
 
 from __future__ import annotations
 
+import argparse
 import json
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -97,6 +99,13 @@ def _prepare(inputs: ScoringInputs) -> tuple[pd.DataFrame, dict]:
     missing = set(ACTUAL_COLUMNS) - set(actual.columns)
     if missing:
         raise ValueError(f"actual results are missing column(s) {sorted(missing)}")
+    if actual.duplicated(["geography_id", "office"]).any():
+        raise ValueError("actual results contain duplicate seat keys")
+    if "actual_dem_win" in actual:
+        values = actual["actual_dem_win"].astype(str).str.upper()
+        if not values.isin(["TRUE", "FALSE", "1", "0"]).all():
+            raise ValueError("actual_dem_win must be an explicit boolean when provided")
+        actual["actual_dem_win"] = values.isin(["TRUE", "1"])
 
     merged = preds.merge(actual, on=["geography_id", "office"], how="left")
 
@@ -113,6 +122,9 @@ def _prepare(inputs: ScoringInputs) -> tuple[pd.DataFrame, dict]:
         "seats_registered": int(len(merged) / n_assumptions),
         "scored": int(merged["is_scored"].sum() / n_assumptions),
         "unscored_not_certified": int(merged["is_uncertified"].sum() / n_assumptions),
+        "unscored_missing_vote_share": int(
+            ((~merged["is_uncertified"]) & merged["actual_dem_share"].isna()).sum() / n_assumptions
+        ),
         "void_map_changed_after_sealing": int(merged["is_void"].sum() / n_assumptions),
         "void_sources": dict(inputs.void_geographies),
         "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted",
@@ -125,7 +137,7 @@ def _metrics(frame: pd.DataFrame) -> dict:
     if not len(frame):
         return {"n": 0}
     prob = frame["dem_win_prob"].to_numpy(float)
-    outcome = (frame["actual_dem_share"].to_numpy(float) > 0.5).astype(float)
+    outcome = _dem_wins(frame).to_numpy(float)
     mean = frame["mean_dem_share"].to_numpy(float)
     sigma = frame["sigma"].to_numpy(float)
     actual = frame["actual_dem_share"].to_numpy(float)
@@ -199,6 +211,12 @@ def score(inputs: ScoringInputs) -> dict:
     }
 
 
+def _dem_wins(frame: pd.DataFrame) -> pd.Series:
+    if "actual_dem_win" in frame:
+        return frame["actual_dem_win"].astype(bool)
+    return frame["actual_dem_share"] > 0.5
+
+
 def _chamber(registration: dict, scored: pd.DataFrame) -> dict:
     """Seat-count error and whether the realised count fell inside each 90% interval."""
     band = {r["assumption"]: r for r in registration["predictions"]["band"]}
@@ -206,16 +224,24 @@ def _chamber(registration: dict, scored: pd.DataFrame) -> dict:
     if not len(house):
         return {}
     one = house[house["assumption"] == house["assumption"].iloc[0]]
-    realised = int((one["actual_dem_share"] > 0.5).sum())
-    out = {"realised_dem_seats_among_scored": realised, "scored_seats": int(len(one))}
+    realised = int(_dem_wins(one).sum())
+    registered_house = pd.DataFrame(registration["predictions"]["seats"])
+    expected = registered_house.loc[registered_house.office.eq("us_house"), "geography_id"].nunique()
+    complete = len(one) == expected
+    out: dict = {
+        "realised_dem_seats_among_scored": realised,
+        "scored_seats": int(len(one)),
+        "registered_house_seats": int(expected),
+        "complete": complete,
+    }
     for a, row in band.items():
         lo, hi = row.get("house_5th"), row.get("house_95th")
         out[a] = {
             "predicted_mean_seats": row.get("house_mean_seats"),
             "absolute_error": None
-            if row.get("house_mean_seats") is None
+            if row.get("house_mean_seats") is None or not complete
             else abs(float(row["house_mean_seats"]) - realised),
-            "inside_90_interval": None if lo is None else bool(lo <= realised <= hi),
+            "inside_90_interval": None if lo is None or not complete else bool(lo <= realised <= hi),
         }
     return out
 
@@ -229,9 +255,44 @@ def _failure_condition(registration: dict, scored: pd.DataFrame, plan: dict) -> 
         "declared": plan.get("failure_condition"),
         "assumptions_whose_interval_contained_the_truth": int(sum(bool(c) for c in known)),
         "assumptions_checked": len(known),
-        "triggered": bool(known) and not any(known),
+        "status": "evaluated" if known else "not_evaluable_incomplete_chamber",
+        "triggered": not any(known) if known else None,
     }
 
 
 def load_registration(path: str | Path) -> dict:
     return json.loads(Path(path).read_text())
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Score the sealed forecast against as-of certified results.")
+    parser.add_argument("--registration", type=Path, default=Path("reports/preregistration_2026-11-03.json"))
+    parser.add_argument("--actual", type=Path, required=True)
+    parser.add_argument("--as-of", required=True, type=date.fromisoformat)
+    parser.add_argument("--out", type=Path, required=True)
+    voids = parser.add_mutually_exclusive_group(required=True)
+    voids.add_argument("--no-void-geographies", action="store_true")
+    voids.add_argument("--void-geographies", type=Path, help="JSON geography -> official source URL mapping")
+    args = parser.parse_args(argv)
+    reasons = json.loads(args.void_geographies.read_text()) if args.void_geographies else {}
+    if not isinstance(reasons, dict) or any(
+        not isinstance(v, str) or not v.strip() for v in reasons.values()
+    ):
+        raise ValueError("each void geography needs a nonempty source URL")
+    result = score(
+        ScoringInputs(
+            registration=load_registration(args.registration),
+            actual=pd.read_csv(args.actual),
+            as_of=args.as_of.isoformat(),
+            void_geographies=reasons,
+        )
+    )
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    with args.out.open("x") as handle:
+        json.dump(result, handle, indent=2, default=str)
+    print(f"Scored {result['audit']['scored']} registered seats -> {args.out}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

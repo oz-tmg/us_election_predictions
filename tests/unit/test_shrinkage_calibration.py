@@ -93,10 +93,7 @@ def test_asking_an_insufficient_bound_for_factors_raises_rather_than_guessing():
 
 def test_a_partial_compilation_names_the_pairs_still_missing():
     three = _pairs(
-        [
-            {"pair_id": p, "general_margin_swing": 0.05}
-            for p in ("2017_2018", "2019_2020", "2021_2022")
-        ]
+        [{"pair_id": p, "general_margin_swing": 0.05} for p in ("2017_2018", "2019_2020", "2021_2022")]
     )
     bound = sc.band_from_pairs(three)
     assert bound.status == sc.STATUS_BOUND

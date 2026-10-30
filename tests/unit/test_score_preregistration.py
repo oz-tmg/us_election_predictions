@@ -10,6 +10,7 @@ November except pressing go.
 from __future__ import annotations
 
 import copy
+import json
 
 import numpy as np
 import pandas as pd
@@ -233,6 +234,16 @@ def test_seat_count_error_is_reported_per_assumption():
     assert ch["shrinkage=1"]["absolute_error"] == pytest.approx(2.0)
 
 
+def test_partial_certification_cannot_fail_a_full_chamber_interval():
+    actual = _actual(0.9)
+    actual.loc[5:, "certified_on"] = "2026-12-20"
+    report = sp.score(_inputs(_registration(), actual, as_of="2026-12-01"))
+    assert report["chamber"]["scored_seats"] == 5
+    assert report["chamber"]["shrinkage=0.25"]["inside_90_interval"] is None
+    assert report["chamber"]["shrinkage=1"]["absolute_error"] is None
+    assert report["failure_condition"]["triggered"] is None
+
+
 # ---- the exclusions must not depend on which way the result went -------------------------
 
 
@@ -256,3 +267,36 @@ def test_the_committed_registration_can_be_loaded_and_its_seal_verified():
     reg = sp.load_registration("reports/preregistration_2026-11-03.json")
     sp.verify_seal(reg)  # must not raise
     assert reg["election_date"] == "2026-11-03"
+
+
+def test_scoring_cli_requires_a_void_decision_and_never_overwrites(tmp_path):
+    registration = tmp_path / "registration.json"
+    registration.write_text(json.dumps(_registration(), default=str))
+    actual = tmp_path / "actual.csv"
+    _actual(0.55).to_csv(actual, index=False)
+    out = tmp_path / "score.json"
+    args = [
+        "--registration",
+        str(registration),
+        "--actual",
+        str(actual),
+        "--as-of",
+        "2026-12-01",
+        "--out",
+        str(out),
+    ]
+    with pytest.raises(SystemExit):
+        sp.main(args)
+    assert sp.main([*args, "--no-void-geographies"]) == 0
+    assert json.loads(out.read_text())["audit"]["scored"] == N
+    with pytest.raises(FileExistsError):
+        sp.main([*args, "--no-void-geographies"])
+
+
+def test_third_party_winner_changes_win_score_not_two_party_share_score():
+    actual = _actual(0.6)
+    actual["actual_dem_win"] = False
+    result = sp.score(_inputs(_registration(), actual))
+    assert result["chamber"]["realised_dem_seats_among_scored"] == 0
+    ordinary = sp.score(_inputs(_registration(), _actual(0.6)))
+    assert ordinary["chamber"]["realised_dem_seats_among_scored"] == N

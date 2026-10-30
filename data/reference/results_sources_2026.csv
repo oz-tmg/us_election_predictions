@@ -1,0 +1,51 @@
+state_po,primary_url,fallback_url,format,extraction_status,certification_evidence,notes
+AL,https://www.sos.alabama.gov/alabama-votes/voter/election-information/2026,https://www.sos.alabama.gov/alabama-votes,HTML/PDF/XLSX,manual_review_pending,State canvassing certification document,Separate special congressional primaries from November outcomes
+AK,https://www.elections.alaska.gov/election-results/,https://www.elections.alaska.gov/,HTML/PDF,manual_review_pending,Official certification and final ranked-choice round,First-choice plurality is not necessarily the winner
+AZ,https://azsos.gov/elections/results-data/election-results,https://azsos.gov/elections,HTML/PDF,manual_review_pending,State canvass document,House only in current Senate universe
+AR,https://www.sos.arkansas.gov/elections/election-results,https://www.sos.arkansas.gov/elections,HTML,manual_review_pending,State certified canvass,Verify November contest identifiers
+CA,https://electionresults.sos.ca.gov/,https://www.sos.ca.gov/elections/prior-elections/statewide-election-results,HTML/CSV,manual_review_pending,Certified Statement of Vote,Same-party general contests need candidate-level winner identity
+CO,https://www.sos.state.co.us/pubs/elections/resultsData.html,https://www.sos.state.co.us/pubs/elections/main.html,HTML,manual_review_pending,Official certified results document,Do not infer certification from dashboard completion
+CT,https://portal.ct.gov/sots/election-services/election-results/election-results,https://portal.ct.gov/sots/election-services,HTML,manual_review_pending,Official statement of vote,House only in current Senate universe
+DE,https://elections.delaware.gov/results/,https://elections.delaware.gov/,HTML,manual_review_pending,State certified canvass,At-large House district is zero
+FL,https://results.elections.myflorida.com/,https://dos.fl.gov/elections/data-statistics/elections-data/election-results-archive/,HTML/CSV,manual_review_pending,Elections Canvassing Commission certification,Senate contest is the special election
+GA,https://results.sos.ga.gov/,https://sos.ga.gov/page/election-results,HTML/XLSX,manual_review_pending,Secretary of State certification,Retain any runoff separately from first round
+HI,https://elections.hawaii.gov/election-results/,https://elections.hawaii.gov/,HTML/PDF,manual_review_pending,Official certified results,House only in current Senate universe
+ID,https://sos.idaho.gov/elections-division/election-results/,https://sos.idaho.gov/elections-division/,HTML,manual_review_pending,State canvass,Verify current linked download format
+IL,https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx,https://www.elections.il.gov/,HTML,manual_review_pending,State Board certified totals,Dynamic site may require manual export
+IN,https://enr.indianavoters.in.gov/site/index.html,https://www.in.gov/sos/elections/election-administrators-portal/election-results/,HTML,manual_review_pending,Official certified totals,Do not reuse defective historical precinct inputs
+IA,https://electionresults.iowa.gov/,https://sos.iowa.gov/elections,HTML,manual_review_pending,State canvass,Verify statewide aggregate export
+KS,https://ent.sos.ks.gov/,https://sos.ks.gov/elections/elections-statistics-data.html,HTML,manual_review_pending,State Board of Canvassers certification,Historical precinct suppression remains unrelated and unresolved
+KY,https://elect.ky.gov/results/Pages/default.aspx,https://elect.ky.gov/,HTML,manual_review_pending,State Board certified results,Verify state aggregate rather than summing duplicate levels
+LA,https://voterportal.sos.la.gov/static/2026-11-03/resultsRace/,https://www.sos.la.gov/elections-voting/election-results-statistics,HTML,manual_review_pending,Official promulgated certified outcome,House first round November 3 and possible runoff December 12; Senate ordinary general
+ME,https://www.maine.gov/sos/cec/elec/results/index.html,https://www.maine.gov/sos/elections-voting,HTML/PDF,manual_review_pending,Certified final ranked-choice tabulation,Preserve round identity and exhausted-ballot exclusions
+MD,https://elections.maryland.gov/elections/2026/,https://elections.maryland.gov/elections/,HTML,manual_review_pending,State Board certification,House only in current Senate universe
+MA,https://www.sec.state.ma.us/divisions/elections/research-and-statistics/election-results.htm,https://www.sec.state.ma.us/divisions/elections/elections-and-voting.htm,HTML,manual_review_pending,Official certified return,Verify November rather than primary
+MI,https://mielections.us/election/results/2026GEN_CENR.html,https://www.michigan.gov/sos/elections/election-results-and-data,HTML,manual_review_pending,State Board of Canvassers certification,Portal may change before election
+MN,https://electionresults.sos.mn.gov/,https://www.sos.state.mn.us/elections-voting/election-results/,HTML,manual_review_pending,State Canvassing Board certification,Verify current contest export
+MS,https://www.sos.ms.gov/elections-voting/election-results,https://www.sos.ms.gov/elections-voting,HTML/PDF,manual_review_pending,Official certified results,Verify regular versus special identifiers
+MO,https://enr.sos.mo.gov/,https://www.sos.mo.gov/elections/s_default,HTML,manual_review_pending,State certified canvass,House only in current Senate universe
+MT,https://electionresults.mt.gov/,https://sosmt.gov/elections/,HTML,manual_review_pending,State canvass,House only in current Senate universe
+NE,https://sos.nebraska.gov/elections/election-results,https://sos.nebraska.gov/elections,HTML,manual_review_pending,Board of State Canvassers certification,Verify Senate class
+NV,https://silverstateelection.nv.gov/,https://www.nvsos.gov/sos/elections/election-information,HTML,manual_review_pending,Official state canvass,House only in current Senate universe
+NH,https://www.sos.nh.gov/2026-general-election-results,https://www.sos.nh.gov/elections,HTML/PDF,manual_review_pending,Official certified results,Access restrictions may require manual retrieval
+NJ,https://www.nj.gov/state/elections/election-information-2026.shtml,https://www.nj.gov/state/elections/,HTML/PDF,manual_review_pending,Official General Election Results and certification,Do not substitute April special election for November general
+NM,https://electionresults.sos.nm.gov/,https://www.sos.nm.gov/voting-and-elections/election-results/,HTML,manual_review_pending,State canvass certification,Verify current download layout
+NY,https://nyenr.elections.ny.gov/,https://elections.ny.gov/election-results,HTML,manual_review_pending,State Board certification,Fusion lines aggregate by candidate before party totals
+NC,https://er.ncsbe.gov/,https://www.ncsbe.gov/results-data/election-results,HTML/CSV,manual_review_pending,State Board canvass certification,Do not confuse precinct reporting percentage with certification
+ND,https://results.sos.nd.gov/,https://www.sos.nd.gov/elections,HTML,manual_review_pending,State Canvassing Board certification,At-large House district is zero
+OH,https://liveresults.ohiosos.gov/,https://www.ohiosos.gov/elections/election-results-and-data/,HTML,manual_review_pending,Secretary of State official certified results,Senate contest is the special election
+OK,https://results.okelections.gov/OKER/,https://oklahoma.gov/elections/elections-results/election-results.html,HTML,manual_review_pending,State Election Board certification,Verify Senate regular contest and current incumbent
+OR,https://results.oregonvotes.gov/,https://sos.oregon.gov/elections/Pages/electionhistory.aspx,HTML,manual_review_pending,Secretary of State certified abstract,Verify current election selection
+PA,https://www.electionreturns.pa.gov/,https://www.pa.gov/agencies/vote/elections/election-results.html,HTML,manual_review_pending,Secretary certification,House only in current Senate universe
+RI,https://www.ri.gov/election/,https://elections.ri.gov/elections/results,HTML,manual_review_pending,Board certified results,Verify November rather than primary
+SC,https://scvotes.gov/elections-statistics/election-results/,https://scvotes.gov/,HTML,manual_review_pending,State Board of Canvassers certification,Verify current incumbent identity from roster
+SD,https://electionresults.sd.gov/,https://sdsos.gov/elections-voting/election-resources/election-history/default.aspx,HTML,manual_review_pending,State canvass,At-large House district is zero
+TN,https://elections.tn.gov/results.php,https://sos.tn.gov/elections/results,HTML,manual_review_pending,Official certified returns,Verify current export
+TX,https://results.texas-election.com/,https://www.sos.state.tx.us/elections/historical/index.shtml,HTML,manual_review_pending,State canvass,Do not replace registered transferred priors from election-night results
+UT,https://electionresults.utah.gov/,https://vote.utah.gov/,HTML,manual_review_pending,Official state canvass,House only in current Senate universe
+VT,https://electionresults.vermont.gov/,https://sos.vermont.gov/elections/election-info-resources/elections-results-data/,HTML,manual_review_pending,Official certified results,At-large House district is zero
+VA,https://enr.elections.virginia.gov/,https://www.elections.virginia.gov/resultsreports/election-results/,HTML,manual_review_pending,State Board certification,Verify November federal contests
+WA,https://results.vote.wa.gov/,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/election-results-and-voters-pamphlets,HTML,manual_review_pending,Secretary of State certification,House only in current Senate universe
+WV,https://results.enr.clarityelections.com/WV/,https://sos.wv.gov/elections/Pages/default.aspx,HTML,manual_review_pending,Official certified state totals,Discover current election ID from authority link
+WI,https://elections.wi.gov/elections/election-results,https://elections.wi.gov/,HTML,manual_review_pending,Wisconsin Elections Commission certified canvass,House only in current Senate universe
+WY,https://sos.wyo.gov/Elections/StatewideResults.aspx,https://sos.wyo.gov/Elections/,HTML/PDF,manual_review_pending,State canvass,At-large House district is zero
