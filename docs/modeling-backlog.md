@@ -1,5 +1,59 @@
 # Modeling Backlog
 
+## October 25: Candidate Poll Archive Extension
+
+Later same-day update: the 2024-cycle Senate file has now been obtained directly from
+Wayback and studied. No further owner download is needed for that input. The current
+study is `reports/polling_lean_2026-10-25_senate2024_final/README.md` (18 added 2024 Senate
+races); source/coverage guide: `docs/polling-data-guide.md`. The remaining acceptance
+gates below are publication, ballot identity, geography and fundamentals vintages,
+not the now-filled 2024 Senate file request. Earlier acquisition status is retained below.
+
+Four manually supplied Wayback CSVs are preserved with exact URLs, capture dates,
+unknown browser-retrieval times explicitly null, actual ingestion times and SHA-256.
+The candidate adapter checks both party schemas, D/R question pairs, duplicate/conflict
+handling, November rounds, samples and field dates. Candidate-covered office-cycles
+replace ratings data, never double count it or bypass date exclusions. The fixed study
+adds 30 polled 2024 House races. Senate research metrics improve; House proxy metrics
+do not pass. Both remain unpromoted. See `reports/polling_lean_2026-10-25_final/README.md`.
+
+P2-LEAN-001 remains gated on **one replacement download: the 2024-cycle version of
+`senate_polls.csv`** (the supplied file was captured in 2021), verified publication and
+historical feature vintages, and House presidential lean on the correct historical
+maps. Candidate-file acquisition alone cannot satisfy those gates. P2-LEAN-002/003
+remain research-only; the original forecast and no-numerical-2026-correction rule stand.
+
+## October 23: Polling Error Conditional on Lean
+
+Independent research experiment implemented in `polling/lean.py` and
+`build_polling_lean.py`; specification `docs/polling-lean-experiment.md`, exact manual
+file request `docs/polling-lean-downloads.md`. Three pipelines, earlier-cycle-only fits,
+whole-cycle slope bootstrap, fixed competitive/lean-band calibration, and a shared
+simulation slope are implemented. No article coefficient or live forecast parameter
+was copied. House/Senate promotion decisions remain separate. The acquired 538 ratings
+archive ends in 2022; four publisher candidate-poll CSV endpoints return HTML. Missing
+publication/field-end vintages, House presidential district lean and historical map/
+roster vintages prevent promotion. Numerical 2026 polling sensitivity is blocked on
+reviewed race polls. The sealed September forecast remains unchanged.
+
+| ID | Question | Acceptance |
+|---|---|---|
+| P2-LEAN-001 | Does lean predict residual error beyond the fundamentals blend? | Implemented retrospective diagnostic; require reviewed candidate-poll archive including 2024, actual availability evidence, certified outcome reconciliation, and presidential lean on the correct historical boundaries before a real-time claim. |
+| P2-LEAN-002 | Does a learned correction improve complete chronological pipelines? | Code/tests implemented; evaluate all/competitive/lean-band MAE, Brier, log loss and coverage by office; no automatic deployment. House proxy is not the article's presidential-lean test. |
+| P2-LEAN-003 | Does shared slope uncertainty affect the polled-seat distribution? | Implemented shared election-level coefficient draw, not independent state corrections. Full chamber/control validation and a live 2026 sensitivity still require complete governed inputs. |
+
+## October 21 Status Override
+
+See `docs/refresh-2026-status.md` for current acceptance gates. NE-003 now has the national
+schema, two cited live polls, publication-aware averaging and historical publisher-average
+diagnostics, but no verified multi-cycle poll-level archive or identified effects: not
+promoted. NE-004 now has actual ALFRED vintages and chronological economic regressions;
+income loses to both benchmarks on two held-out cycles, so remains cross-check only.
+Complete-House diagnostics now cover five full held-out folds, including missing-share
+fallbacks and canonical winner identities. Historical input-vintage gaps still prevent
+live promotion. Capture follow-up installed; self-hosted runner registration pending.
+Historical status prose below is retained as decision history where it differs.
+
 This backlog prioritizes analytical questions and feature-engineering tasks for the US Election Prediction project. It assumes a solo-owned project, so tasks are scoped around clear success criteria and incremental delivery.
 
 Priority labels:
@@ -16,11 +70,23 @@ Status labels:
 - `blocked`
 - `done`
 
+## October 18 Operational Update
+
+Current evidence and unfinished acceptance boundaries are in
+[`refresh-2026-status.md`](refresh-2026-status.md). The internal refreshed run has 435 House
+seats (38 Texas transfers, 135 fallbacks) and 35 Senate contests with a reconciled official
+roster. Only 12 candidacies are verified. Results capture/scoring has an executable
+as-of workflow and a House/Senate rehearsal; the original seal is unchanged. Forward-only
+benchmarks and correlation experiments exist, but a full-chamber promotion gate remains
+open. CI configuration is added locally; the optional live runner is not
+configured. NE-004 is still a source/vintage-gated cross-check task, not an added signal.
+Older dated task entries below retain their original decision history.
+
 ## P0 — Data and Entity Foundation
 
 | ID | Task | Why It Matters | Acceptance Criteria | Status |
 |---|---|---|---|---|
-| P0-001 | Create canonical election cycle table | Every model needs consistent election dates and office types. | Table has cycle, election date, office, jurisdiction, election type. | done (cycle table + prospective race universe: 435 House + 33 Senate for 2026, with current seat-holders; candidate filings still need `fec_api`) |
+| P0-001 | Create canonical election cycle table | Every model needs consistent election dates and office types. | Table has cycle, election date, office, jurisdiction, election type. | done; October 18 projection rebuild uses official Senate roster/special schedule for 435 House + 35 Senate. Baseline P1 build still derives its default historical universe; current projection explicitly replaces its Senate rows. |
 | P0-002 | Create canonical geography table | Prevents FIPS/GEOID/district mismatch. | State, county, district, precinct, media market keys documented. | done (nation/state/county/CD; precinct + media market deferred) |
 | P0-003 | Create candidate and party normalization rules | Candidate names and party labels vary across sources. | Reusable crosswalk with aliases, party, office, cycle, source IDs. | done 2026-09-13 (`features/candidate_crosswalk.py`: exact-match aliases; `ballot_party` vs `caucus_party` split; FEC roster join; ballot-status rows no longer win races) |
 | P0-004 | Build source manifest schema | Enables reproducibility and legal review. | Every raw source snapshot has source, date, checksum, license, privacy tier. | done |
@@ -91,7 +157,7 @@ Tier 0/1; nothing here generates or scores an ensemble — that stays in the aud
 |---|---|---|---|---|
 | P2-001 | Poll ingestion schema | Can polls be compared across pollsters? | Pollster, sponsor, mode, field dates, sample, population, weights, toplines. | done |
 | P2-002 | Polling average | What is the current topline signal? | Time decay, sample-size weighting, pollster house effect placeholder. | done |
-| P2-003 | Pollster house effects | Which pollsters systematically lean? | Historical estimates with uncertainty. | todo |
+| P2-003 | Pollster house effects | Which pollsters systematically lean? | Historical estimates with uncertainty. | Code/tested earlier-cycle shrunken estimator; fitting blocked on validated poll-level archive; unidentified, not promoted. |
 | P2-004 | MRP prototype | Can national/state survey data estimate district opinion? | Model using demographics + geography with poststratification frame. | todo |
 | P2-005 | MRP uncertainty report | Are district estimates overconfident? | Posterior intervals include survey and poststratification uncertainty. | todo |
 | P2-006 | Issue salience MRP | Which issues vary most by district? | District-level issue estimates with caveats. | todo |

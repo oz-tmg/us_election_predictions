@@ -110,7 +110,9 @@ def _canvas(
         right=right,
         wspace=wspace,
     )
-    fig.text(0.012, 1 - 0.30 / height, title, ha="left", va="top", fontsize=13.5, fontweight="bold", color=INK)
+    fig.text(
+        0.012, 1 - 0.30 / height, title, ha="left", va="top", fontsize=13.5, fontweight="bold", color=INK
+    )
     fig.text(0.012, 1 - 0.62 / height, subtitle, ha="left", va="top", fontsize=9.5, color=INK_2)
     fig.text(0.012, 0.10 / height, footer, ha="left", va="bottom", fontsize=7.8, color=MUTED)
     return fig, axes
@@ -168,8 +170,12 @@ def fig01_mae(p1: dict) -> None:
     for yi, v in zip(y, naive, strict=True):
         ax.text(v + 0.0016, yi + h / 2 + 0.01, f"{v:.4f}", va="center", fontsize=9, color=INK_2)
     for yi, v in zip(y, model, strict=True):
-        ax.text(v + 0.0016, yi - h / 2 - 0.01, f"{v:.4f}", va="center", fontsize=9, fontweight="bold", color=INK)
-    ax.set_yticks(y, [f"{lab}\nn = {nn:,}" for lab, nn in zip(labels, n, strict=True)], fontsize=9.4, color=INK_2)
+        ax.text(
+            v + 0.0016, yi - h / 2 - 0.01, f"{v:.4f}", va="center", fontsize=9, fontweight="bold", color=INK
+        )
+    ax.set_yticks(
+        y, [f"{lab}\nn = {nn:,}" for lab, nn in zip(labels, n, strict=True)], fontsize=9.4, color=INK_2
+    )
     ax.set_xlim(0, 0.116)
     ax.set_xlabel("Mean absolute error, two-party Democratic vote share  (lower is better)")
     ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.02f}"))
@@ -212,7 +218,13 @@ def fig02_reliability(p1: dict) -> None:
         nn = np.array([c["n"] for c in curve], float)
         ax.plot(x, yv, color=colour, lw=2.0, zorder=4)
         ax.scatter(
-            x, yv, s=14 + 110 * np.sqrt(nn / nn.max()), color=colour, edgecolor=SURFACE, linewidth=1.3, zorder=5
+            x,
+            yv,
+            s=14 + 110 * np.sqrt(nn / nn.max()),
+            color=colour,
+            edgecolor=SURFACE,
+            linewidth=1.3,
+            zorder=5,
         )
 
         eligible = nn >= 20
@@ -420,7 +432,9 @@ def fig05_swing_ratio(p1: dict) -> None:
     )
     _frame(ax)
     ax.axhline(1.0, color=BASELINE, lw=1.4, ls=(0, (4, 3)), zorder=2)
-    ax.text(len(eras) - 0.42, 1.006, "uniform swing = 1.0", fontsize=8.4, color=MUTED, va="bottom", ha="right")
+    ax.text(
+        len(eras) - 0.42, 1.006, "uniform swing = 1.0", fontsize=8.4, color=MUTED, va="bottom", ha="right"
+    )
 
     for xi, era in zip(x, eras, strict=True):
         ok = era["status"] == "ok"
@@ -428,7 +442,15 @@ def fig05_swing_ratio(p1: dict) -> None:
             r = era["swing_ratio"]
             ax.plot([xi, xi], [1.0, r], color=S1, lw=2.0, zorder=3)
             ax.scatter([xi], [r], s=110, color=S1, edgecolor=SURFACE, linewidth=1.7, zorder=4)
-            ax.text(xi, r + (0.035 if r >= 1 else -0.055), f"{r:.2f}", ha="center", fontsize=9.2, color=INK, fontweight="bold")
+            ax.text(
+                xi,
+                r + (0.035 if r >= 1 else -0.055),
+                f"{r:.2f}",
+                ha="center",
+                fontsize=9.2,
+                color=INK,
+                fontweight="bold",
+            )
         else:
             ax.scatter([xi], [1.0], s=115, facecolor=SURFACE, edgecolor=CRITICAL, linewidth=1.8, zorder=4)
             ax.annotate(
@@ -504,7 +526,9 @@ def fig06_band(band: dict) -> None:
 
     _frame(ax2)
     ax2.fill_between(shr, h5, h95, color=S1, alpha=0.16, zorder=2, label="90% simulation range")
-    ax2.plot(shr, hm, color=S1, lw=2.2, marker="o", ms=7.5, mec=SURFACE, mew=1.5, zorder=4, label="Mean seats")
+    ax2.plot(
+        shr, hm, color=S1, lw=2.2, marker="o", ms=7.5, mec=SURFACE, mew=1.5, zorder=4, label="Mean seats"
+    )
     ax2.axhline(217.5, color=CRITICAL, lw=1.6, zorder=3)
     ax2.text(1.05, 221, "218 = control", fontsize=8.4, color=CRITICAL, ha="right")
     ax2.set_ylim(100, 390)
@@ -571,9 +595,7 @@ def fig08_redrawn(band: dict) -> None:
 
     universe = pd.read_parquet(ROOT / "data/gold/race_universe_2026.parquet")
     house = universe[universe["office"] == "us_house"]
-    redrawn = (
-        house[house["boundary_confidence"] == "redrawn"]["state_po"].value_counts().sort_values()
-    )
+    redrawn = house[house["boundary_confidence"] == "redrawn"]["state_po"].value_counts().sort_values()
     n_redrawn, n_total = int(redrawn.sum()), int(len(house))
 
     fig, (ax1, ax2) = _canvas(
@@ -600,8 +622,13 @@ def fig08_redrawn(band: dict) -> None:
     ax1.set_xlim(0, 60)
     ax1.set_xlabel("House seats on territory new since 2024")
     ax1.grid(axis="y", visible=False)
-    ax1.set_title(f"{n_redrawn} of {n_total} seats · {n_redrawn / n_total:.1%}", fontsize=10, color=INK,
-                  fontweight="bold", pad=10)
+    ax1.set_title(
+        f"{n_redrawn} of {n_total} seats · {n_redrawn / n_total:.1%}",
+        fontsize=10,
+        color=INK,
+        fontweight="bold",
+        pad=10,
+    )
     ax1.annotate(
         "Missouri is NOT here.\nIt enacted a 2025 map, is enjoined\nfrom using it, and votes its 2022\nmap — so its 8 priors stay valid.",
         xy=(0.55, 0.30),
@@ -616,13 +643,39 @@ def fig08_redrawn(band: dict) -> None:
     after_w = np.array([r["house_95th"] - r["house_5th"] for r in rows])
     # The same sweep before the register was consulted (reports/national_environment_2026-09-15.json).
     before_w = np.array([172.0, 174.0, 177.0, 182.0, 186.0])
-    ax2.plot(shr, before_w, color=MUTED, lw=2.0, marker="o", ms=7, mec=SURFACE, mew=1.5,
-             zorder=3, label="Boundaries assumed unchanged")
-    ax2.plot(shr, after_w, color=S1, lw=2.2, marker="o", ms=7.5, mec=SURFACE, mew=1.5,
-             zorder=4, label="Boundaries sourced from the register")
+    ax2.plot(
+        shr,
+        before_w,
+        color=MUTED,
+        lw=2.0,
+        marker="o",
+        ms=7,
+        mec=SURFACE,
+        mew=1.5,
+        zorder=3,
+        label="Boundaries assumed unchanged",
+    )
+    ax2.plot(
+        shr,
+        after_w,
+        color=S1,
+        lw=2.2,
+        marker="o",
+        ms=7.5,
+        mec=SURFACE,
+        mew=1.5,
+        zorder=4,
+        label="Boundaries sourced from the register",
+    )
     ax2.fill_between(shr, before_w, after_w, color=S1, alpha=0.12, zorder=2)
-    ax2.text(0.62, 243, "the uncertainty that was\nalways there, now stated",
-             fontsize=8.5, color=INK_2, ha="center")
+    ax2.text(
+        0.62,
+        243,
+        "the uncertainty that was\nalways there, now stated",
+        fontsize=8.5,
+        color=INK_2,
+        ha="center",
+    )
     ax2.set_ylim(140, 265)
     ax2.set_xlim(0.18, 1.07)
     ax2.set_xlabel("Assumed shrinkage factor")
