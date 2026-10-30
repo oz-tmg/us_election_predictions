@@ -10,6 +10,9 @@ recomputed from per-seat probabilities (that would treat seats as independent â€
     ep-export-dashboard preregistration reports/preregistration_2026-11-03.json
     ep-export-dashboard backtest reports/p1_results.json --as-of 2026-09-01
     ep-export-dashboard history data/gold/race_results.parquet
+    ep-export-dashboard scenario reports/scenario_south_texas_2026-10-29
+    ep-export-dashboard polls reports/poll_cross_check_texas_2026-10-29
+    ep-export-dashboard context reports/texas_context_2026-10-29
 
 Bundles are written to ``data/gold/dashboard_bundles/<tier>/<run_id>/`` (git-ignored with
 the rest of gold) and are immutable: re-exporting an existing run raises unless
@@ -171,17 +174,31 @@ def export_refresh(
     run_id: str | None = None,
     replace: bool = False,
 ) -> Path:
+    """A dated refresh, or (``kind=scenario``) a scenario run written in the same layout.
+
+    A scenario directory carries ``scenario_summary.json`` and its projection payload names
+    the scenario; both are required for ``kind=scenario`` and the scenario's own
+    description becomes a bundle document, so the assumption travels with the numbers.
+    """
     seats_path = refresh_dir / "projection_seats.csv"
     band_paths = sorted(refresh_dir.glob("national_environment_*.json"))
     if len(band_paths) != 1:
         raise BundleError(f"{refresh_dir}: expected one national_environment_*.json, got {band_paths}")
     band_path = band_paths[0]
-    summary_path = refresh_dir / "refresh_summary.json"
+    summary_name = "scenario_summary.json" if kind is RunKind.SCENARIO else "refresh_summary.json"
+    summary_path = refresh_dir / summary_name
 
     ne = json.loads(band_path.read_text())
-    refresh_summary = json.loads(summary_path.read_text()) if summary_path.exists() else {}
-    as_of = refresh_summary.get("as_of") or ne["generated_on"]
-    sources = _sources(seats_path, band_path, summary_path)
+    summary = json.loads(summary_path.read_text()) if summary_path.exists() else {}
+    scenario = ne.get("scenario")
+    if kind is RunKind.SCENARIO and not (scenario and summary):
+        raise BundleError(f"{refresh_dir}: a scenario bundle needs the payload's scenario and {summary_name}")
+    if kind is not RunKind.SCENARIO and scenario:
+        raise BundleError(f"{refresh_dir}: this run describes a scenario; export it with --kind scenario")
+    as_of = summary.get("as_of") or ne["generated_on"]
+    shares_path = refresh_dir / "district_region_shares.csv"
+    gate_path = refresh_dir / "senate_specification_gate.json"
+    sources = _sources(seats_path, band_path, summary_path, shares_path, gate_path)
 
     doc = _band_document(
         ne["band_results"],
@@ -190,26 +207,104 @@ def export_refresh(
         correlation_parameters=ne.get("correlation_parameters"),
         house_coverage=ne.get("house_coverage"),
         senate_coverage=ne.get("senate_coverage"),
+        senate_specification=ne.get("senate_specification"),
+        senate_specification_gate=json.loads(gate_path.read_text()) if gate_path.exists() else None,
     )
     caveats = (*ne["national_environment"].get("caveats", []), CORRELATION_CAVEAT)
+    tables: dict[str, pd.DataFrame] = {"seats": pd.read_csv(seats_path)}
+    documents: dict[str, Any] = {"band": doc}
+    if kind is RunKind.SCENARIO:
+        assert scenario is not None
+        title = f"Scenario: {scenario.get('name', 'unnamed').replace('_', ' ')} (as of {as_of})"
+        summary_text = f"{scenario['assumption']} " + " ".join(doc["conclusions"])
+        caveats = (scenario.get("not_measured", ""), *caveats)
+        documents["scenario"] = scenario
+        if shares_path.exists():
+            tables["region_shares"] = pd.read_csv(shares_path)
+    else:
+        title = f"Internal refresh as of {as_of}"
+        summary_text = " ".join(doc["conclusions"]) + _coverage_sentence(ne.get("house_coverage"))
     manifest = RunManifest(
         run_id=run_id or refresh_dir.name,
         kind=kind,
         tier=Tier.VAULT,
-        title=f"Internal refresh as of {as_of}",
+        title=title,
         as_of=as_of,
-        summary=" ".join(doc["conclusions"]) + _coverage_sentence(ne.get("house_coverage")),
-        tables=("seats",),
-        documents=("band",),
+        summary=summary_text,
+        tables=tuple(tables),
+        documents=tuple(documents),
         offices=("us_house", "us_senate"),
-        caveats=caveats,
+        caveats=tuple(c for c in caveats if c),
         sources=sources,
-        source_git_commit=refresh_summary.get("git_commit"),
+        source_git_commit=summary.get("git_commit"),
         exporter_git_commit=_git_commit(Path.cwd()),
         exported_on=dt.date.today().isoformat(),
     )
-    seats = pd.read_csv(seats_path)
-    return write_bundle(out_root, manifest, {"seats": seats}, {"band": doc}, replace=replace)
+    return write_bundle(out_root, manifest, tables, documents, replace=replace)
+
+
+def export_poll_cross_check(check_dir: Path, out_root: Path = DEFAULT_OUT, *, replace: bool = False) -> Path:
+    """Hand-compiled polls and their average, exported as a cross-check (never blended)."""
+    payload_path = check_dir / "poll_average.json"
+    polls_path = check_dir / "polls.csv"
+    payload = json.loads(payload_path.read_text())
+    if "not blended" not in payload.get("status", ""):
+        raise BundleError(f"{check_dir}: a poll cross-check must declare that it is not blended")
+    polls = pd.read_csv(polls_path)
+    offices = tuple(sorted(polls["office"].unique()))
+    manifest = RunManifest(
+        run_id=check_dir.name,
+        kind=RunKind.CROSS_CHECK,
+        tier=Tier.VAULT,
+        title=f"Texas poll cross-check as of {payload['as_of']}",
+        as_of=payload["as_of"],
+        summary=(
+            f"{len(polls)} toplines from {polls['pollster'].nunique()} pollsters, each read on the "
+            "pollster's own release and cited, averaged with time decay and sample-size weights. "
+            "Shown beside the fundamentals band, never blended into it."
+        ),
+        tables=("polls",),
+        documents=("poll_average",),
+        offices=offices,
+        caveats=(
+            "No pollster house effects are estimated or applied.",
+            "The average's interval covers sampling and between-poll spread plus a 2.5-point floor; "
+            "it does not include historical state polling error.",
+            f"Excluded from the average: {', '.join(payload['excluded_from_average']) or 'none'}.",
+        ),
+        sources=_sources(payload_path, polls_path),
+        source_git_commit=payload.get("git_commit"),
+        exporter_git_commit=_git_commit(Path.cwd()),
+        exported_on=dt.date.today().isoformat(),
+    )
+    return write_bundle(out_root, manifest, {"polls": polls}, {"poll_average": payload}, replace=replace)
+
+
+def export_texas_context(context_dir: Path, out_root: Path = DEFAULT_OUT, *, replace: bool = False) -> Path:
+    """Certified regional history (vault per the owner's instruction, though Tier 0)."""
+    history_path = context_dir / "region_history.csv"
+    meta_path = context_dir / "context.json"
+    meta = json.loads(meta_path.read_text())
+    history = pd.read_csv(history_path)
+    manifest = RunManifest(
+        run_id=context_dir.name,
+        kind=RunKind.HISTORICAL,
+        tier=Tier.VAULT,
+        title=f"Texas regional history (as of {meta['as_of']})",
+        as_of=meta["as_of"],
+        summary=(
+            "Two-party Democratic share for governor (2018, 2022) and president (2020, 2024) by "
+            "named county group, from certified returns."
+        ),
+        tables=("region_history",),
+        documents=("context",),
+        offices=tuple(sorted(history["office"].unique())),
+        caveats=(meta["caveat"],),
+        sources=_sources(history_path, meta_path),
+        exporter_git_commit=_git_commit(Path.cwd()),
+        exported_on=dt.date.today().isoformat(),
+    )
+    return write_bundle(out_root, manifest, {"region_history": history}, {"context": meta}, replace=replace)
 
 
 def export_preregistration(
@@ -352,8 +447,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("refresh", help="a reports/refresh_<date>/ directory")
     p.add_argument("path", type=Path)
-    p.add_argument("--kind", choices=[RunKind.REFRESH.value, RunKind.SCENARIO.value], default="refresh")
     p.add_argument("--run-id")
+    p = sub.add_parser("scenario", help="a reports/scenario_<name>_<date>/ directory")
+    p.add_argument("path", type=Path)
+    p = sub.add_parser("polls", help="a reports/poll_cross_check_<name>_<date>/ directory")
+    p.add_argument("path", type=Path)
+    p = sub.add_parser("context", help="a reports/texas_context_<date>/ directory")
+    p.add_argument("path", type=Path)
     p = sub.add_parser("preregistration", help="a reports/preregistration_<date>.json seal")
     p.add_argument("path", type=Path)
     p = sub.add_parser("backtest", help="reports/p1_results.json")
@@ -365,9 +465,13 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     try:
         if args.cmd == "refresh":
-            out = export_refresh(
-                args.path, args.out, kind=RunKind(args.kind), run_id=args.run_id, replace=args.replace
-            )
+            out = export_refresh(args.path, args.out, run_id=args.run_id, replace=args.replace)
+        elif args.cmd == "scenario":
+            out = export_refresh(args.path, args.out, kind=RunKind.SCENARIO, replace=args.replace)
+        elif args.cmd == "polls":
+            out = export_poll_cross_check(args.path, args.out, replace=args.replace)
+        elif args.cmd == "context":
+            out = export_texas_context(args.path, args.out, replace=args.replace)
         elif args.cmd == "preregistration":
             out = export_preregistration(args.path, args.out, replace=args.replace)
         elif args.cmd == "backtest":

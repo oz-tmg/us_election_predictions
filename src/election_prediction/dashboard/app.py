@@ -423,6 +423,281 @@ def page_runs(stores: Sequence[BundleStore]) -> list[Any]:
     ]
 
 
+def _latest(store: BundleStore, kind: RunKind, prefix: str = "") -> RunManifest | None:
+    runs = [m for m in store.runs() if m.kind is kind and m.run_id.startswith(prefix)]
+    return runs[0] if runs else None
+
+
+def _table(rows: list[dict[str, Any]], *, markdown_columns: Sequence[str] = ()) -> Any:
+    columns = [
+        {"name": c, "id": c, "presentation": "markdown"} if c in markdown_columns else {"name": c, "id": c}
+        for c in (rows[0] if rows else {})
+    ]
+    return DataTable(
+        data=rows,
+        columns=columns,
+        style_as_list_view=True,
+        style_cell={
+            "fontFamily": figures.FONT,
+            "padding": "6px",
+            "textAlign": "left",
+            "whiteSpace": "normal",
+        },
+        style_header={"fontWeight": "600"},
+        markdown_options={"link_target": "_blank"},
+        style_table={"overflowX": "auto"},
+    )
+
+
+def _border_share(row: Any, shares: pd.Series, statewide: float) -> float:
+    if row.office == "us_house":
+        return float(shares.get(int(row.district_num_base), float("nan")))
+    return statewide
+
+
+def page_texas(store: BundleStore) -> list[Any]:
+    """Texas: Senate runs with the poll cross-check, governor polls and history, the South
+    Texas scenario, regional history and the Senate specification gate."""
+    refreshes = [m for m in store.runs() if m.kind is RunKind.REFRESH]
+    seal = _latest(store, RunKind.PREREGISTRATION)
+    scenario = _latest(store, RunKind.SCENARIO, "scenario_south_texas")
+    polls_run = _latest(store, RunKind.CROSS_CHECK, "poll_cross_check_texas")
+    context = _latest(store, RunKind.HISTORICAL, "texas_context")
+    if not refreshes:
+        return [_empty("No refresh has been exported yet.")]
+    latest = refreshes[0]
+    out: list[Any] = [
+        html.Div(
+            className="status status-refresh",
+            children=[
+                html.Strong(
+                    "Texas — modelled runs, a poll cross-check and certified history, labelled apart"
+                ),
+                html.Span(f" · latest refresh {latest.as_of}"),
+            ],
+        )
+    ]
+
+    poll_avg: dict[str, dict[str, Any]] = {}
+    polls = None
+    governor_history: dict[int, float] = {}
+    if polls_run is not None:
+        payload = store.document(polls_run.run_id, "poll_average")
+        poll_avg = {r["office"]: r for r in payload["averages"]["half_life_21d_all"]}
+        governor_history = {int(k): v for k, v in payload.get("governor_history_two_party_dem", {}).items()}
+        polls = store.table(polls_run.run_id, "polls")
+
+    # -- Senate across runs ------------------------------------------------------------
+    runs: list[tuple[str, str, pd.DataFrame]] = []
+    if seal is not None:
+        runs.append((f"Seal {seal.as_of}", "seal", store.table(seal.run_id, "seats")))
+    if len(refreshes) > 1:
+        prev = refreshes[1]
+        runs.append((f"Refresh {prev.as_of}", "previous", store.table(prev.run_id, "seats")))
+    runs.append((f"Refresh {latest.as_of}", "latest", store.table(latest.run_id, "seats")))
+    if scenario is not None:
+        runs.append(
+            (f"South Texas scenario {scenario.as_of}", "scenario", store.table(scenario.run_id, "seats"))
+        )
+    run_ids = [m.run_id for m in (seal, *refreshes[:2][::-1], scenario) if m is not None]
+    sources = "runs " + ", ".join(run_ids)
+    gate = store.document(latest.run_id, "band").get("senate_specification_gate")
+    senate_summary = "How the Texas Senate fundamentals moved between runs."
+    if gate:
+        senate_summary += f" The latest refresh uses the {gate['selected']} specification, chosen by "
+        senate_summary += "the chronological backtest gate (table below)."
+    border_note = ""
+    if scenario is not None:
+        statewide = store.document(scenario.run_id, "scenario")["statewide_region_share"]
+        border_note = (
+            f" (its line nearly overlaps the refresh: the border counties cast {statewide:.0%} "
+            "of the statewide vote)"
+        )
+        senate_summary += f" The scenario adds a partial South Texas reversion{border_note}."
+    senate_summary += " Polls are shown, not blended."
+    out.append(
+        chart_card(
+            "U.S. Senate: fundamentals across runs, with the poll cross-check",
+            _graph(figures.senate_runs_chart(runs, "TX", poll_avg.get("us_senate")), "tx-senate-runs"),
+            Caption(
+                period="2026 general election (November 3)",
+                unit="State (Texas), two-party Democratic share",
+                source=f"{sources}. Polls: {polls_run.run_id if polls_run else 'not exported'}",
+                snapshot=latest.as_of,
+                uncertainty=(
+                    "Each point is one shrinkage assumption (swept, not estimated); hover for the "
+                    "90% interval and win probability. The shaded band is the poll average ± its "
+                    "sampling-and-floor sigma, which omits historical polling error."
+                ),
+                summary=senate_summary,
+            ),
+        )
+    )
+
+    # -- Polls -------------------------------------------------------------------------
+    if polls is not None and polls_run is not None:
+        for office, title, history in (
+            ("us_senate", "Senate polls", None),
+            ("governor", "Governor polls and history (no governor model)", governor_history),
+        ):
+            rows = [
+                {
+                    "Pollster": r.pollster,
+                    "Field": f"{r.field_start}–{r.field_end}",
+                    "n": int(r.sample_size),
+                    "Pop.": r.population,
+                    "Dem": f"{r.dem_pct:.0%}" if r.dem_pct <= 1 else f"{r.dem_pct:.0f}%",
+                    "Rep": f"{r.rep_pct:.0%}" if r.rep_pct <= 1 else f"{r.rep_pct:.0f}%",
+                    "Two-party Dem": f"{r.two_party_dem_share:.1%}",
+                    "Release": f"[link]({r.source_url})",
+                }
+                for r in polls[polls["office"] == office].sort_values("field_end").itertuples()
+            ]
+            avg = poll_avg.get(office)
+            out.append(
+                chart_card(
+                    title,
+                    html.Div(
+                        [
+                            _graph(
+                                figures.polls_chart(polls, office, average=avg, history=history),
+                                f"tx-polls-{office}",
+                            ),
+                            _table(rows, markdown_columns=("Release",)),
+                        ]
+                    ),
+                    Caption(
+                        period="Field dates August–October 2026",
+                        unit="State (Texas)",
+                        source=f"Pollsters' own releases, linked per row; run {polls_run.run_id}",
+                        snapshot=polls_run.as_of,
+                        uncertainty=(
+                            f"Average {avg['poll_mean_dem_share']:.1%} ± {avg['poll_sigma']:.1%} from "
+                            f"{avg['n_polls']} polls; no house effects applied."
+                            if avg
+                            else "No average."
+                        ),
+                        summary=(
+                            "Every poll read on its pollster's release and cited. Hollow markers are "
+                            "registered-voter polls (down-weighted)."
+                            + (
+                                " Dotted lines are past certified governor results, for context."
+                                if history
+                                else ""
+                            )
+                        ),
+                    ),
+                )
+            )
+        out.append(_caveats(polls_run))
+
+    # -- South Texas scenario ----------------------------------------------------------
+    if scenario is not None:
+        sc = store.document(scenario.run_id, "scenario")
+        base = store.table(latest.run_id, "seats")
+        alt = store.table(scenario.run_id, "seats")
+        key = ["office", "geography_id", "assumption"]
+        merged = base.merge(alt, on=key, suffixes=("_base", "_scen"))
+        mid = sorted(merged["assumption"].unique())[len(merged["assumption"].unique()) // 2]
+        moved = merged[
+            (merged["state_po_base"] == "TX")
+            & (merged["assumption"] == mid)
+            & ((merged["mean_dem_share_scen"] - merged["mean_dem_share_base"]).abs() > 1e-4)
+        ]
+        shares = (
+            store.table(scenario.run_id, "region_shares").set_index("new_district")["region_share"]
+            if "region_shares" in scenario.tables
+            else pd.Series(dtype=float)
+        )
+        rows = [
+            {
+                "Race": "TX Senate" if r.office == "us_senate" else f"TX-{int(r.district_num_base):02d}",
+                "Border vote share": f"{_border_share(r, shares, sc['statewide_region_share']):.1%}",
+                "Share: refresh": f"{r.mean_dem_share_base:.3f}",
+                "Share: scenario": f"{r.mean_dem_share_scen:.3f}",
+                "P(D): refresh": f"{r.dem_win_prob_base:.2f}",
+                "P(D): scenario": f"{r.dem_win_prob_scen:.2f}",
+            }
+            for r in moved.sort_values(["office", "district_num_base"]).itertuples()
+        ]
+        sw = sc["swing"]
+        out.append(
+            html.Section(
+                className="card",
+                children=[
+                    html.H3(f"South Texas reversion scenario · {mid}"),
+                    html.P(sc["assumption"], className="summary"),
+                    html.P(
+                        f"Border counties moved {100 * sw['region_swing']:+.1f} points (two-party, "
+                        f"president {sw['from_cycle']}→{sw['to_cycle']}) against "
+                        f"{100 * sw['state_swing']:+.1f} statewide: an excess of "
+                        f"{100 * sw['excess_swing']:+.1f}. Each Texas seat recovers {sc['fraction']:.0%} "
+                        "of that excess, scaled by its border vote share, before the correlated "
+                        "simulation.",
+                        className="summary",
+                    ),
+                    _table(rows),
+                    html.P(sc.get("not_measured", ""), className="footnote"),
+                    html.P(
+                        f"Run {scenario.run_id} · base {sc.get('base_refresh')} · weights reproduce "
+                        f"the registered TX transfer to {sc.get('prior_reproduction_max_abs_error', 0):.0e}",
+                        className="footnote",
+                    ),
+                ],
+            )
+        )
+
+    # -- Regional history --------------------------------------------------------------
+    if context is not None:
+        history = store.table(context.run_id, "region_history")
+        out.append(
+            chart_card(
+                "Regional history (certified)",
+                _graph(figures.region_history_chart(history), "tx-region-history"),
+                Caption(
+                    period="Governor 2018, 2022; president 2020, 2024",
+                    unit="Named county groups (see run for county lists)",
+                    source="MEDSL precinct returns aggregated to county; " + _sources_text(context),
+                    snapshot=context.as_of,
+                    uncertainty="Certified counts; no modelled uncertainty.",
+                    summary=(
+                        "Two-party Democratic share by region. County aggregates only: they do not say "
+                        "how any group of voters moved."
+                    ),
+                ),
+            )
+        )
+
+    # -- Senate specification gate -----------------------------------------------------
+    if gate:
+        rows = [
+            {
+                "Specification": name + (" (selected)" if name == gate["selected"] else ""),
+                "Chronological MAE": f"{ev['mae']:.4f}",
+                "Open-seat MAE": "n/a" if ev["open_seat_mae"] is None else f"{ev['open_seat_mae']:.4f}",
+                "90% coverage": f"{ev['coverage_90']:.3f}",
+                "Races (open)": f"{ev['n']} ({ev['n_open_seats']})",
+            }
+            for name, ev in gate["evaluations"].items()
+        ]
+        out.append(
+            html.Section(
+                className="card",
+                children=[
+                    html.H3("Senate specification gate (latest refresh)"),
+                    html.P(" ".join(gate["reasons"]), className="summary"),
+                    _table(rows),
+                    html.P(
+                        "Expanding-window backtest: every fitted parameter uses only earlier cycles. "
+                        "The sealed pre-registration is never refit.",
+                        className="footnote",
+                    ),
+                ],
+            )
+        )
+    return out
+
+
 ABOUT = dcc.Markdown(
     """
 ### About
@@ -520,6 +795,7 @@ def create_app(
             ("/races", "Races"),
             ("/diagnostics", "Diagnostics"),
             ("/history", "Results history"),
+            ("/texas", "Texas"),
             ("/runs", "Runs"),
             ("/about", "About"),
         ]
@@ -624,6 +900,8 @@ def create_app(
             return page_diagnostics(vault_store), hide, hide
         if path == "/runs":
             return page_runs([public_store, vault_store]), hide, hide
+        if path == "/texas":
+            return page_texas(vault_store), hide, hide
         if not run_id or not assumption:
             return [_empty("No projection runs have been exported yet.")], show, hide
         pages = {"/": page_overview, "/map": page_map, "/races": page_races}

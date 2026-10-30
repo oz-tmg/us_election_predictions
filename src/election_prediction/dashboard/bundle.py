@@ -32,6 +32,7 @@ class RunKind(StrEnum):
     REFRESH = "refresh"
     SCENARIO = "scenario"
     BACKTEST = "backtest"
+    CROSS_CHECK = "cross_check"
     HISTORICAL = "historical"
 
 
@@ -42,6 +43,7 @@ KIND_LABELS: dict[RunKind, str] = {
     RunKind.REFRESH: "Internal refresh — modelled, not published as a forecast",
     RunKind.SCENARIO: "Scenario — conditional on the stated assumptions, not a forecast",
     RunKind.BACKTEST: "Historical backtest — out-of-sample by held-out cycle",
+    RunKind.CROSS_CHECK: "Poll cross-check — compiled releases, not blended into the projection",
     RunKind.HISTORICAL: "Historical certified results",
 }
 
@@ -65,6 +67,37 @@ TABLE_COLUMNS: dict[str, tuple[str, ...]] = {
         "litigation_risk",
         "incumbent_party",
     ),
+    # Hand-compiled poll toplines: facts and their citation only, no release prose.
+    "polls": (
+        "poll_id",
+        "pollster",
+        "sponsor",
+        "office",
+        "state_po",
+        "field_start",
+        "field_end",
+        "published_on",
+        "sample_size",
+        "population",
+        "mode",
+        "dem_pct",
+        "rep_pct",
+        "two_party_dem_share",
+        "source_url",
+        "retrieved_on",
+    ),
+    # Certified county returns aggregated to named regions (no inference about voters).
+    "region_history": (
+        "region",
+        "counties",
+        "office",
+        "cycle",
+        "two_party_dem_share",
+        "two_party_votes",
+        "n_counties",
+    ),
+    # A scenario's per-district weights.
+    "region_shares": ("new_district", "region_share", "two_party_votes", "dem_share"),
     "results": (
         "cycle",
         "office",

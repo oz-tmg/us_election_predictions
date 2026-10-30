@@ -21,8 +21,10 @@ from election_prediction.dashboard.bundle import BundleError, RunKind, RunManife
 from election_prediction.dashboard.export import (
     export_backtest,
     export_history,
+    export_poll_cross_check,
     export_preregistration,
     export_refresh,
+    export_texas_context,
     write_bundle,
 )
 from election_prediction.dashboard.store import BundleStore
@@ -425,3 +427,193 @@ def test_interval_is_clipped() -> None:
 def test_races_table_labels_districts() -> None:
     t = races_table(_seats().query("assumption == 'shrinkage=0.5'"))
     assert {"VA-01", "TX-02", "AL-01", "KS", "FL"} == set(t["Race"])
+
+
+# --- Texas: scenario, poll cross-check and context bundles ---------------------------------
+
+SCENARIO = {
+    "name": "south_texas_reversion",
+    "assumption": "50% of the border counties' excess swing reverses.",
+    "fraction": 0.5,
+    "statewide_region_share": 0.04,
+    "swing": {
+        "region_swing": -0.105,
+        "state_swing": -0.041,
+        "excess_swing": -0.064,
+        "from_cycle": 2020,
+        "to_cycle": 2024,
+    },
+    "not_measured": "No 2026 data supports or rejects the assumption.",
+    "base_refresh": "reports/refresh_2026-10-22",
+    "prior_reproduction_max_abs_error": 0.0,
+}
+
+
+def _texas_seats(shift: float = 0.0) -> pd.DataFrame:
+    seats = _seats()
+    seats.loc[seats["state_po"] == "TX", "mean_dem_share"] += shift
+    return seats
+
+
+@pytest.fixture
+def scenario_dir(tmp_path: Path) -> Path:
+    d = tmp_path / "scenario_south_texas_2026-10-22"
+    d.mkdir()
+    _texas_seats(0.02).to_csv(d / "projection_seats.csv", index=False)
+    (d / "national_environment_2026-10-22.json").write_text(
+        json.dumps(
+            {
+                "generated_on": "2026-10-22",
+                "national_environment": NE,
+                "band_results": BAND,
+                "conclusions": ["House: favoured."],
+                "scenario": SCENARIO,
+            }
+        )
+    )
+    (d / "scenario_summary.json").write_text(json.dumps({"as_of": "2026-10-22", "git_commit": "def456"}))
+    pd.DataFrame(
+        {"new_district": [2], "region_share": [0.6], "two_party_votes": [1000.0], "dem_share": [0.45]}
+    ).to_csv(d / "district_region_shares.csv", index=False)
+    return d
+
+
+@pytest.fixture
+def polls_dir(tmp_path: Path) -> Path:
+    d = tmp_path / "poll_cross_check_texas_2026-10-22"
+    d.mkdir()
+    pd.DataFrame(
+        {
+            "poll_id": ["a", "b"],
+            "pollster": ["P1", "P2"],
+            "sponsor": ["", ""],
+            "office": ["us_senate", "governor"],
+            "state_po": ["TX", "TX"],
+            "field_start": ["2026-10-01", "2026-10-02"],
+            "field_end": ["2026-10-04", "2026-10-05"],
+            "published_on": ["2026-10-06", "2026-10-07"],
+            "sample_size": [800, 900],
+            "population": ["LV", "RV"],
+            "mode": ["online", "phone"],
+            "dem_pct": [0.48, 0.46],
+            "rep_pct": [0.47, 0.50],
+            "two_party_dem_share": [0.505, 0.479],
+            "source_url": ["https://example.org/a", "https://example.org/b"],
+            "retrieved_on": ["2026-10-22", "2026-10-22"],
+            "note": ["", ""],
+            "respondent_id": ["SHOULD", "NOT SURVIVE"],
+        }
+    ).to_csv(d / "polls.csv", index=False)
+    (d / "poll_average.json").write_text(
+        json.dumps(
+            {
+                "as_of": "2026-10-22",
+                "status": "cross-check only; not blended into the projection",
+                "excluded_from_average": [],
+                "git_commit": "abc",
+                "averages": {
+                    "half_life_21d_all": [
+                        {
+                            "office": "us_senate",
+                            "poll_mean_dem_share": 0.505,
+                            "poll_sigma": 0.03,
+                            "n_polls": 1,
+                        },
+                        {
+                            "office": "governor",
+                            "poll_mean_dem_share": 0.479,
+                            "poll_sigma": 0.03,
+                            "n_polls": 1,
+                        },
+                    ]
+                },
+                "governor_history_two_party_dem": {"2018": 0.432, "2022": 0.445},
+            }
+        )
+    )
+    return d
+
+
+@pytest.fixture
+def context_dir(tmp_path: Path) -> Path:
+    d = tmp_path / "texas_context_2026-10-22"
+    d.mkdir()
+    rows = [
+        {
+            "region": r,
+            "counties": "x",
+            "office": o,
+            "cycle": c,
+            "two_party_dem_share": 0.45,
+            "two_party_votes": 1000,
+            "n_counties": 2,
+        }
+        for r in ("Border", "Texas statewide")
+        for o, c in (("governor", 2018), ("president", 2020))
+    ]
+    pd.DataFrame(rows).to_csv(d / "region_history.csv", index=False)
+    (d / "context.json").write_text(json.dumps({"as_of": "2026-10-22", "caveat": "County aggregates."}))
+    return d
+
+
+def test_scenario_export_carries_its_assumption(tmp_path: Path, scenario_dir: Path) -> None:
+    out = export_refresh(scenario_dir, tmp_path / "b", kind=RunKind.SCENARIO)
+    m = RunManifest.read(out)
+    assert m.kind is RunKind.SCENARIO and m.tier is Tier.VAULT
+    assert m.summary.startswith(SCENARIO["assumption"])
+    assert set(m.tables) == {"seats", "region_shares"} and "scenario" in m.documents
+    assert SCENARIO["not_measured"] in m.caveats
+
+
+def test_a_scenario_cannot_be_exported_as_a_refresh(tmp_path: Path, scenario_dir: Path) -> None:
+    with pytest.raises(BundleError, match="--kind scenario"):
+        export_refresh(scenario_dir, tmp_path / "b")
+
+
+def test_a_refresh_cannot_be_exported_as_a_scenario(tmp_path: Path, refresh_dir: Path) -> None:
+    with pytest.raises(BundleError, match="scenario"):
+        export_refresh(refresh_dir, tmp_path / "b", kind=RunKind.SCENARIO)
+
+
+def test_poll_cross_check_keeps_only_declared_columns(tmp_path: Path, polls_dir: Path) -> None:
+    out = export_poll_cross_check(polls_dir, tmp_path / "b")
+    assert RunManifest.read(out).kind is RunKind.CROSS_CHECK
+    assert "respondent_id" not in pd.read_parquet(out / "polls.parquet").columns
+
+
+def test_poll_cross_check_must_declare_it_is_not_blended(tmp_path: Path, polls_dir: Path) -> None:
+    payload = json.loads((polls_dir / "poll_average.json").read_text())
+    payload["status"] = "blended"
+    (polls_dir / "poll_average.json").write_text(json.dumps(payload))
+    with pytest.raises(BundleError, match="not blended"):
+        export_poll_cross_check(polls_dir, tmp_path / "b")
+
+
+def test_texas_page_renders_every_section(
+    bundles: Path, scenario_dir: Path, polls_dir: Path, context_dir: Path
+) -> None:
+    from election_prediction.dashboard import app as app_mod
+
+    export_refresh(scenario_dir, bundles, kind=RunKind.SCENARIO)
+    export_poll_cross_check(polls_dir, bundles)
+    export_texas_context(context_dir, bundles)
+    vault = BundleStore(bundles, Tier.VAULT)
+    page = app_mod.page_texas(vault)
+    text = str(page)
+    for heading in (
+        "U.S. Senate: fundamentals across runs",
+        "Senate polls",
+        "Governor polls",
+        "South Texas reversion scenario",
+        "Regional history",
+    ):
+        assert heading in text, heading
+    assert "TX-02" in text  # the district the scenario moved
+
+
+def test_texas_page_degrades_without_optional_bundles(bundles: Path) -> None:
+    from election_prediction.dashboard import app as app_mod
+
+    page = app_mod.page_texas(BundleStore(bundles, Tier.VAULT))
+    assert "U.S. Senate: fundamentals across runs" in str(page)
+    assert "South Texas" not in str(page)

@@ -392,3 +392,179 @@ def calibration_chart(offices: Mapping[str, Mapping[str, Any]]) -> go.Figure:
     fig.update_yaxes(title=dict(text="Observed frequency", font=dict(color=INK_2)), row=1, col=1)
     fig.update_annotations(font=dict(color=INK, size=13))
     return fig
+
+
+# --- Texas page -------------------------------------------------------------------------
+
+# Run styles for comparing projections: ink weight and dash carry identity, not hue, so a
+# party colour never stands in for a run.
+RUN_STYLES = {
+    "latest": dict(color=INK, width=2.5, dash="solid"),
+    "scenario": dict(color=INK, width=2, dash="dash"),
+    "previous": dict(color=MUTED, width=2, dash="solid"),
+    "seal": dict(color=MUTED, width=2, dash="dot"),
+}
+POLL_BAND = "rgba(137, 135, 129, 0.16)"
+
+
+def senate_runs_chart(
+    runs: Sequence[tuple[str, str, pd.DataFrame]],
+    state_po: str,
+    poll: Mapping[str, float] | None = None,
+) -> go.Figure:
+    """One state's Senate mean share across the assumption band, for several runs.
+
+    ``runs`` is ``(label, style, seats)`` with ``style`` a key of ``RUN_STYLES``. ``poll``
+    (``poll_mean_dem_share``, ``poll_sigma``) is drawn as a shaded band: a cross-check
+    beside the runs, not an input to them.
+    """
+    fig = go.Figure()
+    if poll:
+        lo = poll["poll_mean_dem_share"] - poll["poll_sigma"]
+        hi = poll["poll_mean_dem_share"] + poll["poll_sigma"]
+        fig.add_hrect(y0=lo, y1=hi, fillcolor=POLL_BAND, line_width=0, layer="below")
+        fig.add_hline(
+            y=poll["poll_mean_dem_share"],
+            line=dict(color=MUTED, width=1, dash="dashdot"),
+            annotation_text=f"Poll average {poll['poll_mean_dem_share']:.1%} ±{poll['poll_sigma']:.1%} "
+            "(cross-check, not blended)",
+            annotation_position="top left",
+            annotation_font=dict(color=INK_2, size=11),
+        )
+    for label, style, seats in runs:
+        s = seats[(seats["office"] == "us_senate") & (seats["state_po"] == state_po)].copy()
+        s["shrinkage"] = s["assumption"].str.removeprefix("shrinkage=")
+        lo, hi = interval_90(s["mean_dem_share"], s["sigma"])
+        fig.add_trace(
+            go.Scatter(
+                x=s["shrinkage"],
+                y=s["mean_dem_share"],
+                mode="lines+markers",
+                name=label,
+                line=RUN_STYLES[style],
+                marker=dict(size=8, color=RUN_STYLES[style]["color"]),
+                customdata=np.stack([s["dem_win_prob"], lo, hi], axis=-1),
+                hovertemplate=(
+                    f"<b>{label}</b><br>Shrinkage %{{x}}<br>Dem two-party share %{{y:.1%}} "
+                    "(90%: %{customdata[1]:.1%}–%{customdata[2]:.1%})<br>"
+                    "P(Democratic win) %{customdata[0]:.0%}<extra></extra>"
+                ),
+            )
+        )
+    fig.add_hline(y=0.5, line=dict(color=AXIS, width=1, dash="dot"))
+    _base_layout(fig, height=400)
+    fig.update_layout(
+        showlegend=True,
+        legend=dict(orientation="h", x=0, y=1.12, font=dict(color=INK_2, size=12)),
+        margin=dict(l=48, r=24, t=56, b=40),
+    )
+    fig.update_xaxes(type="category", title=dict(text="Shrinkage assumption", font=dict(color=INK_2)))
+    fig.update_yaxes(title=dict(text="Two-party Dem share", font=dict(color=INK_2)), tickformat=".0%")
+    return fig
+
+
+def polls_chart(
+    polls: pd.DataFrame,
+    office: str,
+    *,
+    average: Mapping[str, float] | None = None,
+    history: Mapping[int, float] | None = None,
+) -> go.Figure:
+    """Each compiled poll at its field end date; hollow markers are registered-voter polls."""
+    p = polls[polls["office"] == office].copy()
+    p["field_end"] = pd.to_datetime(p["field_end"])
+    fig = go.Figure()
+    for population, symbol in (("LV", "circle"), ("RV", "circle-open")):
+        part = p[p["population"] == population]
+        if part.empty:
+            continue
+        fig.add_trace(
+            go.Scatter(
+                x=part["field_end"],
+                y=part["two_party_dem_share"],
+                mode="markers",
+                name="Likely voters" if population == "LV" else "Registered voters",
+                marker=dict(symbol=symbol, size=10, color=INK_2, line=dict(width=1.5, color=INK_2)),
+                customdata=np.stack(
+                    [part["pollster"], part["sample_size"], part["dem_pct"], part["rep_pct"]], axis=-1
+                ),
+                hovertemplate=(
+                    "<b>%{customdata[0]}</b><br>Field end %{x|%b %d}<br>"
+                    "Dem %{customdata[2]}% · Rep %{customdata[3]}% (two-party %{y:.1%})<br>"
+                    "n = %{customdata[1]}<extra></extra>"
+                ),
+            )
+        )
+    if average:
+        fig.add_hline(
+            y=average["poll_mean_dem_share"],
+            line=dict(color=INK, width=1.5, dash="dashdot"),
+            annotation_text=f"Average {average['poll_mean_dem_share']:.1%}",
+            annotation_position="bottom right",
+            annotation_font=dict(color=INK_2, size=11),
+        )
+    for cycle, share in sorted((history or {}).items()):
+        fig.add_hline(
+            y=share,
+            line=dict(color=MUTED, width=1, dash="dot"),
+            annotation_text=f"{cycle} result {share:.1%}",
+            annotation_position="top left",
+            annotation_font=dict(color=MUTED, size=11),
+        )
+    fig.add_hline(y=0.5, line=dict(color=AXIS, width=1, dash="dot"))
+    _base_layout(fig, height=340)
+    fig.update_layout(
+        showlegend=True,
+        legend=dict(orientation="h", x=0, y=1.14, font=dict(color=INK_2)),
+        margin=dict(l=48, r=24, t=48, b=40),
+    )
+    fig.update_yaxes(
+        title=dict(text="Two-party Dem share", font=dict(color=INK_2)), tickformat=".0%", range=[0.40, 0.58]
+    )
+    return fig
+
+
+def region_history_chart(history: pd.DataFrame) -> go.Figure:
+    """Small multiples, one panel per region; office carried by marker shape, not colour."""
+    regions = list(dict.fromkeys(history["region"]))
+    cols = 3
+    rows = -(-len(regions) // cols)
+    fig = make_subplots(
+        rows=rows,
+        cols=cols,
+        subplot_titles=regions,
+        shared_yaxes=True,
+        vertical_spacing=0.16,
+        horizontal_spacing=0.05,
+    )
+    for i, region in enumerate(regions):
+        r, c = divmod(i, cols)
+        part = history[history["region"] == region]
+        for office, symbol in (("president", "circle"), ("governor", "diamond")):
+            o = part[part["office"] == office].sort_values("cycle")
+            fig.add_trace(
+                go.Scatter(
+                    x=o["cycle"],
+                    y=o["two_party_dem_share"],
+                    mode="lines+markers",
+                    name=office.title(),
+                    legendgroup=office,
+                    showlegend=i == 0,
+                    line=dict(color=INK_2 if office == "president" else MUTED, width=2),
+                    marker=dict(symbol=symbol, size=9, color=INK_2 if office == "president" else MUTED),
+                    hovertemplate=f"<b>{region}</b><br>{office.title()} %{{x}}: %{{y:.1%}}<extra></extra>",
+                ),
+                row=r + 1,
+                col=c + 1,
+            )
+        fig.add_hline(y=0.5, line=dict(color=AXIS, width=1, dash="dot"), row=r + 1, col=c + 1)
+    _base_layout(fig, height=260 * rows + 40)
+    fig.update_layout(
+        showlegend=True,
+        legend=dict(orientation="h", x=0, y=0.99, yanchor="top", yref="container", font=dict(color=INK_2)),
+        margin=dict(l=48, r=24, t=96, b=32),
+    )
+    fig.update_xaxes(tickvals=[2018, 2020, 2022, 2024])
+    fig.update_yaxes(tickformat=".0%")
+    fig.update_annotations(font=dict(color=INK, size=12))
+    return fig

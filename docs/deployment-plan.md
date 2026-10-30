@@ -75,10 +75,21 @@ ep-export-dashboard preregistration reports/preregistration_2026-11-03.json
 ep-export-dashboard refresh reports/refresh_2026-10-22        # once per refresh
 ep-export-dashboard backtest reports/p1_results.json --as-of 2026-09-01
 ep-export-dashboard history data/gold/race_results.parquet
+ep-export-dashboard scenario reports/scenario_south_texas_2026-10-29   # kind=scenario
+ep-export-dashboard polls reports/poll_cross_check_texas_2026-10-29    # kind=cross_check
+ep-export-dashboard context reports/texas_context_2026-10-29           # regional history (vault)
 ep-dashboard --tier vault      # http://127.0.0.1:8050, Access check bypassed locally
 ep-dashboard --tier public
 ```
-A scenario is exported with `refresh <dir> --kind scenario --run-id <name>`.
+A scenario must carry its own description (`scenario` in the projection payload plus
+`scenario_summary.json`); the exporter refuses a scenario exported as a refresh and the
+reverse. A poll cross-check must declare that it is not blended into the projection.
+
+The vault's **Texas** page (`/texas`) reads these together: the Texas Senate mean across
+the seal, the previous and latest refresh and the South Texas scenario, with the poll
+average drawn beside them (never blended); Senate and governor polls, each linked to its
+pollster's release; the scenario's per-seat effect; certified regional history; and the
+Senate specification gate.
 
 **1. GCP project.** Create a project with billing, install the gcloud CLI, then
 `cp deploy/gcp/env.example.sh deploy/gcp/env.sh` and fill it in (`env.sh` is git-ignored).
