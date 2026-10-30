@@ -1,0 +1,44 @@
+{
+  "as_of": "2026-10-29",
+  "source": "data/gold/governor_county_returns.parquet",
+  "source_sha256": "eac9282d7390b2cd9b60e8078e41241c9634c6390d138ec1c5de55274948e06a",
+  "regions": {
+    "South Texas border": [
+      "Cameron",
+      "Dimmit",
+      "Hidalgo",
+      "Jim Hogg",
+      "Maverick",
+      "Starr",
+      "Webb",
+      "Willacy",
+      "Zapata",
+      "Zavala"
+    ],
+    "Dallas suburbs": [
+      "Collin",
+      "Denton",
+      "Rockwall",
+      "Kaufman",
+      "Ellis"
+    ],
+    "Houston suburbs": [
+      "Fort Bend",
+      "Montgomery",
+      "Brazoria",
+      "Galveston"
+    ],
+    "Austin suburbs": [
+      "Williamson",
+      "Hays"
+    ],
+    "Urban cores": [
+      "Harris",
+      "Dallas",
+      "Travis",
+      "Bexar",
+      "Tarrant"
+    ]
+  },
+  "caveat": "County aggregates; no inference about any group of voters. Governor history is context only."
+}

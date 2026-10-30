@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 
@@ -44,12 +45,20 @@ def main(
     correlation_params: simulation.CorrelationParams | None = None,
     senate_correlation_params: simulation.CorrelationParams | None = None,
     senate_features: list[str] | None = None,
+    seat_adjustment: Callable[[pd.DataFrame, str], pd.DataFrame] | None = None,
+    scenario: dict | None = None,
 ) -> dict:
     """Project the 2026 band.
 
     ``senate_features`` selects the Senate specification (default: ``senate.DEFAULT_FEATURES``;
-    a refresh passes the one its promotion gate selected).
+    a refresh passes the one its promotion gate selected). ``seat_adjustment`` is a
+    **scenario** hook: called as ``f(projection, office)`` on each office's per-seat means
+    *before* the correlated simulation, so chamber odds are re-simulated rather than
+    recounted. ``scenario`` is recorded verbatim in the payload; a run with an adjustment
+    must describe it there.
     """
+    if seat_adjustment is not None and not scenario:
+        raise ValueError("a seat adjustment is a scenario and must be described in `scenario`")
     stamp = as_of or date.today().isoformat()
     reports_dir.mkdir(parents=True, exist_ok=True)
     # ---- national environment: the estimator contract (NE-001) --------------
@@ -210,6 +219,8 @@ def main(
             pres_reference=pres_ref,
             fallback_lean_sd=fallback_lean_sd,
         )
+        if seat_adjustment is not None:
+            hproj = seat_adjustment(hproj, "us_house")
         hsim = _simulate(
             hproj, total_seats=house.VOTING_SEATS, with_win_probs=True, params=correlation_params
         )
@@ -226,6 +237,8 @@ def main(
             resid_sigma=ssigma,
             uniform_swing=swing,
         )
+        if seat_adjustment is not None:
+            sproj = seat_adjustment(sproj, "us_senate")
         ssim = _simulate(
             sproj,
             total_seats=100,
@@ -295,6 +308,7 @@ def main(
             ),
             "resid_sigma": float(ssigma),
         },
+        "scenario": scenario,
         "seats": pd.concat(seat_frames, ignore_index=True).to_dict(orient="records"),
     }
     out_path = reports_dir / f"national_environment_{stamp}.json"
