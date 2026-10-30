@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-30T05:40:54+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "21534b2a8c96ba3e35792e23fc1e780a94c3e64ba92c005f8f6cdd9f717be40c",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "MA_2024GE_CD6_165336_by_town.csv",
+  "election_cycle": "2024",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Public official election results; cite the state authority.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan rehearsal of results extraction against certified history.",
+  "privacy_tier": 0,
+  "prohibited_use": "No personal data; aggregate results only.",
+  "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=21534b2a8c96ba3e35792e23fc1e780a94c3e64ba92c005f8f6cdd9f717be40c/MA_2024GE_CD6_165336_by_town.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "",
+  "review_date": "2027-10-29",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-29",
+  "source_id": "state_results_rehearsal_2024_ma_21534b2a8c96",
+  "source_owner": "MA state election authority",
+  "source_url": "https://electionstats.state.ma.us/elections/download/<election_id>/precincts_include:0/",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

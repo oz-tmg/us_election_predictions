@@ -160,6 +160,37 @@ states (AK, AZ, ME, MA, MI, MO, MT, NH, OH, TN, WI). Certification status must b
 as it happens; vote extraction for certified results can follow later from the preserved
 releases.
 
+## State Extraction: the 11 Probe-Failure States (tested 2026-10-30)
+
+`scripts/test_state_extraction.py` ran each state's parser (`data/state_parsers.py`) on
+its own 2024 official release and reconciled race by race with certified 2024 returns
+(`reports/extraction_rehearsal_2026-10-30/`). The catalog records the outcome in
+`extraction_status` (`parser_tested_2024` only on a passed reconciliation) and
+`download_access`.
+
+| State | 2024 test | Access from this machine | Election-week plan |
+|---|---|---|---|
+| MA | 10/10 exact | automated (electionstats.state.ma.us) | Certified per-contest CSVs post after certification; parse with `MA`. |
+| WI | 9/9 exact | automated (files under /sites/default/files) | WEC canvass workbook after certification; parse with `WI`. |
+| MO | 9/9 exact | automated with the honest research UA | Certified canvass PDF after certification; parse with `MO`. |
+| MT | 3/3 exact | automated (export page) | Export is labelled unofficial; certification from the canvass document. |
+| MI | not run | **blocked** (site refuses connections; Akamai 403) | Manual download from a browser; no 2024 file URL confirmed. |
+| NH | not run | **blocked** (Akamai 403) | Manual; town-level Excel per district must be summed. |
+| OH | not run | **blocked** (Cloudflare challenge) | Manual: official `statewide-race-summary.xlsx`; layout uninspected. |
+| TN | not run | **blocked** (CloudFront; may be geographic) | Manual `…AllbyPrecinct.xlsx`; retest from a U.S. network. |
+| AK | not run | **blocked** (AWS WAF captcha) | Manual PDFs; RCV: record first and final rounds separately. |
+| AZ | not run | **blocked** (Cloudflare challenge) | Manual statewide canvass PDF (URL unconfirmed). |
+| ME | not run | **blocked** (CloudFront) | Manual town-level Excel; CD2 RCV rounds separately. |
+
+What this does and does not settle: four states now have a parser proven against a past
+certified result, so their certified 2026 releases can be parsed rather than retyped. The
+other seven are blocked to automated clients by the sites themselves (a separate U.S.
+fetcher was refused too), so their releases must be saved by hand from a browser and
+preserved with `preserve-source`. For those states, write and test a parser on the first
+hand-saved file before relying on it. No state here publishes a statewide election-night
+feed that we have tested, so election-night numbers for all eleven are manual; the
+parsers matter for the certified releases, which is what is scored.
+
 ## Interpretation
 
 `certified_on` is the **first observation of certified status in our snapshots**, not an

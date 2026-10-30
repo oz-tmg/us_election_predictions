@@ -1,5 +1,11 @@
 # Dataset Registry
 
+## October 30 Extraction Rehearsal Intake (registered before use)
+
+| dataset_id | Primary provider/source | Terms and permitted use | Coverage and gate |
+|---|---|---|---|
+| `state_results_rehearsal_2024` | State election authorities' own 2024 general-election releases: Massachusetts electionstats.state.ma.us contest CSVs; Wisconsin Elections Commission `WardbyWard_byCD_20241105.xlsx`; Missouri SOS `2024GeneralElection.pdf`; Montana `electionresults.mt.gov` statewide export. Exact URLs and SHA-256 in `reports/extraction_rehearsal_2026-10-30/summary.json` | Tier 0 public official aggregate results; cite each authority. Fetched only with an honest research user agent, certificate checks on, no block evaded (states that refuse automated clients are recorded as `blocked_manual_download`, not worked around). Raw files kept under `data/raw/source=state_results_rehearsal_2024/` (git-ignored) with manifests. | 2024 U.S. House and Senate, MA/WI/MO/MT. **Rehearsal only**: used to prove each state's parser reproduces the certified 2024 result (`state_extraction.reconcile`); never a 2026 observation and never written to the production capture directory. Montana's export is labelled unofficial: it tests the parser, not certification. |
+
 ## October 29 Texas Poll Cross-Check Intake (registered before use)
 
 | dataset_id | Primary provider/source | Terms and permitted use | Coverage and gate |

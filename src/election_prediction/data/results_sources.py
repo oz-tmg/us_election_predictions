@@ -17,6 +17,14 @@ from .manifest import sha256_file
 CATALOG = Path("data/reference/results_sources_2026.csv")
 SOURCE_DIR = Path("data/raw/source=state_canvass_evidence")
 
+#: ``extraction_status`` moves off ``manual_review_pending`` only when a parser reproduced
+#: a past certified result from that state's own release (``state_extraction.reconcile``),
+#: and the row then names the reconciliation report. Reachability is never enough.
+EXTRACTION_STATUSES = {"manual_review_pending", "parser_tested_2024"}
+#: How the release can be fetched, recorded apart from extraction so that a blocked site
+#: never reads as a reviewed one.
+DOWNLOAD_ACCESS = {"untested", "automated_ok", "blocked_manual_download"}
+
 
 def load_catalog(path: Path = CATALOG) -> pd.DataFrame:
     frame = pd.read_csv(path, dtype=str).fillna("")
@@ -32,6 +40,18 @@ def load_catalog(path: Path = CATALOG) -> pd.DataFrame:
             .all()
         ):
             raise ValueError("official source URLs must be absolute HTTPS links")
+    if "download_access" not in frame:
+        frame["download_access"] = "untested"
+    if "extraction_evidence" not in frame:
+        frame["extraction_evidence"] = ""
+    frame["download_access"] = frame["download_access"].replace("", "untested")
+    if not frame.extraction_status.isin(EXTRACTION_STATUSES).all():
+        raise ValueError(f"extraction_status must be one of {sorted(EXTRACTION_STATUSES)}")
+    if not frame.download_access.isin(DOWNLOAD_ACCESS).all():
+        raise ValueError(f"download_access must be one of {sorted(DOWNLOAD_ACCESS)}")
+    tested = frame.extraction_status.eq("parser_tested_2024")
+    if (frame.loc[tested, "extraction_evidence"] == "").any():
+        raise ValueError("a parser_tested_2024 row must name its reconciliation report")
     return frame
 
 

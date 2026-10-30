@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-30T05:40:58+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "058fe1ce5bdc682eda65026c48847012ccff295c49f3a2271ec0ba32901994a7",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "mt_2024gen_Statewide_Results.xlsx",
+  "election_cycle": "2024",
+  "file_format": "xlsx",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Public official election results; cite the state authority.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan rehearsal of results extraction against certified history.",
+  "privacy_tier": 0,
+  "prohibited_use": "No personal data; aggregate results only.",
+  "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MT/sha256=058fe1ce5bdc682eda65026c48847012ccff295c49f3a2271ec0ba32901994a7/mt_2024gen_Statewide_Results.xlsx",
+  "redistribution_allowed": true,
+  "required_attribution": "",
+  "review_date": "2027-10-29",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-29",
+  "source_id": "state_results_rehearsal_2024_mt_058fe1ce5bdc",
+  "source_owner": "MT state election authority",
+  "source_url": "https://electionresults.mt.gov/ResultsExport.aspx?eid=450002785",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}
