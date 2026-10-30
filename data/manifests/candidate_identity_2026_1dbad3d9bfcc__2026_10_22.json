@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-23T00:19:51+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "1dbad3d9bfcc96ffffb6849f523324afedf71dfc249b60fb6d7668fa7715ec80",
+  "contains_personal_data": true,
+  "contains_sensitive_data": false,
+  "dataset_name": "NY_RYAN.html",
+  "election_cycle": "2026",
+  "file_format": "html",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 2,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=candidate_identity_2026/snapshot=2026-10-22/NY_RYAN.html",
+  "redistribution_allowed": false,
+  "required_attribution": "Official congressional member site",
+  "review_date": "2027-10-22",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-22",
+  "source_id": "candidate_identity_2026_1dbad3d9bfcc",
+  "source_owner": "Official congressional member site",
+  "source_url": "https://patryan.house.gov/",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

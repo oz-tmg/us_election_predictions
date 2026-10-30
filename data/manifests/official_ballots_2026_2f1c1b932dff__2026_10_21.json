@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-22T02:03:07+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "2f1c1b932dff920bc690c3e5fc1813ff4389cb5a28ef0b99d4bb06c9fef09cbe",
+  "contains_personal_data": true,
+  "contains_sensitive_data": false,
+  "dataset_name": "Candidate_Listing_2026.csv",
+  "election_cycle": "2026",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 2,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=official_ballots/state=NC/snapshot=2026-10-21/Candidate_Listing_2026.csv",
+  "redistribution_allowed": false,
+  "required_attribution": "North Carolina State Board of Elections",
+  "review_date": "2027-10-21",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "official_ballots_2026_2f1c1b932dff",
+  "source_owner": "North Carolina State Board of Elections",
+  "source_url": "https://s3.amazonaws.com/dl.ncsbe.gov/Elections/2026/Candidate%20Filing/Candidate_Listing_2026.csv",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

@@ -1,0 +1,38 @@
+{
+  "acquired_at": "2026-10-18T23:34:41+00:00",
+  "acquisition_method": "existing_local_snapshot_checksum",
+  "checksum_sha256": "c12cc82c269339a75ee29aa1f1683b8bf8e4140d558d46117bdd4c14547edf78",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "vtds20g_2020.zip",
+  "election_cycle": "2020",
+  "file_format": "shp_zip",
+  "geography_coverage": [
+    "precinct",
+    "block",
+    "district"
+  ],
+  "known_caveats": "Transfer is population-weighted; historical votes are not certified for a new map.",
+  "license_or_terms": "CC BY",
+  "office_coverage": [
+    "president",
+    "us_house"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research with attribution.",
+  "privacy_tier": 0,
+  "prohibited_use": "No person-level political inference or partisan map optimization.",
+  "raw_path": "data/raw/source=texas_tlc/dataset=vtd2020/snapshot=2026-10-18/vtds20g_2020.zip",
+  "redistribution_allowed": true,
+  "required_attribution": "Texas Legislative Council",
+  "review_date": "2027-10-18",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-18",
+  "source_id": "tx_tlc_vtd_2020",
+  "source_owner": "Texas Legislative Council",
+  "source_url": "https://data.capitol.texas.gov/dataset/vtds",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

@@ -1,0 +1,35 @@
+{
+  "acquired_at": "2026-10-21T07:13:33+00:00",
+  "acquisition_method": "api",
+  "checksum_sha256": "56d27c106222cc33c7d60b4248beedbd25d20e412d6013ce401ffec757b654b4",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "CPIAUCSL as known 1994-10-20",
+  "election_cycle": "1994",
+  "file_format": "json",
+  "geography_coverage": [
+    "national"
+  ],
+  "known_caveats": "Point-in-time API intervals are clipped; exact release_date is not inferred from cutoff.",
+  "license_or_terms": "Public domain; citation requested.",
+  "office_coverage": [
+    "us_house"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research with explicit real-time vintage and attribution.",
+  "privacy_tier": 0,
+  "prohibited_use": "Do not replace historical vintages with today's revised values or disclose API keys.",
+  "raw_path": "data/raw/source=fred_alfred/series=CPIAUCSL/vintage=1994-10-20/retrieved=2026-10-21/observations.json",
+  "redistribution_allowed": true,
+  "required_attribution": "U.S. Bureau of Labor Statistics / FRED",
+  "review_date": "2027-10-21",
+  "row_count": 33,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "fred_bls_cpi_vintages_19941020_56d27c1062",
+  "source_owner": "U.S. Bureau of Labor Statistics / FRED",
+  "source_url": "https://api.stlouisfed.org/fred/series/observations?series_id=CPIAUCSL&realtime_start=1994-10-20&realtime_end=1994-10-20&observation_start=1992-01-01&observation_end=1994-10-20&file_type=json",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

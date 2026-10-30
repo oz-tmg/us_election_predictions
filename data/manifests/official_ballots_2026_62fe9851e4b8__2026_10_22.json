@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-23T00:19:10+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "62fe9851e4b8bc19eaaa9dd9b33ee39a786b222e13eb28d9d4d3096c14574610",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "C26GG.txt",
+  "election_cycle": "2026",
+  "file_format": "text",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 0,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=official_ballots/state=CA/snapshot=2026-10-22/C26GG.txt",
+  "redistribution_allowed": false,
+  "required_attribution": "California Secretary of State",
+  "review_date": "2027-10-22",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-22",
+  "source_id": "official_ballots_2026_62fe9851e4b8",
+  "source_owner": "California Secretary of State",
+  "source_url": "https://media.sos.ca.gov/media/C26GG.txt",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

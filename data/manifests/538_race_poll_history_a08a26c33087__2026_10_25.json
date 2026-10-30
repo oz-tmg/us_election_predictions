@@ -1,0 +1,36 @@
+{
+  "acquired_at": "2026-10-25T21:55:34.697968+00:00",
+  "acquisition_method": "manual_import; acquired_at is project ingestion, not browser retrieval",
+  "checksum_sha256": "a08a26c33087392ca340d04faacdcb4af6261146d20b3414973cad24aa70dc2c",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "house_polls_historical.csv",
+  "election_cycle": "2018,2019,2020,2021,2022",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Raw CSV schema checked; research eligibility requires separate question/round/target review. Original browser retrieval time unknown. Archive capture is not poll publication. Browser provenance does not independently authenticate archive-server bytes.",
+  "license_or_terms": "CC BY 4.0; FiveThirtyEight repository LICENSE; compilation rights only",
+  "office_coverage": [
+    "us_house"
+  ],
+  "owner": "Alex Oswald",
+  "permitted_use": "Nonpartisan aggregate research; attribution and transformations disclosed",
+  "privacy_tier": 0,
+  "prohibited_use": "No respondent records, targeting or retrospective ratings as predictors",
+  "raw_path": "data/raw/source=538_race_poll_history/manual/sha256=a08a26c33087392ca340d04faacdcb4af6261146d20b3414973cad24aa70dc2c/house_polls_historical.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "FiveThirtyEight",
+  "review_date": "2027-10-25",
+  "row_count": 3579,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-25",
+  "source_id": "538_race_poll_history_a08a26c33087",
+  "source_owner": "FiveThirtyEight",
+  "source_url": "https://web.archive.org/web/20241129175909if_/https://projects.fivethirtyeight.com/polls-page/data/house_polls_historical.csv",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-22T02:06:02+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "ae1b0dfb245f1d97d2d0f26a59c4ec72e04cb9f9f19561af2189d1db0d06d1f1",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "ga-public-app.js",
+  "election_cycle": "2026",
+  "file_format": "js",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 0,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=special_elections_compiled/snapshot=2026-10-21/ga-public-app.js",
+  "redistribution_allowed": false,
+  "required_attribution": "Georgia Secretary of State",
+  "review_date": "2027-10-21",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "special_elections_compiled_ae1b0dfb245f",
+  "source_owner": "Georgia Secretary of State",
+  "source_url": "https://results.sos.ga.gov/results/public/main-G5JNZMEV.js",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

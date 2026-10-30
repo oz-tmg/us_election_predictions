@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-22T02:03:07+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "01833c6c646873b2247950e8ab9c7ecc2c57fd2bf019d1014bd64a58b496ed3d",
+  "contains_personal_data": true,
+  "contains_sensitive_data": false,
+  "dataset_name": "MemberData.xml",
+  "election_cycle": "2026",
+  "file_format": "xml",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 2,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=house_current_roster/snapshot=2026-10-21/MemberData.xml",
+  "redistribution_allowed": false,
+  "required_attribution": "Clerk of the U.S. House",
+  "review_date": "2027-10-21",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "house_current_roster_01833c6c6468",
+  "source_owner": "Clerk of the U.S. House",
+  "source_url": "https://clerk.house.gov/xml/lists/MemberData.xml",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

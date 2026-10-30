@@ -1,0 +1,38 @@
+{
+  "acquired_at": "2026-10-18T23:34:41+00:00",
+  "acquisition_method": "existing_local_snapshot_checksum",
+  "checksum_sha256": "6797d6e39f76224fa0d9a4f4226e8f1a044fbeaa890d706d366dbdd24a2a2099",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "planc2333.zip",
+  "election_cycle": "2026",
+  "file_format": "shp_zip",
+  "geography_coverage": [
+    "precinct",
+    "block",
+    "district"
+  ],
+  "known_caveats": "Transfer is population-weighted; historical votes are not certified for a new map.",
+  "license_or_terms": "CC BY",
+  "office_coverage": [
+    "president",
+    "us_house"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research with attribution.",
+  "privacy_tier": 0,
+  "prohibited_use": "No person-level political inference or partisan map optimization.",
+  "raw_path": "data/raw/source=state_plans/dataset=cd2026/state=TX/planc2333.zip",
+  "redistribution_allowed": true,
+  "required_attribution": "Texas Legislative Council",
+  "review_date": "2027-10-18",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-18",
+  "source_id": "tx_tlc_plan_c2333",
+  "source_owner": "Texas Legislative Council",
+  "source_url": "https://data.capitol.texas.gov/dataset/planc2333",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}
