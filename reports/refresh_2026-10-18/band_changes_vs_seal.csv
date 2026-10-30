@@ -1,0 +1,6 @@
+assumption,shrinkage_current,nat_share_current,house_mean_seats_current,house_5th_current,house_95th_current,house_p_dem_current,sen_dem_seats_up_current,sen_mean_total_current,sen_p_dem_current,shrinkage_sealed,nat_share_sealed,house_mean_seats_sealed,house_5th_sealed,house_95th_sealed,house_p_dem_sealed,sen_dem_seats_up_sealed,sen_mean_total_sealed,sen_p_dem_sealed
+shrinkage=0.25,0.25,0.5208,231.3,124.0,350.0,0.565,17.2,51.2,0.508,0.25,0.5157,228.2,117.0,352.0,0.536,15.8,47.8,0.272
+shrinkage=0.33,0.33,0.5283,236.2,129.0,356.0,0.591,17.8,51.8,0.539,0.33,0.5232,233.1,122.0,357.0,0.562,16.3,48.3,0.298
+shrinkage=0.5,0.5,0.5442,246.4,140.0,367.0,0.651,18.9,52.9,0.603,0.5,0.5392,243.6,132.0,368.0,0.62,17.2,49.2,0.357
+shrinkage=0.75,0.75,0.5676,261.7,156.0,382.0,0.73,20.7,54.7,0.694,0.75,0.5626,259.3,148.0,383.0,0.701,18.7,50.7,0.45
+shrinkage=1,1.0,0.591,277.1,171.0,395.0,0.796,22.4,56.4,0.776,1.0,0.5861,275.1,162.0,395.0,0.77,20.1,52.1,0.545

@@ -1,0 +1,38 @@
+national environment: specials_band (status=band, identified=False)
+specials: n=8  mean overperformance +0.1871 (se 0.0219)
+2024 House national model input (contested races, total-vote weighted): 0.4974
+
+implied national environment by shrinkage factor
+ shrinkage  applied_margin_swing  national_dem_share  share_std_error
+      0.25                0.0468              0.5208           0.0027
+      0.33                0.0618              0.5283           0.0036
+      0.50                0.0936              0.5442           0.0055
+      0.75                0.1403              0.5676           0.0082
+      1.00                0.1871              0.5910           0.0110
+
+fitted resid sigma: house 0.1121  senate 0.1283
+
+filings joined: incumbent_status {'filed': 445, 'unknown': 21, 'not_found': 4}
+candidacy evidence: {'verified': 12, 'unknown': 458, 'known_not_running': 10, 'by_office': {'us_house': 0, 'us_senate': 12}}
+
+senate holdover seats not up in 2026: 65  Democratic-held: 34
+  official roster caucuses: Democratic 47, Republican 53; 100 seats reconciled
+
+house seats projected: 435/435   senate seats up: 35
+
+ shrinkage  nat_share  house_mean_seats  house_5th  house_95th  house_p_dem  sen_dem_seats_up  sen_mean_total  sen_p_dem
+      0.25     0.5208             231.3      124.0       350.0        0.565              17.2            51.2      0.508
+      0.33     0.5283             236.2      129.0       356.0        0.591              17.8            51.8      0.539
+      0.50     0.5442             246.4      140.0       367.0        0.651              18.9            52.9      0.603
+      0.75     0.5676             261.7      156.0       382.0        0.730              20.7            54.7      0.694
+      1.00     0.5910             277.1      171.0       395.0        0.796              22.4            56.4      0.776
+
+House: Democrats favored at every assumption in the band (P(control) 0.565–0.796).
+Senate: Democrats favored at every assumption in the band (P(control) 0.508–0.776).
+
+band written to reports/refresh_2026-10-18/national_environment_2026-10-18.json
+
+incumbency: 445 sitting members have an FEC filing for 2026; 4 were not found in the roster (not spelled 'retired': absence misses most departures). Candidacy verified for 12; assumed for 458 remaining seats.
+district boundaries: {'redrawn': 173, 'unchanged': 262}   projected by source: {'fallback_state_lean': 135, 'model': 262, 'model_transferred': 38}
+redrawn states (sourced, RD-001): AL, CA, FL, LA, NC, OH, TN, TX, UT -- 173 seats. These use a different congressional map in 2026 than in 2024, so their 2024 result describes different territory and is discarded rather than reused. 135 seats still lack a transferred prior and fall back to state lean with sigma 0.1455 (residual 0.1121 widened by within-state lean sd 0.1716).
+litigation active: AL, CA, FL, LA, MO, NC, TN, TX, UT -- a court could still move these maps before election day. This is reported, not routed on: it says nothing about whether this cycle's territory matches last cycle's. Missouri is the case in point -- it is enjoined from using its 2025 map and votes its 2022 map, so its territory is unchanged and its prior is valid.

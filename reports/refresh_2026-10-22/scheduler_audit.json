@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-10-23T00:38:48.076582+00:00",
+  "automation_id": "capture-official-2026-election-results",
+  "status": "ACTIVE",
+  "configuration_sha256": "3f5a1089b209ecf608428031cf41099a557971cc75cecef6efc405f5655b94ae",
+  "explicit_timezone_saved": true,
+  "intended_local_time": "22:00 America/Vancouver",
+  "election_night_local": "2026-11-03T22:00:00-07:00",
+  "election_night_expected_utc": "2026-11-04T05:00:00+00:00",
+  "actual_trigger_verified": false,
+  "manual_fallback_required": true,
+  "bc_source": "https://news.gov.bc.ca/releases/2026AG0013-000209"
+}

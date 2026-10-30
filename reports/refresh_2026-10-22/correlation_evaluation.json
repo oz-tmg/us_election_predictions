@@ -1,0 +1,756 @@
+{
+  "house": {
+    "estimated": {
+      "status": "estimated",
+      "n_cycles": 15,
+      "parameters": {
+        "national": 0.13459685217844453,
+        "regional": 0.02185651565759143,
+        "state": 0.843546632163964
+      },
+      "standardized_bias": -0.06833567236193652,
+      "method": "equal-cycle pair covariance: cross-region, within-region, unit residual",
+      "limitations": [
+        "Census regions; final component is per-seat, not a shared state shock",
+        "variance components clipped at zero; few independent cycles",
+        "residuals include the benchmark national estimator's error"
+      ]
+    },
+    "held_out_cycles": [
+      {
+        "cycle": 1998,
+        "n_seats": 333,
+        "train_through": 1996,
+        "parameters": {
+          "national": 0.1452411794989353,
+          "regional": 0.0281732877053589,
+          "state": 0.8265855327957057
+        },
+        "asserted": {
+          "low": 87.0,
+          "high": 215.05000000000018,
+          "actual": 168,
+          "covered": true,
+          "interval_score": 128.05000000000018
+        },
+        "estimated": {
+          "low": 117.0,
+          "high": 187.0,
+          "actual": 168,
+          "covered": true,
+          "interval_score": 70.0
+        }
+      },
+      {
+        "cycle": 2000,
+        "n_seats": 371,
+        "train_through": 1998,
+        "parameters": {
+          "national": 0.15862170977355183,
+          "regional": 0.028780480738871603,
+          "state": 0.8125978094875765
+        },
+        "asserted": {
+          "low": 130.0,
+          "high": 235.0,
+          "actual": 180,
+          "covered": true,
+          "interval_score": 105.0
+        },
+        "estimated": {
+          "low": 151.0,
+          "high": 211.0,
+          "actual": 180,
+          "covered": true,
+          "interval_score": 60.0
+        }
+      },
+      {
+        "cycle": 2004,
+        "n_seats": 372,
+        "train_through": 2002,
+        "parameters": {
+          "national": 0.13881405127185392,
+          "regional": 0.024352771385476892,
+          "state": 0.8368331773426692
+        },
+        "asserted": {
+          "low": 130.0,
+          "high": 228.0,
+          "actual": 174,
+          "covered": true,
+          "interval_score": 98.0
+        },
+        "estimated": {
+          "low": 151.0,
+          "high": 203.0,
+          "actual": 174,
+          "covered": true,
+          "interval_score": 52.0
+        }
+      },
+      {
+        "cycle": 2006,
+        "n_seats": 379,
+        "train_through": 2004,
+        "parameters": {
+          "national": 0.12014016661405828,
+          "regional": 0.0247558041066126,
+          "state": 0.8551040292793292
+        },
+        "asserted": {
+          "low": 124.0,
+          "high": 235.0,
+          "actual": 187,
+          "covered": true,
+          "interval_score": 111.0
+        },
+        "estimated": {
+          "low": 144.0,
+          "high": 199.0,
+          "actual": 187,
+          "covered": true,
+          "interval_score": 55.0
+        }
+      },
+      {
+        "cycle": 2008,
+        "n_seats": 379,
+        "train_through": 2006,
+        "parameters": {
+          "national": 0.12347947197138152,
+          "regional": 0.024607493040776297,
+          "state": 0.8519130349878422
+        },
+        "asserted": {
+          "low": 148.0,
+          "high": 281.0,
+          "actual": 215,
+          "covered": true,
+          "interval_score": 133.0
+        },
+        "estimated": {
+          "low": 173.0,
+          "high": 241.0,
+          "actual": 215,
+          "covered": true,
+          "interval_score": 68.0
+        }
+      },
+      {
+        "cycle": 2010,
+        "n_seats": 406,
+        "train_through": 2008,
+        "parameters": {
+          "national": 0.1127162076566206,
+          "regional": 0.02483915888003852,
+          "state": 0.8624446334633409
+        },
+        "asserted": {
+          "low": 188.0,
+          "high": 315.0,
+          "actual": 188,
+          "covered": true,
+          "interval_score": 127.0
+        },
+        "estimated": {
+          "low": 218.0,
+          "high": 280.0,
+          "actual": 188,
+          "covered": false,
+          "interval_score": 662.0
+        }
+      },
+      {
+        "cycle": 2014,
+        "n_seats": 358,
+        "train_through": 2012,
+        "parameters": {
+          "national": 0.1585817450061241,
+          "regional": 0.02670101974110279,
+          "state": 0.8147172352527732
+        },
+        "asserted": {
+          "low": 85.0,
+          "high": 216.05000000000018,
+          "actual": 147,
+          "covered": true,
+          "interval_score": 131.05000000000018
+        },
+        "estimated": {
+          "low": 113.0,
+          "high": 186.0,
+          "actual": 147,
+          "covered": true,
+          "interval_score": 73.0
+        }
+      },
+      {
+        "cycle": 2016,
+        "n_seats": 371,
+        "train_through": 2014,
+        "parameters": {
+          "national": 0.15049637634126053,
+          "regional": 0.025101124892018264,
+          "state": 0.8244024987667212
+        },
+        "asserted": {
+          "low": 99.0,
+          "high": 223.0,
+          "actual": 159,
+          "covered": true,
+          "interval_score": 124.0
+        },
+        "estimated": {
+          "low": 123.0,
+          "high": 190.05000000000018,
+          "actual": 159,
+          "covered": true,
+          "interval_score": 67.05000000000018
+        }
+      },
+      {
+        "cycle": 2018,
+        "n_seats": 393,
+        "train_through": 2016,
+        "parameters": {
+          "national": 0.14222876495340078,
+          "regional": 0.024881098509355357,
+          "state": 0.8328901365372439
+        },
+        "asserted": {
+          "low": 112.0,
+          "high": 276.0,
+          "actual": 196,
+          "covered": true,
+          "interval_score": 164.0
+        },
+        "estimated": {
+          "low": 140.0,
+          "high": 228.0,
+          "actual": 196,
+          "covered": true,
+          "interval_score": 88.0
+        }
+      },
+      {
+        "cycle": 2020,
+        "n_seats": 407,
+        "train_through": 2018,
+        "parameters": {
+          "national": 0.13460701111257165,
+          "regional": 0.022942025429818037,
+          "state": 0.8424509634576104
+        },
+        "asserted": {
+          "low": 151.0,
+          "high": 330.0,
+          "actual": 202,
+          "covered": true,
+          "interval_score": 179.0
+        },
+        "estimated": {
+          "low": 188.0,
+          "high": 281.0,
+          "actual": 202,
+          "covered": true,
+          "interval_score": 93.0
+        }
+      },
+      {
+        "cycle": 2024,
+        "n_seats": 377,
+        "train_through": 2022,
+        "parameters": {
+          "national": 0.139635613990263,
+          "regional": 0.022704697821558928,
+          "state": 0.8376596881881782
+        },
+        "asserted": {
+          "low": 110.0,
+          "high": 257.0,
+          "actual": 190,
+          "covered": true,
+          "interval_score": 147.0
+        },
+        "estimated": {
+          "low": 144.0,
+          "high": 221.0,
+          "actual": 190,
+          "covered": true,
+          "interval_score": 77.0
+        }
+      }
+    ],
+    "summary": {
+      "asserted": {
+        "coverage_90": 1.0,
+        "mean_interval_score": 131.5545454545455
+      },
+      "estimated": {
+        "coverage_90": 0.9090909090909091,
+        "mean_interval_score": 124.09545454545456
+      }
+    },
+    "evaluation_universe": "covered contested seats only; fallback and unopposed seats are not validated",
+    "subset_gate_passed": true,
+    "full_universe_verified": false,
+    "promotion_gate": "full forecast universe; at least 4 held-out cycles, coverage >= .85, lower interval score",
+    "promoted": false,
+    "selected_parameters": {
+      "national": 0.45,
+      "regional": 0.25,
+      "state": 0.3
+    },
+    "selection_reason": "retained asserted split: full-universe chronological gate not met"
+  },
+  "senate": {
+    "estimated": {
+      "status": "estimated",
+      "n_cycles": 20,
+      "parameters": {
+        "national": 0.040241846278789975,
+        "regional": 0.01816288987877358,
+        "state": 0.9415952638424365
+      },
+      "standardized_bias": 0.04751180258337985,
+      "method": "equal-cycle pair covariance: cross-region, within-region, unit residual",
+      "limitations": [
+        "Census regions; final component is per-seat, not a shared state shock",
+        "variance components clipped at zero; few independent cycles",
+        "residuals include the benchmark national estimator's error"
+      ]
+    },
+    "held_out_cycles": [
+      {
+        "cycle": 1994,
+        "n_seats": 35,
+        "train_through": 1992,
+        "parameters": {
+          "national": 0.0,
+          "regional": 0.07446282907301736,
+          "state": 0.9255371709269826
+        },
+        "asserted": {
+          "low": 4.0,
+          "high": 31.0,
+          "actual": 14,
+          "covered": true,
+          "interval_score": 27.0
+        },
+        "estimated": {
+          "low": 13.0,
+          "high": 22.0,
+          "actual": 14,
+          "covered": true,
+          "interval_score": 9.0
+        }
+      },
+      {
+        "cycle": 1996,
+        "n_seats": 34,
+        "train_through": 1994,
+        "parameters": {
+          "national": 0.0,
+          "regional": 0.058740328076658584,
+          "state": 0.9412596719233414
+        },
+        "asserted": {
+          "low": 4.0,
+          "high": 29.0,
+          "actual": 13,
+          "covered": true,
+          "interval_score": 25.0
+        },
+        "estimated": {
+          "low": 12.0,
+          "high": 21.0,
+          "actual": 13,
+          "covered": true,
+          "interval_score": 9.0
+        }
+      },
+      {
+        "cycle": 1998,
+        "n_seats": 34,
+        "train_through": 1996,
+        "parameters": {
+          "national": 0.0,
+          "regional": 0.04918904511491369,
+          "state": 0.9508109548850863
+        },
+        "asserted": {
+          "low": 5.0,
+          "high": 27.0,
+          "actual": 18,
+          "covered": true,
+          "interval_score": 22.0
+        },
+        "estimated": {
+          "low": 12.0,
+          "high": 20.0,
+          "actual": 18,
+          "covered": true,
+          "interval_score": 8.0
+        }
+      },
+      {
+        "cycle": 2000,
+        "n_seats": 32,
+        "train_through": 1998,
+        "parameters": {
+          "national": 0.0,
+          "regional": 0.028291093441394684,
+          "state": 0.9717089065586054
+        },
+        "asserted": {
+          "low": 6.0,
+          "high": 26.0,
+          "actual": 18,
+          "covered": true,
+          "interval_score": 20.0
+        },
+        "estimated": {
+          "low": 12.0,
+          "high": 19.0,
+          "actual": 18,
+          "covered": true,
+          "interval_score": 7.0
+        }
+      },
+      {
+        "cycle": 2002,
+        "n_seats": 30,
+        "train_through": 2000,
+        "parameters": {
+          "national": 0.0,
+          "regional": 0.023772734692673866,
+          "state": 0.9762272653073262
+        },
+        "asserted": {
+          "low": 6.0,
+          "high": 25.0,
+          "actual": 11,
+          "covered": true,
+          "interval_score": 19.0
+        },
+        "estimated": {
+          "low": 12.0,
+          "high": 19.0,
+          "actual": 11,
+          "covered": false,
+          "interval_score": 27.0
+        }
+      },
+      {
+        "cycle": 2004,
+        "n_seats": 33,
+        "train_through": 2002,
+        "parameters": {
+          "national": 0.001820474695035735,
+          "regional": 0.03968997325521259,
+          "state": 0.9584895520497517
+        },
+        "asserted": {
+          "low": 6.0,
+          "high": 27.0,
+          "actual": 15,
+          "covered": true,
+          "interval_score": 21.0
+        },
+        "estimated": {
+          "low": 12.0,
+          "high": 20.0,
+          "actual": 15,
+          "covered": true,
+          "interval_score": 8.0
+        }
+      },
+      {
+        "cycle": 2006,
+        "n_seats": 31,
+        "train_through": 2004,
+        "parameters": {
+          "national": 0.009385773562672874,
+          "regional": 0.025491860639544024,
+          "state": 0.9651223657977831
+        },
+        "asserted": {
+          "low": 10.0,
+          "high": 26.0,
+          "actual": 23,
+          "covered": true,
+          "interval_score": 16.0
+        },
+        "estimated": {
+          "low": 15.0,
+          "high": 22.0,
+          "actual": 23,
+          "covered": false,
+          "interval_score": 27.0
+        }
+      },
+      {
+        "cycle": 2008,
+        "n_seats": 33,
+        "train_through": 2006,
+        "parameters": {
+          "national": 0.016897345912323693,
+          "regional": 0.020322431520456756,
+          "state": 0.9627802225672195
+        },
+        "asserted": {
+          "low": 6.0,
+          "high": 24.0,
+          "actual": 19,
+          "covered": true,
+          "interval_score": 18.0
+        },
+        "estimated": {
+          "low": 11.0,
+          "high": 18.0,
+          "actual": 19,
+          "covered": false,
+          "interval_score": 27.0
+        }
+      },
+      {
+        "cycle": 2010,
+        "n_seats": 36,
+        "train_through": 2008,
+        "parameters": {
+          "national": 0.027727853560675315,
+          "regional": 0.015606545383779999,
+          "state": 0.9566656010555447
+        },
+        "asserted": {
+          "low": 6.0,
+          "high": 28.0,
+          "actual": 13,
+          "covered": true,
+          "interval_score": 22.0
+        },
+        "estimated": {
+          "low": 12.0,
+          "high": 21.0,
+          "actual": 13,
+          "covered": true,
+          "interval_score": 9.0
+        }
+      },
+      {
+        "cycle": 2012,
+        "n_seats": 32,
+        "train_through": 2010,
+        "parameters": {
+          "national": 0.027027663362011334,
+          "regional": 0.026262901724428984,
+          "state": 0.9467094349135597
+        },
+        "asserted": {
+          "low": 9.0,
+          "high": 29.0,
+          "actual": 23,
+          "covered": true,
+          "interval_score": 20.0
+        },
+        "estimated": {
+          "low": 16.0,
+          "high": 25.0,
+          "actual": 23,
+          "covered": true,
+          "interval_score": 9.0
+        }
+      },
+      {
+        "cycle": 2014,
+        "n_seats": 34,
+        "train_through": 2012,
+        "parameters": {
+          "national": 0.024659494707348892,
+          "regional": 0.02285740050210409,
+          "state": 0.9524831047905471
+        },
+        "asserted": {
+          "low": 5.0,
+          "high": 26.0,
+          "actual": 12,
+          "covered": true,
+          "interval_score": 21.0
+        },
+        "estimated": {
+          "low": 11.0,
+          "high": 19.0,
+          "actual": 12,
+          "covered": true,
+          "interval_score": 8.0
+        }
+      },
+      {
+        "cycle": 2016,
+        "n_seats": 33,
+        "train_through": 2014,
+        "parameters": {
+          "national": 0.025997674582327865,
+          "regional": 0.01918749523849364,
+          "state": 0.9548148301791785
+        },
+        "asserted": {
+          "low": 5.0,
+          "high": 22.0,
+          "actual": 11,
+          "covered": true,
+          "interval_score": 17.0
+        },
+        "estimated": {
+          "low": 9.0,
+          "high": 16.0,
+          "actual": 11,
+          "covered": true,
+          "interval_score": 7.0
+        }
+      },
+      {
+        "cycle": 2018,
+        "n_seats": 33,
+        "train_through": 2016,
+        "parameters": {
+          "national": 0.02341663121959809,
+          "regional": 0.012244426387608837,
+          "state": 0.964338942392793
+        },
+        "asserted": {
+          "low": 12.0,
+          "high": 30.0,
+          "actual": 21,
+          "covered": true,
+          "interval_score": 18.0
+        },
+        "estimated": {
+          "low": 18.0,
+          "high": 26.0,
+          "actual": 21,
+          "covered": true,
+          "interval_score": 8.0
+        }
+      },
+      {
+        "cycle": 2020,
+        "n_seats": 33,
+        "train_through": 2018,
+        "parameters": {
+          "national": 0.024358817315465617,
+          "regional": 0.022807739448856452,
+          "state": 0.952833443235678
+        },
+        "asserted": {
+          "low": 4.0,
+          "high": 23.0,
+          "actual": 13,
+          "covered": true,
+          "interval_score": 19.0
+        },
+        "estimated": {
+          "low": 8.0,
+          "high": 16.0,
+          "actual": 13,
+          "covered": true,
+          "interval_score": 8.0
+        }
+      },
+      {
+        "cycle": 2021,
+        "n_seats": 2,
+        "train_through": 2019,
+        "parameters": {
+          "national": 0.027935786624079462,
+          "regional": 0.01915408446241811,
+          "state": 0.9529101289135024
+        },
+        "asserted": {
+          "low": 0.0,
+          "high": 2.0,
+          "actual": 2,
+          "covered": true,
+          "interval_score": 2.0
+        },
+        "estimated": {
+          "low": 0.0,
+          "high": 2.0,
+          "actual": 2,
+          "covered": true,
+          "interval_score": 2.0
+        }
+      },
+      {
+        "cycle": 2022,
+        "n_seats": 32,
+        "train_through": 2020,
+        "parameters": {
+          "national": 0.028205872062324132,
+          "regional": 0.018681915817617613,
+          "state": 0.9531122121200583
+        },
+        "asserted": {
+          "low": 3.0,
+          "high": 20.0,
+          "actual": 14,
+          "covered": true,
+          "interval_score": 17.0
+        },
+        "estimated": {
+          "low": 7.0,
+          "high": 15.0,
+          "actual": 14,
+          "covered": true,
+          "interval_score": 8.0
+        }
+      },
+      {
+        "cycle": 2024,
+        "n_seats": 33,
+        "train_through": 2022,
+        "parameters": {
+          "national": 0.037172697160450026,
+          "regional": 0.016298811308868833,
+          "state": 0.9465284915306811
+        },
+        "asserted": {
+          "low": 8.950000000000017,
+          "high": 27.0,
+          "actual": 18,
+          "covered": true,
+          "interval_score": 18.049999999999983
+        },
+        "estimated": {
+          "low": 14.0,
+          "high": 23.0,
+          "actual": 18,
+          "covered": true,
+          "interval_score": 9.0
+        }
+      }
+    ],
+    "summary": {
+      "asserted": {
+        "coverage_90": 1.0,
+        "mean_interval_score": 18.94411764705882
+      },
+      "estimated": {
+        "coverage_90": 0.8235294117647058,
+        "mean_interval_score": 11.176470588235293
+      }
+    },
+    "evaluation_universe": "covered contested seats only; fallback and unopposed seats are not validated",
+    "subset_gate_passed": false,
+    "full_universe_verified": false,
+    "promotion_gate": "full forecast universe; at least 4 held-out cycles, coverage >= .85, lower interval score",
+    "promoted": false,
+    "selected_parameters": {
+      "national": 0.45,
+      "regional": 0.25,
+      "state": 0.3
+    },
+    "selection_reason": "retained asserted split: full-universe chronological gate not met"
+  }
+}

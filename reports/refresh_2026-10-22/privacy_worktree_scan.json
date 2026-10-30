@@ -1,0 +1,7 @@
+{
+  "checked_at": "2026-10-23T00:34:29.491358+00:00",
+  "scope": "tracked plus nonignored untracked filenames; existing guard rules",
+  "files_scanned": 540,
+  "violations": [],
+  "not_a_personal_data_content_audit": true
+}

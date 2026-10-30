@@ -1,0 +1,188 @@
+{
+  "2020": {
+    "state": "UT",
+    "from_cycle": 2020,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "2020 BAF (2010-era plan)",
+    "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_49_cd118.zip",
+    "precinct_votes": {
+      "precincts": 2346,
+      "two_party_votes": 1425421.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 71207,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "unplaced_blocks_with_land": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 776,
+      "precincts_unmatched": 1570,
+      "votes_unmatched_to_a_vtd": 918033.0,
+      "unmatched_precincts": [
+        "49001|BEAVER 1",
+        "49001|BEAVER 2",
+        "49001|BEAVER 3",
+        "49001|BEAVER 4",
+        "49001|GREENVILLE 1",
+        "49001|MILFORD 1",
+        "49001|MILFORD 2",
+        "49001|MILFORD 3",
+        "49001|MINERSVILLE 1",
+        "49003|BEAR RIVER",
+        "49003|BEAR RIVER EAST",
+        "49003|BEAVER DAM-COLLINSTON",
+        "49003|BRIGHAM CITY 1",
+        "49003|BRIGHAM CITY 10",
+        "49003|BRIGHAM CITY 11",
+        "49003|BRIGHAM CITY 12",
+        "49003|BRIGHAM CITY 13",
+        "49003|BRIGHAM CITY 14",
+        "49003|BRIGHAM CITY 15",
+        "49003|BRIGHAM CITY 2",
+        "49003|BRIGHAM CITY 3",
+        "49003|BRIGHAM CITY 4",
+        "49003|BRIGHAM CITY 5",
+        "49003|BRIGHAM CITY 6",
+        "49003|BRIGHAM CITY 7"
+      ],
+      "votes_from_county_aggregates": 118104.99999999999,
+      "votes_unplaceable": 799928.0,
+      "votes_offered": 1425421.0,
+      "votes_placed": 625493.0
+    },
+    "old_district_rows": 557246,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 1425421.0,
+      "certified_two_party_votes": 1425422.0,
+      "passed": false
+    },
+    "backtest": {
+      "n_districts": 4,
+      "transfer_mae": 0.21722768228559902,
+      "no_prior_mae": 0.016145919036336318,
+      "state_lean_fallback_mae": 0.05459388498856245,
+      "beats_no_prior": false,
+      "beats_fallback": false,
+      "transfer_sigma": 0.14670568725627778,
+      "confidence_components": {
+        "unsplit_share": {
+          "min": 0.817125022774999,
+          "median": 0.9372424642588122
+        },
+        "old_district_majority_share": {
+          "min": 0.7669352843568427,
+          "median": 0.7976539906955149
+        },
+        "geocoded_share": {
+          "min": 1.0,
+          "median": 1.0
+        }
+      }
+    },
+    "usability": {
+      "placed_share": 0.43881281389849036,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  },
+  "2024": {
+    "state": "UT",
+    "from_cycle": 2024,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+      "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=49/tl_2024_49_cd119.zip",
+    "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+    "precinct_votes": {
+      "precincts": 3105,
+      "two_party_votes": 1445799.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 71207,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "assignment_source": "census_cd120_bef",
+      "block_vintage": 2020,
+      "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 711,
+      "precincts_unmatched": 2394,
+      "votes_unmatched_to_a_vtd": 1052915.0,
+      "unmatched_precincts": [
+        "49001|BEAVER 1",
+        "49001|BEAVER 2",
+        "49001|BEAVER 3",
+        "49001|BEAVER 4",
+        "49001|GREENVILLE 1",
+        "49001|MILFORD 1",
+        "49001|MILFORD 2",
+        "49001|MILFORD 3",
+        "49001|MINERSVILLE 1",
+        "49003|Bear River",
+        "49003|Beaver Dam/Collinston",
+        "49003|Box Elder West",
+        "49003|Brigham City 01",
+        "49003|Brigham City 02",
+        "49003|Brigham City 03",
+        "49003|Brigham City 04",
+        "49003|Brigham City 05",
+        "49003|Brigham City 06",
+        "49003|Brigham City 07",
+        "49003|Brigham City 08",
+        "49003|Brigham City 09",
+        "49003|Brigham City 10",
+        "49003|Brigham City 11",
+        "49003|Brigham City 12",
+        "49003|Brigham City 13"
+      ],
+      "votes_from_county_aggregates": 198175.0,
+      "votes_unplaceable": 854740.0,
+      "votes_offered": 1445799.0,
+      "votes_placed": 591059.0
+    },
+    "old_district_rows": 3417341,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 1445799.0,
+      "certified_two_party_votes": 1446384.0,
+      "passed": false
+    },
+    "usability": {
+      "placed_share": 0.40881132162907846,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  }
+}

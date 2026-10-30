@@ -1,0 +1,115 @@
+{
+  "as_of": "2026-10-22",
+  "source_coverage": [
+    {
+      "state_po": "CA",
+      "raw_sha256": "62fe9851e4b8bc19eaaa9dd9b33ee39a786b222e13eb28d9d4d3096c14574610",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 104,
+      "races": 52
+    },
+    {
+      "state_po": "TX",
+      "raw_sha256": "c13ffb4ebeee389fa9818d47b31f77b4e260ea6e6f5389cb7bf0f36d9b44d87c",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 91,
+      "races": 39
+    },
+    {
+      "state_po": "NC",
+      "raw_sha256": "2f1c1b932dff920bc690c3e5fc1813ff4389cb5a28ef0b99d4bb06c9fef09cbe",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 42,
+      "races": 15
+    },
+    {
+      "state_po": "FL",
+      "raw_sha256": "e8940328a2726451d3bfc28468d01bbe248646e534c4bc78ab5947d915008ba8",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 86,
+      "races": 29
+    },
+    {
+      "state_po": "NY",
+      "raw_sha256": "10d95f5d2d6b282f98f13e9e771c78e3fb48bfdba4ac38d0c477d383a7712f8e",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 59,
+      "races": 26
+    },
+    {
+      "state_po": "MD",
+      "raw_sha256": "f25821beb3c74107c5239edcd9904cf61ae769371c1f514579dc3b037d1438ba",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 22,
+      "races": 8
+    },
+    {
+      "state_po": "MI",
+      "raw_sha256": "e3551674a96aebc1d295336d857a9b626ab38177823ed5357214a40b038b1938",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 66,
+      "races": 14
+    },
+    {
+      "state_po": "DE",
+      "raw_sha256": "b35bf2d6feedaef692183b0f7b5cda28b12738f8f147fe9843be1ce89c2c4d9d",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 4,
+      "races": 2
+    },
+    {
+      "state_po": "NJ",
+      "raw_sha256": "d1816b5eaf0edcd287159047da6ccbbe33e8152546e4ac2f57755fcc28b0f603",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 23,
+      "races": 12
+    },
+    {
+      "state_po": "NJ",
+      "raw_sha256": "f1458af2e44ef482ed01314ddadc515dc351d7b6c963533ba5504ea5a873422e",
+      "parser_sha256": "6138a4dd935dd89c17f7f523bb6044e54fa16fd3066ade859662c4023a1ce41e",
+      "candidates": 2,
+      "races": 1
+    }
+  ],
+  "verified_races": 203,
+  "ambiguous_matches": [
+    {
+      "state_po": "DE",
+      "office": "us_senate",
+      "candidate": "CHRIS COONS",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NJ",
+      "office": "us_house",
+      "candidate": "JEFF VAN DREW",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NJ",
+      "office": "us_house",
+      "candidate": "HERB CONAWAY",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NJ",
+      "office": "us_house",
+      "candidate": "ROB MENENDEZ",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NJ",
+      "office": "us_house",
+      "candidate": "NELIDA POU",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "race_key": "2026_us_house_nj_12",
+      "reason": "partial candidate extraction cannot prove absence"
+    }
+  ],
+  "roster_rows": 435,
+  "remaining_unknown": 267,
+  "not_a_filing_based_nomination": true
+}

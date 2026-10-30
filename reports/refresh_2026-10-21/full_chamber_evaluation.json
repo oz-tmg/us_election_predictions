@@ -1,0 +1,220 @@
+{
+  "evaluation_universe": "435 unique voting House districts per retained cycle",
+  "folds": [
+    {
+      "cycle": 2014,
+      "n_seats": 435,
+      "prediction_sources": {
+        "district_model": 358,
+        "reconstructed_one_sided_ballot": 77
+      },
+      "correlation_train_through": 2012,
+      "asserted": {
+        "low": 123.0,
+        "high": 262.0,
+        "actual": 188,
+        "covered": true,
+        "interval_score": 139.0,
+        "control_probability": 0.2028,
+        "control_brier": 0.041127840000000006,
+        "control_log_loss": 0.22664969064349738
+      },
+      "estimated": {
+        "low": 153.0,
+        "high": 228.0,
+        "actual": 188,
+        "covered": true,
+        "interval_score": 75.0,
+        "control_probability": 0.1066,
+        "control_brier": 0.01136356,
+        "control_log_loss": 0.11272087006411878
+      }
+    },
+    {
+      "cycle": 2016,
+      "n_seats": 435,
+      "prediction_sources": {
+        "district_model": 372,
+        "reconstructed_one_sided_ballot": 62,
+        "lagged_state_presidential_fallback": 1
+      },
+      "correlation_train_through": 2014,
+      "asserted": {
+        "low": 130.0,
+        "high": 260.0,
+        "actual": 194,
+        "covered": true,
+        "interval_score": 130.0,
+        "control_probability": 0.1892,
+        "control_brier": 0.035796640000000005,
+        "control_log_loss": 0.20973386440429212
+      },
+      "estimated": {
+        "low": 158.0,
+        "high": 225.0,
+        "actual": 194,
+        "covered": true,
+        "interval_score": 67.0,
+        "control_probability": 0.087,
+        "control_brier": 0.007568999999999999,
+        "control_log_loss": 0.09101939838716855
+      }
+    },
+    {
+      "cycle": 2020,
+      "n_seats": 435,
+      "prediction_sources": {
+        "district_model": 407,
+        "reconstructed_one_sided_ballot": 26,
+        "lagged_state_presidential_fallback": 2
+      },
+      "correlation_train_through": 2016,
+      "asserted": {
+        "low": 166.0,
+        "high": 352.0,
+        "actual": 222,
+        "covered": true,
+        "interval_score": 186.0,
+        "control_probability": 0.7316,
+        "control_brier": 0.07203855999999999,
+        "control_log_loss": 0.3125213624654264
+      },
+      "estimated": {
+        "low": 207.0,
+        "high": 301.0,
+        "actual": 222,
+        "covered": true,
+        "interval_score": 94.0,
+        "control_probability": 0.8958,
+        "control_brier": 0.010857639999999991,
+        "control_log_loss": 0.11003810520893731
+      }
+    },
+    {
+      "cycle": 2022,
+      "n_seats": 435,
+      "prediction_sources": {
+        "lagged_state_presidential_fallback": 403,
+        "reconstructed_one_sided_ballot": 32
+      },
+      "correlation_train_through": 2020,
+      "asserted": {
+        "low": 37.0,
+        "high": 376.0,
+        "actual": 213,
+        "covered": true,
+        "interval_score": 339.0,
+        "control_probability": 0.4094,
+        "control_brier": 0.16760835999999998,
+        "control_log_loss": 0.5266163096723148
+      },
+      "estimated": {
+        "low": 115.0,
+        "high": 285.0,
+        "actual": 213,
+        "covered": true,
+        "interval_score": 170.0,
+        "control_probability": 0.3446,
+        "control_brier": 0.11874916,
+        "control_log_loss": 0.42250954271742286
+      }
+    },
+    {
+      "cycle": 2024,
+      "n_seats": 435,
+      "prediction_sources": {
+        "district_model": 377,
+        "reconstructed_one_sided_ballot": 35,
+        "lagged_state_presidential_fallback": 23
+      },
+      "correlation_train_through": 2022,
+      "asserted": {
+        "low": 126.0,
+        "high": 293.0,
+        "actual": 215,
+        "covered": true,
+        "interval_score": 167.0,
+        "control_probability": 0.3678,
+        "control_brier": 0.13527684,
+        "control_log_loss": 0.4585494792006197
+      },
+      "estimated": {
+        "low": 166.0,
+        "high": 248.0,
+        "actual": 215,
+        "covered": true,
+        "interval_score": 82.0,
+        "control_probability": 0.303,
+        "control_brier": 0.091809,
+        "control_log_loss": 0.3609698682216131
+      }
+    }
+  ],
+  "summary": {
+    "asserted": {
+      "coverage_90": 1.0,
+      "mean_interval_score": 192.2,
+      "control_brier": 0.090369648,
+      "control_log_loss": 0.3468141412772301
+    },
+    "estimated": {
+      "coverage_90": 1.0,
+      "mean_interval_score": 97.6,
+      "control_brier": 0.048069672,
+      "control_log_loss": 0.21945155691985213
+    }
+  },
+  "omitted_cycles": [
+    {
+      "cycle": 1990,
+      "reason": "non-major-party winner needs historical caucus facts"
+    },
+    {
+      "cycle": 1992,
+      "reason": "non-major-party winner needs historical caucus facts"
+    },
+    {
+      "cycle": 1994,
+      "reason": "non-major-party winner needs historical caucus facts"
+    },
+    {
+      "cycle": 1996,
+      "reason": "not exactly 435 unique voting districts",
+      "n_rows": 425,
+      "n_unique": 425
+    },
+    {
+      "cycle": 1998,
+      "reason": "non-major-party winner needs historical caucus facts"
+    },
+    {
+      "cycle": 2000,
+      "reason": "non-major-party winner needs historical caucus facts"
+    },
+    {
+      "cycle": 2002,
+      "reason": "not exactly 435 unique voting districts",
+      "n_rows": 436,
+      "n_unique": 435
+    },
+    {
+      "cycle": 2004,
+      "reason": "non-major-party winner needs historical caucus facts"
+    },
+    {
+      "cycle": 2006,
+      "reason": "not exactly 435 unique voting districts",
+      "n_rows": 437,
+      "n_unique": 435
+    },
+    {
+      "cycle": 2018,
+      "reason": "not exactly 435 unique voting districts",
+      "n_rows": 434,
+      "n_unique": 434
+    }
+  ],
+  "senate_status": "blocked: no governed historical 100-seat class/holdover/caucus roster",
+  "promoted": false,
+  "reason": "Retrospective ballots/missing map vintages prevent live promotion"
+}

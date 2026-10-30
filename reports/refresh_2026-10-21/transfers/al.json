@@ -1,0 +1,194 @@
+{
+  "2020": {
+    "state": "AL",
+    "from_cycle": 2020,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "2020 BAF (2010-era plan)",
+    "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_01_cd118.zip",
+    "precinct_votes": {
+      "precincts": 2046,
+      "two_party_votes": 2290794.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 185976,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "unplaced_blocks_with_land": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 50,
+      "precincts_unmatched": 1996,
+      "votes_unmatched_to_a_vtd": 2217137.0,
+      "unmatched_precincts": [
+        "01001|100 TRINITY METHODIST",
+        "01001|110 CENTRAL AL ELECTRIC",
+        "01001|140 AUTAUGAVILLE VFD",
+        "01001|150 PRATTMONT BAPTIST",
+        "01001|160 DOSTER COMM_ CTR_",
+        "01001|170 CAMELLIA BAPTIST CHURCH",
+        "01001|180 OLD KINGSTON VFD",
+        "01001|20 HERITAGE BAPTIST",
+        "01001|220 UPPER KINGSTON",
+        "01001|230 COUNTY LINE BAPTIST",
+        "01001|30 BILLINGSLEY COMM_ CTR_",
+        "01001|40 E_ MEMORIAL CHRISTIAN",
+        "01001|50 WHITE CITY VFD",
+        "01001|60 MARBURY MIDDLE",
+        "01001|70 BOONE'S CHAPEL",
+        "01001|80 INDEPENDENCE VFD",
+        "01001|90 BOOTH VFD",
+        "01001|COUNTY FLOATING",
+        "01003|BARNWELL VFD",
+        "01003|BAY MINETTE CIVIC CTR",
+        "01003|BELFOREST COMM_ CTR",
+        "01003|BON SECOUR MORG CHAPEL",
+        "01003|BROMLEY VFD",
+        "01003|CLR SPG FELLOWSHIP",
+        "01003|COUNTY FLOATING"
+      ],
+      "votes_from_county_aggregates": 51524.0,
+      "votes_unplaceable": 2165613.0,
+      "votes_offered": 2290794.0,
+      "votes_placed": 125181.0
+    },
+    "old_district_rows": 11144,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 2290794.0,
+      "certified_two_party_votes": 2290794.0,
+      "passed": true
+    },
+    "backtest": {
+      "n_districts": 2,
+      "transfer_mae": 0.2122708309150759,
+      "no_prior_mae": 0.17480027109765142,
+      "state_lean_fallback_mae": 0.17480027109765142,
+      "beats_no_prior": false,
+      "beats_fallback": false,
+      "transfer_sigma": 0.007946380478869705,
+      "confidence_components": {
+        "unsplit_share": {
+          "min": 0.7392074230341672,
+          "median": 0.7721451892300693
+        },
+        "old_district_majority_share": {
+          "min": 0.7118980373603602,
+          "median": 0.7588738807999815
+        },
+        "geocoded_share": {
+          "min": 1.0,
+          "median": 1.0
+        }
+      }
+    },
+    "usability": {
+      "placed_share": 0.05464524527303634,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  },
+  "2024": {
+    "state": "AL",
+    "from_cycle": 2024,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+      "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=01/tl_2024_01_cd119.zip",
+    "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+    "precinct_votes": {
+      "precincts": 2085,
+      "two_party_votes": 2235028.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 185976,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "assignment_source": "census_cd120_bef",
+      "block_vintage": 2020,
+      "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 50,
+      "precincts_unmatched": 2035,
+      "votes_unmatched_to_a_vtd": 2156083.0,
+      "unmatched_precincts": [
+        "01001|100 TRINITY METHODIST",
+        "01001|110 CENTRAL AL ELECTRIC",
+        "01001|140 AUTAUGAVILLE VFD",
+        "01001|150 PRATTMONT BAPTIST",
+        "01001|160 DOSTER COMM CTR",
+        "01001|170 CAMELLIA BAPTIST",
+        "01001|180 OLD KINGSTON VFD",
+        "01001|20 HERITAGE BAPTIST",
+        "01001|220 UPPER KINGSTON",
+        "01001|230 COUNTY LINE BAPTIST",
+        "01001|240 GLYNWOOD BAPTIST",
+        "01001|30 BILLINGSLEY COMM CTR",
+        "01001|40 CENTRAL AL COMM COLLEGE",
+        "01001|50 WHITE CITY VFD",
+        "01001|60 MARBURY MIDDLE SCHOOL",
+        "01001|70 BOONE'S CHAPEL",
+        "01001|80 FRIENDSHIP BAPTIST",
+        "01001|90 BOOTH VFD",
+        "01001|ABSENTEE",
+        "01001|PROVISIONAL",
+        "01003|ABSENTEE",
+        "01003|BARNWELL VFD",
+        "01003|BAY MINETTE CITY HALL/CIVIC",
+        "01003|BELFOREST CHRISTIAN CH",
+        "01003|BON SECOUR FISHERMAN BAPT"
+      ],
+      "votes_from_county_aggregates": 37401.0,
+      "votes_unplaceable": 2118682.0,
+      "votes_offered": 2235028.0,
+      "votes_placed": 116346.0
+    },
+    "old_district_rows": 25687,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 2235028.0,
+      "certified_two_party_votes": 2235028.0,
+      "passed": true
+    },
+    "usability": {
+      "placed_share": 0.05205572368668312,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  }
+}

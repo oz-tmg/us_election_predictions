@@ -1,0 +1,91 @@
+{
+  "2020": {
+    "status": "blocked",
+    "error": "no 2020 precinct file for LA under data/raw"
+  },
+  "2024": {
+    "state": "LA",
+    "from_cycle": 2024,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+      "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=22/tl_2024_22_cd119.zip",
+    "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+    "precinct_votes": {
+      "precincts": 3805,
+      "two_party_votes": 1018305.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 142874,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "assignment_source": "census_cd120_bef",
+      "block_vintage": 2020,
+      "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 0,
+      "precincts_unmatched": 3805,
+      "votes_unmatched_to_a_vtd": 1018305.0,
+      "unmatched_precincts": [
+        "22001|01 01",
+        "22001|01 02",
+        "22001|01 03",
+        "22001|01 04",
+        "22001|01 05",
+        "22001|01 06",
+        "22001|01 07",
+        "22001|01 08",
+        "22001|02 01",
+        "22001|02 02",
+        "22001|02 03",
+        "22001|02 04",
+        "22001|02 05",
+        "22001|03 01",
+        "22001|03 02",
+        "22001|03 03",
+        "22001|03 04",
+        "22001|03 05",
+        "22001|03 07",
+        "22001|04 01",
+        "22001|04 02",
+        "22001|04 03",
+        "22001|04 04",
+        "22001|04 05",
+        "22001|04 06"
+      ],
+      "votes_from_county_aggregates": 0.0,
+      "votes_unplaceable": 1018305.0,
+      "votes_offered": 1018305.0,
+      "votes_placed": 0.0
+    },
+    "old_district_rows": 0,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 1018305.0,
+      "certified_two_party_votes": 1975375.0,
+      "passed": false
+    },
+    "usability": {
+      "placed_share": 0.0,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "2020": {
+    "state_po": "NC",
+    "cycle": 2020,
+    "counties": 100,
+    "comparisons": {
+      "dem_votes": {
+        "parsed": 2684292.0,
+        "certified": 2684292.0
+      },
+      "rep_votes": {
+        "parsed": 2758773.0,
+        "certified": 2758773.0
+      }
+    },
+    "reconciles": true,
+    "suppressed_rows": [],
+    "district_assignment": "Not inferred; published VTD retained; split-county geography gated",
+    "results_url": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip",
+    "results_sha256": "b388536c61930d03ed3b0fb8d1dae39a65665969f90eeb6578512de0d96c47c0",
+    "geometry_sha256": "a31a68aab8761ce579ad853690eeef2845dccf8655d9638237ef3845e2405f5b",
+    "admitted": false,
+    "vintage_caveat": "Pre-election administrative polygons; election-day changes unverified",
+    "null_precinct_polygons": 0,
+    "multipart_rows_dissolved": 250,
+    "target_plan": "2022 CD118 historical holdout, not 2026 CD120",
+    "historical_backtest": {
+      "n_districts": 14,
+      "transfer_mae": 0.01751295864242289,
+      "no_prior_mae": 0.1086074744078754,
+      "state_lean_fallback_mae": 0.10860747440787535,
+      "beats_no_prior": true,
+      "beats_fallback": true,
+      "transfer_sigma": 0.01561937809086856,
+      "confidence_components": {}
+    },
+    "block_assignment": {
+      "blocks": 236638,
+      "blocks_unplaced": 0,
+      "precincts": 2409,
+      "precinct_column": "VTDKEY"
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 2661,
+      "precincts_unmatched": 404,
+      "votes_unmatched_to_a_vtd": 2288330.0,
+      "unmatched_precincts": [
+        "37001|TRANSFER",
+        "37005|ABSENTEE",
+        "37005|ONE STOP",
+        "37005|PROVISIONAL",
+        "37009|ABSENTEE",
+        "37009|ONE STOP",
+        "37009|PROVISIONAL",
+        "37009|TRANSFER",
+        "37011|ABSENTEE",
+        "37011|ABSENTEE SUPPLEMENTAL",
+        "37011|ONE STOP",
+        "37011|PROVISIONAL",
+        "37013|ABSENTEE",
+        "37013|AURORA OS",
+        "37013|BELHAVEN OS",
+        "37013|BOE OS",
+        "37013|PROVISIONAL",
+        "37013|TRANSFER",
+        "37015|ABSENTEE BY MAIL",
+        "37015|OS LOB",
+        "37015|OS LW",
+        "37015|OS POW",
+        "37015|PROVISIONAL",
+        "37015|TRANSFER",
+        "37017|BAY TREE FIRE DEPT"
+      ],
+      "votes_from_county_aggregates": 2288330.0,
+      "votes_unplaceable": 0.0,
+      "votes_offered": 5443065.0,
+      "votes_placed": 5443065.0
+    },
+    "next_gate": "Independent 2020->2022 calibration and election-day map review required"
+  },
+  "2024": {
+    "state_po": "NC",
+    "cycle": 2024,
+    "counties": 100,
+    "comparisons": {
+      "dem_votes": {
+        "parsed": 2715375.0,
+        "certified": 2715375.0
+      },
+      "rep_votes": {
+        "parsed": 2898423.0,
+        "certified": 2898423.0
+      }
+    },
+    "reconciles": true,
+    "suppressed_rows": [],
+    "district_assignment": "Not inferred; published VTD retained; split-county geography gated",
+    "results_url": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+    "results_sha256": "2fab44e9b12e03c0d88ef832c2e6dc8c569e2b020d64df06a8b551b62bbdb426",
+    "geometry_sha256": "bd9d37ac1f59ca77c55ce94cb3fe10c7c42cf7fc00f4dece7c841afe2cfb03b9",
+    "admitted": false,
+    "vintage_caveat": "Pre-election administrative polygons; election-day changes unverified",
+    "null_precinct_polygons": 0,
+    "multipart_rows_dissolved": 255,
+    "geometry_status": "blocked: overlapping precinct polygons produce ambiguous block assignments"
+  }
+}

@@ -1,0 +1,535 @@
+{
+  "as_of": "2026-10-21",
+  "fixed_cutoff": "October 20",
+  "evaluation": {
+    "income": {
+      "features": [
+        "income_growth",
+        "president_on_ballot",
+        "consecutive_terms"
+      ],
+      "n_cycles_with_vintages": 8,
+      "n_held_out_cycles": 2,
+      "metrics": {
+        "prediction_mae": 0.033112334677550204,
+        "persistence_mae": 0.015060650125084202,
+        "midterm_only_mae": 0.01541515701485549,
+        "coverage_90": 0.0,
+        "out_of_sample_rmse": 0.033157356902469716
+      },
+      "predictions": [
+        {
+          "cycle": 2022,
+          "train_through": 2020,
+          "data_vintage": "2022-10-20",
+          "actual": 0.4855772287764693,
+          "prediction": 0.5204168760949917,
+          "sigma": 0.010913517390970644,
+          "persistence": 0.5151703660553851,
+          "midterm_only": 0.46366866459585154
+        },
+        {
+          "cycle": 2024,
+          "train_through": 2022,
+          "data_vintage": "2024-10-20",
+          "actual": 0.4861053917477219,
+          "prediction": 0.4547203697111438,
+          "sigma": 0.010574483089653914,
+          "persistence": 0.4855772287764693,
+          "midterm_only": 0.4950271415968151
+        }
+      ],
+      "promotion_eligible": false
+    },
+    "unemployment_alternative": {
+      "features": [
+        "unemployment_change",
+        "president_on_ballot",
+        "consecutive_terms"
+      ],
+      "n_cycles_with_vintages": 23,
+      "n_held_out_cycles": 17,
+      "metrics": {
+        "prediction_mae": 0.02175325888281381,
+        "persistence_mae": 0.031187560446324838,
+        "midterm_only_mae": 0.018789873410447012,
+        "coverage_90": 0.7647058823529411,
+        "out_of_sample_rmse": 0.027520028342603486
+      },
+      "predictions": [
+        {
+          "cycle": 1992,
+          "train_through": 1990,
+          "data_vintage": "1992-10-20",
+          "actual": 0.4731325247765241,
+          "prediction": 0.5307627549226156,
+          "sigma": 0.01603285430945087,
+          "persistence": 0.4595397983684325,
+          "midterm_only": 0.48263447577531915
+        },
+        {
+          "cycle": 1994,
+          "train_through": 1992,
+          "data_vintage": "1994-10-20",
+          "actual": 0.46417171345792946,
+          "prediction": 0.45072633794811046,
+          "sigma": 0.02059930968528264,
+          "persistence": 0.5268674752234759,
+          "midterm_only": 0.4497445007791285
+        },
+        {
+          "cycle": 1996,
+          "train_through": 1994,
+          "data_vintage": "1996-10-20",
+          "actual": 0.5028696731755319,
+          "prediction": 0.4882445013097338,
+          "sigma": 0.01857471426234252,
+          "persistence": 0.46417171345792946,
+          "midterm_only": 0.4802589880256203
+        },
+        {
+          "cycle": 1998,
+          "train_through": 1996,
+          "data_vintage": "1998-10-20",
+          "actual": 0.49472463030051955,
+          "prediction": 0.4536223879427841,
+          "sigma": 0.017484026192920173,
+          "persistence": 0.5028696731755319,
+          "midterm_only": 0.4533513039488288
+        },
+        {
+          "cycle": 2000,
+          "train_through": 1998,
+          "data_vintage": "2000-10-20",
+          "actual": 0.49768673135223995,
+          "prediction": 0.4614234722539348,
+          "sigma": 0.021974258153566666,
+          "persistence": 0.49472463030051955,
+          "midterm_only": 0.4847811250556026
+        },
+        {
+          "cycle": 2002,
+          "train_through": 2000,
+          "data_vintage": "2002-10-20",
+          "actual": 0.5252906167076743,
+          "prediction": 0.4675836623048876,
+          "sigma": 0.023911918060034766,
+          "persistence": 0.50231326864776,
+          "midterm_only": 0.4616259692191669
+        },
+        {
+          "cycle": 2004,
+          "train_through": 2002,
+          "data_vintage": "2004-10-20",
+          "actual": 0.5137536638160645,
+          "prediction": 0.4955763514287689,
+          "sigma": 0.028708425952236813,
+          "persistence": 0.5252906167076743,
+          "midterm_only": 0.4869320594383757
+        },
+        {
+          "cycle": 2006,
+          "train_through": 2004,
+          "data_vintage": "2006-10-20",
+          "actual": 0.45928260582038505,
+          "prediction": 0.47234377595922183,
+          "sigma": 0.027571940116841952,
+          "persistence": 0.5137536638160645,
+          "midterm_only": 0.47223674380058506
+        },
+        {
+          "cycle": 2008,
+          "train_through": 2006,
+          "data_vintage": "2008-10-20",
+          "actual": 0.4443938364672494,
+          "prediction": 0.4691489147774727,
+          "sigma": 0.026435099678378423,
+          "persistence": 0.45928260582038505,
+          "midterm_only": 0.4907637172066169
+        },
+        {
+          "cycle": 2010,
+          "train_through": 2008,
+          "data_vintage": "2010-10-20",
+          "actual": 0.4650012807751822,
+          "prediction": 0.47941603387899506,
+          "sigma": 0.026089257146919866,
+          "persistence": 0.5556061635327506,
+          "midterm_only": 0.4703861526605563
+        },
+        {
+          "cycle": 2012,
+          "train_through": 2010,
+          "data_vintage": "2012-10-20",
+          "actual": 0.5058378486583918,
+          "prediction": 0.5015536809686438,
+          "sigma": 0.02526465353441587,
+          "persistence": 0.4650012807751822,
+          "midterm_only": 0.48496748211419594
+        },
+        {
+          "cycle": 2014,
+          "train_through": 2012,
+          "data_vintage": "2014-10-20",
+          "actual": 0.4697192799470348,
+          "prediction": 0.46995632452264346,
+          "sigma": 0.024296027726637134,
+          "persistence": 0.5058378486583918,
+          "midterm_only": 0.46971304367488464
+        },
+        {
+          "cycle": 2016,
+          "train_through": 2014,
+          "data_vintage": "2016-10-20",
+          "actual": 0.4944139421874387,
+          "prediction": 0.46714362895881434,
+          "sigma": 0.023412307672176374,
+          "persistence": 0.4697192799470348,
+          "midterm_only": 0.4872864117302174
+        },
+        {
+          "cycle": 2018,
+          "train_through": 2016,
+          "data_vintage": "2018-10-20",
+          "actual": 0.45628543306533675,
+          "prediction": 0.47943463939126757,
+          "sigma": 0.02359949719988606,
+          "persistence": 0.5055860578125613,
+          "midterm_only": 0.46971373659401233
+        },
+        {
+          "cycle": 2020,
+          "train_through": 2018,
+          "data_vintage": "2020-10-20",
+          "actual": 0.48482963394461487,
+          "prediction": 0.48993340686699904,
+          "sigma": 0.023469346070684478,
+          "persistence": 0.45628543306533675,
+          "midterm_only": 0.4879991647759396
+        },
+        {
+          "cycle": 2022,
+          "train_through": 2020,
+          "data_vintage": "2022-10-20",
+          "actual": 0.4855772287764693,
+          "prediction": 0.47806754905435905,
+          "sigma": 0.022783343322151206,
+          "persistence": 0.5151703660553851,
+          "midterm_only": 0.46837090624114486
+        },
+        {
+          "cycle": 2024,
+          "train_through": 2022,
+          "data_vintage": "2024-10-20",
+          "actual": 0.4861053917477219,
+          "prediction": 0.47503572252499776,
+          "sigma": 0.022201619345379318,
+          "persistence": 0.4855772287764693,
+          "midterm_only": 0.4877110256094556
+        }
+      ],
+      "promotion_eligible": false
+    },
+    "inflation_alternative": {
+      "features": [
+        "inflation",
+        "president_on_ballot",
+        "consecutive_terms"
+      ],
+      "n_cycles_with_vintages": 23,
+      "n_held_out_cycles": 17,
+      "metrics": {
+        "prediction_mae": 0.022457001976435582,
+        "persistence_mae": 0.031187560446324838,
+        "midterm_only_mae": 0.018789873410447012,
+        "coverage_90": 0.7058823529411765,
+        "out_of_sample_rmse": 0.02645931937793015
+      },
+      "predictions": [
+        {
+          "cycle": 1992,
+          "train_through": 1990,
+          "data_vintage": "1992-10-20",
+          "actual": 0.4731325247765241,
+          "prediction": 0.49452844221549824,
+          "sigma": 0.013008020199446257,
+          "persistence": 0.4595397983684325,
+          "midterm_only": 0.48263447577531915
+        },
+        {
+          "cycle": 1994,
+          "train_through": 1992,
+          "data_vintage": "1994-10-20",
+          "actual": 0.46417171345792946,
+          "prediction": 0.4425020001692922,
+          "sigma": 0.012226554789313497,
+          "persistence": 0.5268674752234759,
+          "midterm_only": 0.4497445007791285
+        },
+        {
+          "cycle": 1996,
+          "train_through": 1994,
+          "data_vintage": "1996-10-20",
+          "actual": 0.5028696731755319,
+          "prediction": 0.47511663888826056,
+          "sigma": 0.013588293709904355,
+          "persistence": 0.46417171345792946,
+          "midterm_only": 0.4802589880256203
+        },
+        {
+          "cycle": 1998,
+          "train_through": 1996,
+          "data_vintage": "1998-10-20",
+          "actual": 0.49472463030051955,
+          "prediction": 0.4483439570118129,
+          "sigma": 0.015433558623027588,
+          "persistence": 0.5028696731755319,
+          "midterm_only": 0.4533513039488288
+        },
+        {
+          "cycle": 2000,
+          "train_through": 1998,
+          "data_vintage": "2000-10-20",
+          "actual": 0.49768673135223995,
+          "prediction": 0.46086167645838105,
+          "sigma": 0.02178197421929199,
+          "persistence": 0.49472463030051955,
+          "midterm_only": 0.4847811250556026
+        },
+        {
+          "cycle": 2002,
+          "train_through": 2000,
+          "data_vintage": "2002-10-20",
+          "actual": 0.5252906167076743,
+          "prediction": 0.46620628915264384,
+          "sigma": 0.023917245078623577,
+          "persistence": 0.50231326864776,
+          "midterm_only": 0.4616259692191669
+        },
+        {
+          "cycle": 2004,
+          "train_through": 2002,
+          "data_vintage": "2004-10-20",
+          "actual": 0.5137536638160645,
+          "prediction": 0.4974668121604265,
+          "sigma": 0.028631569172674898,
+          "persistence": 0.5252906167076743,
+          "midterm_only": 0.4869320594383757
+        },
+        {
+          "cycle": 2006,
+          "train_through": 2004,
+          "data_vintage": "2006-10-20",
+          "actual": 0.45928260582038505,
+          "prediction": 0.47293302449346397,
+          "sigma": 0.02737552784297932,
+          "persistence": 0.5137536638160645,
+          "midterm_only": 0.47223674380058506
+        },
+        {
+          "cycle": 2008,
+          "train_through": 2006,
+          "data_vintage": "2008-10-20",
+          "actual": 0.4443938364672494,
+          "prediction": 0.4683454698083605,
+          "sigma": 0.026280384730821886,
+          "persistence": 0.45928260582038505,
+          "midterm_only": 0.4907637172066169
+        },
+        {
+          "cycle": 2010,
+          "train_through": 2008,
+          "data_vintage": "2010-10-20",
+          "actual": 0.4650012807751822,
+          "prediction": 0.4817347208742175,
+          "sigma": 0.02594562359714117,
+          "persistence": 0.5556061635327506,
+          "midterm_only": 0.4703861526605563
+        },
+        {
+          "cycle": 2012,
+          "train_through": 2010,
+          "data_vintage": "2012-10-20",
+          "actual": 0.5058378486583918,
+          "prediction": 0.5023391621746365,
+          "sigma": 0.025212237353059115,
+          "persistence": 0.4650012807751822,
+          "midterm_only": 0.48496748211419594
+        },
+        {
+          "cycle": 2014,
+          "train_through": 2012,
+          "data_vintage": "2014-10-20",
+          "actual": 0.4697192799470348,
+          "prediction": 0.4680928872539032,
+          "sigma": 0.024237979985862898,
+          "persistence": 0.5058378486583918,
+          "midterm_only": 0.46971304367488464
+        },
+        {
+          "cycle": 2016,
+          "train_through": 2014,
+          "data_vintage": "2016-10-20",
+          "actual": 0.4944139421874387,
+          "prediction": 0.4685351990471742,
+          "sigma": 0.02335990512151653,
+          "persistence": 0.4697192799470348,
+          "midterm_only": 0.4872864117302174
+        },
+        {
+          "cycle": 2018,
+          "train_through": 2016,
+          "data_vintage": "2018-10-20",
+          "actual": 0.45628543306533675,
+          "prediction": 0.47903371054016486,
+          "sigma": 0.02343779241318175,
+          "persistence": 0.5055860578125613,
+          "midterm_only": 0.46971373659401233
+        },
+        {
+          "cycle": 2020,
+          "train_through": 2018,
+          "data_vintage": "2020-10-20",
+          "actual": 0.48482963394461487,
+          "prediction": 0.5036680816953245,
+          "sigma": 0.02330090023224674,
+          "persistence": 0.45628543306533675,
+          "midterm_only": 0.4879991647759396
+        },
+        {
+          "cycle": 2022,
+          "train_through": 2020,
+          "data_vintage": "2022-10-20",
+          "actual": 0.4855772287764693,
+          "prediction": 0.4697081615480786,
+          "sigma": 0.022968130185398148,
+          "persistence": 0.5151703660553851,
+          "midterm_only": 0.46837090624114486
+        },
+        {
+          "cycle": 2024,
+          "train_through": 2022,
+          "data_vintage": "2024-10-20",
+          "actual": 0.4861053917477219,
+          "prediction": 0.4765270374407388,
+          "sigma": 0.02254868851049916,
+          "persistence": 0.4855772287764693,
+          "midterm_only": 0.4877110256094556
+        }
+      ],
+      "promotion_eligible": false
+    }
+  },
+  "missing_vintages": [
+    {
+      "cycle": 1980,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1980-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1982,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1982-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1984,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1984-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1986,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1986-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1988,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1988-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1990,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1990-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1992,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1992-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1994,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1994-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1996,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1996-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 1998,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 1998-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 2000,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 2000-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 2002,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 2002-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 2004,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 2004-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 2006,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 2006-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    },
+    {
+      "cycle": 2008,
+      "series_id": "A229RX0",
+      "reason": "ALFRED A229RX0 vintage 2008-10-20: Bad Request.  The series does not exist in ALFRED but may exist in FRED.  Try setting realtime_start and realtime_end to today's date or removing the realtime_start and realtime_end variables."
+    }
+  ],
+  "estimate": {
+    "estimator": "fundamentals",
+    "status": "point",
+    "national_dem_share": 0.5290571531449406,
+    "band": null,
+    "identified": false,
+    "assumptions": [
+      "Pre-specified income growth + incumbent president on ballot + consecutive terms"
+    ],
+    "caveats": [
+      "Midterm cross-check only; never precision-blended with specials or polls",
+      "Target is all-race two-party House vote, not the contested total-vote-weighted model input",
+      "Few independent cycles and incomplete vintage archive; alternative specifications reported separately"
+    ],
+    "provenance": {
+      "source_id": "fred_bea_income_vintages",
+      "data_vintage": "2026-10-20",
+      "share_std_error": 0.033157356902469716,
+      "n_cycles": 8,
+      "features": [
+        "income_growth",
+        "president_on_ballot",
+        "consecutive_terms"
+      ],
+      "fit_parameters": [
+        0.4607431882421467,
+        -0.262968457917871,
+        0.027408603569615372,
+        0.0129626665087107
+      ],
+      "promotion_eligible": false,
+      "historical_gate_passed": false
+    }
+  },
+  "release_date_limit": "Exact historical release date is unavailable in clipped point-in-time responses"
+}

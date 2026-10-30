@@ -1,0 +1,10 @@
+{
+  "2020": {
+    "status": "blocked",
+    "error": "BlockAssign_ST06_CA_2020.zip has no _VTD.txt member"
+  },
+  "2024": {
+    "status": "blocked",
+    "error": "BlockAssign_ST06_CA_2020.zip has no _VTD.txt member"
+  }
+}

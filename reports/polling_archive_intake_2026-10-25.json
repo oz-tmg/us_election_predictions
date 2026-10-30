@@ -1,0 +1,92 @@
+{
+  "review_date": "2026-10-25",
+  "files": [
+    {
+      "filename": "house_polls.csv",
+      "raw_path": "data/raw/source=538_race_poll_history/manual/sha256=0b7e5f2d293dd1343c052a4a1263f68fbb2629f97181f4a774bf7dcf84167225/house_polls.csv",
+      "sha256": "0b7e5f2d293dd1343c052a4a1263f68fbb2629f97181f4a774bf7dcf84167225",
+      "publisher_url": "https://projects.fivethirtyeight.com/polls-page/data/house_polls.csv",
+      "archive_url": "https://web.archive.org/web/20241129175737if_/https://projects.fivethirtyeight.com/polls-page/data/house_polls.csv",
+      "archive_capture_at": "2024-11-29T17:57:37+00:00",
+      "project_ingested_at": "2026-10-25T21:55:34.612637+00:00",
+      "browser_retrieved_at": null,
+      "provenance_basis": "user supplied Wayback file; exact URL from macOS WhereFroms download metadata",
+      "independently_refetched": false,
+      "manifest": "data/manifests/538_race_poll_history_0b7e5f2d293d__2026_10_25.json",
+      "candidate_answer_rows": 683,
+      "questions": 299,
+      "cycle_rows": {
+        "2024": 678,
+        "2023": 5
+      },
+      "field_end_min": "2023-03-12",
+      "field_end_max": "2024-11-04"
+    },
+    {
+      "filename": "house_polls_historical.csv",
+      "raw_path": "data/raw/source=538_race_poll_history/manual/sha256=a08a26c33087392ca340d04faacdcb4af6261146d20b3414973cad24aa70dc2c/house_polls_historical.csv",
+      "sha256": "a08a26c33087392ca340d04faacdcb4af6261146d20b3414973cad24aa70dc2c",
+      "publisher_url": "https://projects.fivethirtyeight.com/polls-page/data/house_polls_historical.csv",
+      "archive_url": "https://web.archive.org/web/20241129175909if_/https://projects.fivethirtyeight.com/polls-page/data/house_polls_historical.csv",
+      "archive_capture_at": "2024-11-29T17:59:09+00:00",
+      "project_ingested_at": "2026-10-25T21:55:34.697968+00:00",
+      "browser_retrieved_at": null,
+      "provenance_basis": "user supplied Wayback file; exact URL from macOS WhereFroms download metadata",
+      "independently_refetched": false,
+      "manifest": "data/manifests/538_race_poll_history_a08a26c33087__2026_10_25.json",
+      "candidate_answer_rows": 3579,
+      "questions": 1562,
+      "cycle_rows": {
+        "2018": 1782,
+        "2020": 908,
+        "2022": 785,
+        "2021": 74,
+        "2019": 30
+      },
+      "field_end_min": "2017-06-25",
+      "field_end_max": "2022-11-06"
+    },
+    {
+      "filename": "senate_polls.csv",
+      "raw_path": "data/raw/source=538_race_poll_history/manual/sha256=fb887c33f654da87f7de221d4936e1434f22f34e5a4c79d170c4f64fcc4648a9/senate_polls.csv",
+      "sha256": "fb887c33f654da87f7de221d4936e1434f22f34e5a4c79d170c4f64fcc4648a9",
+      "publisher_url": "https://projects.fivethirtyeight.com/polls-page/data/senate_polls.csv",
+      "archive_url": "https://web.archive.org/web/20211102000229if_/https://projects.fivethirtyeight.com/polls-page/data/senate_polls.csv",
+      "archive_capture_at": "2021-11-02T00:02:29+00:00",
+      "project_ingested_at": "2026-10-25T21:55:34.778195+00:00",
+      "browser_retrieved_at": null,
+      "provenance_basis": "user supplied Wayback file; exact URL from macOS WhereFroms download metadata",
+      "independently_refetched": false,
+      "manifest": "data/manifests/538_race_poll_history_fb887c33f654__2026_10_25.json",
+      "candidate_answer_rows": 168,
+      "questions": 81,
+      "cycle_rows": {
+        "2022": 168
+      },
+      "field_end_min": "2020-09-15",
+      "field_end_max": "2021-10-27"
+    },
+    {
+      "filename": "senate_polls_historical.csv",
+      "raw_path": "data/raw/source=538_race_poll_history/manual/sha256=0ac54cbdac66e3e10ebbcba86c914ba3751ce3fe800a49f9596eb548a029eccc/senate_polls_historical.csv",
+      "sha256": "0ac54cbdac66e3e10ebbcba86c914ba3751ce3fe800a49f9596eb548a029eccc",
+      "publisher_url": "https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv",
+      "archive_url": "https://web.archive.org/web/20241129175756if_/https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv",
+      "archive_capture_at": "2024-11-29T17:57:56+00:00",
+      "project_ingested_at": "2026-10-25T21:55:34.795576+00:00",
+      "browser_retrieved_at": null,
+      "provenance_basis": "user supplied Wayback file; exact URL from macOS WhereFroms download metadata",
+      "independently_refetched": false,
+      "manifest": "data/manifests/538_race_poll_history_0ac54cbdac66__2026_10_25.json",
+      "candidate_answer_rows": 6658,
+      "questions": 2781,
+      "cycle_rows": {
+        "2020": 2559,
+        "2022": 2083,
+        "2018": 2016
+      },
+      "field_end_min": "2016-11-17",
+      "field_end_max": "2022-12-05"
+    }
+  ]
+}

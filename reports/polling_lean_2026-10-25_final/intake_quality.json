@@ -1,0 +1,33 @@
+{
+  "review_date": "2026-10-25",
+  "raw_original_and_preserved_sha256_match": {
+    "house_polls.csv": true,
+    "house_polls_historical.csv": true,
+    "senate_polls.csv": true,
+    "senate_polls_historical.csv": true
+  },
+  "unique_panel_question_ids": true,
+  "candidate_and_ratings_office_cycles_disjoint": true,
+  "candidate_fieldwork_complete_by_cutoff": true,
+  "candidate_entry_date_no_later_than_cutoff": true,
+  "eligible_poll_rows": 2878,
+  "chronological_held_out_training": true,
+  "held_out_2024_senate_races": 0,
+  "held_out_2024_house_races": 30,
+  "held_out_races_by_office": {
+    "us_house": 420,
+    "us_senate": 223
+  },
+  "full_ratings_only_parity": {
+    "race_averages": 867,
+    "tolerance": 1e-14,
+    "passed": true
+  },
+  "final_rerun_held_out_predictions_identical": true,
+  "implementation_hashes_match_current_files": true,
+  "fixed_design_unchanged": true,
+  "sealed_files_match": true,
+  "no_estimator_promoted": true,
+  "2026_numerical_correction_withheld": true,
+  "full_chamber_control_withheld": true
+}
