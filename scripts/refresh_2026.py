@@ -101,7 +101,7 @@ def snapshot_compilations(stamp: str) -> dict:
     return provenance
 
 
-def rebuild_and_evaluate(output: Path) -> tuple[dict, dict]:
+def rebuild_and_evaluate(output: Path) -> tuple[dict, dict, dict]:
     gold = Path("data/gold")
     races = pd.read_parquet(gold / "race_results.parquet")
     returns = pd.read_parquet("data/silver/election_returns.parquet")
@@ -133,7 +133,23 @@ def rebuild_and_evaluate(output: Path) -> tuple[dict, dict]:
             correlations[office] = error_structure.evaluate(
                 preds, expected_units=435 if office == "house" else None
             )
-    return evaluation, correlations
+    # Senate specification gate (2026-10-29): every candidate is scored on the same
+    # expanding-window backtest and promoted only if it beats the baseline there.
+    spec_evaluations = {}
+    for name, features in senate.SPECIFICATIONS.items():
+        preds, metrics = chronological.backtest(
+            chronological_senate, features=features, naive_feature=senate.NAIVE_FEATURE
+        )
+        preds.to_csv(output / f"chronological_senate_{name}_predictions.csv", index=False)
+        spec_evaluations[name] = {
+            "mae": metrics["metrics"]["mae_vote_share"],
+            "open_seat_mae": senate.open_seat_mae(preds),
+            "coverage_90": metrics["metrics"]["coverage_90"],
+            "n": metrics["n"],
+            "n_open_seats": int(preds["open_seat"].fillna(False).astype(bool).sum()),
+        }
+    senate_selection = senate.select_specification(spec_evaluations)
+    return evaluation, correlations, senate_selection
 
 
 def refresh_special_baselines(output: Path) -> list[dict]:
@@ -206,8 +222,9 @@ def main(argv: list[str] | None = None) -> int:
     if optional.is_file():
         inputs.append(optional)
     provenance.update({str(p): {"sha256": sha256_file(p)} for p in inputs})
-    evaluation, correlations = rebuild_and_evaluate(output)
+    evaluation, correlations, senate_selection = rebuild_and_evaluate(output)
     (output / "chronological_evaluation.json").write_text(json.dumps(evaluation, indent=2))
+    (output / "senate_specification_gate.json").write_text(json.dumps(senate_selection, indent=2))
     (output / "correlation_evaluation.json").write_text(json.dumps(correlations, indent=2))
     text = io.StringIO()
     with contextlib.redirect_stdout(text):
@@ -218,6 +235,7 @@ def main(argv: list[str] | None = None) -> int:
             senate_correlation_params=simulation.CorrelationParams(
                 **correlations["senate"]["selected_parameters"]
             ),
+            senate_features=senate_selection["features"],
         )
     (output / "projection_2026.txt").write_text(text.getvalue())
     current = pd.DataFrame(payload["seats"])
@@ -294,6 +312,7 @@ def main(argv: list[str] | None = None) -> int:
         "transfer_provenance": payload["transfer_provenance"],
         "special_baseline_changes": baseline_changes,
         "chronological_evaluation": evaluation,
+        "senate_specification_gate": senate_selection,
         "correlations": correlations,
         "diagnostics": {
             path.name: {"path": str(path), "sha256": sha256_file(path)}
@@ -363,6 +382,21 @@ def main(argv: list[str] | None = None) -> int:
                 f"| {office} | {metrics['n_cycles']} | {m['mae_vote_share']:.4f} | "
                 f"{metrics['naive_mae']:.4f} | {m['coverage_90']:.3f} |"
             )
+    lines += [
+        "",
+        "## Senate specification gate",
+        "",
+        f"Selected: `{senate_selection['selected']}`. " + " ".join(senate_selection["reasons"]),
+        "",
+        "| Specification | MAE | Open-seat MAE | 90% coverage | n (open) |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for name, ev in senate_selection["evaluations"].items():
+        open_mae = "n/a" if ev["open_seat_mae"] is None else f"{ev['open_seat_mae']:.4f}"
+        lines.append(
+            f"| {name} | {ev['mae']:.4f} | {open_mae} | {ev['coverage_90']:.3f} | "
+            f"{ev['n']} ({ev['n_open_seats']}) |"
+        )
     lines += ["", "## Correlated error", ""]
     for office, result in correlations.items():
         lines += [

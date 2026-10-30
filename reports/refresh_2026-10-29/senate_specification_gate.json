@@ -1,0 +1,30 @@
+{
+  "selected": "v1_open_seat_holder",
+  "features": [
+    "state_pres_lean",
+    "incumbent_dem",
+    "incumbent_rep",
+    "midterm_penalty",
+    "open_dem_held",
+    "open_rep_held"
+  ],
+  "reasons": [
+    "v1_open_seat_holder promoted: passes lower overall MAE, lower open-seat MAE, 90% coverage within 0.02"
+  ],
+  "evaluations": {
+    "v0_incumbent_running": {
+      "mae": 0.0645378990826266,
+      "open_seat_mae": 0.06633696292093104,
+      "coverage_90": 0.9349470499243571,
+      "n": 661,
+      "n_open_seats": 230
+    },
+    "v1_open_seat_holder": {
+      "mae": 0.06380269319097379,
+      "open_seat_mae": 0.06380088299274082,
+      "coverage_90": 0.9440242057488654,
+      "n": 661,
+      "n_open_seats": 230
+    }
+  }
+}

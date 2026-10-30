@@ -43,7 +43,13 @@ def main(
     reports_dir: Path = Path(REPORTS),
     correlation_params: simulation.CorrelationParams | None = None,
     senate_correlation_params: simulation.CorrelationParams | None = None,
+    senate_features: list[str] | None = None,
 ) -> dict:
+    """Project the 2026 band.
+
+    ``senate_features`` selects the Senate specification (default: ``senate.DEFAULT_FEATURES``;
+    a refresh passes the one its promotion gate selected).
+    """
     stamp = as_of or date.today().isoformat()
     reports_dir.mkdir(parents=True, exist_ok=True)
     # ---- national environment: the estimator contract (NE-001) --------------
@@ -77,7 +83,7 @@ def main(
     hmodel = house.fit_full(house_panel)
     hsigma = hmodel.resid_sigma_
     spanel = pd.read_parquet(f"{GOLD}/senate_panel.parquet")
-    smodel = senate.fit_full(spanel)
+    smodel = senate.fit_full(spanel, senate_features)
     ssigma = smodel.resid_sigma_
     print(f"\nfitted resid sigma: house {hsigma:.4f}  senate {ssigma:.4f}")
 
@@ -282,6 +288,13 @@ def main(
         },
         "candidacy_coverage": candidacy_coverage,
         "transfer_provenance": transfer_provenance,
+        "senate_specification": {
+            "features": list(smodel.features),
+            "coefficients": dict(
+                zip(["intercept", *smodel.features], [float(c) for c in smodel.coef_], strict=True)
+            ),
+            "resid_sigma": float(ssigma),
+        },
         "seats": pd.concat(seat_frames, ignore_index=True).to_dict(orient="records"),
     }
     out_path = reports_dir / f"national_environment_{stamp}.json"

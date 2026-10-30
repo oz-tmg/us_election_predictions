@@ -48,6 +48,8 @@ SENATE_PANEL_COLUMNS = [
     "incumbent_dem",
     "incumbent_rep",
     "open_seat",
+    "open_dem_held",
+    "open_rep_held",
     "midterm",
     "midterm_penalty",
     "uncontested_flag",
@@ -59,6 +61,21 @@ DEFAULT_FEATURES = [
     "incumbent_rep",
     "midterm_penalty",
 ]
+
+# Candidate specification (2026-10-29). ``DEFAULT_FEATURES`` encodes an open seat as
+# neutral: both incumbency indicators are zero, so a seat whose incumbent is not running
+# loses its party's whole incumbency term. But a party keeps part of its advantage in a
+# seat it held even without the incumbent on the ballot. These two terms say which party
+# held an open seat. They are fitted, never assumed, and a refresh promotes this
+# specification only if it beats the default on the chronological backtest
+# (``select_specification``). The sealed pre-registration is never refit.
+HOLDER_FEATURES = [*DEFAULT_FEATURES, "open_dem_held", "open_rep_held"]
+
+SPECIFICATIONS: dict[str, list[str]] = {
+    "v0_incumbent_running": DEFAULT_FEATURES,
+    "v1_open_seat_holder": HOLDER_FEATURES,
+}
+BASELINE_SPECIFICATION = "v0_incumbent_running"
 
 NAIVE_FEATURE = "pres_dem_share_state"
 
@@ -125,6 +142,8 @@ def build_senate_panel(race_table: pd.DataFrame, returns: pd.DataFrame) -> pd.Da
     sen["incumbent_dem"] = (running & (sen["incumbent_party"] == "DEMOCRAT")).astype(float)
     sen["incumbent_rep"] = (running & (sen["incumbent_party"] == "REPUBLICAN")).astype(float)
     sen["open_seat"] = sen["open_seat"].fillna(False).astype(bool)
+    sen["open_dem_held"] = (sen["open_seat"] & (sen["incumbent_party"] == "DEMOCRAT")).astype(float)
+    sen["open_rep_held"] = (sen["open_seat"] & (sen["incumbent_party"] == "REPUBLICAN")).astype(float)
 
     # Midterm penalty: the president's party historically loses ground in midterms, so
     # the term is signed toward the *out* party and is zero in presidential years.
@@ -146,3 +165,48 @@ def backtest(panel: pd.DataFrame, features: list[str] | None = None) -> tuple[pd
 def fit_full(panel: pd.DataFrame, features: list[str] | None = None) -> OLSModel:
     """Fit on all usable rows, for forward forecasting / simulation inputs."""
     return OLSModel(features=list(features or DEFAULT_FEATURES)).fit(panel)
+
+
+def open_seat_mae(predictions: pd.DataFrame) -> float | None:
+    """Mean absolute share error on open seats only, from chronological predictions."""
+    if predictions.empty or "open_seat" not in predictions:
+        return None
+    open_rows = predictions[predictions["open_seat"].fillna(False).astype(bool)]
+    return float(open_rows["error"].abs().mean()) if len(open_rows) else None
+
+
+def select_specification(evaluations: dict[str, dict]) -> dict:
+    """Promotion gate between Senate specifications, decided on the chronological backtest.
+
+    ``evaluations`` maps a specification name to ``{"mae": ..., "open_seat_mae": ...,
+    "coverage_90": ...}`` from the expanding-window backtest. A candidate replaces the
+    baseline only if it lowers the overall MAE *and* the open-seat MAE (the rows it was
+    built for) without losing more than two points of 90% interval coverage. Otherwise
+    the baseline stands, and the reason says which test failed.
+    """
+    base = evaluations[BASELINE_SPECIFICATION]
+    selected, reasons = BASELINE_SPECIFICATION, []
+    for name, ev in evaluations.items():
+        if name == BASELINE_SPECIFICATION:
+            continue
+        checks = {
+            "lower overall MAE": ev["mae"] < base["mae"],
+            "lower open-seat MAE": (
+                ev["open_seat_mae"] is not None
+                and base["open_seat_mae"] is not None
+                and ev["open_seat_mae"] < base["open_seat_mae"]
+            ),
+            "90% coverage within 0.02": ev["coverage_90"] >= base["coverage_90"] - 0.02,
+        }
+        failed = [k for k, ok in checks.items() if not ok]
+        if failed:
+            reasons.append(f"{name} not promoted: fails {', '.join(failed)}")
+        else:
+            selected = name
+            reasons.append(f"{name} promoted: passes {', '.join(checks)}")
+    return {
+        "selected": selected,
+        "features": SPECIFICATIONS[selected],
+        "reasons": reasons,
+        "evaluations": evaluations,
+    }

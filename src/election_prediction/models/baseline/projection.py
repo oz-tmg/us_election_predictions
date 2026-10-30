@@ -133,6 +133,7 @@ def _incumbency_terms(universe: pd.DataFrame) -> pd.DataFrame:
     # is exactly how the fitted models encode it.
     out["incumbent_dem"] = (party == "DEMOCRAT").astype(float)
     out["incumbent_rep"] = (party == "REPUBLICAN").astype(float)
+    holder = party  # the loop below rebinds ``party``
     running = out.get("incumbent_running", pd.Series(pd.NA, index=out.index))
     known = running.notna()
     not_running = known & ~running.fillna(True).astype(bool)
@@ -143,6 +144,11 @@ def _incumbency_terms(universe: pd.DataFrame) -> pd.DataFrame:
             known_ballot = out[column].notna()
             out.loc[known_ballot, f"incumbent_{party}"] = out.loc[known_ballot, column].astype(float)
     out["incumbency_assumed"] = ~known
+    # Seat-holder party when no incumbent of that party is on the ballot (2026-10-29).
+    # Only the Senate's v1_open_seat_holder specification reads these; a model fitted
+    # without them ignores the columns.
+    out["open_dem_held"] = ((holder == "DEMOCRAT") & (out["incumbent_dem"] == 0)).astype(float)
+    out["open_rep_held"] = ((holder == "REPUBLICAN") & (out["incumbent_rep"] == 0)).astype(float)
     return out
 
 
