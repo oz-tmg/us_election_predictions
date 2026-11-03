@@ -816,6 +816,90 @@ def fig09_sealed_vs_current(rows: list[dict]) -> None:
     _save(fig, "fig-09-sealed-vs-current.png")
 
 
+
+# --------------------------------------------------------------------------------------
+# Figure 10 — the contestable seats, each as its own band
+# --------------------------------------------------------------------------------------
+def load_contestable() -> tuple[list[dict], list[dict]]:
+    """Per-seat rows from the final pre-election run, pivoted across the three published
+    assumptions. Returns (senate, house_contestable). House keeps only seats the model can
+    see (source != fallback_state_lean) with 0.25 <= P(D) <= 0.75 at shrinkage 0.5; the 135
+    fallback seats carry no district-level information and are reported by state instead."""
+    import csv
+    from collections import defaultdict
+
+    path = REPORTS / "refresh_2026-10-29" / "projection_seats.csv"
+    by: dict = defaultdict(dict)
+    with path.open() as fh:
+        for r in csv.DictReader(fh):
+            by[(r["office"], r["geography_id"])][r["assumption"]] = r
+
+    def pivot(k):
+        r = by[k]["shrinkage=0.5"]
+        dn = r["district_num"]
+        label = r["state_po"] if r["office"] == "us_senate" else f"{r['state_po']}-{int(float(dn)):02d}"
+        return {
+            "label": label, "office": r["office"], "state_po": r["state_po"],
+            "holder": {"DEMOCRAT": "D", "REPUBLICAN": "R"}.get(r["incumbent_party"], "O"),
+            "candidacy_verified": r["incumbency_assumed"] != "True",
+            "source": r["source"],
+            "p25": float(by[k]["shrinkage=0.25"]["dem_win_prob"]),
+            "p50": float(r["dem_win_prob"]),
+            "p100": float(by[k]["shrinkage=1"]["dem_win_prob"]),
+            "share50": float(r["mean_dem_share"]),
+        }
+
+    senate = sorted((pivot(k) for k in by if k[0] == "us_senate"), key=lambda d: d["p50"])
+    house = [pivot(k) for k in by if k[0] == "us_house" and by[k]["shrinkage=0.5"]["source"] != "fallback_state_lean"]
+    house = sorted((d for d in house if 0.25 <= d["p50"] <= 0.75), key=lambda d: d["p50"])
+    return senate, house
+
+
+def fig10_contestable(senate: list[dict], house: list[dict]) -> None:
+    colour = {"D": S1, "R": S2, "O": INK_2}
+
+    fig, (ax1, ax2) = _canvas(
+        9.4,
+        7.6,
+        ncols=2,
+        left=0.07,
+        wspace=0.22,
+        panel_titles_in=0.34,
+        title="The seats that could go either way — each one as its own band",
+        subtitle="Each bar runs from P(Democratic win) at the most conservative assumption (shrinkage 0.25) to the most aggressive (1.0);\n"
+        "the dot is the middle assumption (0.5). Colour is the party holding the seat, not a prediction. Sorted by the dot.",
+        footer="Modelled projection, final run 2026-10-29, published 2026-11-03 · source: reports/refresh_2026-10-29/projection_seats.csv\n"
+        "House panel: the 47 seats the model projects from their own district history with 0.25 <= P <= 0.75 at the middle assumption. The 135 seats\n"
+        "on new boundaries without a vote transfer are excluded: their number is a state average and says nothing about the district. Triangles = Texas transferred prior.",
+    )
+
+    def panel(ax, rows, title):
+        _frame(ax)
+        ys = np.arange(len(rows))
+        for y, d in zip(ys, rows):
+            c = colour[d["holder"]]
+            ax.plot([d["p25"], d["p100"]], [y, y], color=c, lw=2.2, alpha=0.45, solid_capstyle="round", zorder=2)
+            marker = "^" if d["source"] == "model_transferred" else "o"
+            ax.plot(d["p50"], y, marker=marker, ms=5.6, color=c, mec=SURFACE, mew=0.9, zorder=4)
+        ax.axvline(0.5, color=BASELINE, lw=1.3, ls=(0, (4, 3)), zorder=1)
+        ax.set_yticks(ys)
+        ax.set_yticklabels([d["label"] for d in rows], fontsize=6.6 if len(rows) > 36 else 7.6)
+        ax.set_ylim(-0.8, len(rows) - 0.2)
+        ax.set_xlim(0.0, 1.0)
+        ax.xaxis.set_major_formatter(PCT)
+        ax.set_xlabel("P(Democratic win) across the shrinkage band")
+        ax.set_title(title, fontsize=10, color=INK_2, pad=9)
+        ax.grid(axis="y", visible=False)
+        ax.tick_params(axis="y", length=0, pad=2)
+
+    panel(ax1, senate, f"Senate: all {len(senate)} races on the ballot")
+    panel(ax2, house, f"House: {len(house)} contestable seats the model can see")
+    ax1.plot([], [], color=S1, lw=3, label="Democratic-held")
+    ax1.plot([], [], color=S2, lw=3, label="Republican-held")
+    ax1.legend(frameon=False, loc="lower right", fontsize=8.2, labelcolor=INK_2)
+    _save(fig, "fig-10-contestable-seats.png")
+
+
 def main() -> int:
     p1 = load_p1()
     band = load_band()
@@ -828,6 +912,7 @@ def main() -> int:
     fig07_quarantine()
     fig08_redrawn(band)
     fig09_sealed_vs_current(load_band_changes())
+    fig10_contestable(*load_contestable())
     print("\nfigure 4 numbers (for the post body):")
     print(json.dumps(sim, indent=2, default=float))
     return 0

@@ -14,9 +14,9 @@ Why a band and not a number? Because the key parameter — how much of the speci
 
 The scorecard goes up when the states certify: both frozen runs, every row, Brier scores, calibration, interval coverage, against fixed comparators. If it did badly, that post will be longer than this one.
 
-Full prediction, methodology and the six things I expect to be wrong: [link to alexoswald.ca post]
+Full prediction, methodology and the seven things I expect to be wrong: [link to alexoswald.ca post]
 
-Summary PDF attached.
+Summary PDF attached — including every Senate race and the 47 contestable House seats, each shown as its own band rather than a single number.
 
 Data: MIT Election Data and Science Lab; U.S. Census Bureau; Federal Election Commission (aggregate use only).
 

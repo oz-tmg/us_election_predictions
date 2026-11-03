@@ -35,7 +35,7 @@ sometimes a refusal.
 | 4 | [Thirty-Four Races That Do Not Add Up](posts/04-thirty-four-races-that-do-not-add-up.md) | Exclusion criteria as researcher degrees of freedom, sensitivity analysis | 7 | **Ready** |
 | 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal, and retiring it when the evidence arrives | 6 | **Ready — postscript added 2026-11-03** |
 | 6 | [The Map Is Not the Territory, and Neither Is the District Number](posts/06-the-map-is-not-the-territory-and-neither-is-the-number.md) | Sourcing versus recall; training-data edges; corrections that widen error bars | 8 | **Ready — publish before 2026-11-03** |
-| 7 | [What the Model Says, and How I Will Grade It](posts/07-what-the-model-says-and-how-i-will-grade-it.md) | Publishing a band rather than a point; a public post as a pre-registration; scoring two frozen runs side by side | 9 | **Ready — publish 2026-11-03 before polls close** |
+| 7 | [What the Model Says, and How I Will Grade It](posts/07-what-the-model-says-and-how-i-will-grade-it.md) | Publishing a band rather than a point; a public post as a pre-registration; scoring two frozen runs side by side; seat-level honesty tiers | 9, 10 | **Ready — publish 2026-11-03 before polls close** |
 
 ### Post 5 was revised when its own premise expired
 
@@ -93,6 +93,8 @@ companion table in the post body.
 | `fig-06-shrinkage-band.png` | Chamber-control probability and House seat range across the swept assumption |
 | `fig-07-quarantine.png` | The 34 quarantined races by descriptive reason |
 | `fig-08-redrawn-and-its-cost.png` | Seats on new territory for 2026, and the interval widening that admitting it caused |
+| `fig-09-sealed-vs-current.png` | The September 30 seal beside the October 29 run, both chambers, every assumption |
+| `fig-10-contestable-seats.png` | Every Senate race and the 47 model-informed contestable House seats, each as its own band across the sweep |
 
 ## Attribution required on publication
 
