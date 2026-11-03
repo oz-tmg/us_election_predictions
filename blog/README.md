@@ -10,10 +10,11 @@ Two rules govern this directory:
    `reports/*.md` or `data/reference/*.csv`; figures are generated from those same files by
    [`figures/make_figures.py`](figures/make_figures.py), which a reader can run. No number
    is retyped from memory and no figure is drawn by hand.
-2. **Nothing here is a live forecast.** Four of the five posts are about historical
-   backtests. The fifth is about a 2026 projection and is explicitly an account of why that
-   projection is *not* being published as a forecast. Historical, modelled and certified
-   quantities are labelled distinctly, in the prose and on every figure.
+2. **One post is a live prediction, and it says so.** Posts 1–4 are about historical
+   backtests; post 5 is an account of why the 2026 projection was withheld in September and
+   post 7 is that projection, published on 2026-11-03 before any vote was counted, as the
+   full sensitivity band with the September seal beside it. Historical, modelled and
+   certified quantities are labelled distinctly, in the prose and on every figure.
 
 Written in first person for Alex Oswald (Savepoint Analytics). Every claim is sourced from
 the repository's own documentation and build outputs; nothing about motivation or process
@@ -32,8 +33,9 @@ sometimes a refusal.
 | 2 | [The Control Rods All Had Graphite Tips](posts/02-the-control-rods-all-had-graphite-tips.md) | Correlated error, design effect, cluster randomisation, effective sample size | 4 | **Ready** |
 | 3 | [The Parameter That Wasn't There](posts/03-the-parameter-that-wasnt-there.md) | Identification vs. sample size, sensitivity bands, pre-registration, data vintage | 5, 6 | **Ready** |
 | 4 | [Thirty-Four Races That Do Not Add Up](posts/04-thirty-four-races-that-do-not-add-up.md) | Exclusion criteria as researcher degrees of freedom, sensitivity analysis | 7 | **Ready** |
-| 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal, and retiring it when the evidence arrives | 6 | **Ready** |
+| 5 | [The Forecast I Am Not Publishing](posts/05-the-forecast-i-am-not-publishing.md) | Knowing when the instrument does not measure the thing; engineering a refusal, and retiring it when the evidence arrives | 6 | **Ready — postscript added 2026-11-03** |
 | 6 | [The Map Is Not the Territory, and Neither Is the District Number](posts/06-the-map-is-not-the-territory-and-neither-is-the-number.md) | Sourcing versus recall; training-data edges; corrections that widen error bars | 8 | **Ready — publish before 2026-11-03** |
+| 7 | [What the Model Says, and How I Will Grade It](posts/07-what-the-model-says-and-how-i-will-grade-it.md) | Publishing a band rather than a point; a public post as a pre-registration; scoring two frozen runs side by side | 9 | **Ready — publish 2026-11-03 before polls close** |
 
 ### Post 5 was revised when its own premise expired
 
@@ -146,14 +148,20 @@ to public writing more strictly than anywhere else:
 
 - Nonpartisan throughout. The posts model probability and uncertainty; they do not argue
   for an outcome, and framing, language and source selection stay neutral.
-- **No 2026 forecast is published, House included** (decision 2026-09-30). Sourced
-  boundaries made the House band defensible, but 173 of 435 seats still rest on a
-  state-lean fallback, so its 90% range spans 117–352 seats at the low end of the
-  shrinkage sweep. A number that wide is a statement that we do not know, and the half of
-  it that travels ("Democrats favoured for the House") is the half without the caveat. The
-  band is instead **pre-registered** at `reports/preregistration_2026-11-03.*`, which banks
-  the out-of-sample evidence without the publication risk. Revisit when RD-003 narrows the
-  redrawn seats, when NE-002 resolves the Senate, or after election day.
+- **The 2026 projection is published as a band, never as a point** (decision 2026-11-03,
+  reversing 2026-09-30). The September decision withheld the projection because 173 seats
+  rested on a state-lean fallback, the Senate band straddled the coin flip, and the party
+  crosswalk was two seats wrong. By October 29 the crosswalk reconciled against the official
+  roster, 38 Texas seats carried a measured transferred prior, and a backtest-gated open-seat
+  specification moved the Senate band to 0.48–0.79. The frozen October 29 run
+  (`reports/refresh_2026-10-29/`, final in `reports/comparison_set_2026-11-03.json`) is
+  published as the project's prediction under four conditions: every row of the shrinkage
+  sweep appears wherever any row appears; the September 30 seal is shown beside it and
+  scored beside it, never replaced by it; the Senate is described as a lean that crosses one
+  half at the most conservative assumption, not as resolved; and the registration's scoring
+  rules apply unchanged to both runs. The publication itself, timestamped before polls
+  closed, is the public seal. The private seal (`reports/preregistration_2026-11-03.*`) is
+  untouched.
 - Close races look close. No probability is sharpened to carry a storyline.
 - Unofficial results, calls, estimates and certified returns are labelled distinctly and
   never share a sentence without one.

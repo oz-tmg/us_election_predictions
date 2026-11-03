@@ -2,7 +2,7 @@
 
 *I had eight data points, a question that needed a ninth, and a function signature that wanted a default value. This is about why I deleted the default.*
 
-**Savepoint Analytics · US Election Analysis · modelled projection, not published as a forecast · snapshot 2026-09-30**
+**Savepoint Analytics · US Election Analysis · modelled projection · snapshot 2026-09-30 · the band was published as a prediction on 2026-11-03, see post 7**
 
 ---
 

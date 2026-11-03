@@ -685,6 +685,137 @@ def fig08_redrawn(band: dict) -> None:
     _save(fig, "fig-08-redrawn-and-its-cost.png")
 
 
+# --------------------------------------------------------------------------------------
+# Figure 9 — the September seal beside the October 29 run, both frozen before any vote
+# --------------------------------------------------------------------------------------
+def load_band_changes() -> list[dict]:
+    """The final pre-election run's own diff against the seal — a committed artefact."""
+    import csv
+
+    path = REPORTS / "refresh_2026-10-29" / "band_changes_vs_seal.csv"
+    with path.open() as fh:
+        return [{k: float(v) if k != "assumption" else v for k, v in r.items()} for r in csv.DictReader(fh)]
+
+
+def fig09_sealed_vs_current(rows: list[dict]) -> None:
+    shr = np.array([r["shrinkage_current"] for r in rows])
+    hp_s = np.array([r["house_p_dem_sealed"] for r in rows])
+    hp_c = np.array([r["house_p_dem_current"] for r in rows])
+    sp_s = np.array([r["sen_p_dem_sealed"] for r in rows])
+    sp_c = np.array([r["sen_p_dem_current"] for r in rows])
+    hm_s = np.array([r["house_mean_seats_sealed"] for r in rows])
+    hm_c = np.array([r["house_mean_seats_current"] for r in rows])
+    h5_c = np.array([r["house_5th_current"] for r in rows])
+    h95_c = np.array([r["house_95th_current"] for r in rows])
+    h5_s = np.array([r["house_5th_sealed"] for r in rows])
+    h95_s = np.array([r["house_95th_sealed"] for r in rows])
+
+    fig, (ax1, ax2) = _canvas(
+        9.4,
+        3.6,
+        ncols=2,
+        left=0.075,
+        wspace=0.26,
+        panel_titles_in=0.34,
+        title="Two frozen runs, both before any vote was counted",
+        subtitle="The September 30 seal is the registered holdout; the October 29 run is the final pre-election refresh. Both are\n"
+        "scored on certified returns, every row. The Senate moved because the model changed, not because the environment did.",
+        footer="Modelled projection for 2026-11-03, published 2026-11-03 as a band · x-axis is an assumed shrinkage factor, swept, not fitted\n"
+        "Senate change: open-seat specification (backtest-gated), caucus reconciled to the official roster, FL/OH specials added (33 -> 35 races).\n"
+        "Source: reports/preregistration_2026-11-03.json (sealed) and reports/refresh_2026-10-29/band_changes_vs_seal.csv (current). MEDSL certified returns.",
+    )
+    _frame(ax1)
+    ax1.axhline(0.5, color=BASELINE, lw=1.4, ls=(0, (4, 3)), zorder=2)
+    ax1.text(1.02, 0.505, "coin flip", fontsize=8.2, color=MUTED, va="bottom", ha="right")
+    ax1.plot(
+        shr,
+        hp_s,
+        color=S1,
+        lw=1.6,
+        ls=(0, (3, 2)),
+        marker="o",
+        ms=6,
+        mec=SURFACE,
+        mew=1.2,
+        zorder=3,
+        label="House, sealed 09-30",
+    )
+    ax1.plot(
+        shr, hp_c, color=S1, lw=2.4, marker="o", ms=7.5, mec=SURFACE, mew=1.5, zorder=4, label="House, 10-29"
+    )
+    ax1.plot(
+        shr,
+        sp_s,
+        color=S2,
+        lw=1.6,
+        ls=(0, (3, 2)),
+        marker="s",
+        ms=6,
+        mec=SURFACE,
+        mew=1.2,
+        zorder=3,
+        label="Senate, sealed 09-30",
+    )
+    ax1.plot(
+        shr, sp_c, color=S2, lw=2.4, marker="s", ms=7.5, mec=SURFACE, mew=1.5, zorder=4, label="Senate, 10-29"
+    )
+    for x, ys, yc in zip(shr, sp_s, sp_c, strict=True):
+        ax1.annotate(
+            "",
+            xy=(x, yc - 0.012),
+            xytext=(x, ys + 0.012),
+            arrowprops=dict(arrowstyle="->", color=S2, lw=0.9, alpha=0.6),
+            zorder=2,
+        )
+    ax1.set_ylim(0.20, 0.90)
+    ax1.set_xlim(0.18, 1.07)
+    ax1.yaxis.set_major_formatter(PCT)
+    ax1.set_ylabel("P(Democratic chamber control)")
+    ax1.set_xlabel("Assumed shrinkage factor")
+    ax1.set_title(
+        "House: favoured in both runs. Senate: a lean that crosses 1/2 once", fontsize=10, color=INK_2, pad=9
+    )
+    ax1.legend(frameon=False, loc="upper left", fontsize=7.8, labelcolor=INK_2, ncol=2, columnspacing=0.8)
+
+    _frame(ax2)
+    ax2.fill_between(shr, h5_s, h95_s, color=BASELINE, alpha=0.35, zorder=1, label="90% range, sealed")
+    ax2.fill_between(shr, h5_c, h95_c, color=S1, alpha=0.16, zorder=2, label="90% range, 10-29")
+    ax2.plot(
+        shr,
+        hm_s,
+        color=INK_2,
+        lw=1.6,
+        ls=(0, (3, 2)),
+        marker="o",
+        ms=6,
+        mec=SURFACE,
+        mew=1.2,
+        zorder=3,
+        label="Mean seats, sealed",
+    )
+    ax2.plot(
+        shr,
+        hm_c,
+        color=S1,
+        lw=2.4,
+        marker="o",
+        ms=7.5,
+        mec=SURFACE,
+        mew=1.5,
+        zorder=4,
+        label="Mean seats, 10-29",
+    )
+    ax2.axhline(217.5, color=CRITICAL, lw=1.6, zorder=3)
+    ax2.text(1.05, 221, "218 = control", fontsize=8.4, color=CRITICAL, ha="right")
+    ax2.set_ylim(100, 410)
+    ax2.set_xlim(0.18, 1.07)
+    ax2.set_ylabel("Democratic seats, 435-seat House")
+    ax2.set_xlabel("Assumed shrinkage factor")
+    ax2.set_title("The seat range still straddles 218 at every assumption", fontsize=10, color=INK_2, pad=9)
+    ax2.legend(frameon=False, loc="lower right", fontsize=7.8, labelcolor=INK_2)
+    _save(fig, "fig-09-sealed-vs-current.png")
+
+
 def main() -> int:
     p1 = load_p1()
     band = load_band()
@@ -696,6 +827,7 @@ def main() -> int:
     fig06_band(band)
     fig07_quarantine()
     fig08_redrawn(band)
+    fig09_sealed_vs_current(load_band_changes())
     print("\nfigure 4 numbers (for the post body):")
     print(json.dumps(sim, indent=2, default=float))
     return 0
