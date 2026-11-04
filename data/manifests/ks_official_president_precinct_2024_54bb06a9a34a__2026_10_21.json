@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-21T20:04:57+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "54bb06a9a34a3b1a672e9007b8884a18f1862b516cad13772c05c28dc361053e",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "results.xlsx",
+  "election_cycle": "2026",
+  "file_format": "zip",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 1,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=kansas_sos/dataset=president_precinct_2024/snapshot=2026-10-21/results.xlsx",
+  "redistribution_allowed": false,
+  "required_attribution": "Kansas Secretary of State",
+  "review_date": "2027-10-21",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "ks_official_president_precinct_2024_54bb06a9a34a",
+  "source_owner": "Kansas Secretary of State",
+  "source_url": "https://sos.ks.gov/elections/24elec/2024-General-Election-President-Precinct-Level-Results.xlsx",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

@@ -1,6 +1,178 @@
 # Dataset Registry
 
-_Last updated: 2026-09-01_
+## October 30 Extraction Rehearsal Intake (registered before use)
+
+| dataset_id | Primary provider/source | Terms and permitted use | Coverage and gate |
+|---|---|---|---|
+| `state_results_rehearsal_2024` | State election authorities' own 2024 general-election releases: Massachusetts electionstats.state.ma.us contest CSVs; Wisconsin Elections Commission `WardbyWard_byCD_20241105.xlsx`; Missouri SOS `2024GeneralElection.pdf`; Montana `electionresults.mt.gov` statewide export. Exact URLs and SHA-256 in `reports/extraction_rehearsal_2026-10-30/summary.json` | Tier 0 public official aggregate results; cite each authority. Fetched only with an honest research user agent, certificate checks on, no block evaded (states that refuse automated clients are recorded as `blocked_manual_download`, not worked around). Raw files kept under `data/raw/source=state_results_rehearsal_2024/` (git-ignored) with manifests. | 2024 U.S. House and Senate, MA/WI/MO/MT. **Rehearsal only**: used to prove each state's parser reproduces the certified 2024 result (`state_extraction.reconcile`); never a 2026 observation and never written to the production capture directory. Montana's export is labelled unofficial: it tests the parser, not certification. |
+
+## October 29 Texas Poll Cross-Check Intake (registered before use)
+
+| dataset_id | Primary provider/source | Terms and permitted use | Coverage and gate |
+|---|---|---|---|
+| `texas_polls_2026_compiled` | Savepoint Analytics, hand-compiled from each pollster's own release (Emerson College Polling, Fox News Poll / Beacon Research & Shaw & Company, UH Hobby School of Public Affairs, Texas Public Opinion Research, UT/Texas Politics Project); exact URL per row in `data/reference/texas_polls_2026.csv` | Route approved by NE-000: topline facts only, cited per row with retrieval date, no release prose or crosstab tables reproduced. Tier 0 public aggregate; no respondent records. News coverage, aggregators and Wikipedia are **not** sources: a row enters only if its toplines, field dates, sample size and population were read on the pollster's own release. UT/Texas Politics Project waves are fielded by YouGov but published by UT, which states it makes results available for public use and states no data licence; the YouGov Public Data License restrictions (NE-000) attach to YouGov's own publications, so these rows are admitted and flagged for steward confirmation. | 2026 Texas U.S. Senate and governor, statewide. **Cross-check only**: averaged and shown beside the fundamentals band, never blended into it — no backtested poll/fundamentals weight exists, and pollster house effects are not estimated. Campaign-released or partisan-sponsored polls are excluded from the average. Rows lacking sample size, field dates or population on the original release are excluded and listed in the file header. Snapshot copied to `data/raw/source=texas_polls_2026_compiled/` with SHA-256 manifest. |
+
+## October 25 Manual Polling Archive Intake
+
+Later October 25 review: the supplied `senate_polls(1).csv` has 40 answer rows for
+20 early hypothetical **2026** questions, fieldwork through March 1, 2025, from a
+March 6, 2025 archive capture. It is inspected but not ingested into a model. The agent
+subsequently acquired the correct November 29, 2024 `senate_polls.csv` directly from
+the registered publisher's Wayback URL: 2,628 rows, 1,142 questions, all cycle 2024.
+This is the same approved source/terms route, not a new pollster feed. Preserve actual
+HTTP retrieval (October 26 UTC, October 25 Vancouver), archive date and SHA-256
+separately. Receipt: `reports/senate_poll_2024_acquisition_2026-10-25.json`.
+Consolidated inventory and granularity: [Polling Data Guide](polling-data-guide.md).
+
+Extends `538_race_poll_history` below before modeling use. The owner supplied four
+unmodified candidate-poll CSVs downloaded from Internet Archive. Browser download
+metadata identifies November 29, 2024 captures for both House files and Senate history,
+but a November 2, 2021 capture for `senate_polls.csv`. The latter contains early 2022-cycle
+polls, not 2024 Senate polling. Preserve every file, exact Wayback URL, archive timestamp,
+SHA-256 and actual project-ingestion time. The original browser retrieval time is unknown;
+do not substitute filesystem times or archive dates. Browser metadata is provenance
+evidence, not independent verification of the archive server's bytes.
+
+Same publisher, CC BY 4.0 attribution and Tier 0 aggregate-only research restrictions
+apply. Retrospective numeric grades, poll scores and eventual outcomes are not polling
+predictors. Candidate-answer rows require unique D/R pairs, question-level conflict
+checks, valid field dates/sample sizes, ordinary November general-election rounds and
+unambiguous structural joins to certified targets. Exclude explicitly hypothetical
+matchups and unverified RCV/Louisiana rounds. `created_at` is database entry, not proven
+publication; use its date only as an additional conservative availability exclusion.
+Replace overlapping ratings office-cycles rather than append duplicate surveys or
+backfill rejected candidate questions from the less informative ratings archive.
+Historical publication, House-map and fundamentals-vintage gates remain unverified.
+No change to the sealed forecast or promotion is authorized by this intake.
+
+## October 23 Polling-Lean Research Intake
+
+Owner/data steward: Alex Oswald. Registered before acquisition. This is a separate,
+unpromoted research experiment; no September registration, source compilation or live
+forecast parameter may be replaced. Specification: `docs/polling-lean-experiment.md`.
+
+| dataset_id | Provider and scope | Governance and acceptance |
+|---|---|---|
+| `538_race_poll_history` | FiveThirtyEight public repository `https://github.com/fivethirtyeight/data/tree/master/pollster-ratings`, `raw_polls.csv`, README and repository LICENSE; separately archived House/Senate candidate-poll CSVs linked by `https://github.com/fivethirtyeight/data/tree/master/polls` | Tier 0 public aggregate poll toplines and professional candidate identities; CC BY 4.0 publisher compilation, attribution FiveThirtyEight, transformations identified. No respondent, voter or donor records. Preserve actual UTC acquisition time, exact URL, raw bytes and SHA-256. Do not use retrospective numeric ratings or embedded outcomes as predictors. Compare embedded outcomes with registered certified returns. The ratings archive selects late polls/top-two eventual finishers, approximates some sample sizes, and supplies median field dates rather than publication timestamps; it permits retrospective diagnostics only, never a claim of archived real-time availability. Candidate-poll files require question/answer deduplication, explicit stage/round and publication review before admission. New source providers/mirrors need their own provenance/terms review. Retain through post-election audit; raw research files remain ignored, not wholesale republished. |
+
+Required historical feature vintages and exclusions remain independent gates: lagged
+presidential references only; House lean must match the election's actual boundaries.
+An outcome-derived previous House share is a separately labeled proxy, not presidential
+lean. Unreconciled, independent/same-party, runoff and ranked-choice contests must not be
+silently treated as ordinary two-party general elections. No YouGov-specific collection
+or respondent data is authorized by this registration.
+
+Acquisition outcome: the publisher ratings CSV (20,466 rows, congressional cycles
+1998-2022), both codebooks and CC BY license were preserved with actual UTC dates and
+SHA-256. The four documented candidate-poll CSV endpoints returned HTML, not usable
+data. The derived study reconciles source shares against certified outcomes and records
+all exclusions; 2024 coverage and real-time promotion remain blocked. See the exact
+manual request in `docs/polling-lean-downloads.md` and the separate model card/report.
+
+## October 22 Readiness Intake
+
+Registered before acquisition. Owner/data steward: Alex Oswald. These checks do not
+admit new forecast estimators or general-election outcomes.
+
+| dataset_id | Provider and scope | Governance and acceptance |
+|---|---|---|
+| `state_canvass_readiness_2026` | Official election-authority results landing pages for all 50 states; exact URLs in `data/reference/results_sources_2026.csv`; EAC certification guidance and Louisiana election-round guidance | Tier 0 public operational facts; cite authority, retain dated local HTML and SHA-256, no wholesale redistribution grant assumed. A reachable landing page is NOT a tested 2026 feed or certification evidence. Derived inventory contains links/formats/status only. No voter or donor records. Retain through final audit. |
+| `candidate_identity_2026` | Official congressional member biographies/home pages and House Clerk/Senate rosters; exact reviewed pairs in `data/reference/candidate_identity_2026.csv` | Tier 2 professional candidate-name identity only; no contact fields in derived data, no solicitation or targeting. Raw public pages remain ignored/nonredistributable. An alias needs a cited same-person finding; an explicitly distinct person must never inherit incumbency. Hash evidence and apply only on/after its review date. |
+
+Existing `official_ballots_2026` registration extends to the remaining states' official
+November 3 general-election lists, with exact URLs retained per snapshot. Primary
+candidate lists, pre-primary placeholders and financial filings are not general ballots.
+Existing pollster route permits additional original national releases, but a question
+about preferred House control is not automatically equivalent to district vote intention.
+
+| dataset_id | Provider and scope | Governance and acceptance |
+|---|---|---|
+| `fl_official_precinct_returns` | Florida DOS official 2020/2024 precinct ZIPs linked from https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results | Tier 1 public aggregate research. Preserve county/precinct counts locally; public output only state/district aggregates, no tiny-cell exports. Exclude candidate voter-registration IDs and polling-location/contact fields from derived tables. Cite DOS, exact ZIP and definition vintage. No unrestricted raw redistribution assumed. Must conserve each major party's certified state total and prove election-vintage precinct assignment before any transfer admission. |
+| `nc_official_precinct_geography` | NCSBE https://www.ncsbe.gov/results-data/voting-maps-redistricting and linked https://dl.ncsbe.gov/?prefix=ShapeFiles/Precinct/ | Tier 0 public election-administration geography for nonpartisan audit. Exact election-date vintage, polygon validity, CRS and precinct identifiers required; today's boundaries do not establish 2020/2024 boundaries. No voter registration or voter history files acquired. Cite NCSBE. Raw local research only pending explicit redistribution terms. |
+| `nc_official_precinct_returns` | NCSBE https://www.ncsbe.gov/results-data/election-results/historical-election-results-data and linked `ENRS/2024_11_05/results_pct_20241105.zip` / `ENRS/2020_11_03/results_pct_20201103.zip` on the official dl.ncsbe.gov S3 bucket | Tier 1 public aggregate research, no personal voter records. Use published original administrative-precinct results, not noise-added precinct-sort totals, for certified-total checks. Do not reverse privacy noise or infer suppressed cells. County-level early/mail batches require measured allocation uncertainty. Preserve raw, dates and hashes; no tiny-cell public outputs or unrestricted raw redistribution. |
+
+## October 21 Acquisition Outcomes
+
+The October 20 registrations below preceded all new pulls. Current accepted-use status:
+
+- House Clerk XML (published October 1) and seven states' official general ballots are
+  snapshotted; derived tables contain professional names/parties/offices only. Raw
+  documents with contact fields are Tier 2, ignored and not redistributed. Candidacy
+  matching verifies 182 races; ten ambiguous given-name identities remain unknown.
+- CD120 BEFs are acquired, with all nine redrawn states. Census notes Missouri BEFs
+  were regenerated after the September 23 court order; older shapefiles may be stale.
+  This is geography evidence, not a guarantee that no later court order exists.
+- ALFRED exact-cutoff snapshots acquired for all three registered series. Income
+  vintages before 2010 unavailable; no backfill. Release dates remain unknown where
+  clipped point-in-time responses do not supply them. No macro model promoted.
+- Kansas official workbook acquired/parsed, 105 counties. Exact D/R totals fall short
+  17/27 votes. Suppressed/blank small-precinct rows remain missing, not inferred.
+  Raw Tier 1 retained; no precinct-cell public export or congressional prior admitted.
+- CC BY 538 historical toplines acquired: September 2020 rebuild timestamps limit them
+  to retrospective diagnostics. DataHub poll-list CSV is quarantined for inconsistent
+  field counts. Hand-compiled Marist/Emerson facts, original releases and publication
+  dates are acquired; thin coverage and unidentified house effects prevent promotion.
+- FEC October 21 totals originally contained candidate address fields in ignored raw
+  payloads: those manifests are Tier 2/nonredistributable, not falsely Tier 0. Derived
+  tables exclude contacts. New snapshot writes strip those fields before persistence;
+  immutable originals are not edited to hide intake history. Aggregate endpoints only.
+- GA-13 official workbook, GA-14 April 7 official API metadata/linked workbook and NJ-11
+  official canvass reverified. NJ raw candidate-list PDF is Tier 2; only aggregate totals
+  extracted. NJ's signal is excluded for unvalidated geographic baseline, not its outcome.
+
+Source-specific hashes and substantive gates: `reports/refresh_2026-10-21/`.
+
+## October 20 Intake and Vintage Policy
+
+Owner/data steward: Alex Oswald. Register before acquisition; immutable dated raw snapshots,
+SHA-256 manifests and explicit validation results are mandatory. Public professional ballot
+facts exclude contact/address fields from derived tables; aggregate precinct votes remain
+Tier 1 with no tiny-cell public exports. Restricted personal data is not acquired.
+
+| dataset_id | Primary provider/source | Terms and permitted use | Coverage and gate |
+|---|---|---|---|
+| `census_cd120_bef` | U.S. Census Bureau, https://www.census.gov/geographies/mapping-files/2027/dec/rdo/120-congressional-district-bef.html | Public-domain federal aggregate geography; cite Census Redistricting Data Program, date and CD120 vintage. Tier 0. | Official 2026 whole-2020-block district equivalencies; nine redrawn states. Use October 6 regenerated package, not superseded Missouri map. Import text IDs, verify per-state coverage/unique block keys and 2020 block vintages. Does not supply election-vintage precinct boundaries or prove future litigation resolved. |
+| `house_current_roster` | Clerk of the U.S. House, https://clerk.house.gov/xml/lists/MemberData.xml | Public federal professional officeholder facts, attribution House Clerk; extract names, district, state and party only, no contact fields. Tier 0. | Current voting-seat holder or explicit vacancy, distinct from 2024 winners. Require all 435 voting districts and dated snapshot; never backfill historical training from current roster. |
+| `official_ballots_2026` | State election authorities; California https://media.sos.ca.gov/ ; Texas https://www.sos.texas.gov/elections/laws/2026-november-general-election.shtml ; NC https://www.ncsbe.gov/results-data/candidate-lists ; individual official URLs retained per snapshot/row | Public candidate-name, party and office facts for nonpartisan research, citation required. Do not republish whole source documents where no redistribution grant exists. No addresses, phones or email in modeling tables. | General-election ballots only, not filing lists or primary rosters. Require election date, office/district coverage, explicit completeness review and incumbent identity match before setting running=False from absence. |
+| `fred_bea_income_vintages` | BEA via FRED/ALFRED https://fred.stlouisfed.org/series/A229RX0 | Public domain, citation requested by BEA/FRED. Tier 0; aggregate research only. API terms apply; never record API key in files/logs. | Monthly real disposable personal income per capita, chained dollars SAAR. 12-month growth ending at latest observation available at October 20 cutoff in each election year. Query realtime_start=realtime_end=cutoff. Missing historical vintage is missing, never filled from today's revised series. |
+| `fred_bls_unemployment_vintages` | BLS via FRED/ALFRED https://fred.stlouisfed.org/series/UNRATE | Public-domain federal aggregate statistics, cite BLS/FRED; no personal data. | Monthly seasonally adjusted unemployment rate; 12-month percentage-point change as an alternative specification, not another freely selected predictor. Same fixed real-time policy as income. |
+| `fred_bls_cpi_vintages` | BLS via FRED/ALFRED https://fred.stlouisfed.org/series/CPIAUCSL | Public domain, citation requested by BLS/FRED. | Monthly seasonally adjusted CPI-U; 12-month log growth as an alternative check. Never mix today's seasonal revisions into a past cutoff. |
+| `ks_official_president_precinct_2024` | Kansas SOS https://sos.ks.gov/elections/24elec/2024-General-Election-President-Precinct-Level-Results.xlsx | Public official aggregate vote facts, cite Kansas SOS; raw local research snapshot, no unrestricted document redistribution assumed. Tier 1; public output at district/state level only. | All 105 counties. Explicit largest-county sheet transforms; reconcile presidential totals to certified state totals and require a documented precinct-to-district map before replacing any flagged CD input. |
+| `538_generic_ballot_archive` | FiveThirtyEight https://github.com/fivethirtyeight/data/tree/master/congress-generic-ballot ; original publisher or attributed CC BY mirrors | CC BY 4.0 for publisher data; retain source attribution and indicate transformations. No new YouGov source ingestion. | Historical aggregate toplines/trendline, record which is actually acquired. Publisher averages cannot masquerade as poll-level samples or train pollster effects. Backtest whole held-out cycles at a fixed horizon. |
+| `pollster_generic_ballot_compiled` | Original public Marist/Quinnipiac/Emerson releases, per-row URLs and retrieval/publication dates | Hand-compiled public aggregate facts under existing NE-000 route. No copied article prose, respondent data or automated YouGov collection. Cite pollster and sponsor; source restrictions remain binding. | National generic House ballot, not state/race polls; unique survey IDs, completed fieldwork AND published by cutoff. House effects estimated only from earlier-cycle evidence; unidentified effects remain explicit. |
+
+**NE-004 fixed specification, before acquisition:** incumbent-party national House
+two-party share = intercept + income growth + president_on_ballot + consecutive_terms.
+Map to Democratic share only after prediction. Benchmark chronologically against
+incumbent-share persistence and midterm-only history. Unemployment/inflation are separate
+robustness fits with all results reported, not selected after looking at scores. Exclude
+cycles lacking actual as-of vintages. Report residual/predictive sigma and effective cycle
+count. 2026 remains cross-check only; do not precision-blend correlated evidence.
+
+Snapshot rows retain observation month, requested data_vintage, known-since release date
+where the API supplies it, and retrieval date separately. A requested vintage label is
+not itself a release timestamp. No forward fill of missing economic observations.
+
+## October 18, 2026 Forecast Refresh Sources
+
+These Tier 0 sources are registered before acquisition. Owner/data steward: Alex Oswald.
+Retain immutable, query-dated raw snapshots and SHA-256 manifests for reproducibility;
+delete superseded derived tables by rebuilding, never by rewriting a source snapshot.
+No donor, voter, campaign contact, or respondent records are acquired.
+
+| dataset_id | Provider / source | Permitted use and attribution | Coverage / validation |
+|---|---|---|---|
+| `senate_current_roster` | U.S. Senate, https://www.senate.gov/legislative/LIS_MEMBER/cvc_member_data.xml | Official public federal officeholder facts; cite U.S. Senate and retrieval date. Extract name, state, class and party only; no contact fields in silver/gold. | All current Senate seats. Require 100 distinct state/class seats, two per state; unknown caucus requires a sourced resolution. This is a dated roster, never historical training evidence. |
+| `fec_election_schedule_2026` | FEC, https://www.fec.gov/documents/5910/2026pdates.pdf | Official public federal election calendar; cite FEC. Derived factual register redistributable with attribution. | November 3, 2026 congressional contests; FL/OH Senate special elections require state writ corroboration. |
+| `state_ballot_rosters_2026` | State election authorities, URLs per compiled row | Public candidate/ballot facts for nonpartisan aggregate research, with per-row source URL/retrieval date. No contact fields; source-specific restrictive terms require review. | General-election nominees and incumbent running/open status. Missing rows remain unknown. Filing is never treated as nomination. |
+| `candidate_candidacy_announcements_2026` | Official Senate releases and original reporting by AP, WyoFile, Semafor; URLs per row | Extract only factual public-office candidacy decisions, with citation/retrieval date. Do not redistribute article prose, photographs, allegations or contact information. | Incumbent retirements/withdrawals and nominations. Announcements are evidence of a decision, not a complete official ballot list; uncovered races stay unknown. |
+| `senate_caucus_119` | U.S. Senate, https://www.senate.gov/history/partydiv.htm | Official public party-division facts; cite U.S. Senate. Independents' affiliations must be cited separately from ballot party. | Current caucus reconciliation; no historical backfill from current affiliation. |
+| `tx_tlc_vtd_2024` | Texas Legislative Council, https://data.capitol.texas.gov/dataset/vtds | Open official aggregate election geography and vote data for nonpartisan analysis; cite Texas Legislative Council, package vintage, and report caveat that allocated totals can differ slightly from certified results. No personal fields. | 2024 precinct boundaries and election data; block transfer and per-state total checks required. |
+| `tx_tlc_vtd_2020` | Texas Legislative Council, https://data.capitol.texas.gov/dataset/vtds | CC BY, attribution Texas Legislative Council and 2020 vintage. Aggregate precinct geography only; public nonpartisan research. | Historical 2020 election precincts on 2020 Census geography, solely for transfer backtests. |
+| `tx_tlc_plan_election_analysis` | Texas Legislative Council, https://data.capitol.texas.gov/dataset/planc2333 | Open official aggregate plan analysis; cite TLC and plan/report identifiers. Counts on a new map are allocated historical votes, not certified results for that map. | PLANC2333 district election analysis for 2024; require 38 districts and state-total reconciliation before use. |
+| `tx_tlc_plan_c2333` | Texas Legislative Council, https://data.capitol.texas.gov/dataset/planc2333 | CC BY attribution to Texas Legislative Council; official enacted-plan geometry for nonpartisan analysis. | PLANC2333 boundaries for the registered TX_2025 plan; verify current legal status separately from geometric validity. |
+
+_Last updated: 2026-10-18 (older source decisions retained below)_
 
 This registry is the control document for every dataset acquired, downloaded, licensed, scraped, requested, or generated for the U.S. election analytics project. Populate this before or during ingestion so the project does not become an undocumented folder of CSVs.
 
@@ -352,6 +524,12 @@ registry whose data **cannot be re-acquired later**.
 > never overwritten, and `certified_on` is derived as the earliest snapshot in which a seat
 > was first seen certified. The evidence for "this seat certified on the 18th" is a file
 > written on the 18th.
+>
+> October 22 correction: certification dates apply to the current uninterrupted,
+> resolved certification episode. An observed revocation or unresolved runoff clears
+> scoring eligibility; recertification starts a new first-observed date. Earlier as-of
+> observations remain unchanged. Raw source evidence and UTC dates are required by the
+> production CLI; see `docs/results-2026-runbook.md`.
 >
 > **Compiled by hand, with provenance per row**, like `special_elections_compiled`: fifty-one
 > publishing authorities, no common API, no upstream checksum. Scraping is deliberately out

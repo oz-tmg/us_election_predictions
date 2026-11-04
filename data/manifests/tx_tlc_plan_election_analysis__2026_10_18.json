@@ -1,0 +1,38 @@
+{
+  "acquired_at": "2026-10-18T23:34:41+00:00",
+  "acquisition_method": "existing_local_snapshot_checksum",
+  "checksum_sha256": "bb1c1f6b93ee28545fbf985d494ef6c4b34dac1107e868223b3ee92bc2d4e9be",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "planc2333_r206_election24g.pdf",
+  "election_cycle": "2024",
+  "file_format": "pdf",
+  "geography_coverage": [
+    "precinct",
+    "block",
+    "district"
+  ],
+  "known_caveats": "Transfer is population-weighted; historical votes are not certified for a new map.",
+  "license_or_terms": "CC BY",
+  "office_coverage": [
+    "president",
+    "us_house"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research with attribution.",
+  "privacy_tier": 0,
+  "prohibited_use": "No person-level political inference or partisan map optimization.",
+  "raw_path": "data/raw/source=texas_tlc/dataset=plan_analysis/snapshot=2026-10-18/planc2333_r206_election24g.pdf",
+  "redistribution_allowed": true,
+  "required_attribution": "Texas Legislative Council",
+  "review_date": "2027-10-18",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-18",
+  "source_id": "tx_tlc_plan_election_analysis",
+  "source_owner": "Texas Legislative Council",
+  "source_url": "https://data.capitol.texas.gov/dataset/planc2333",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

@@ -1,0 +1,62 @@
+{
+  "frozen_on": "2026-10-29",
+  "election_date": "2026-11-03",
+  "rule": "No further refresh is added to the scored comparison set. A rerun is allowed only to correct a registered data or code defect; it gets a new dated directory, is labelled a correction with the defect named, and is scored beside, never instead of, the runs below. The seal is never regenerated.",
+  "scoring": "Every run is scored by the registered scorer on the same certified returns and as_of dates, all assumptions reported; selecting the best-performing run or assumption afterwards is not permitted.",
+  "also_reported": "reports/poll_cross_check_texas_2026-10-29 (Texas poll average, cross-check; scored for information only)",
+  "runs": [
+    {
+      "run_id": "preregistration_2026-11-03",
+      "role": "scored holdout (sealed 2026-09-30)",
+      "files": [
+        "reports/preregistration_2026-11-03.json",
+        "reports/preregistration_2026-11-03_seats.csv"
+      ],
+      "predictions_sha256": "4de09ecf82f218ee807edc6d4eaae9b50d51968d0957177f33b762fad4100882",
+      "sha256": {
+        "reports/preregistration_2026-11-03.json": "a9986ff474fc82356f257de73e72981ff036293c31ea8a87c3541df1d649aeb5",
+        "reports/preregistration_2026-11-03_seats.csv": "61a1e569a053535543a45848772f6fba909d200dfba8a63467cb07dd96119723"
+      },
+      "committed_in": "2a9a55eb199b6d051d42028cb0cbeece93097c7f"
+    },
+    {
+      "run_id": "refresh_2026-10-22",
+      "role": "comparison: last refresh before the Senate specification change",
+      "files": [
+        "reports/refresh_2026-10-22/projection_seats.csv",
+        "reports/refresh_2026-10-22/national_environment_2026-10-22.json"
+      ],
+      "sha256": {
+        "reports/refresh_2026-10-22/projection_seats.csv": "f7a7b6c970198d36d4e3abe4153abba4cc23540169d161d2d76b2e8fed5d26d3",
+        "reports/refresh_2026-10-22/national_environment_2026-10-22.json": "ffbb37eb9f254c3cfaba3bbbf17570c4cfa7514e5289434fbf63ad5d76c611c4"
+      },
+      "committed_in": "8d8fa8ed723c8fba683fa3b83f91c088563b395a"
+    },
+    {
+      "run_id": "refresh_2026-10-29",
+      "role": "comparison: final pre-election refresh (v1_open_seat_holder)",
+      "files": [
+        "reports/refresh_2026-10-29/projection_seats.csv",
+        "reports/refresh_2026-10-29/national_environment_2026-10-29.json"
+      ],
+      "sha256": {
+        "reports/refresh_2026-10-29/projection_seats.csv": "554a82db0b61036ff5f3ede457ab4d46ea7bcb3aaca08dc96739e4bc0425adcb",
+        "reports/refresh_2026-10-29/national_environment_2026-10-29.json": "bd6e4c6f8fa71d085c777b5e11655099b0a97a45c6a1589713286e2fca257126"
+      },
+      "committed_in": "9797f2c9d95abd65c68c7498e146fd4121608685"
+    },
+    {
+      "run_id": "scenario_south_texas_2026-10-29",
+      "role": "scenario, scored for information only (not a forecast)",
+      "files": [
+        "reports/scenario_south_texas_2026-10-29/projection_seats.csv",
+        "reports/scenario_south_texas_2026-10-29/national_environment_2026-10-29.json"
+      ],
+      "sha256": {
+        "reports/scenario_south_texas_2026-10-29/projection_seats.csv": "3042fda8bf54fa585174b23f896a142956e7d60b21f4f757af0a4720f7683a67",
+        "reports/scenario_south_texas_2026-10-29/national_environment_2026-10-29.json": "f350a576c314c01c773e2d7ab17f5852c8239542b0ccf90d4d3ba92b7fe6c824"
+      },
+      "committed_in": "f65ecef05f651316394f019b772549a766b14450"
+    }
+  ]
+}

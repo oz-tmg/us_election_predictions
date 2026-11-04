@@ -4,7 +4,7 @@ The sealed forecast's whole value is out-of-sample evidence, and the machinery t
 it had never been executed against real inputs. Election night is the wrong time to discover
 that `score_preregistration` and the results ledger disagree about a column name.
 
-So this rehearses the entire path on a *known* outcome — the 2024 House results, reshaped
+So this rehearses the entire path on historical House and Senate results, reshaped
 into the 2026 ledger schema and scored against the sealed 2026 forecast. The resulting
 metrics are **meaningless as a forecast evaluation**: the forecast is for 2026 and the
 "outcome" is 2024. That is deliberate. What is being tested is whether the pipes connect:
@@ -41,6 +41,7 @@ def main() -> int:
         (returns["office"] == "us_house")
         & (returns["cycle"] == 2024)
         & (returns["party_simplified"].isin(["DEMOCRAT", "REPUBLICAN"]))
+        & returns.state_po.isin(set(ref.STATES) - {"DC", "PR"})
     ]
     wide = (
         house.assign(district_num=pd.to_numeric(house["district_num"], errors="coerce"))
@@ -67,10 +68,37 @@ def main() -> int:
             "rep_votes": wide["REPUBLICAN"],
             "other_votes": 0,
             "certified": True,
-            "source_url": "DRY RUN — 2024 certified returns standing in for 2026",
+            "source_url": "https://example.invalid/dry-run/historical-house-not-2026",
             "retrieved_on": "2026-11-05",
         }
     )
+    # Latest historical Senate result per state is a plumbing fixture, not a 2026 outcome.
+    races = pd.read_parquet("data/gold/race_results.parquet")
+    senate = (
+        races[races.office.eq("us_senate")]
+        .sort_values(["cycle", "race_id"])
+        .drop_duplicates("state_po", keep="last")
+    )
+    senate_snapshot = pd.DataFrame(
+        {
+            "state_po": senate.state_po,
+            "district_num": pd.NA,
+            "office": "us_senate",
+            "dem_votes": senate.dem_votes,
+            "rep_votes": senate.rep_votes,
+            "other_votes": senate.other_votes,
+            "winner_party": senate.winner_party,
+            "certified": True,
+            "source_url": "https://example.invalid/dry-run/historical-senate-not-2026",
+            "retrieved_on": "2026-11-05",
+        }
+    )
+    snapshot = pd.concat([snapshot, senate_snapshot], ignore_index=True)
+    snapshot["election_round"] = "general"
+    snapshot.loc[snapshot.state_po.eq("LA") & snapshot.office.eq("us_house"), "election_round"] = (
+        "first_round"
+    )
+    snapshot["outcome_resolved"] = True  # Historical resolved fixtures, not actual November observations.
 
     with tempfile.TemporaryDirectory() as tmp:
         directory = Path(tmp)
@@ -79,13 +107,18 @@ def main() -> int:
         r26.write_snapshot(snapshot.head(half), observed_on="2026-11-05", directory=directory)
         r26.write_snapshot(snapshot, observed_on="2026-11-12", directory=directory)
 
-        ledger = r26.certification_ledger(r26.read_snapshots(directory))
+        snapshots = r26.read_snapshots(directory)
+        earlier = r26.certification_ledger(snapshots, as_of="2026-11-05")
+        assert len(earlier) == half, "as-of replay leaked a later snapshot"
+        ledger = r26.certification_ledger(snapshots, as_of="2026-11-20")
+        assert set(ledger.office) == {"us_house", "us_senate"}
+        assert ledger.loc[ledger.office.eq("us_senate"), "certified_on"].notna().all()
         fips = {postal: ref.by_postal(postal).fips for postal in ref.STATES}
         act = r26.to_actual(ledger, state_fips=fips)
 
     print(
         f"ledger: {len(ledger)} seats, "
-        f"{int(ledger['certified_on'].notna().sum())} with a certification date\n"
+        f"{int(ledger['certified_on'].notna().sum())} with a first-observed certification date\n"
         f"  earliest certified_on: {ledger['certified_on'].min()}  "
         f"latest: {ledger['certified_on'].max()}"
     )
@@ -97,7 +130,7 @@ def main() -> int:
     inputs = sp.ScoringInputs(registration=seal, actual=act, as_of="2026-11-20", void_geographies={})
     result = sp.score(inputs)
 
-    print("\nscoring ran. Headline figures are MEANINGLESS (2024 outcome vs 2026 forecast):")
+    print("\nscoring ran. Figures are MEANINGLESS (historical outcomes vs 2026 forecast):")
     print(json.dumps(_trim(result), indent=2, default=str)[:1800])
     print("\nDRY RUN PASSED — the path connects end to end.")
     return 0

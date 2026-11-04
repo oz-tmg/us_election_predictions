@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-22T02:03:07+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "95e0b28a4b88ff185d74a5cd2be60ca77e25270bf56dfd61b636839d19b730b7",
+  "contains_personal_data": true,
+  "contains_sensitive_data": false,
+  "dataset_name": "candidates.html",
+  "election_cycle": "2026",
+  "file_format": "html",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 2,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=official_ballots/state=MD/snapshot=2026-10-21/candidates.html",
+  "redistribution_allowed": false,
+  "required_attribution": "Maryland State Board of Elections",
+  "review_date": "2027-10-21",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "official_ballots_2026_95e0b28a4b88",
+  "source_owner": "Maryland State Board of Elections",
+  "source_url": "https://elections.maryland.gov/elections/2026/general_candidates/2026_GG_statewide_candidatelist.html",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

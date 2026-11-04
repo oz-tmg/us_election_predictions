@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-23T00:19:50+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "e3551674a96aebc1d295336d857a9b626ab38177823ed5357214a40b038b1938",
+  "contains_personal_data": true,
+  "contains_sensitive_data": false,
+  "dataset_name": "candidates.html",
+  "election_cycle": "2026",
+  "file_format": "html",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 2,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=official_ballots/state=MI/snapshot=2026-10-22/candidates.html",
+  "redistribution_allowed": false,
+  "required_attribution": "Michigan Department of State",
+  "review_date": "2027-10-22",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-22",
+  "source_id": "official_ballots_2026_e3551674a96a",
+  "source_owner": "Michigan Department of State",
+  "source_url": "https://mi-boe.entellitrak.com/etk-mi-boe-prod/page.request.do?electionType=GEN&electionYear=2026&page=page.miboePublicReport",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

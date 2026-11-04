@@ -52,6 +52,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -271,11 +272,12 @@ def _snapshot(rows: list[dict], out_path: Path, *, endpoint: str, params: dict) 
     payload = {
         "endpoint": endpoint,
         "query": {k: v for k, v in params.items() if k != "api_key"},
-        "retrieved_at": pd.Timestamp.utcnow().isoformat(),
+        "retrieved_at": pd.Timestamp.now("UTC").isoformat(),
         "row_count": len(rows),
-        "results": rows,
+        "results": _strip_personal(rows),
     }
-    out_path.write_text(json.dumps(payload, indent=1, sort_keys=True, default=str) + "\n")
+    with out_path.open("x") as stream:
+        stream.write(json.dumps(payload, indent=1, sort_keys=True, default=str) + "\n")
     return out_path
 
 
@@ -315,16 +317,26 @@ def download_candidates(
         / f"source=fec_api/dataset=candidates/cycle={cycle}"
         / f"fec_candidates__{office}__{cycle}.json"
     )
-    if out.is_file() and not refresh:
+    if refresh:
+        out = out.parent / f"snapshot={date.today().isoformat()}" / out.name
+    if out.is_file():
         return out
-    params = {
+    params: dict[str, object] = {
         "cycle": cycle,
         "election_year": cycle,
         "office": code,
         "candidate_status": candidate_status,
         "sort": "candidate_id",
     }
-    rows = fetch_all_pages("/candidates/", api_key=api_key, **params)
+    rows = fetch_all_pages(
+        "/candidates/",
+        api_key=api_key,
+        cycle=cycle,
+        election_year=cycle,
+        office=code,
+        candidate_status=candidate_status,
+        sort="candidate_id",
+    )
     return _snapshot(rows, out, endpoint="/candidates/", params=params)
 
 
@@ -350,7 +362,9 @@ def download_candidate_totals(
         / f"source=fec_api/dataset=candidate_totals/cycle={cycle}"
         / f"fec_candidate_totals__{office}__{cycle}.json"
     )
-    if out.is_file() and not refresh:
+    if refresh:
+        out = out.parent / f"snapshot={date.today().isoformat()}" / out.name
+    if out.is_file():
         return out
     params = {
         "cycle": cycle,
@@ -358,7 +372,14 @@ def download_candidate_totals(
         "office": code,
         "sort": "candidate_id",
     }
-    rows = fetch_all_pages("/candidates/totals/", api_key=api_key, **params)
+    rows = fetch_all_pages(
+        "/candidates/totals/",
+        api_key=api_key,
+        cycle=cycle,
+        election_year=cycle,
+        office=code,
+        sort="candidate_id",
+    )
     return _snapshot(rows, out, endpoint="/candidates/totals/", params=params)
 
 

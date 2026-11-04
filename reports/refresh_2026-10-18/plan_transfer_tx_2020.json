@@ -1,0 +1,191 @@
+{
+  "state": "TX",
+  "from_cycle": 2020,
+  "generated_on": "2026-10-18",
+  "sources": {
+    "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+    "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+    "tx_tlc_vtd_2020": "registered in docs/dataset-registry.md; data/raw/source=texas_tlc/dataset=vtd2020/snapshot=2026-10-18/vtds20g_2020.zip"
+  },
+  "precinct_boundary_assignment": {
+    "blocks": 668757,
+    "blocks_unplaced": 0,
+    "precincts": 9157,
+    "precinct_column": "CNTYVTD"
+  },
+  "precinct_boundary_path": "data/raw/source=texas_tlc/dataset=vtd2020/snapshot=2026-10-18/vtds20g_2020.zip",
+  "old_plan_path": "2020 BAF (2010-era plan)",
+  "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_48_cd118.zip",
+  "precinct_votes": {
+    "precincts": 9190,
+    "two_party_votes": 11146541.0,
+    "pseudo_precincts": 0,
+    "share_in_pseudo_precincts": 0.0
+  },
+  "block_to_new_district": {
+    "blocks": 668757,
+    "blocks_unplaced": 37,
+    "population_unplaced": 0,
+    "unplaced_blocks_with_land": 3,
+    "districts": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38
+    ]
+  },
+  "apportionment": {
+    "precincts_matched_to_vtd": 8896,
+    "precincts_unmatched": 294,
+    "votes_unmatched_to_a_vtd": 272595.0,
+    "unmatched_precincts": [
+      "48005|0050028",
+      "48027|0270404A",
+      "48027|0270404B",
+      "48029|0291030",
+      "48029|0291073A",
+      "48029|0291073B",
+      "48029|0291080A",
+      "48029|0291080B",
+      "48029|0291108A",
+      "48029|0291108B",
+      "48029|0291108C",
+      "48029|0291110A",
+      "48029|0291110B",
+      "48029|0291122A",
+      "48029|0291122B",
+      "48029|0291122C",
+      "48029|0291125A",
+      "48029|0291125B",
+      "48029|0291125C",
+      "48029|0291144A",
+      "48029|0291144B",
+      "48029|0291144C",
+      "48029|0292039",
+      "48029|0292063A",
+      "48029|0292063B"
+    ],
+    "votes_from_county_aggregates": 272595.0,
+    "votes_unplaceable": 0.0,
+    "votes_offered": 11146541.0,
+    "votes_placed": 11146541.0
+  },
+  "old_district_rows": 6228018,
+  "votes_without_an_old_district": 0.0,
+  "backtest": {
+    "n_districts": 38,
+    "transfer_mae": 0.08378142288125708,
+    "no_prior_mae": 0.19527821360027928,
+    "state_lean_fallback_mae": 0.21286292940971083,
+    "beats_no_prior": true,
+    "beats_fallback": true,
+    "transfer_sigma": 0.12228959300724176,
+    "confidence_components": {
+      "unsplit_share": {
+        "min": 0.853252287605897,
+        "median": 0.9515804923240547
+      },
+      "old_district_majority_share": {
+        "min": 0.2670853960694459,
+        "median": 0.7333480211833785
+      },
+      "geocoded_share": {
+        "min": 1.0,
+        "median": 1.0
+      }
+    },
+    "scored_against": "certified us_house 2022"
+  },
+  "same_office_control": {
+    "compared_against": "cd_presidential_baseline_2024.parquet",
+    "n_districts": 38,
+    "mae": 0.038,
+    "mean_error": 0.038,
+    "sd_error": 0.02337,
+    "max_abs_error": 0.10054,
+    "worst": [
+      {
+        "new_district": 34,
+        "transferred": 0.5782,
+        "measured": 0.4777,
+        "error": 0.1005,
+        "unsplit_share": 0.9824,
+        "old_district_majority_share": 0.7812
+      },
+      {
+        "new_district": 16,
+        "transferred": 0.68,
+        "measured": 0.581,
+        "error": 0.0989,
+        "unsplit_share": 0.9549,
+        "old_district_majority_share": 0.9532
+      },
+      {
+        "new_district": 29,
+        "transferred": 0.6844,
+        "measured": 0.6032,
+        "error": 0.0812,
+        "unsplit_share": 0.8851,
+        "old_district_majority_share": 0.8293
+      },
+      {
+        "new_district": 33,
+        "transferred": 0.7489,
+        "measured": 0.6728,
+        "error": 0.0761,
+        "unsplit_share": 0.903,
+        "old_district_majority_share": 0.6625
+      },
+      {
+        "new_district": 15,
+        "transferred": 0.4852,
+        "measured": 0.41,
+        "error": 0.0752,
+        "unsplit_share": 0.9724,
+        "old_district_majority_share": 0.6709
+      }
+    ]
+  },
+  "usability": {
+    "placed_share": 1.0,
+    "min_placed_share": 0.9,
+    "districts_expected": 38,
+    "districts_produced": 38,
+    "districts_missing": [],
+    "usable": true
+  }
+}

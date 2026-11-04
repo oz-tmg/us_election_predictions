@@ -1,0 +1,79 @@
+[
+  {
+    "special_id": "2025-fl-cd01",
+    "old_share": 0.3120644665237956,
+    "rebuilt_share": 0.3120644665237956,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2025-fl-cd06",
+    "old_share": 0.3487414045061723,
+    "rebuilt_share": 0.34874140450617236,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2025-tn-cd07",
+    "old_share": 0.3809465329715076,
+    "rebuilt_share": 0.3809465329715076,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2025-va-cd11",
+    "old_share": 0.6765481131243875,
+    "rebuilt_share": 0.6765481131243875,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2025-tx-cd18",
+    "old_share": 0.7019368435995088,
+    "rebuilt_share": 0.7019368435995088,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2026-ca-cd01",
+    "old_share": 0.3718870132040782,
+    "rebuilt_share": 0.37188701320407824,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2026-ca-cd14",
+    "old_share": 0.6844244244961096,
+    "rebuilt_share": 0.6844244244961096,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2026-ga-cd13",
+    "old_share": 0.7095888180526012,
+    "rebuilt_share": 0.7095888180526012,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2026-ga-cd14-r1",
+    "old_share": 0.3124026410001643,
+    "rebuilt_share": 0.3124026410001643,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2026-ga-cd14-runoff",
+    "old_share": 0.3124026410001643,
+    "rebuilt_share": 0.3124026410001643,
+    "quality": "ok",
+    "share_updated": true
+  },
+  {
+    "special_id": "2026-nj-cd11",
+    "old_share": 0.547419,
+    "rebuilt_share": 0.5444876598789766,
+    "quality": "fails_vote_total",
+    "share_updated": false
+  }
+]

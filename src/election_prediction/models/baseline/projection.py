@@ -92,6 +92,8 @@ LITIGATION_RISK_COLUMN = "litigation_risk"
 # the consumer, for the same reason as ``RESOLVED_PARTY_COLUMN``: the producer imports the
 # name rather than both sides spelling it independently.
 TRANSFERRED_PRIOR_COLUMN = "transferred_dem_share"
+TRANSFER_SIGMA_COLUMN = "transfer_sigma"
+PRIOR_NATIONAL_COLUMN = "prior_national_dem_share"
 
 
 class UnverifiedBoundaryError(ValueError):
@@ -131,6 +133,22 @@ def _incumbency_terms(universe: pd.DataFrame) -> pd.DataFrame:
     # is exactly how the fitted models encode it.
     out["incumbent_dem"] = (party == "DEMOCRAT").astype(float)
     out["incumbent_rep"] = (party == "REPUBLICAN").astype(float)
+    holder = party  # the loop below rebinds ``party``
+    running = out.get("incumbent_running", pd.Series(pd.NA, index=out.index))
+    known = running.notna()
+    not_running = known & ~running.fillna(True).astype(bool)
+    out.loc[not_running, ["incumbent_dem", "incumbent_rep"]] = 0.0
+    for party in ("dem", "rep"):
+        column = f"ballot_incumbent_{party}"
+        if column in out:
+            known_ballot = out[column].notna()
+            out.loc[known_ballot, f"incumbent_{party}"] = out.loc[known_ballot, column].astype(float)
+    out["incumbency_assumed"] = ~known
+    # Seat-holder party when no incumbent of that party is on the ballot (2026-10-29).
+    # Only the Senate's v1_open_seat_holder specification reads these; a model fitted
+    # without them ignores the columns.
+    out["open_dem_held"] = ((holder == "DEMOCRAT") & (out["incumbent_dem"] == 0)).astype(float)
+    out["open_rep_held"] = ((holder == "REPUBLICAN") & (out["incumbent_rep"] == 0)).astype(float)
     return out
 
 
@@ -206,7 +224,12 @@ def project_house(
     if TRANSFERRED_PRIOR_COLUMN in seats.columns:
         transferred = pd.to_numeric(seats[TRANSFERRED_PRIOR_COLUMN], errors="coerce")
     has_transfer = redrawn & transferred.notna()
-    if has_transfer.any() and transfer_sigma is None:
+    transfer_sigmas = pd.Series(transfer_sigma, index=seats.index, dtype=float)
+    if TRANSFER_SIGMA_COLUMN in seats:
+        transfer_sigmas = pd.to_numeric(seats[TRANSFER_SIGMA_COLUMN], errors="coerce").fillna(transfer_sigmas)
+    if has_transfer.any() and (
+        not np.isfinite(transfer_sigmas[has_transfer]).all() or (transfer_sigmas[has_transfer] <= 0).any()
+    ):
         raise ValueError(
             "transferred priors present but transfer_sigma not given; state the transfer uncertainty"
         )
@@ -232,7 +255,12 @@ def project_house(
     # ---- the lean each seat is projected from --------------------------------------
     # The old-number prior is *discarded* for redrawn seats, not merely overridden: a
     # redrawn district's last result is a fact about different territory.
-    lean = old_prior - lagged_national_dem_share
+    prior_national = (
+        pd.to_numeric(seats[PRIOR_NATIONAL_COLUMN], errors="coerce")
+        if PRIOR_NATIONAL_COLUMN in seats
+        else lagged_national_dem_share
+    )
+    lean = old_prior - prior_national
     lean = lean.where(~redrawn, np.nan)
     lean = lean.where(~has_transfer, transferred - lagged_national_dem_share)
     lean = lean.where(~needs_fallback, state_lean)
@@ -254,13 +282,10 @@ def project_house(
     fallback_sigma = (
         math.hypot(sigma, beta * float(fallback_lean_sd)) if fallback_lean_sd is not None else float("nan")
     )
-    transferred_sigma = (
-        math.hypot(sigma, beta * float(transfer_sigma)) if transfer_sigma is not None else float("nan")
-    )
+    transferred_sigma = np.hypot(sigma, beta * transfer_sigmas)
     seats["sigma"] = np.select(
         [has_transfer, needs_fallback], [transferred_sigma, fallback_sigma], default=sigma
     )
-    seats["incumbency_assumed"] = True
     out = seats.dropna(subset=["mean_dem_share"]).reindex(columns=PROJECTION_COLUMNS).reset_index(drop=True)
 
     coverage = {
@@ -280,7 +305,7 @@ def project_house(
             if LITIGATION_RISK_COLUMN in seats.columns
             else []
         ),
-        "incumbency_verified": False,
+        "incumbency_verified": not bool(seats["incumbency_assumed"].any()),
     }
     return out, coverage
 
@@ -317,7 +342,6 @@ def project_senate(
 
     sigma = float(resid_sigma) if resid_sigma else DEFAULT_SIGMA
     seats["sigma"] = sigma
-    seats["incumbency_assumed"] = True
     seats["district_num"] = np.nan
     seats["boundary_confidence"] = "n/a"  # statewide; no boundary risk
     out = seats.dropna(subset=["mean_dem_share"]).reindex(columns=PROJECTION_COLUMNS).reset_index(drop=True)
@@ -328,6 +352,6 @@ def project_senate(
         "midterm_penalty": float(midterm_penalty),
         "uniform_swing": float(uniform_swing),
         "resid_sigma": sigma,
-        "incumbency_verified": False,
+        "incumbency_verified": not bool(seats["incumbency_assumed"].any()),
     }
     return out, coverage

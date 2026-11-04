@@ -337,13 +337,33 @@ def build(
     from_cycle: int,
     baf_zip: Path,
     block_zip: Path,
-    plan_zip: Path,
+    plan_zip: Path | None,
     raw_dir: Path,
     state_fips: str,
     district_column: str | None = None,
+    precinct_boundaries: Path | None = None,
+    precinct_column: str = "VTDKEY",
+    old_plan: Path | None = None,
+    new_block_equivalency: Path | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     """The transferred prior for one state, plus the block-level table it rests on."""
-    plan_transfer.assert_sources_registered(SOURCES)
+    sources = dict(SOURCES)
+    required_sources: tuple[str, ...] = plan_transfer.REQUIRED_SOURCES
+    if precinct_boundaries is not None:
+        source_id = f"tx_tlc_vtd_{from_cycle}" if state.upper() == "TX" else "rdh_precinct_boundaries"
+        if source_id not in {"tx_tlc_vtd_2020", "tx_tlc_vtd_2024", "rdh_precinct_boundaries"}:
+            raise plan_transfer.UnregisteredSourceError(f"unregistered precinct vintage {source_id}")
+        sources.pop("rdh_precinct_boundaries", None)
+        sources[source_id] = f"registered in docs/dataset-registry.md; {precinct_boundaries}"
+        required_sources = ("census_pl94171_2020", "census_baf_2020", source_id)
+        plan_transfer.assert_sources_registered(sources, required=required_sources)
+    else:
+        sources.pop("rdh_precinct_boundaries", None)
+        required_sources = ("census_pl94171_2020", "census_baf_2020")
+        plan_transfer.assert_sources_registered(sources, required=required_sources)
+    if new_block_equivalency is not None:
+        sources["census_cd120_bef"] = f"registered Census CD120 equivalencies; {new_block_equivalency}"
+        required_sources = (*required_sources, "census_cd120_bef")
 
     files = [
         f
@@ -356,9 +376,30 @@ def build(
     votes, vote_stats = precinct_votes(files[0])
     block_vtd = block_crosswalk.block_to_vtd(baf_zip, state_fips)
     block_old = block_crosswalk.block_to_old_district(baf_zip)
-    block_new, new_stats = block_crosswalk.block_to_new_district(
-        block_zip, plan_zip, district_column=district_column
-    )
+    precinct_stats = None
+    if precinct_boundaries is not None:
+        block_vtd, precinct_stats = block_crosswalk.block_to_precinct(
+            block_zip, precinct_boundaries, precinct_column=precinct_column
+        )
+    if from_cycle >= 2022 and old_plan is None:
+        raise ValueError(
+            "a post-2020 transfer requires the actual old plan; the 2020 BAF is on 2010-era lines"
+        )
+    if old_plan is not None:
+        old_assignments, _ = block_crosswalk.block_to_new_district(block_zip, old_plan)
+        block_old = old_assignments[["block_id", "new_district"]].rename(
+            columns={"new_district": "old_district"}
+        )
+    if new_block_equivalency is not None:
+        block_new, new_stats = block_crosswalk.block_to_equivalency(
+            block_zip, new_block_equivalency, state_fips=state_fips
+        )
+    elif plan_zip is not None:
+        block_new, new_stats = block_crosswalk.block_to_new_district(
+            block_zip, plan_zip, district_column=district_column
+        )
+    else:
+        raise ValueError("new plan polygons or registered new block equivalencies are required")
 
     at_block, apportion_stats = apportion_to_blocks(votes, block_vtd, block_new)
     at_block = at_block.merge(block_old, on="block_id", how="left")
@@ -369,13 +410,17 @@ def build(
         assignments=block_new[["block_id", "new_district"]].dropna(),
         precincts=at_block.dropna(subset=["old_district"]),
     )
-    transferred = plan_transfer.transfer(inputs, sources=SOURCES)
+    transferred = plan_transfer.transfer(inputs, sources=sources, required_sources=required_sources)
 
     stats = {
         "state": state.upper(),
         "from_cycle": from_cycle,
         "generated_on": date.today().isoformat(),
-        "sources": SOURCES,
+        "sources": sources,
+        "precinct_boundary_assignment": precinct_stats,
+        "precinct_boundary_path": str(precinct_boundaries) if precinct_boundaries else None,
+        "old_plan_path": str(old_plan) if old_plan else "2020 BAF (2010-era plan)",
+        "new_plan_path": str(new_block_equivalency or plan_zip),
         "precinct_votes": vote_stats,
         "block_to_new_district": new_stats,
         "apportionment": apportion_stats,
@@ -394,7 +439,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--from-cycle", type=int, default=2020)
     ap.add_argument("--baf", type=Path, required=True, help="BlockAssign_ST<ff>_<XX>.zip")
     ap.add_argument("--blocks", type=Path, required=True, help="tl_<yyyy>_<ff>_tabblock20.zip")
-    ap.add_argument("--plan", type=Path, required=True, help="tl_<yyyy>_<ff>_cd<nnn>.zip, or a state plan")
+    ap.add_argument("--plan", type=Path, help="tl_<yyyy>_<ff>_cd<nnn>.zip, or a state plan")
+    ap.add_argument("--new-block-equivalency", type=Path, help="Census CD120 block equivalency ZIP")
     ap.add_argument(
         "--district-column",
         default=None,
@@ -403,6 +449,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--raw-dir", type=Path, default=Path("data/raw"))
     ap.add_argument("--gold-dir", type=Path, default=Path("data/gold"))
     ap.add_argument("--reports-dir", type=Path, default=Path("reports"))
+    ap.add_argument("--precinct-boundaries", type=Path)
+    ap.add_argument("--precinct-column", default="VTDKEY")
+    ap.add_argument("--old-plan", type=Path, help="old district polygons matching the source election")
     ap.add_argument(
         "--backtest",
         type=int,
@@ -424,6 +473,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     ap.add_argument("--panel", type=Path, default=Path("data/gold/presidential_panel.parquet"))
     args = ap.parse_args(argv)
+    if (args.plan is None) == (args.new_block_equivalency is None):
+        ap.error("supply exactly one of --plan and --new-block-equivalency")
 
     transferred, at_block, report = build(
         args.state,
@@ -434,6 +485,10 @@ def main(argv: list[str] | None = None) -> int:
         args.raw_dir,
         args.state_fips,
         args.district_column,
+        args.precinct_boundaries,
+        args.precinct_column,
+        args.old_plan,
+        args.new_block_equivalency,
     )
 
     if args.backtest:

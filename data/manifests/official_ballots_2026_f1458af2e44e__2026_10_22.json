@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-23T00:19:51+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "f1458af2e44ef482ed01314ddadc515dc351d7b6c963533ba5504ea5a873422e",
+  "contains_personal_data": true,
+  "contains_sensitive_data": false,
+  "dataset_name": "senate.pdf",
+  "election_cycle": "2026",
+  "file_format": "pdf",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 2,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=official_ballots/state=NJ/snapshot=2026-10-22/senate.pdf",
+  "redistribution_allowed": false,
+  "required_attribution": "New Jersey Division of Elections",
+  "review_date": "2027-10-22",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-22",
+  "source_id": "official_ballots_2026_f1458af2e44e",
+  "source_owner": "New Jersey Division of Elections",
+  "source_url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-general-candidates-us-senate.pdf",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

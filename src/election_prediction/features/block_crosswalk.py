@@ -204,7 +204,8 @@ def block_to_new_district(
     ).to_crs(plan.crs)
 
     joined = gpd.sjoin(points, plan[[district_column, "geometry"]], how="left", predicate="within")
-    joined = joined.drop_duplicates("block_id")
+    if joined["block_id"].duplicated().any():
+        raise ValueError("overlapping district polygons produce ambiguous block assignments")
     out = pd.DataFrame(
         {
             "block_id": joined["block_id"].to_numpy(),
@@ -223,3 +224,88 @@ def block_to_new_district(
         "districts": sorted(out["new_district"].dropna().unique().astype(int).tolist()),
     }
     return out.drop(columns=["land_area"]), stats
+
+
+def block_to_precinct(
+    block_zip: Path, precinct_zip: Path, *, precinct_column: str
+) -> tuple[pd.DataFrame, dict]:
+    """Place Census block interior points in a registered, election-vintage precinct map.
+
+    A code match to an old Census VTD is insufficient when election precincts changed.
+    Ambiguous points are refused rather than arbitrarily assigned to one polygon.
+    """
+    import geopandas as gpd
+
+    precincts = gpd.read_file(_shapefile_uri(precinct_zip))
+    if precinct_column not in precincts:
+        raise ValueError(f"missing precinct identifier {precinct_column}")
+    if precincts[precinct_column].isna().any() or precincts[precinct_column].duplicated().any():
+        raise ValueError("precinct boundary identifiers must be unique and non-null")
+    blocks = gpd.read_file(block_zip, columns=["GEOID20", "INTPTLAT20", "INTPTLON20"])
+    points = gpd.GeoDataFrame(
+        {"block_id": blocks["GEOID20"].astype(str)},
+        geometry=gpd.points_from_xy(pd.to_numeric(blocks.INTPTLON20), pd.to_numeric(blocks.INTPTLAT20)),
+        crs=blocks.crs,
+    )
+    joined = gpd.sjoin(
+        points.to_crs(precincts.crs), precincts[[precinct_column, "geometry"]], how="left", predicate="within"
+    )
+    if joined["block_id"].duplicated().any():
+        raise ValueError("overlapping precinct polygons produce ambiguous block assignments")
+    out = pd.DataFrame(
+        {
+            "block_id": joined["block_id"],
+            "county_fips": joined["block_id"].str[:5],
+            "vtd_key": joined[precinct_column].map(
+                lambda v: normalise_precinct_code(v) if pd.notna(v) else None
+            ),
+        }
+    )
+    return out, {
+        "blocks": len(out),
+        "blocks_unplaced": int(out["vtd_key"].isna().sum()),
+        "precincts": len(precincts),
+        "precinct_column": precinct_column,
+    }
+
+
+def block_to_equivalency(block_zip: Path, bef_zip: Path, *, state_fips: str) -> tuple[pd.DataFrame, dict]:
+    """Use the Census CD120 whole-block assignment, not a stale plan polygon."""
+    import geopandas as gpd
+
+    fips = str(state_fips).zfill(2)
+    with zipfile.ZipFile(bef_zip) as archive:
+        expected = f"CD120_{fips}.txt"
+        names = [name for name in archive.namelist() if Path(name).name == expected]
+        if len(names) != 1:
+            raise ValueError(f"CD120 package has no unique {expected}; do not substitute another vintage")
+        assignments = pd.read_csv(io.BytesIO(archive.read(names[0])), dtype=str)
+    if not {"GEOID", "CDFP", "STATEFP"}.issubset(assignments):
+        raise ValueError("CD120 equivalency schema changed")
+    if (
+        assignments.GEOID.duplicated().any()
+        or not assignments.GEOID.str.fullmatch(fips + r"\d{13}").all()
+        or not assignments.STATEFP.eq(fips).all()
+    ):
+        raise ValueError("duplicate, malformed or wrong-state block equivalencies")
+    blocks = gpd.read_file(block_zip, columns=["GEOID20", "POP20"], ignore_geometry=True)
+    frame = blocks.rename(columns={"GEOID20": "block_id", "POP20": "pop"}).merge(
+        assignments[["GEOID", "CDFP"]],
+        left_on="block_id",
+        right_on="GEOID",
+        how="left",
+        validate="one_to_one",
+    )
+    frame["new_district"] = pd.to_numeric(frame.CDFP, errors="coerce")
+    frame["new_district"] = frame.new_district.where(frame.new_district > 0)
+    missing = frame.new_district.isna()
+    stats = {
+        "blocks": len(frame),
+        "blocks_unplaced": int(missing.sum()),
+        "population_unplaced": int(frame.loc[missing, "pop"].sum()),
+        "districts": sorted(frame.new_district.dropna().astype(int).unique().tolist()),
+        "assignment_source": "census_cd120_bef",
+        "block_vintage": 2020,
+        "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states",
+    }
+    return frame[["block_id", "new_district", "pop"]], stats

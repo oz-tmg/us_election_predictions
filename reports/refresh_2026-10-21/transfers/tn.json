@@ -1,0 +1,198 @@
+{
+  "2020": {
+    "state": "TN",
+    "from_cycle": 2020,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "2020 BAF (2010-era plan)",
+    "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_47_cd118.zip",
+    "precinct_votes": {
+      "precincts": 1965,
+      "two_party_votes": 2996186.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 179717,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "unplaced_blocks_with_land": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 20,
+      "precincts_unmatched": 1945,
+      "votes_unmatched_to_a_vtd": 2980986.0,
+      "unmatched_precincts": [
+        "47001|ANDERSONVILLE",
+        "47001|BRICEVILLE",
+        "47001|BULL RUN",
+        "47001|CLAXTON",
+        "47001|CLINTON",
+        "47001|CLINTON HIGH",
+        "47001|CLINTON MIDDLE",
+        "47001|DUTCH VALLEY",
+        "47001|EMORY VALLEY",
+        "47001|FAIRVIEW",
+        "47001|GLEN ALPINE",
+        "47001|GLENWOOD",
+        "47001|HENDRIX CREEK",
+        "47001|HIGHLAND VIEW",
+        "47001|LAKE CITY MS",
+        "47001|MARLOW",
+        "47001|NORRIS",
+        "47001|NORTH CLINTON",
+        "47001|NORWOOD",
+        "47001|OAK RIDGE",
+        "47001|PINE VALLEY",
+        "47001|ROBERTSVILLE",
+        "47001|ROCKY TOP",
+        "47001|ROSEDALE",
+        "47001|SOUTH CLINTON"
+      ],
+      "votes_from_county_aggregates": 0.0,
+      "votes_unplaceable": 2980986.0,
+      "votes_offered": 2996186.0,
+      "votes_placed": 15200.0
+    },
+    "old_district_rows": 1633,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 2996186.0,
+      "certified_two_party_votes": 2996186.0,
+      "passed": true
+    },
+    "backtest": {
+      "n_districts": 1,
+      "transfer_mae": 0.07523539776069482,
+      "no_prior_mae": 0.0,
+      "state_lean_fallback_mae": 0.1144474248344311,
+      "beats_no_prior": false,
+      "beats_fallback": true,
+      "transfer_sigma": NaN,
+      "confidence_components": {
+        "unsplit_share": {
+          "min": 1.0,
+          "median": 1.0
+        },
+        "old_district_majority_share": {
+          "min": 1.0,
+          "median": 1.0
+        },
+        "geocoded_share": {
+          "min": 1.0,
+          "median": 1.0
+        }
+      }
+    },
+    "usability": {
+      "placed_share": 0.0050731162885081236,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  },
+  "2024": {
+    "state": "TN",
+    "from_cycle": 2024,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+      "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=47/tl_2024_47_cd119.zip",
+    "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+    "precinct_votes": {
+      "precincts": 1862,
+      "two_party_votes": 3023130.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 179717,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "assignment_source": "census_cd120_bef",
+      "block_vintage": 2020,
+      "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 20,
+      "precincts_unmatched": 1842,
+      "votes_unmatched_to_a_vtd": 3007140.0,
+      "unmatched_precincts": [
+        "47001|Andersonville",
+        "47001|Briceville",
+        "47001|Brushy Valley",
+        "47001|Bull Run",
+        "47001|Claxton",
+        "47001|Clinton",
+        "47001|Clinton High",
+        "47001|Clinton Middle",
+        "47001|Dutch Valley",
+        "47001|Emory Valley",
+        "47001|Fairview",
+        "47001|Glen Alpine",
+        "47001|Glenwood",
+        "47001|Hendrix Creek",
+        "47001|Highland View",
+        "47001|Lake City MS",
+        "47001|Marlow",
+        "47001|Norris",
+        "47001|North Clinton",
+        "47001|Norwood",
+        "47001|OR Senior Center",
+        "47001|Pine Valley",
+        "47001|Robertsville",
+        "47001|Rocky Top",
+        "47001|Rosedale"
+      ],
+      "votes_from_county_aggregates": 0.0,
+      "votes_unplaceable": 3007140.0,
+      "votes_offered": 3023130.0,
+      "votes_placed": 15990.0
+    },
+    "old_district_rows": 1633,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 3023130.0,
+      "certified_two_party_votes": 3023130.0,
+      "passed": true
+    },
+    "usability": {
+      "placed_share": 0.005289220112929315,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  }
+}

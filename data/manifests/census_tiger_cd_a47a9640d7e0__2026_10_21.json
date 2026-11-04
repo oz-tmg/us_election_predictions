@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-21T07:15:56+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "a47a9640d7e03ef2124feedca91d46e341658bbd377d1029b43537177b59ab2d",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "index.html",
+  "election_cycle": "2026",
+  "file_format": "html",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate election research; extract no contact fields into modeling tables.",
+  "privacy_tier": 0,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=census_cd120/snapshot=2026-10-21/index.html",
+  "redistribution_allowed": false,
+  "required_attribution": "U.S. Census Bureau",
+  "review_date": "2027-10-21",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "census_tiger_cd_a47a9640d7e0",
+  "source_owner": "U.S. Census Bureau",
+  "source_url": "https://www.census.gov/programs-surveys/decennial-census/about/rdo/congressional-districts.html",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

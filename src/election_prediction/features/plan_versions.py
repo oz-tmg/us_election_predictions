@@ -180,8 +180,7 @@ def validate_plan_versions(register: pd.DataFrame, *, cycles: list[int] | None =
     ]["plan_id"].tolist()
     if enjoined_with_cycles:
         problems.append(
-            f"enjoined plan(s) {enjoined_with_cycles} carry a cycle range; "
-            "an enjoined map was not used"
+            f"enjoined plan(s) {enjoined_with_cycles} carry a cycle range; an enjoined map was not used"
         )
 
     for state, rows in register.groupby("state_po"):
@@ -231,9 +230,9 @@ def validate_plan_versions(register: pd.DataFrame, *, cycles: list[int] | None =
             (register["litigation_risk_status"] != LITIGATION_VERIFIED).sum()
         ),
         "litigation_sourced_to_a_tracker_not_a_docket": sorted(
-            register.loc[
-                register["litigation_risk_status"] == LITIGATION_RESEARCHED, "state_po"
-            ].unique().tolist()
+            register.loc[register["litigation_risk_status"] == LITIGATION_RESEARCHED, "state_po"]
+            .unique()
+            .tolist()
         ),
     }
 

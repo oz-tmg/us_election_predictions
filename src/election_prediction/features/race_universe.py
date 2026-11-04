@@ -54,7 +54,8 @@ import pandas as pd
 
 from ..models.baseline.house import NON_VOTING_JURISDICTIONS, VOTING_SEATS
 from .incumbency import TERM_YEARS, plan_era
-from .plan_versions import BOUNDARY_UNVERIFIED, LITIGATION_NONE
+from .plan_versions import BOUNDARY_UNVERIFIED, LITIGATION_NONE, PlanVersions
+from .senate_roster import scheduled_seats
 
 CYCLE_TABLE_COLUMNS = [
     "cycle",
@@ -85,6 +86,8 @@ UNIVERSE_COLUMNS = [
     "incumbent_source",
     "boundary_confidence",
     "litigation_risk",
+    "senate_class",
+    "caucus_party",
 ]
 
 
@@ -246,7 +249,9 @@ def build_race_universe(
     *,
     cycle: int,
     seat_universe: pd.DataFrame | None = None,
-    plans: object | None = None,
+    plans: PlanVersions | None = None,
+    senate_roster: pd.DataFrame | None = None,
+    senate_specials: pd.DataFrame | None = None,
 ) -> tuple[pd.DataFrame, dict]:
     """One row per federal seat on the ballot in ``cycle``, with its current holder.
 
@@ -298,6 +303,17 @@ def build_race_universe(
     states = senate_states_up(returns, cycle)
     senate_winners = _seat_holder(returns, "us_senate", cycle)
     senate = senate_winners[senate_winners["state_po"].isin(states)].copy()
+    if senate_roster is not None:
+        if senate_specials is None:
+            raise ValueError("an official Senate roster requires an explicit special-election schedule")
+        scheduled = scheduled_seats(senate_roster, senate_specials, cycle=cycle)
+        scheduled["incumbent_party"] = scheduled["ballot_party"]
+        scheduled["incumbent_source"] = "senate_current_roster"
+        scheduled["district_num"] = pd.NA
+        scheduled["last_contested_cycle"] = pd.NA
+        senate = scheduled
+    else:
+        senate["election_type"] = "regular"
     senate["office"] = "us_senate"
     senate["boundary_confidence"] = "n/a"  # statewide; no boundary risk
     senate["litigation_risk"] = LITIGATION_NONE
@@ -306,7 +322,7 @@ def build_race_universe(
     universe = pd.concat(rows, ignore_index=True)
     universe["cycle"] = cycle
     universe["election_date"] = day
-    universe["election_type"] = "regular"
+    universe["election_type"] = universe["election_type"].fillna("regular")
     # Whether the holder actually runs is a candidate-level fact no returns file has.
     universe["incumbent_status"] = "unknown"
 

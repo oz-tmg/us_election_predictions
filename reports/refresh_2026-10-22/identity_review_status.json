@@ -1,0 +1,79 @@
+[
+  {
+    "state_po": "CA",
+    "ballot_name": "Gil Cisneros",
+    "source_url": "https://cisneros.house.gov/about",
+    "raw_sha256": "cc08095e561cbab0a2b77246ebda5c6b6dbab1a0bcdc56450cf80ba1c0cf7d16",
+    "verified": true
+  },
+  {
+    "state_po": "CA",
+    "ballot_name": "Lou Correa",
+    "source_url": "https://correa.house.gov/about/biography",
+    "raw_sha256": "b2852ad42884569d98c20936131e3335d0cdcbcd79266a0d0315cfb2ba998d1c",
+    "verified": true
+  },
+  {
+    "state_po": "FL",
+    "ballot_name": "Greg Steube",
+    "source_url": "https://steube.house.gov/",
+    "raw_sha256": "a829646d4400233f2dfea7418af84e5a2db4e22b92e89e6818814d84a244677f",
+    "verified": true
+  },
+  {
+    "state_po": "MD",
+    "ballot_name": "John \"Johnny O\" Olszewski, Jr.",
+    "source_url": "https://olszewski.house.gov/about",
+    "raw_sha256": "82e0bb037efbb14fbab5b703ac3ed9dacfb9e628de0fe18b7e2221470d34a7d9",
+    "verified": true
+  },
+  {
+    "state_po": "NC",
+    "ballot_name": "Don Davis",
+    "source_url": "https://dondavis.house.gov/",
+    "raw_sha256": "8ae376e6d0bc4b207cbb23bd577f46f8c97725d3e6b51b166168948f7237c900",
+    "verified": true
+  },
+  {
+    "state_po": "NC",
+    "ballot_name": "Greg Murphy",
+    "source_url": "https://murphy.house.gov/",
+    "raw_sha256": "ae03bfa0f214956f32529ce45d56b5815e1b944d248456000f1889e87ea4f42d",
+    "verified": true
+  },
+  {
+    "state_po": "NY",
+    "ballot_name": "Nicholas J. Lalota",
+    "source_url": "https://lalota.house.gov/about",
+    "raw_sha256": "513f42dcf1c8e3388b2b5fd69a6e53842ff89d4dd82c13d914143803cd02f95d",
+    "verified": true
+  },
+  {
+    "state_po": "NY",
+    "ballot_name": "Mike Lawler",
+    "source_url": "https://lawler.house.gov/",
+    "raw_sha256": "e6cf4a526ae9e767b6775247ddf277cecece4ba48b55d5661c2e31704849923e",
+    "verified": true
+  },
+  {
+    "state_po": "NY",
+    "ballot_name": "Pat Ryan",
+    "source_url": "https://patryan.house.gov/",
+    "raw_sha256": "1dbad3d9bfcc96ffffb6849f523324afedf71dfc249b60fb6d7668fa7715ec80",
+    "verified": true
+  },
+  {
+    "state_po": "TX",
+    "ballot_name": "TREVER NEHLS",
+    "source_url": "https://nehls.house.gov/",
+    "raw_sha256": "4f35ecfad8402f371330c61f29e84f343ed71bb4af624daadfa806c67e63a401",
+    "verified": true
+  },
+  {
+    "state_po": "DE",
+    "ballot_name": "CHRIS COONS",
+    "source_url": "https://www.coons.senate.gov/",
+    "verified": false,
+    "error": "https://www.coons.senate.gov/ -> HTTP 403 Forbidden"
+  }
+]

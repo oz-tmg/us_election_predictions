@@ -1,0 +1,71 @@
+{
+  "as_of": "2026-10-29",
+  "git_commit": "ddc23f4d9f3ded9756ee9465497b2c3134399e3f",
+  "working_tree_changes": " blog/figures/make_figures.py                       |  89 ++++++--\n data/reference/special_elections_2025_2026.csv     |  22 +-\n docs/dataset-registry.md                           | 168 ++++++++++++++-\n docs/modeling-backlog.md                           |  70 ++++++-\n docs/redistricting-change-plan.md                  |   9 +\n pyproject.toml                                     |   5 +\n scripts/dry_run_scoring.py                         |  43 +++-\n scripts/project_2026.py                            | 226 +++++++++++++++------\n src/election_prediction/build_cd_baselines.py      |   4 +-\n src/election_prediction/build_fec.py               |  24 ++-\n src/election_prediction/build_plan_transfer.py     |  71 ++++++-\n src/election_prediction/build_results_2026.py      |  49 ++++-\n src/election_prediction/data/fec.py                |  37 +++-\n src/election_prediction/data/results_2026.py       | 149 +++++++++++---\n .../evaluation/score_preregistration.py            |  73 ++++++-\n .../features/block_crosswalk.py                    |  88 +++++++-\n .../features/candidate_crosswalk.py                |  11 +-\n src/election_prediction/features/incumbency.py     |  11 +-\n src/election_prediction/features/plan_transfer.py  |  16 +-\n src/election_prediction/features/plan_versions.py  |   9 +-\n src/election_prediction/features/race_universe.py  |  22 +-\n src/election_prediction/models/baseline/house.py   |   9 +-\n .../models/baseline/national_environment.py        |   4 +\n .../models/baseline/projection.py                  |  42 +++-\n src/election_prediction/models/baseline/senate.py  |  64 ++++++\n .../models/baseline/shrinkage_calibration.py       |   5 +-\n src/election_prediction/polling/average.py         |   2 +\n src/election_prediction/polling/schema.py          |  26 ++-\n .../reporting/preregistration.py                   |   3 +-\n .../test_cd_baseline_reconciliation.py             |  17 +-\n tests/unit/test_cd_baseline_party.py               |   4 +-\n tests/unit/test_plan_transfer.py                   |  80 ++++++--\n tests/unit/test_plan_versions.py                   | 100 +++++++--\n tests/unit/test_projection.py                      |  23 +++\n tests/unit/test_results_2026.py                    | 163 +++++++++++++++\n tests/unit/test_score_preregistration.py           |  44 ++++\n tests/unit/test_shrinkage_calibration.py           |   5 +-\n 37 files changed, 1547 insertions(+), 240 deletions(-)\n",
+  "scenario": {
+    "name": "south_texas_reversion",
+    "assumption": "50% of the Texas border counties' 2020->2024 presidential swing in excess of the statewide swing reverses in 2026.",
+    "fraction": 0.5,
+    "region": {
+      "48061": "Cameron",
+      "48127": "Dimmit",
+      "48215": "Hidalgo",
+      "48247": "Jim Hogg",
+      "48323": "Maverick",
+      "48427": "Starr",
+      "48479": "Webb",
+      "48489": "Willacy",
+      "48505": "Zapata",
+      "48507": "Zavala"
+    },
+    "swing": {
+      "region_from": 0.5819910839056303,
+      "region_to": 0.4771088652363205,
+      "state_from": 0.47167269200373463,
+      "state_to": 0.4306112185407591,
+      "from_cycle": 2020,
+      "to_cycle": 2024,
+      "region_swing": -0.10488221866930975,
+      "state_swing": -0.041061473462975506,
+      "excess_swing": -0.06382074520633424
+    },
+    "statewide_region_share": 0.03978657237358705,
+    "house_rule": "Texas seat mean += -fraction * excess_swing * district region share",
+    "senate_rule": "Texas Senate mean += -fraction * excess_swing * statewide region share",
+    "prior_reproduction_max_abs_error": 1.1102230246251565e-16,
+    "base_refresh": "reports/refresh_2026-10-29",
+    "not_measured": "No 2026 vote, poll or special election from the region supports or rejects the assumption; county aggregates say nothing about how any group of voters moved."
+  },
+  "transfer_stats": {
+    "precinct_votes": {
+      "precincts": 9712,
+      "two_party_votes": 11228537.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 9712,
+      "precincts_unmatched": 0,
+      "votes_unmatched_to_a_vtd": 0.0,
+      "unmatched_precincts": [],
+      "votes_from_county_aggregates": 0.0,
+      "votes_unplaceable": 0.0,
+      "votes_offered": 11228537.0,
+      "votes_placed": 11228537.0
+    }
+  },
+  "inputs": {
+    "data/raw/source=census_baf/vintage=2020/BlockAssign_ST48_TX_2020.zip": "db3f1a4e06aca3d61fb15f1d3581cd08d65120588f33cf00c8265c9f043aa725",
+    "data/raw/source=census_tiger/dataset=tabblock20/vintage=2022/tl_2022_48_tabblock20.zip": "7dd02aeafc1e7cc740057e993d16d7d13b356505bdfe126f62f2a579537b11b7",
+    "data/raw/source=state_plans/dataset=cd2026/state=TX/planc2333.zip": "6797d6e39f76224fa0d9a4f4226e8f1a044fbeaa890d706d366dbdd24a2a2099",
+    "data/raw/source=texas_tlc/dataset=vtd2024/snapshot=2026-10-18/vtds_24pg.zip": "4adf61b5d97bdc7b307fc07f8eac4425782f1dbef07ee4de0734375c1d4b8aed",
+    "data/raw/source=tiger/dataset=cd/vintage=2024/state=48/tl_2024_48_cd119.zip": "4540c83129ceb810be75e132f060719a3453886bd56ba5d4661954cea0e5da45",
+    "data/gold/plan_transfer_tx_2024.parquet": "674d0f4ed839f7abfbe7c082953136a02ec115e96ee8ad7bc7268adf458ce6fe",
+    "data/gold/governor_county_returns.parquet": "eac9282d7390b2cd9b60e8078e41241c9634c6390d138ec1c5de55274948e06a"
+  },
+  "code_sha256": {
+    "scripts/scenario_south_texas.py": "0046cbdba47d8eb2638151abd8792e6757371a966776420d4eb59f71114dbcf3",
+    "src/election_prediction/scenarios/regional_reversion.py": "aa2ce72df3d4a654b67a24c40eb254a9cd126d12218712a77766498431f11d41",
+    "scripts/project_2026.py": "78ee659de4a6deb6e8bf4bad241af61e024d88fb5d95199651d71faf182db620"
+  }
+}

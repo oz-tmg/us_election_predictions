@@ -34,6 +34,7 @@ build report, so a stale artifact cannot make them pass.
 from __future__ import annotations
 
 import functools
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -43,8 +44,16 @@ from election_prediction import build_cd_baselines as bcb_module
 from election_prediction.build_cd_baselines import RECONCILIATION_TOLERANCE
 from election_prediction.features import cd_baseline
 
-RAW = Path("data/raw")
-PANEL = Path("data/gold/presidential_panel.parquet")
+DATA_ROOT = Path(os.environ.get("EP_DATA_ROOT") or "data")
+RAW = DATA_ROOT / "raw"
+PANEL = DATA_ROOT / "gold/presidential_panel.parquet"
+
+
+def unavailable(message: str):
+    if os.environ.get("EP_REQUIRE_LIVE_DATA") == "1":
+        pytest.fail(message)
+    pytest.skip(message)
+
 
 # (state, cycle). The 2020 group is the seven states the gate failed plus two controls that
 # passed; the 2024 group is the state that failed and the four that came closest.
@@ -131,7 +140,7 @@ def _file(state: str, cycle: int) -> Path | None:
 @pytest.fixture(scope="module")
 def certified() -> pd.DataFrame:
     if not PANEL.is_file():
-        pytest.skip(f"no certified panel at {PANEL}")
+        unavailable(f"no certified panel at {PANEL}")
     return pd.read_parquet(PANEL)
 
 
@@ -147,7 +156,7 @@ def _build(state: str, cycle: int) -> tuple[pd.DataFrame, dict]:
 def _aggregate(state: str, cycle: int) -> tuple[pd.DataFrame, dict]:
     df, stats = _build(state, cycle)
     if df is None:
-        pytest.skip(f"no {cycle} precinct file for {state} in {RAW}")
+        unavailable(f"no {cycle} precinct file for {state} in {RAW}")
     return df, stats
 
 

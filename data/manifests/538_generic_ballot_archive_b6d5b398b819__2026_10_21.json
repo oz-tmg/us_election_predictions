@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-21T07:16:28+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "b6d5b398b819e822e910a538974161bcec7e83c7785573ef406a35704e8962b9",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "generic_topline_historical.csv",
+  "election_cycle": "2026",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate election research; extract no contact fields into modeling tables.",
+  "privacy_tier": 0,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=538_generic_ballot_archive/snapshot=2026-10-21/generic_topline_historical.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "FiveThirtyEight (CC BY 4.0)",
+  "review_date": "2027-10-21",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "538_generic_ballot_archive_b6d5b398b819",
+  "source_owner": "FiveThirtyEight (CC BY 4.0)",
+  "source_url": "https://raw.githubusercontent.com/fivethirtyeight/data/master/congress-generic-ballot/generic_topline_historical.csv",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

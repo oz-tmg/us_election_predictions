@@ -26,10 +26,22 @@ def _simple() -> pt.TransferInputs:
     """Two precincts, each wholly inside one new district, each from one old district."""
     precincts = pd.DataFrame(
         [
-            {"precinct_id": "p1", "block_id": "b1", "state_po": "VA", "old_district": 1,
-             "dem_votes": 600, "rep_votes": 400},
-            {"precinct_id": "p2", "block_id": "b2", "state_po": "VA", "old_district": 2,
-             "dem_votes": 300, "rep_votes": 700},
+            {
+                "precinct_id": "p1",
+                "block_id": "b1",
+                "state_po": "VA",
+                "old_district": 1,
+                "dem_votes": 600,
+                "rep_votes": 400,
+            },
+            {
+                "precinct_id": "p2",
+                "block_id": "b2",
+                "state_po": "VA",
+                "old_district": 2,
+                "dem_votes": 300,
+                "rep_votes": 700,
+            },
         ]
     )
     assignments = pd.DataFrame([{"block_id": "b1", "new_district": 1}, {"block_id": "b2", "new_district": 2}])
@@ -68,10 +80,22 @@ def test_a_precinct_split_across_two_new_districts_lowers_only_the_unsplit_compo
     """The split is real; the other two components should not move because of it."""
     precincts = pd.DataFrame(
         [
-            {"precinct_id": "p1", "block_id": "b1", "state_po": "VA", "old_district": 1,
-             "dem_votes": 600, "rep_votes": 400},
-            {"precinct_id": "p1", "block_id": "b2", "state_po": "VA", "old_district": 1,
-             "dem_votes": 200, "rep_votes": 800},
+            {
+                "precinct_id": "p1",
+                "block_id": "b1",
+                "state_po": "VA",
+                "old_district": 1,
+                "dem_votes": 600,
+                "rep_votes": 400,
+            },
+            {
+                "precinct_id": "p1",
+                "block_id": "b2",
+                "state_po": "VA",
+                "old_district": 1,
+                "dem_votes": 200,
+                "rep_votes": 800,
+            },
         ]
     )
     assignments = pd.DataFrame([{"block_id": "b1", "new_district": 1}, {"block_id": "b2", "new_district": 2}])
@@ -84,10 +108,22 @@ def test_a_precinct_split_across_two_new_districts_lowers_only_the_unsplit_compo
 def test_a_new_district_blended_from_two_old_ones_lowers_only_the_majority_component():
     precincts = pd.DataFrame(
         [
-            {"precinct_id": "p1", "block_id": "b1", "state_po": "VA", "old_district": 1,
-             "dem_votes": 500, "rep_votes": 500},
-            {"precinct_id": "p2", "block_id": "b2", "state_po": "VA", "old_district": 2,
-             "dem_votes": 500, "rep_votes": 500},
+            {
+                "precinct_id": "p1",
+                "block_id": "b1",
+                "state_po": "VA",
+                "old_district": 1,
+                "dem_votes": 500,
+                "rep_votes": 500,
+            },
+            {
+                "precinct_id": "p2",
+                "block_id": "b2",
+                "state_po": "VA",
+                "old_district": 2,
+                "dem_votes": 500,
+                "rep_votes": 500,
+            },
         ]
     )
     assignments = pd.DataFrame([{"block_id": "b1", "new_district": 1}, {"block_id": "b2", "new_district": 1}])
@@ -100,10 +136,22 @@ def test_a_new_district_blended_from_two_old_ones_lowers_only_the_majority_compo
 def test_ungeocoded_vote_lowers_only_the_geocoded_component():
     precincts = pd.DataFrame(
         [
-            {"precinct_id": "p1", "block_id": "b1", "state_po": "VA", "old_district": 1,
-             "dem_votes": 600, "rep_votes": 400},
-            {"precinct_id": "p2", "block_id": "bX", "state_po": "VA", "old_district": 1,
-             "dem_votes": 500, "rep_votes": 500},  # bX has no assignment
+            {
+                "precinct_id": "p1",
+                "block_id": "b1",
+                "state_po": "VA",
+                "old_district": 1,
+                "dem_votes": 600,
+                "rep_votes": 400,
+            },
+            {
+                "precinct_id": "p2",
+                "block_id": "bX",
+                "state_po": "VA",
+                "old_district": 1,
+                "dem_votes": 500,
+                "rep_votes": 500,
+            },  # bX has no assignment
         ]
     )
     assignments = pd.DataFrame([{"block_id": "b1", "new_district": 1}])

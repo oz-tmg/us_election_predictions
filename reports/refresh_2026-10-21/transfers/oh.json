@@ -1,0 +1,100 @@
+{
+  "2020": {
+    "status": "blocked",
+    "error": "no overlap between transferred priors and actual results"
+  },
+  "2024": {
+    "state": "OH",
+    "from_cycle": 2024,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+      "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=39/tl_2024_39_cd119.zip",
+    "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+    "precinct_votes": {
+      "precincts": 8878,
+      "two_party_votes": 5713815.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 276428,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "assignment_source": "census_cd120_bef",
+      "block_vintage": 2020,
+      "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 0,
+      "precincts_unmatched": 8878,
+      "votes_unmatched_to_a_vtd": 5713815.0,
+      "unmatched_precincts": [
+        "39001|BRATTON TOWNSHIP",
+        "39001|BRUSH CREEK TOWNSHIP",
+        "39001|GREEN TOWNSHIP",
+        "39001|JEFFERSON TOWNSHIP",
+        "39001|LIBERTY TOWNSHIP",
+        "39001|LOCUST GROVE",
+        "39001|MANCHESTER UNITED TOWNSHIP",
+        "39001|MEIGS TOWNSHIP",
+        "39001|MONROE TOWNSHIP",
+        "39001|OLIVER TOWNSHIP",
+        "39001|PEEBLES VILLAGE",
+        "39001|SCOTT TOWNSHIP",
+        "39001|SEAMAN VILLAGE",
+        "39001|SPRIGG TOWNSHIP",
+        "39001|TIFFIN EAST",
+        "39001|TIFFIN WEST",
+        "39001|WAYNE TOWNSHIP",
+        "39001|WEST UNION A",
+        "39001|WEST UNION B",
+        "39001|WINCHESTER TOWNSHIP",
+        "39001|WINCHESTER VILLAGE",
+        "39003|AMANDA E",
+        "39003|AMANDA N",
+        "39003|AMERICAN A",
+        "39003|AMERICAN B"
+      ],
+      "votes_from_county_aggregates": 0.0,
+      "votes_unplaceable": 5713815.0,
+      "votes_offered": 5713815.0,
+      "votes_placed": 0.0
+    },
+    "old_district_rows": 0,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 5713815.0,
+      "certified_two_party_votes": 5713815.0,
+      "passed": true
+    },
+    "usability": {
+      "placed_share": 0.0,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  }
+}

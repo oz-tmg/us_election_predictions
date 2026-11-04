@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-23T00:17:10+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "5792a58bcab25d4bf6ca4f3e64fcb2cfee44e0b8557e57c7e7aae38f10ec281d",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "polls.csv",
+  "election_cycle": "2026",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Checksum/integrity recorded at intake; substantive validation is a separate gate.",
+  "license_or_terms": "Registered public factual research use; cite provider and source URL.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research; no contact fields in modeling tables.",
+  "privacy_tier": 0,
+  "prohibited_use": "No solicitation, personal targeting, respondent records or advocacy optimization.",
+  "raw_path": "data/raw/source=pollster_generic_ballot_compiled/snapshot=2026-10-22/sha256=5792a58bcab25d4bf6ca4f3e64fcb2cfee44e0b8557e57c7e7aae38f10ec281d/polls.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "Cited original pollster releases",
+  "review_date": "2027-10-22",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-22",
+  "source_id": "pollster_generic_ballot_compiled_5792a58bcab2",
+  "source_owner": "Cited original pollster releases",
+  "source_url": "Per-row source_url in the compiled CSV",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

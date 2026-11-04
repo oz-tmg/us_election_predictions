@@ -24,7 +24,7 @@ import pandas as pd
 
 from .config import load_dotenv
 from .data import fec
-from .data.manifest import SourceManifest
+from .data.manifest import SourceManifest, sha256_file
 from .data.privacy import PrivacyTier
 from .features import candidate_crosswalk as cc
 from .features import filings as fl
@@ -34,13 +34,15 @@ OFFICES = ("us_house", "us_senate")
 
 
 def _manifest_for(path: Path, dataset: str, cycle: int, office: str, base: Path) -> Path:
+    rows, _ = fec.read_snapshot(path)
+    personal = any(any(k in row for k in fec.DROPPED_PERSONAL_FIELDS) for row in rows)
     return SourceManifest.for_snapshot(
         raw_path=path,
-        source_id="fec_api",
+        source_id=f"fec_api_{dataset}_{office}_{cycle}_{sha256_file(path)[:10]}",
         dataset_name=f"OpenFEC {dataset} — {office} {cycle}",
         source_owner="Federal Election Commission",
         source_url=fec.FEC_API,
-        privacy_tier=PrivacyTier.PUBLIC_AGGREGATE,
+        privacy_tier=PrivacyTier.PUBLIC_PERSONAL if personal else PrivacyTier.PUBLIC_AGGREGATE,
         license_or_terms=fec.LICENSE,
         permitted_use=(
             "Aggregate nonpartisan analysis of candidate filings and campaign finance "
@@ -58,8 +60,8 @@ def _manifest_for(path: Path, dataset: str, cycle: int, office: str, base: Path)
         owner="project-owner (data steward)",
         acquisition_method="api",
         file_format="json",
-        redistribution_allowed=True,
-        contains_personal_data=False,
+        redistribution_allowed=not personal,
+        contains_personal_data=personal,
         required_attribution=fec.ATTRIBUTION,
         known_caveats=(
             "FEC election_years is incomplete: Keith Self (TX-03) won in 2022 and 2024 but "
@@ -79,6 +81,13 @@ def _load(dataset: str, parser, cycles: list[int], base: Path) -> pd.DataFrame:
                 / f"data/raw/source=fec_api/dataset={dataset}/cycle={cycle}"
                 / f"fec_{dataset}__{office}__{cycle}.json"
             )
+            dated = sorted(
+                p
+                for p in path.parent.glob(f"snapshot=*/{path.name}")
+                if p.parent.name.removeprefix("snapshot=") <= date.today().isoformat()
+            )
+            if dated:
+                path = dated[-1]
             if path.is_file():
                 frames.append(parser(path))
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
@@ -111,7 +120,8 @@ def build(
     gold.mkdir(parents=True, exist_ok=True)
 
     # ---- candidates -----------------------------------------------------------
-    candidates = _load("candidates", fec.parse_candidates, cycles, base)
+    cached_cycles = list(range(1980, projection_cycle + 2, 2))
+    candidates = _load("candidates", fec.parse_candidates, cached_cycles, base)
     results["fec_candidates"] = {
         "rows": int(len(candidates)),
         "validation": fec.validate_candidates(candidates) if len(candidates) else {},
@@ -145,7 +155,7 @@ def build(
         results["filings"] = {"skipped": f"{universe_path} not found"}
 
     # ---- F-004 fundraising ----------------------------------------------------
-    totals = _load("candidate_totals", fec.parse_candidate_totals, cycles, base)
+    totals = _load("candidate_totals", fec.parse_candidate_totals, cached_cycles, base)
     if len(totals):
         funds = fr.build_fundraising(totals)
         funds.to_parquet(gold / "fundraising.parquet", index=False)

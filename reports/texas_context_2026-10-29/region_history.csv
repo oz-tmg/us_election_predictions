@@ -1,0 +1,25 @@
+region,counties,office,cycle,two_party_dem_share,two_party_votes,n_counties
+Austin suburbs,"Williamson, Hays",governor,2018,0.463059499625597,279111.0,2
+Austin suburbs,"Williamson, Hays",president,2020,0.5200809111523397,388080.0,2
+Austin suburbs,"Williamson, Hays",governor,2022,0.5139435414884517,309785.0,2
+Austin suburbs,"Williamson, Hays",president,2024,0.49946843635988963,427042.0,2
+Dallas suburbs,"Collin, Denton, Rockwall, Kaufman, Ellis",governor,2018,0.37435488265286265,770790.0,5
+Dallas suburbs,"Collin, Denton, Rockwall, Kaufman, Ellis",president,2020,0.4430809449878526,1087887.0,5
+Dallas suburbs,"Collin, Denton, Rockwall, Kaufman, Ellis",governor,2022,0.4189521740606225,824908.0,5
+Dallas suburbs,"Collin, Denton, Rockwall, Kaufman, Ellis",president,2024,0.41808056061744325,1172707.0,5
+Houston suburbs,"Fort Bend, Montgomery, Brazoria, Galveston",governor,2018,0.3744918791535661,660276.0,4
+Houston suburbs,"Fort Bend, Montgomery, Brazoria, Galveston",president,2020,0.42204323417630657,926443.0,4
+Houston suburbs,"Fort Bend, Montgomery, Brazoria, Galveston",governor,2022,0.3966170751465476,669066.0,4
+Houston suburbs,"Fort Bend, Montgomery, Brazoria, Galveston",president,2024,0.3924947613635547,974013.0,4
+South Texas border,"Cameron, Dimmit, Hidalgo, Jim Hogg, Maverick, Starr, Webb, Willacy, Zapata, Zavala",governor,2018,0.6173363580601505,308127.0,10
+South Texas border,"Cameron, Dimmit, Hidalgo, Jim Hogg, Maverick, Starr, Webb, Willacy, Zapata, Zavala",president,2020,0.5819910839056303,451543.0,10
+South Texas border,"Cameron, Dimmit, Hidalgo, Jim Hogg, Maverick, Starr, Webb, Willacy, Zapata, Zavala",governor,2022,0.584756858493075,293286.0,10
+South Texas border,"Cameron, Dimmit, Hidalgo, Jim Hogg, Maverick, Starr, Webb, Willacy, Zapata, Zavala",president,2024,0.4771088652363205,446745.0,10
+Texas statewide,all 254,governor,2018,0.43234552495135664,8201017.0,254
+Texas statewide,all 254,president,2020,0.47167269200373463,11146541.0,254
+Texas statewide,all 254,governor,2022,0.4447985821589418,7991869.0,254
+Texas statewide,all 254,president,2024,0.4306112185407591,11228537.0,254
+Urban cores,"Harris, Dallas, Travis, Bexar, Tarrant",governor,2018,0.5502227896272268,3513853.0,5
+Urban cores,"Harris, Dallas, Travis, Bexar, Tarrant",president,2020,0.598429378410868,4700050.0,5
+Urban cores,"Harris, Dallas, Travis, Bexar, Tarrant",governor,2022,0.5846543364223074,3274658.0,5
+Urban cores,"Harris, Dallas, Travis, Bexar, Tarrant",president,2024,0.5594625399158266,4494771.0,5

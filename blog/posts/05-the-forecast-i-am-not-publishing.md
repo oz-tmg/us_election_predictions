@@ -2,7 +2,7 @@
 
 *The model runs. It produces a number. The number is wrong in a way I can describe precisely, which is the only reason I get to say so.*
 
-**Savepoint Analytics · US Election Analysis · modelled projection, withheld · snapshot 2026-09-30**
+**Savepoint Analytics · US Election Analysis · modelled projection, withheld at time of writing · snapshot 2026-09-30 · see postscript of 2026-11-03**
 
 ---
 
@@ -121,6 +121,18 @@ But the reason has changed while I was writing, and I would rather say so than l
 The refusal was right when the error could not be stated. Now that it can, the honest position is narrower and less comfortable: the House band is defensible and the Senate one is not, and the decision about what to do with that is a judgement rather than a constraint. The infrastructure did its job — it held the line until the evidence arrived, and then it got out of the way.
 
 That is the least glamorous critical path I have ever written down, and it is the real one.
+
+## Postscript, 3 November 2026: published after all
+
+Five weeks after sealing, I published the model's October 29 output as my prediction — [What the Model Says, and How I Will Grade It](07-what-the-model-says-and-how-i-will-grade-it.md). That reverses the decision above, and I owe the reader the reason rather than a quiet edit.
+
+Two of the three objections that survived the boundary fix did not survive October. The party crosswalk now reconciles: 34 Democratic holdovers, a 47-seat caucus, 100 seats accounted for, with the official roster as the source rather than a derivation from returns. And the Senate band moved — not because of new evidence about the national environment, which is exactly as unidentified as it was in September, but because the Senate model changed specification. An open-seat term, promoted by a chronological backtest gate (MAE 0.0645 → 0.0638, 90% coverage 0.935 → 0.944 across 661 held-out races, 230 of them open), stopped crediting a departing incumbent's advantage to the seat they are leaving. Seven Republican-held open seats moved 13–17 points toward the Democratic candidate; four Democratic-held open seats moved 5–7 points the other way. With the Florida and Ohio special elections added to the universe, the Senate band went from 0.27–0.55 to 0.48–0.79.
+
+That still crosses the coin flip at the most conservative assumption. It is a lean, not a resolution, and the new post says so in those words. What changed is that the band's shape now carries information — four of five rows above one half, the fifth at 0.48 — where in September it carried only an assumption.
+
+The third objection, about what publication does to a number, I have not answered. I have decided to accept it with two mitigations. Every row of the band is published, so no single number exists to be screenshotted without the others. And the September seal is published beside the October run and will be scored beside it, so a reader can see whether the model drifted toward an answer or toward a better specification. Both runs were frozen before any vote was counted; the scoring rules in the registration are unchanged.
+
+The infrastructure described above held until the evidence arrived. On the Senate it arrived as a better model rather than a narrower band, which is a different kind of evidence than I expected and a weaker one. I would rather say that than let the title stand unqualified.
 
 ---
 

@@ -1,0 +1,151 @@
+{
+  "state_po": "KS",
+  "cycle": 2024,
+  "counties": 105,
+  "comparisons": {
+    "dem_votes": {
+      "parsed": 544836.0,
+      "certified": 544853.0
+    },
+    "rep_votes": {
+      "parsed": 758775.0,
+      "certified": 758802.0
+    }
+  },
+  "reconciles": false,
+  "suppressed_rows": [
+    {
+      "county": "Comanche",
+      "precinct": "Protection Township II",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Comanche",
+      "precinct": "Protection Township II",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Comanche",
+      "precinct": "Protection Township II",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Comanche",
+      "precinct": "Protection Township II",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Harper",
+      "precinct": "Anthony Ward 2 Exclave 2",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Harper",
+      "precinct": "Anthony Ward 2 Exclave 2",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Harper",
+      "precinct": "Anthony Ward 2 Exclave 2",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Harper",
+      "precinct": "Anthony Ward 2 Exclave 2",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township 1 Exclave",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township 1 Exclave",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township 1 Exclave",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township 1 Exclave",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township Exclave 2",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township Exclave 2",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township Exclave 2",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township Exclave 2",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township Exclave 3",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township Exclave 3",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township Exclave 3",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Seward",
+      "precinct": "Liberal Township Exclave 3",
+      "reason": "blank published count"
+    },
+    {
+      "county": "Shawnee",
+      "precinct": "17"
+    },
+    {
+      "county": "Shawnee",
+      "precinct": "21"
+    },
+    {
+      "county": "Shawnee",
+      "precinct": "83"
+    },
+    {
+      "county": "Shawnee",
+      "precinct": "107"
+    },
+    {
+      "county": "Shawnee",
+      "precinct": "109"
+    },
+    {
+      "county": "Shawnee",
+      "precinct": "1217"
+    },
+    {
+      "county": "Shawnee",
+      "precinct": "1301"
+    },
+    {
+      "county": "Shawnee",
+      "precinct": "1308"
+    }
+  ],
+  "district_assignment": "Not inferred; published VTD retained; split-county geography gated"
+}

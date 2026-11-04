@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-24T05:33:44+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "10e7554d27e241a96f6c9f00de21c5ac00d0229e58808a79f30649824f56ac5b",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "pollster-ratings-README.md",
+  "election_cycle": "historical",
+  "file_format": "text",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Retrospective outcome-selected late-poll archive; median field dates, no verified publication timestamps; some sample sizes imputed",
+  "license_or_terms": "CC BY 4.0; repository LICENSE; publisher compilation rights only",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald",
+  "permitted_use": "Nonpartisan aggregate polling research with attribution and transformation disclosure",
+  "privacy_tier": 0,
+  "prohibited_use": "No respondent records or personal targeting; no retrospective ratings/outcomes as predictors",
+  "raw_path": "data/raw/source=538_race_poll_history/snapshot=2026-10-24/pollster-ratings-README.md",
+  "redistribution_allowed": true,
+  "required_attribution": "FiveThirtyEight",
+  "review_date": "2027-10-23",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-23",
+  "source_id": "538_race_poll_history_pollster_ratings_readme_md",
+  "source_owner": "FiveThirtyEight",
+  "source_url": "https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/README.md",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

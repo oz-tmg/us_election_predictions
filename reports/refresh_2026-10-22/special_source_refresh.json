@@ -1,0 +1,31 @@
+{
+  "as_of": "2026-10-22",
+  "changes": [
+    {
+      "special_id": "2025-fl-cd01",
+      "counts_verified": {
+        "dem_votes": 72375,
+        "rep_votes": 97370,
+        "other_votes": 1503
+      },
+      "raw_sha256": "020101fea020ce20f987a1788d5c8f7d6cf94c2fd1577962966832eaa38f755a",
+      "raw_path": "data/raw/source=special_elections_compiled/snapshot=2026-10-22/fl-federal.html",
+      "source_url": "https://results.elections.myflorida.com/SummaryRpt.asp?ElectionDate=4/1/2025&Race=FED&DATAMODE=",
+      "retrieved_on": "2026-10-22"
+    },
+    {
+      "special_id": "2025-fl-cd06",
+      "counts_verified": {
+        "dem_votes": 83580,
+        "rep_votes": 110980,
+        "other_votes": 1240
+      },
+      "raw_sha256": "020101fea020ce20f987a1788d5c8f7d6cf94c2fd1577962966832eaa38f755a",
+      "raw_path": "data/raw/source=special_elections_compiled/snapshot=2026-10-22/fl-federal.html",
+      "source_url": "https://results.elections.myflorida.com/SummaryRpt.asp?ElectionDate=4/1/2025&Race=FED&DATAMODE=",
+      "retrieved_on": "2026-10-22"
+    }
+  ],
+  "previous_compilation_sha256": "994275f162c26bfa8b2ca75ac16953b43833a06ec3847cadafabd28075aa4899",
+  "other_specials": "Not reverified today; actual earlier dates retained"
+}

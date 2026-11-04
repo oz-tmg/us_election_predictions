@@ -95,10 +95,21 @@ def test_decennial_default_changes_only_across_a_decennial_boundary():
 def test_a_new_plan_marks_the_seat_redrawn():
     reg = _register(
         [
-            {"state_po": "TX", "plan_id": "TX_2021", "first_cycle": "2022", "last_cycle": "2024",
-             "status": "superseded", "litigation_risk": "none"},
-            {"state_po": "TX", "plan_id": "TX_2025", "first_cycle": "2026", "last_cycle": "",
-             "litigation_risk": "none"},
+            {
+                "state_po": "TX",
+                "plan_id": "TX_2021",
+                "first_cycle": "2022",
+                "last_cycle": "2024",
+                "status": "superseded",
+                "litigation_risk": "none",
+            },
+            {
+                "state_po": "TX",
+                "plan_id": "TX_2025",
+                "first_cycle": "2026",
+                "last_cycle": "",
+                "litigation_risk": "none",
+            },
         ]
     )
     plans = pv.PlanVersions(reg)
@@ -110,10 +121,21 @@ def test_superseded_plans_still_govern_their_own_cycles():
     """`status` is standing today; the cycle range is which elections a plan actually ran."""
     reg = _register(
         [
-            {"state_po": "TX", "plan_id": "TX_2021", "first_cycle": "2022", "last_cycle": "2024",
-             "status": "superseded", "litigation_risk": "none"},
-            {"state_po": "TX", "plan_id": "TX_2025", "first_cycle": "2026", "last_cycle": "",
-             "litigation_risk": "none"},
+            {
+                "state_po": "TX",
+                "plan_id": "TX_2021",
+                "first_cycle": "2022",
+                "last_cycle": "2024",
+                "status": "superseded",
+                "litigation_risk": "none",
+            },
+            {
+                "state_po": "TX",
+                "plan_id": "TX_2025",
+                "first_cycle": "2026",
+                "last_cycle": "",
+                "litigation_risk": "none",
+            },
         ]
     )
     assert pv.PlanVersions(reg).plan_id("TX", 2024) == "TX_2021"
@@ -124,10 +146,22 @@ def test_history_can_be_pinned_to_the_decennial_default():
     """The escape hatch that let the register land in two attributable commits."""
     reg = _register(
         [
-            {"state_po": "AL", "plan_id": "AL_2021", "first_cycle": "2022", "last_cycle": "2022",
-             "status": "superseded", "litigation_risk": "none"},
-            {"state_po": "AL", "plan_id": "AL_2023", "first_cycle": "2024", "last_cycle": "",
-             "status": "superseded", "litigation_risk": "none"},
+            {
+                "state_po": "AL",
+                "plan_id": "AL_2021",
+                "first_cycle": "2022",
+                "last_cycle": "2022",
+                "status": "superseded",
+                "litigation_risk": "none",
+            },
+            {
+                "state_po": "AL",
+                "plan_id": "AL_2023",
+                "first_cycle": "2024",
+                "last_cycle": "",
+                "status": "superseded",
+                "litigation_risk": "none",
+            },
         ]
     )
     assert pv.PlanVersions(reg, apply_to_history=True).plan_id("AL", 2024) == "AL_2023"
@@ -190,10 +224,21 @@ def test_annotate_attaches_all_three_fields_and_leaves_the_frame_otherwise_intac
     reg = _register(
         [
             {"plan_id": "MO_2022", "first_cycle": "2022", "last_cycle": ""},
-            {"state_po": "TX", "plan_id": "TX_2021", "first_cycle": "2022", "last_cycle": "2024",
-             "status": "superseded", "litigation_risk": "none"},
-            {"state_po": "TX", "plan_id": "TX_2025", "first_cycle": "2026", "last_cycle": "",
-             "litigation_risk": "none"},
+            {
+                "state_po": "TX",
+                "plan_id": "TX_2021",
+                "first_cycle": "2022",
+                "last_cycle": "2024",
+                "status": "superseded",
+                "litigation_risk": "none",
+            },
+            {
+                "state_po": "TX",
+                "plan_id": "TX_2025",
+                "first_cycle": "2026",
+                "last_cycle": "",
+                "litigation_risk": "none",
+            },
         ]
     )
     seats = pd.DataFrame({"geography_id": ["a", "b", "c"], "state_po": ["MO", "TX", "GA"]})
@@ -250,7 +295,16 @@ def test_litigation_values_carry_how_well_they_are_known():
     assert report["litigation_risk_by_status"]["researched_secondary"] == 11
     # Every live row is sourced to a tracker and still awaits a docket-level sign-off.
     assert report["litigation_sourced_to_a_tracker_not_a_docket"] == [
-        "AL", "CA", "FL", "LA", "MO", "NC", "OH", "TN", "TX", "UT"
+        "AL",
+        "CA",
+        "FL",
+        "LA",
+        "MO",
+        "NC",
+        "OH",
+        "TN",
+        "TX",
+        "UT",
     ]
 
 
@@ -285,9 +339,15 @@ def test_a_blank_litigation_status_reads_unverified_rather_than_verified(tmp_pat
     header = ",".join(pv.REGISTER_COLUMNS)
     row = {c: "" for c in pv.REGISTER_COLUMNS}
     row.update(
-        state_po="MO", plan_id="MO_2022", first_cycle="2022", authority="legislature",
-        enacted_on="2022-05-18", status="in_effect", source_url="https://example.gov",
-        retrieved_on="2026-09-30", verified_by="AO",
+        state_po="MO",
+        plan_id="MO_2022",
+        first_cycle="2022",
+        authority="legislature",
+        enacted_on="2022-05-18",
+        status="in_effect",
+        source_url="https://example.gov",
+        retrieved_on="2026-09-30",
+        verified_by="AO",
     )
     src.write_text(header + "\n" + ",".join(row[c] for c in pv.REGISTER_COLUMNS) + "\n")
     loaded = pv.load_register(src)

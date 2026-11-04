@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-23T00:30:09+00:00",
+  "acquisition_method": "manual_compilation",
+  "checksum_sha256": "da35fb558da8e1eaf489480dca664cecc5cacff27fcac5e6cb8342703b2ba9ea",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "special_elections_2025_2026.csv",
+  "election_cycle": "2026",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Public election facts; cite source URLs and retrieval dates. No reporting prose reproduced.",
+  "office_coverage": [
+    "us_senate",
+    "us_house"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research and reproducible reporting.",
+  "privacy_tier": 0,
+  "prohibited_use": "No contact fields, advocacy targeting or claims of unverified nomination.",
+  "raw_path": "data/raw/source=special_elections_compiled/snapshot=2026-10-22/sha256=da35fb558da8e1eaf489480dca664cecc5cacff27fcac5e6cb8342703b2ba9ea/special_elections_2025_2026.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "State election authorities / MEDSL",
+  "review_date": "2027-10-22",
+  "row_count": 11,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-22",
+  "source_id": "special_elections_compiled_da35fb558da8",
+  "source_owner": "State election authorities / MEDSL",
+  "source_url": "source_url and baseline_source per compiled row",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

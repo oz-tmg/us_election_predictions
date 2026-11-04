@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-10-24T05:40:45.730231+00:00",
+  "attempts": [
+    {
+      "file": "data/raw/source=538_race_poll_history/snapshot=2026-10-23/raw_polls.csv",
+      "url": "https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw_polls.csv",
+      "status": "acquired_unreviewed",
+      "sha256": "9f0b185506e59117c150fb988e73b612346effe8e3a8f0d90fdafcad07f54756",
+      "manifest": "data/manifests/538_race_poll_history_9f0b185506e5__2026_10_24.json",
+      "rows": 20466
+    },
+    {
+      "file": "data/raw/source=538_race_poll_history/snapshot=2026-10-23/senate_polls_historical.csv",
+      "url": "https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv",
+      "status": "unavailable_or_invalid",
+      "error": "Expected csv from https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv but received an HTML page ('HTML page'). This usually means a missing API key or an expired endpoint."
+    },
+    {
+      "file": "data/raw/source=538_race_poll_history/snapshot=2026-10-23/senate_polls.csv",
+      "url": "https://projects.fivethirtyeight.com/polls-page/data/senate_polls.csv",
+      "status": "unavailable_or_invalid",
+      "error": "Expected csv from https://projects.fivethirtyeight.com/polls-page/data/senate_polls.csv but received an HTML page ('HTML page'). This usually means a missing API key or an expired endpoint."
+    },
+    {
+      "file": "data/raw/source=538_race_poll_history/snapshot=2026-10-23/house_polls_historical.csv",
+      "url": "https://projects.fivethirtyeight.com/polls-page/data/house_polls_historical.csv",
+      "status": "unavailable_or_invalid",
+      "error": "Expected csv from https://projects.fivethirtyeight.com/polls-page/data/house_polls_historical.csv but received an HTML page ('HTML page'). This usually means a missing API key or an expired endpoint."
+    },
+    {
+      "file": "data/raw/source=538_race_poll_history/snapshot=2026-10-23/house_polls.csv",
+      "url": "https://projects.fivethirtyeight.com/polls-page/data/house_polls.csv",
+      "status": "unavailable_or_invalid",
+      "error": "Expected csv from https://projects.fivethirtyeight.com/polls-page/data/house_polls.csv but received an HTML page ('HTML page'). This usually means a missing API key or an expired endpoint."
+    }
+  ]
+}

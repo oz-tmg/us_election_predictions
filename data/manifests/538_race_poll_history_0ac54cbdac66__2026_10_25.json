@@ -1,0 +1,36 @@
+{
+  "acquired_at": "2026-10-25T21:55:34.795576+00:00",
+  "acquisition_method": "manual_import; acquired_at is project ingestion, not browser retrieval",
+  "checksum_sha256": "0ac54cbdac66e3e10ebbcba86c914ba3751ce3fe800a49f9596eb548a029eccc",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "senate_polls_historical.csv",
+  "election_cycle": "2018,2020,2022",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "Raw CSV schema checked; research eligibility requires separate question/round/target review. Original browser retrieval time unknown. Archive capture is not poll publication. Browser provenance does not independently authenticate archive-server bytes.",
+  "license_or_terms": "CC BY 4.0; FiveThirtyEight repository LICENSE; compilation rights only",
+  "office_coverage": [
+    "us_senate"
+  ],
+  "owner": "Alex Oswald",
+  "permitted_use": "Nonpartisan aggregate research; attribution and transformations disclosed",
+  "privacy_tier": 0,
+  "prohibited_use": "No respondent records, targeting or retrospective ratings as predictors",
+  "raw_path": "data/raw/source=538_race_poll_history/manual/sha256=0ac54cbdac66e3e10ebbcba86c914ba3751ce3fe800a49f9596eb548a029eccc/senate_polls_historical.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "FiveThirtyEight",
+  "review_date": "2027-10-25",
+  "row_count": 6658,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-25",
+  "source_id": "538_race_poll_history_0ac54cbdac66",
+  "source_owner": "FiveThirtyEight",
+  "source_url": "https://web.archive.org/web/20241129175756if_/https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "pending"
+}

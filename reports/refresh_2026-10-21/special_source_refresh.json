@@ -1,0 +1,57 @@
+{
+  "as_of": "2026-10-21",
+  "changes": [
+    {
+      "special_id": "2026-ga-cd13",
+      "before": {
+        "dem_votes": 17760,
+        "rep_votes": 2750,
+        "other_votes": 0
+      },
+      "after": {
+        "dem_votes": 17760,
+        "rep_votes": 2750,
+        "other_votes": 0
+      },
+      "source_snapshot": "data/raw/source=special_elections_compiled/snapshot=2026-10-21/ga13.xlsx",
+      "sha256": "802bfafbf63b9dc4ebd4791d1cd900fa5b14f0af88ea9acd5bb8f2118a67a687"
+    },
+    {
+      "special_id": "2026-ga-cd14-r1",
+      "before": {
+        "dem_votes": 54374,
+        "rep_votes": 69142,
+        "other_votes": 602
+      },
+      "after": {
+        "dem_votes": 46146,
+        "rep_votes": 69142,
+        "other_votes": 602
+      },
+      "source_snapshot": "data/raw/source=special_elections_compiled/snapshot=2026-10-21/ga14.xlsx",
+      "sha256": "d626a7aa0411249b40f8c49b939b4dfa61a658cac8c056d4bb5931e9af2c0668"
+    },
+    {
+      "special_id": "2026-ga-cd14-runoff",
+      "before": {
+        "dem_votes": 57097,
+        "rep_votes": 72338,
+        "other_votes": 0
+      },
+      "after": {
+        "dem_votes": 57097,
+        "rep_votes": 72338,
+        "other_votes": 0
+      },
+      "source_snapshot": "data/raw/source=special_elections_compiled/snapshot=2026-10-21/ga14-april7.xlsx",
+      "sha256": "0852cef6d208edfe47d52640de6481d63137b3415174642717fc08415520c4d1"
+    },
+    {
+      "special_id": "2026-nj-cd11",
+      "special_counts_verified": true,
+      "included": false,
+      "reason": "unvalidated geographic baseline"
+    }
+  ],
+  "other_specials": "Not reverified; original retrieval dates retained"
+}

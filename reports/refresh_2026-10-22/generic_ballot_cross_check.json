@@ -1,0 +1,144 @@
+{
+  "as_of": "2026-10-22",
+  "historical_attribution": {
+    "owner": "FiveThirtyEight",
+    "source_url": "https://github.com/fivethirtyeight/data/tree/master/congress-generic-ballot",
+    "license": "CC BY 4.0",
+    "transformations": "October 20 cutoffs; two-party normalization; MEDSL House comparison"
+  },
+  "estimate": {
+    "estimator": "generic_ballot",
+    "status": "point",
+    "national_dem_share": 0.5604638612674503,
+    "band": null,
+    "identified": false,
+    "assumptions": [
+      "21-day half-life; square-root sample weights; LV/RV population weights"
+    ],
+    "caveats": [
+      "Thin hand-compiled source coverage; not a comprehensive polling census",
+      "House effects unidentified: no validated multi-cycle poll-level archive",
+      "Retrospective publisher-average check cannot establish real-time calibration",
+      "National intended vote is not a calibrated win probability or chamber forecast"
+    ],
+    "provenance": {
+      "office": "us_house_generic",
+      "cycle": 2026,
+      "geography_id": "nation:us",
+      "state_po": "US",
+      "district_num": null,
+      "as_of": "2026-10-22",
+      "poll_mean_dem_share": 0.5604638612674503,
+      "poll_sigma": 0.02790992757800695,
+      "n_polls": 2,
+      "n_pollsters": 2,
+      "effective_polls": 1.9645901992769317,
+      "first_field_start": "2026-09-14",
+      "last_field_end": "2026-09-22",
+      "house_effects_applied": false,
+      "promotion_eligible": false,
+      "historical_check": {
+        "n_cycles": 11,
+        "predictions": [
+          {
+            "cycle": 1996,
+            "cutoff": "1996-10-20",
+            "average_date": "1996-10-20",
+            "prediction": 0.5424188825584624,
+            "actual": 0.5028696731755319,
+            "publisher_timestamp": "11:34:57  3 Sep 2020"
+          },
+          {
+            "cycle": 1998,
+            "cutoff": "1998-10-20",
+            "average_date": "1998-10-20",
+            "prediction": 0.5082467449108851,
+            "actual": 0.49472463030051955,
+            "publisher_timestamp": "11:20:05  3 Sep 2020"
+          },
+          {
+            "cycle": 2000,
+            "cutoff": "2000-10-20",
+            "average_date": "2000-10-20",
+            "prediction": 0.5077170438063978,
+            "actual": 0.49768673135223995,
+            "publisher_timestamp": "10:56:29  3 Sep 2020"
+          },
+          {
+            "cycle": 2002,
+            "cutoff": "2002-10-20",
+            "average_date": "2002-10-20",
+            "prediction": 0.5106801945990816,
+            "actual": 0.4747093832923257,
+            "publisher_timestamp": "10:05:18  3 Sep 2020"
+          },
+          {
+            "cycle": 2004,
+            "cutoff": "2004-10-20",
+            "average_date": "2004-10-20",
+            "prediction": 0.5207415281928647,
+            "actual": 0.4862463361839355,
+            "publisher_timestamp": "08:58:04  3 Sep 2020"
+          },
+          {
+            "cycle": 2006,
+            "cutoff": "2006-10-20",
+            "average_date": "2006-10-20",
+            "prediction": 0.5721833476674418,
+            "actual": 0.540717394179615,
+            "publisher_timestamp": "07:58:46  3 Sep 2020"
+          },
+          {
+            "cycle": 2008,
+            "cutoff": "2008-10-20",
+            "average_date": "2008-10-20",
+            "prediction": 0.5520633744685732,
+            "actual": 0.5556061635327506,
+            "publisher_timestamp": "06:16:08  3 Sep 2020"
+          },
+          {
+            "cycle": 2010,
+            "cutoff": "2010-10-20",
+            "average_date": "2010-10-20",
+            "prediction": 0.47342919074169204,
+            "actual": 0.4650012807751822,
+            "publisher_timestamp": "04:24:44  3 Sep 2020"
+          },
+          {
+            "cycle": 2012,
+            "cutoff": "2012-10-20",
+            "average_date": "2012-10-20",
+            "prediction": 0.504668006640256,
+            "actual": 0.5058378486583918,
+            "publisher_timestamp": "01:52:59  3 Sep 2020"
+          },
+          {
+            "cycle": 2014,
+            "cutoff": "2014-10-20",
+            "average_date": "2014-10-20",
+            "prediction": 0.49928325162663684,
+            "actual": 0.4697192799470348,
+            "publisher_timestamp": "22:25:05  2 Sep 2020"
+          },
+          {
+            "cycle": 2016,
+            "cutoff": "2016-10-20",
+            "average_date": "2016-10-20",
+            "prediction": 0.5248169423601934,
+            "actual": 0.4944139421874387,
+            "publisher_timestamp": "17:24:26  2 Sep 2020"
+          }
+        ],
+        "mae": 0.02164919146837687,
+        "rmse": 0.025592681612056547,
+        "real_time_vintage_verified": false,
+        "promotion_eligible": false,
+        "limitation": "Publisher averages rebuilt in 2020; no pollster samples or verified as-of archive"
+      },
+      "house_effect_status": "unidentified"
+    }
+  },
+  "historical_topline_sha256": "b6d5b398b819e822e910a538974161bcec7e83c7785573ef406a35704e8962b9",
+  "compiled_sha256": "5792a58bcab25d4bf6ca4f3e64fcb2cfee44e0b8557e57c7e7aae38f10ec281d",
+  "poll_level_archive_status": "Quarantined: inconsistent CSV field counts; no rows skipped"
+}

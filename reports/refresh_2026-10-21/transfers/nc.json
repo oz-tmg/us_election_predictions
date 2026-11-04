@@ -1,0 +1,208 @@
+{
+  "2020": {
+    "state": "NC",
+    "from_cycle": 2020,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "2020 BAF (2010-era plan)",
+    "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_37_cd118.zip",
+    "precinct_votes": {
+      "precincts": 3065,
+      "two_party_votes": 5443065.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 236638,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "unplaced_blocks_with_land": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 2300,
+      "precincts_unmatched": 765,
+      "votes_unmatched_to_a_vtd": 2560581.0,
+      "unmatched_precincts": [
+        "37001|104",
+        "37001|10S1",
+        "37001|1210",
+        "37001|TRANSFER",
+        "37005|ABSENTEE",
+        "37005|ONE STOP",
+        "37005|PROVISIONAL",
+        "37009|ABSENTEE",
+        "37009|ONE STOP",
+        "37009|PROVISIONAL",
+        "37009|TRANSFER",
+        "37011|ABSENTEE",
+        "37011|ABSENTEE SUPPLEMENTAL",
+        "37011|ONE STOP",
+        "37011|PROVISIONAL",
+        "37013|ABSENTEE",
+        "37013|AURORA OS",
+        "37013|BELHAVEN OS",
+        "37013|BOE OS",
+        "37013|PROVISIONAL",
+        "37013|TRANSFER",
+        "37015|ABSENTEE BY MAIL",
+        "37015|OS LOB",
+        "37015|OS LW",
+        "37015|OS POW"
+      ],
+      "votes_from_county_aggregates": 1814445.0,
+      "votes_unplaceable": 746136.0,
+      "votes_offered": 5443065.0,
+      "votes_placed": 4696929.0
+    },
+    "old_district_rows": 1196031,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 5443065.0,
+      "certified_two_party_votes": 5443065.0,
+      "passed": true
+    },
+    "backtest": {
+      "n_districts": 13,
+      "transfer_mae": 0.030963557324671487,
+      "no_prior_mae": 0.1029623044682442,
+      "state_lean_fallback_mae": 0.10514518989858569,
+      "beats_no_prior": true,
+      "beats_fallback": true,
+      "transfer_sigma": 0.046080001282654125,
+      "confidence_components": {
+        "unsplit_share": {
+          "min": 0.6600271678192874,
+          "median": 0.9234653259124308
+        },
+        "old_district_majority_share": {
+          "min": 0.4314338509901225,
+          "median": 0.5628108604703012
+        },
+        "geocoded_share": {
+          "min": 1.0,
+          "median": 1.0
+        }
+      }
+    },
+    "usability": {
+      "placed_share": 0.8629198806187323,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  },
+  "2024": {
+    "state": "NC",
+    "from_cycle": 2024,
+    "generated_on": "2026-10-21",
+    "sources": {
+      "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+      "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+      "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+    },
+    "precinct_boundary_assignment": null,
+    "precinct_boundary_path": null,
+    "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=37/tl_2024_37_cd119.zip",
+    "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+    "precinct_votes": {
+      "precincts": 2908,
+      "two_party_votes": 5612593.0,
+      "pseudo_precincts": 0,
+      "share_in_pseudo_precincts": 0.0
+    },
+    "block_to_new_district": {
+      "blocks": 236638,
+      "blocks_unplaced": 0,
+      "population_unplaced": 0,
+      "districts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "assignment_source": "census_cd120_bef",
+      "block_vintage": 2020,
+      "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+    },
+    "apportionment": {
+      "precincts_matched_to_vtd": 2173,
+      "precincts_unmatched": 735,
+      "votes_unmatched_to_a_vtd": 2336382.0,
+      "unmatched_precincts": [
+        "37001|03SE",
+        "37001|03SM",
+        "37001|104",
+        "37001|10S1",
+        "37001|1210",
+        "37005|ABSENTEE BY MAIL",
+        "37005|EARLY VOTING",
+        "37005|PROVSIONAL",
+        "37005|TRANSFER",
+        "37011|ABSENTEE",
+        "37011|EARLY VOTING",
+        "37011|PROVISIONAL",
+        "37011|TRANSFER",
+        "37013|ABSENTEE",
+        "37013|EV-AUR",
+        "37013|EV-BEL",
+        "37013|EV-BOE",
+        "37013|EV-CHO",
+        "37013|PROVISIONAL",
+        "37013|TRANSFER",
+        "37015|ABSENTEE",
+        "37015|EV-LOB",
+        "37015|EV-LW",
+        "37015|EV-POW",
+        "37015|PROVISIONAL"
+      ],
+      "votes_from_county_aggregates": 1415907.0,
+      "votes_unplaceable": 920475.0,
+      "votes_offered": 5612593.0,
+      "votes_placed": 4692117.999999999
+    },
+    "old_district_rows": 1129288,
+    "votes_without_an_old_district": 0.0,
+    "statewide_reconciliation": {
+      "parsed_two_party_votes": 5612593.0,
+      "certified_two_party_votes": 5613798.0,
+      "passed": false
+    },
+    "usability": {
+      "placed_share": 0.8359982631913625,
+      "usable": false,
+      "admitted": false,
+      "reason": "Candidate only; state-specific calibration and register review required"
+    }
+  }
+}

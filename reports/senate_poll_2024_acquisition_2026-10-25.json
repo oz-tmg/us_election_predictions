@@ -1,0 +1,20 @@
+{
+  "review_date": "2026-10-25",
+  "review_timezone": "America/Vancouver",
+  "raw_path": "data/raw/source=538_race_poll_history/snapshot=2026-10-25/wayback=20241129175751/senate_polls.csv",
+  "sha256": "eabff005edb5068b61bb074c42f9a1e833bcf09539f5755ce2299354c8ed1429",
+  "manifest": "data/manifests/538_race_poll_history_eabff005edb5__2026_10_26.json",
+  "source_url": "https://web.archive.org/web/20241129175751if_/https://projects.fivethirtyeight.com/polls-page/data/senate_polls.csv",
+  "archive_capture_at": "2024-11-29T17:57:51+00:00",
+  "http_retrieved_at": "2026-10-26T05:51:47.461064+00:00",
+  "retrieval_method": "Direct HTTPS Wayback download; acquired_at is actual retrieval, not archive time",
+  "candidate_answer_rows": 2628,
+  "questions": 1142,
+  "cycles": [
+    2024
+  ],
+  "states": 32,
+  "last_field_end": "2024-11-04",
+  "browser_retrieved_at": null,
+  "source_file_modified": false
+}

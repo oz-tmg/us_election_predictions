@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-10-18T23:39:02+00:00",
+  "acquisition_method": "manual_compilation",
+  "checksum_sha256": "2a169c62b99c94126dd96a3bb019485ec25e9729687dba8674e85f8e27d858fa",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "senate_specials_2026.csv",
+  "election_cycle": "2026",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Public election facts; cite source URLs and retrieval dates. No reporting prose reproduced.",
+  "office_coverage": [
+    "us_senate",
+    "us_house"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research and reproducible reporting.",
+  "privacy_tier": 0,
+  "prohibited_use": "No contact fields, advocacy targeting or claims of unverified nomination.",
+  "raw_path": "data/raw/source=fec_election_schedule_2026/snapshot=2026-10-18/sha256=2a169c62b99c94126dd96a3bb019485ec25e9729687dba8674e85f8e27d858fa/senate_specials_2026.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "FEC / Ohio Secretary of State",
+  "review_date": "2027-10-18",
+  "row_count": 2,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-18",
+  "source_id": "fec_election_schedule_2026_2a169c62b99c",
+  "source_owner": "FEC / Ohio Secretary of State",
+  "source_url": "https://www.fec.gov/documents/5910/2026pdates.pdf",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

@@ -130,7 +130,7 @@ QUALITY_PRECEDENCE = (
 
 
 def _r4(v: object) -> float | None:
-    return None if pd.isna(v) else round(float(v), 4)
+    return None if pd.isna(v) else round(float(str(v)), 4)
 
 
 def reconcile(df: pd.DataFrame, panel: pd.DataFrame, vintage: int) -> tuple[pd.DataFrame, dict]:
@@ -413,7 +413,7 @@ def build(
 
 
 def _expected_states(stats: list[dict]) -> list[str]:
-    return [s.get("state") for s in stats if s.get("state")]
+    return [str(s["state"]) for s in stats if s.get("state")]
 
 
 def main(argv: list[str] | None = None) -> int:

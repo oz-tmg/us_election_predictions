@@ -1,0 +1,120 @@
+{
+  "as_of": "2026-10-21",
+  "source_coverage": [
+    {
+      "state_po": "CA",
+      "raw_sha256": "62fe9851e4b8bc19eaaa9dd9b33ee39a786b222e13eb28d9d4d3096c14574610",
+      "parser_sha256": "d1a038d1aeb9aa16f6c08d4fb76b6a5874aecb541a3346702879c5c3d78db3d8",
+      "candidates": 104,
+      "races": 52
+    },
+    {
+      "state_po": "TX",
+      "raw_sha256": "c13ffb4ebeee389fa9818d47b31f77b4e260ea6e6f5389cb7bf0f36d9b44d87c",
+      "parser_sha256": "d1a038d1aeb9aa16f6c08d4fb76b6a5874aecb541a3346702879c5c3d78db3d8",
+      "candidates": 91,
+      "races": 39
+    },
+    {
+      "state_po": "NC",
+      "raw_sha256": "2f1c1b932dff920bc690c3e5fc1813ff4389cb5a28ef0b99d4bb06c9fef09cbe",
+      "parser_sha256": "d1a038d1aeb9aa16f6c08d4fb76b6a5874aecb541a3346702879c5c3d78db3d8",
+      "candidates": 42,
+      "races": 15
+    },
+    {
+      "state_po": "FL",
+      "raw_sha256": "e8940328a2726451d3bfc28468d01bbe248646e534c4bc78ab5947d915008ba8",
+      "parser_sha256": "d1a038d1aeb9aa16f6c08d4fb76b6a5874aecb541a3346702879c5c3d78db3d8",
+      "candidates": 86,
+      "races": 29
+    },
+    {
+      "state_po": "NY",
+      "raw_sha256": "10d95f5d2d6b282f98f13e9e771c78e3fb48bfdba4ac38d0c477d383a7712f8e",
+      "parser_sha256": "d1a038d1aeb9aa16f6c08d4fb76b6a5874aecb541a3346702879c5c3d78db3d8",
+      "candidates": 59,
+      "races": 26
+    },
+    {
+      "state_po": "MD",
+      "raw_sha256": "95e0b28a4b88ff185d74a5cd2be60ca77e25270bf56dfd61b636839d19b730b7",
+      "parser_sha256": "d1a038d1aeb9aa16f6c08d4fb76b6a5874aecb541a3346702879c5c3d78db3d8",
+      "candidates": 22,
+      "races": 8
+    },
+    {
+      "state_po": "MI",
+      "raw_sha256": "e3551674a96aebc1d295336d857a9b626ab38177823ed5357214a40b038b1938",
+      "parser_sha256": "d1a038d1aeb9aa16f6c08d4fb76b6a5874aecb541a3346702879c5c3d78db3d8",
+      "candidates": 66,
+      "races": 14
+    }
+  ],
+  "verified_races": 182,
+  "ambiguous_matches": [
+    {
+      "state_po": "CA",
+      "office": "us_house",
+      "candidate": "Gil Cisneros",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "CA",
+      "office": "us_house",
+      "candidate": "Lou Correa",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "FL",
+      "office": "us_house",
+      "candidate": "Greg Steube",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "MD",
+      "office": "us_house",
+      "candidate": "John \"Johnny O\" Olszewski, Jr.",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NC",
+      "office": "us_house",
+      "candidate": "Don Davis",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NC",
+      "office": "us_house",
+      "candidate": "Greg Murphy",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NY",
+      "office": "us_house",
+      "candidate": "Nicholas J. Lalota",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NY",
+      "office": "us_house",
+      "candidate": "Mike Lawler",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "NY",
+      "office": "us_house",
+      "candidate": "Pat Ryan",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    },
+    {
+      "state_po": "TX",
+      "office": "us_house",
+      "candidate": "TREVER NEHLS",
+      "reason": "surname/initial hit but given names differ; alias review required"
+    }
+  ],
+  "roster_rows": 435,
+  "remaining_unknown": 288,
+  "not_a_filing_based_nomination": true
+}

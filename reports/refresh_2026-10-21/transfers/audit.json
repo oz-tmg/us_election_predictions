@@ -1,0 +1,1227 @@
+{
+  "AL": {
+    "2020": {
+      "state": "AL",
+      "from_cycle": 2020,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "2020 BAF (2010-era plan)",
+      "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_01_cd118.zip",
+      "precinct_votes": {
+        "precincts": 2046,
+        "two_party_votes": 2290794.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 185976,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "unplaced_blocks_with_land": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 50,
+        "precincts_unmatched": 1996,
+        "votes_unmatched_to_a_vtd": 2217137.0,
+        "unmatched_precincts": [
+          "01001|100 TRINITY METHODIST",
+          "01001|110 CENTRAL AL ELECTRIC",
+          "01001|140 AUTAUGAVILLE VFD",
+          "01001|150 PRATTMONT BAPTIST",
+          "01001|160 DOSTER COMM_ CTR_",
+          "01001|170 CAMELLIA BAPTIST CHURCH",
+          "01001|180 OLD KINGSTON VFD",
+          "01001|20 HERITAGE BAPTIST",
+          "01001|220 UPPER KINGSTON",
+          "01001|230 COUNTY LINE BAPTIST",
+          "01001|30 BILLINGSLEY COMM_ CTR_",
+          "01001|40 E_ MEMORIAL CHRISTIAN",
+          "01001|50 WHITE CITY VFD",
+          "01001|60 MARBURY MIDDLE",
+          "01001|70 BOONE'S CHAPEL",
+          "01001|80 INDEPENDENCE VFD",
+          "01001|90 BOOTH VFD",
+          "01001|COUNTY FLOATING",
+          "01003|BARNWELL VFD",
+          "01003|BAY MINETTE CIVIC CTR",
+          "01003|BELFOREST COMM_ CTR",
+          "01003|BON SECOUR MORG CHAPEL",
+          "01003|BROMLEY VFD",
+          "01003|CLR SPG FELLOWSHIP",
+          "01003|COUNTY FLOATING"
+        ],
+        "votes_from_county_aggregates": 51524.0,
+        "votes_unplaceable": 2165613.0,
+        "votes_offered": 2290794.0,
+        "votes_placed": 125181.0
+      },
+      "old_district_rows": 11144,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 2290794.0,
+        "certified_two_party_votes": 2290794.0,
+        "passed": true
+      },
+      "backtest": {
+        "n_districts": 2,
+        "transfer_mae": 0.2122708309150759,
+        "no_prior_mae": 0.17480027109765142,
+        "state_lean_fallback_mae": 0.17480027109765142,
+        "beats_no_prior": false,
+        "beats_fallback": false,
+        "transfer_sigma": 0.007946380478869705,
+        "confidence_components": {
+          "unsplit_share": {
+            "min": 0.7392074230341672,
+            "median": 0.7721451892300693
+          },
+          "old_district_majority_share": {
+            "min": 0.7118980373603602,
+            "median": 0.7588738807999815
+          },
+          "geocoded_share": {
+            "min": 1.0,
+            "median": 1.0
+          }
+        }
+      },
+      "usability": {
+        "placed_share": 0.05464524527303634,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    },
+    "2024": {
+      "state": "AL",
+      "from_cycle": 2024,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+        "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=01/tl_2024_01_cd119.zip",
+      "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+      "precinct_votes": {
+        "precincts": 2085,
+        "two_party_votes": 2235028.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 185976,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "assignment_source": "census_cd120_bef",
+        "block_vintage": 2020,
+        "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 50,
+        "precincts_unmatched": 2035,
+        "votes_unmatched_to_a_vtd": 2156083.0,
+        "unmatched_precincts": [
+          "01001|100 TRINITY METHODIST",
+          "01001|110 CENTRAL AL ELECTRIC",
+          "01001|140 AUTAUGAVILLE VFD",
+          "01001|150 PRATTMONT BAPTIST",
+          "01001|160 DOSTER COMM CTR",
+          "01001|170 CAMELLIA BAPTIST",
+          "01001|180 OLD KINGSTON VFD",
+          "01001|20 HERITAGE BAPTIST",
+          "01001|220 UPPER KINGSTON",
+          "01001|230 COUNTY LINE BAPTIST",
+          "01001|240 GLYNWOOD BAPTIST",
+          "01001|30 BILLINGSLEY COMM CTR",
+          "01001|40 CENTRAL AL COMM COLLEGE",
+          "01001|50 WHITE CITY VFD",
+          "01001|60 MARBURY MIDDLE SCHOOL",
+          "01001|70 BOONE'S CHAPEL",
+          "01001|80 FRIENDSHIP BAPTIST",
+          "01001|90 BOOTH VFD",
+          "01001|ABSENTEE",
+          "01001|PROVISIONAL",
+          "01003|ABSENTEE",
+          "01003|BARNWELL VFD",
+          "01003|BAY MINETTE CITY HALL/CIVIC",
+          "01003|BELFOREST CHRISTIAN CH",
+          "01003|BON SECOUR FISHERMAN BAPT"
+        ],
+        "votes_from_county_aggregates": 37401.0,
+        "votes_unplaceable": 2118682.0,
+        "votes_offered": 2235028.0,
+        "votes_placed": 116346.0
+      },
+      "old_district_rows": 25687,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 2235028.0,
+        "certified_two_party_votes": 2235028.0,
+        "passed": true
+      },
+      "usability": {
+        "placed_share": 0.05205572368668312,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    }
+  },
+  "CA": {
+    "2020": {
+      "status": "blocked",
+      "error": "BlockAssign_ST06_CA_2020.zip has no _VTD.txt member"
+    },
+    "2024": {
+      "status": "blocked",
+      "error": "BlockAssign_ST06_CA_2020.zip has no _VTD.txt member"
+    }
+  },
+  "FL": {
+    "2020": {
+      "state": "FL",
+      "from_cycle": 2020,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "2020 BAF (2010-era plan)",
+      "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_12_cd118.zip",
+      "precinct_votes": {
+        "precincts": 6097,
+        "two_party_votes": 10965752.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 390066,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "unplaced_blocks_with_land": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28
+        ]
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 3932,
+        "precincts_unmatched": 2165,
+        "votes_unmatched_to_a_vtd": 3642784.0,
+        "unmatched_precincts": [
+          "12001|60_FELLOWSHIP CHURCH OF HIGH SPRINGS",
+          "12001|61_MILLHOPPER BRANCH LIBRARY",
+          "12001|62_NORTH CENTRAL BAPTIST CHURCH",
+          "12001|63_CSI ACADEMY OF FLORIDA",
+          "12009|443_PRECINCT 443",
+          "12009|999_PRECINCT 999",
+          "12011|E016",
+          "12011|E017",
+          "12011|E022",
+          "12011|E023",
+          "12011|E031",
+          "12011|E032",
+          "12011|E033",
+          "12011|G001",
+          "12011|Q045",
+          "12011|W009",
+          "12011|Z073",
+          "12015|11_11 - MYAKKA RIVER ELEMENTARY S",
+          "12015|14_14 - HOME OWNERS OF ALLIGATOR",
+          "12015|17_17 - CULTURAL CENTER OF CHARLO",
+          "12015|19_19 - CHARLOTTE HARBOR EVENT AN",
+          "12015|21_21 - MEADOW PARK ELEMENTARY SC",
+          "12015|25_25 - MID-COUNTY REGIONAL LIBRA",
+          "12015|28_28 - CHARLOTTE HARBOR EVENT AN",
+          "12015|29_29 - PUNTA GORDA ISLES CIVIC A"
+        ],
+        "votes_from_county_aggregates": 2323489.0,
+        "votes_unplaceable": 1319295.0,
+        "votes_offered": 10965752.0,
+        "votes_placed": 9646457.0
+      },
+      "old_district_rows": 8280536,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 10965752.0,
+        "certified_two_party_votes": 10965776.0,
+        "passed": false
+      },
+      "backtest": {
+        "n_districts": 27,
+        "transfer_mae": 0.10352882780769083,
+        "no_prior_mae": 0.12413879427150763,
+        "state_lean_fallback_mae": 0.15619140022111805,
+        "beats_no_prior": true,
+        "beats_fallback": true,
+        "transfer_sigma": 0.12279871320370692,
+        "confidence_components": {
+          "unsplit_share": {
+            "min": 0.1375348021254953,
+            "median": 0.8602682471706882
+          },
+          "old_district_majority_share": {
+            "min": 0.42247018174843126,
+            "median": 0.7506577895314871
+          },
+          "geocoded_share": {
+            "min": 1.0,
+            "median": 1.0
+          }
+        }
+      },
+      "usability": {
+        "placed_share": 0.8796895096660949,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    },
+    "2024": {
+      "state": "FL",
+      "from_cycle": 2024,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+        "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=12/tl_2024_12_cd119.zip",
+      "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+      "precinct_votes": {
+        "precincts": 5712,
+        "two_party_votes": 10793164.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 390066,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28
+        ],
+        "assignment_source": "census_cd120_bef",
+        "block_vintage": 2020,
+        "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 2538,
+        "precincts_unmatched": 3174,
+        "votes_unmatched_to_a_vtd": 5733595.0,
+        "unmatched_precincts": [
+          "12001|101",
+          "12001|102",
+          "12001|103",
+          "12001|104",
+          "12001|107",
+          "12001|108",
+          "12001|111",
+          "12001|112",
+          "12001|113",
+          "12001|114",
+          "12001|115",
+          "12001|116",
+          "12001|117",
+          "12001|118",
+          "12001|119",
+          "12001|61",
+          "12001|72",
+          "12001|75",
+          "12001|76",
+          "12001|80",
+          "12001|81",
+          "12001|82",
+          "12001|85",
+          "12001|86",
+          "12001|87"
+        ],
+        "votes_from_county_aggregates": 3839782.0,
+        "votes_unplaceable": 1893813.0,
+        "votes_offered": 10793164.0,
+        "votes_placed": 8899351.0
+      },
+      "old_district_rows": 9589935,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 10793164.0,
+        "certified_two_party_votes": 10793163.0,
+        "passed": false
+      },
+      "usability": {
+        "placed_share": 0.8245358821565205,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    }
+  },
+  "LA": {
+    "2020": {
+      "status": "blocked",
+      "error": "no 2020 precinct file for LA under data/raw"
+    },
+    "2024": {
+      "state": "LA",
+      "from_cycle": 2024,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+        "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=22/tl_2024_22_cd119.zip",
+      "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+      "precinct_votes": {
+        "precincts": 3805,
+        "two_party_votes": 1018305.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 142874,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "assignment_source": "census_cd120_bef",
+        "block_vintage": 2020,
+        "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 0,
+        "precincts_unmatched": 3805,
+        "votes_unmatched_to_a_vtd": 1018305.0,
+        "unmatched_precincts": [
+          "22001|01 01",
+          "22001|01 02",
+          "22001|01 03",
+          "22001|01 04",
+          "22001|01 05",
+          "22001|01 06",
+          "22001|01 07",
+          "22001|01 08",
+          "22001|02 01",
+          "22001|02 02",
+          "22001|02 03",
+          "22001|02 04",
+          "22001|02 05",
+          "22001|03 01",
+          "22001|03 02",
+          "22001|03 03",
+          "22001|03 04",
+          "22001|03 05",
+          "22001|03 07",
+          "22001|04 01",
+          "22001|04 02",
+          "22001|04 03",
+          "22001|04 04",
+          "22001|04 05",
+          "22001|04 06"
+        ],
+        "votes_from_county_aggregates": 0.0,
+        "votes_unplaceable": 1018305.0,
+        "votes_offered": 1018305.0,
+        "votes_placed": 0.0
+      },
+      "old_district_rows": 0,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 1018305.0,
+        "certified_two_party_votes": 1975375.0,
+        "passed": false
+      },
+      "usability": {
+        "placed_share": 0.0,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    }
+  },
+  "NC": {
+    "2020": {
+      "state": "NC",
+      "from_cycle": 2020,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "2020 BAF (2010-era plan)",
+      "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_37_cd118.zip",
+      "precinct_votes": {
+        "precincts": 3065,
+        "two_party_votes": 5443065.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 236638,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "unplaced_blocks_with_land": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ]
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 2300,
+        "precincts_unmatched": 765,
+        "votes_unmatched_to_a_vtd": 2560581.0,
+        "unmatched_precincts": [
+          "37001|104",
+          "37001|10S1",
+          "37001|1210",
+          "37001|TRANSFER",
+          "37005|ABSENTEE",
+          "37005|ONE STOP",
+          "37005|PROVISIONAL",
+          "37009|ABSENTEE",
+          "37009|ONE STOP",
+          "37009|PROVISIONAL",
+          "37009|TRANSFER",
+          "37011|ABSENTEE",
+          "37011|ABSENTEE SUPPLEMENTAL",
+          "37011|ONE STOP",
+          "37011|PROVISIONAL",
+          "37013|ABSENTEE",
+          "37013|AURORA OS",
+          "37013|BELHAVEN OS",
+          "37013|BOE OS",
+          "37013|PROVISIONAL",
+          "37013|TRANSFER",
+          "37015|ABSENTEE BY MAIL",
+          "37015|OS LOB",
+          "37015|OS LW",
+          "37015|OS POW"
+        ],
+        "votes_from_county_aggregates": 1814445.0,
+        "votes_unplaceable": 746136.0,
+        "votes_offered": 5443065.0,
+        "votes_placed": 4696929.0
+      },
+      "old_district_rows": 1196031,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 5443065.0,
+        "certified_two_party_votes": 5443065.0,
+        "passed": true
+      },
+      "backtest": {
+        "n_districts": 13,
+        "transfer_mae": 0.030963557324671487,
+        "no_prior_mae": 0.1029623044682442,
+        "state_lean_fallback_mae": 0.10514518989858569,
+        "beats_no_prior": true,
+        "beats_fallback": true,
+        "transfer_sigma": 0.046080001282654125,
+        "confidence_components": {
+          "unsplit_share": {
+            "min": 0.6600271678192874,
+            "median": 0.9234653259124308
+          },
+          "old_district_majority_share": {
+            "min": 0.4314338509901225,
+            "median": 0.5628108604703012
+          },
+          "geocoded_share": {
+            "min": 1.0,
+            "median": 1.0
+          }
+        }
+      },
+      "usability": {
+        "placed_share": 0.8629198806187323,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    },
+    "2024": {
+      "state": "NC",
+      "from_cycle": 2024,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+        "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=37/tl_2024_37_cd119.zip",
+      "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+      "precinct_votes": {
+        "precincts": 2908,
+        "two_party_votes": 5612593.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 236638,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "assignment_source": "census_cd120_bef",
+        "block_vintage": 2020,
+        "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 2173,
+        "precincts_unmatched": 735,
+        "votes_unmatched_to_a_vtd": 2336382.0,
+        "unmatched_precincts": [
+          "37001|03SE",
+          "37001|03SM",
+          "37001|104",
+          "37001|10S1",
+          "37001|1210",
+          "37005|ABSENTEE BY MAIL",
+          "37005|EARLY VOTING",
+          "37005|PROVSIONAL",
+          "37005|TRANSFER",
+          "37011|ABSENTEE",
+          "37011|EARLY VOTING",
+          "37011|PROVISIONAL",
+          "37011|TRANSFER",
+          "37013|ABSENTEE",
+          "37013|EV-AUR",
+          "37013|EV-BEL",
+          "37013|EV-BOE",
+          "37013|EV-CHO",
+          "37013|PROVISIONAL",
+          "37013|TRANSFER",
+          "37015|ABSENTEE",
+          "37015|EV-LOB",
+          "37015|EV-LW",
+          "37015|EV-POW",
+          "37015|PROVISIONAL"
+        ],
+        "votes_from_county_aggregates": 1415907.0,
+        "votes_unplaceable": 920475.0,
+        "votes_offered": 5612593.0,
+        "votes_placed": 4692117.999999999
+      },
+      "old_district_rows": 1129288,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 5612593.0,
+        "certified_two_party_votes": 5613798.0,
+        "passed": false
+      },
+      "usability": {
+        "placed_share": 0.8359982631913625,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    }
+  },
+  "OH": {
+    "2020": {
+      "status": "blocked",
+      "error": "no overlap between transferred priors and actual results"
+    },
+    "2024": {
+      "state": "OH",
+      "from_cycle": 2024,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+        "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=39/tl_2024_39_cd119.zip",
+      "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+      "precinct_votes": {
+        "precincts": 8878,
+        "two_party_votes": 5713815.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 276428,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "assignment_source": "census_cd120_bef",
+        "block_vintage": 2020,
+        "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 0,
+        "precincts_unmatched": 8878,
+        "votes_unmatched_to_a_vtd": 5713815.0,
+        "unmatched_precincts": [
+          "39001|BRATTON TOWNSHIP",
+          "39001|BRUSH CREEK TOWNSHIP",
+          "39001|GREEN TOWNSHIP",
+          "39001|JEFFERSON TOWNSHIP",
+          "39001|LIBERTY TOWNSHIP",
+          "39001|LOCUST GROVE",
+          "39001|MANCHESTER UNITED TOWNSHIP",
+          "39001|MEIGS TOWNSHIP",
+          "39001|MONROE TOWNSHIP",
+          "39001|OLIVER TOWNSHIP",
+          "39001|PEEBLES VILLAGE",
+          "39001|SCOTT TOWNSHIP",
+          "39001|SEAMAN VILLAGE",
+          "39001|SPRIGG TOWNSHIP",
+          "39001|TIFFIN EAST",
+          "39001|TIFFIN WEST",
+          "39001|WAYNE TOWNSHIP",
+          "39001|WEST UNION A",
+          "39001|WEST UNION B",
+          "39001|WINCHESTER TOWNSHIP",
+          "39001|WINCHESTER VILLAGE",
+          "39003|AMANDA E",
+          "39003|AMANDA N",
+          "39003|AMERICAN A",
+          "39003|AMERICAN B"
+        ],
+        "votes_from_county_aggregates": 0.0,
+        "votes_unplaceable": 5713815.0,
+        "votes_offered": 5713815.0,
+        "votes_placed": 0.0
+      },
+      "old_district_rows": 0,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 5713815.0,
+        "certified_two_party_votes": 5713815.0,
+        "passed": true
+      },
+      "usability": {
+        "placed_share": 0.0,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    }
+  },
+  "TN": {
+    "2020": {
+      "state": "TN",
+      "from_cycle": 2020,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "2020 BAF (2010-era plan)",
+      "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_47_cd118.zip",
+      "precinct_votes": {
+        "precincts": 1965,
+        "two_party_votes": 2996186.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 179717,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "unplaced_blocks_with_land": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 20,
+        "precincts_unmatched": 1945,
+        "votes_unmatched_to_a_vtd": 2980986.0,
+        "unmatched_precincts": [
+          "47001|ANDERSONVILLE",
+          "47001|BRICEVILLE",
+          "47001|BULL RUN",
+          "47001|CLAXTON",
+          "47001|CLINTON",
+          "47001|CLINTON HIGH",
+          "47001|CLINTON MIDDLE",
+          "47001|DUTCH VALLEY",
+          "47001|EMORY VALLEY",
+          "47001|FAIRVIEW",
+          "47001|GLEN ALPINE",
+          "47001|GLENWOOD",
+          "47001|HENDRIX CREEK",
+          "47001|HIGHLAND VIEW",
+          "47001|LAKE CITY MS",
+          "47001|MARLOW",
+          "47001|NORRIS",
+          "47001|NORTH CLINTON",
+          "47001|NORWOOD",
+          "47001|OAK RIDGE",
+          "47001|PINE VALLEY",
+          "47001|ROBERTSVILLE",
+          "47001|ROCKY TOP",
+          "47001|ROSEDALE",
+          "47001|SOUTH CLINTON"
+        ],
+        "votes_from_county_aggregates": 0.0,
+        "votes_unplaceable": 2980986.0,
+        "votes_offered": 2996186.0,
+        "votes_placed": 15200.0
+      },
+      "old_district_rows": 1633,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 2996186.0,
+        "certified_two_party_votes": 2996186.0,
+        "passed": true
+      },
+      "backtest": {
+        "n_districts": 1,
+        "transfer_mae": 0.07523539776069482,
+        "no_prior_mae": 0.0,
+        "state_lean_fallback_mae": 0.1144474248344311,
+        "beats_no_prior": false,
+        "beats_fallback": true,
+        "transfer_sigma": NaN,
+        "confidence_components": {
+          "unsplit_share": {
+            "min": 1.0,
+            "median": 1.0
+          },
+          "old_district_majority_share": {
+            "min": 1.0,
+            "median": 1.0
+          },
+          "geocoded_share": {
+            "min": 1.0,
+            "median": 1.0
+          }
+        }
+      },
+      "usability": {
+        "placed_share": 0.0050731162885081236,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    },
+    "2024": {
+      "state": "TN",
+      "from_cycle": 2024,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+        "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=47/tl_2024_47_cd119.zip",
+      "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+      "precinct_votes": {
+        "precincts": 1862,
+        "two_party_votes": 3023130.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 179717,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "assignment_source": "census_cd120_bef",
+        "block_vintage": 2020,
+        "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 20,
+        "precincts_unmatched": 1842,
+        "votes_unmatched_to_a_vtd": 3007140.0,
+        "unmatched_precincts": [
+          "47001|Andersonville",
+          "47001|Briceville",
+          "47001|Brushy Valley",
+          "47001|Bull Run",
+          "47001|Claxton",
+          "47001|Clinton",
+          "47001|Clinton High",
+          "47001|Clinton Middle",
+          "47001|Dutch Valley",
+          "47001|Emory Valley",
+          "47001|Fairview",
+          "47001|Glen Alpine",
+          "47001|Glenwood",
+          "47001|Hendrix Creek",
+          "47001|Highland View",
+          "47001|Lake City MS",
+          "47001|Marlow",
+          "47001|Norris",
+          "47001|North Clinton",
+          "47001|Norwood",
+          "47001|OR Senior Center",
+          "47001|Pine Valley",
+          "47001|Robertsville",
+          "47001|Rocky Top",
+          "47001|Rosedale"
+        ],
+        "votes_from_county_aggregates": 0.0,
+        "votes_unplaceable": 3007140.0,
+        "votes_offered": 3023130.0,
+        "votes_placed": 15990.0
+      },
+      "old_district_rows": 1633,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 3023130.0,
+        "certified_two_party_votes": 3023130.0,
+        "passed": true
+      },
+      "usability": {
+        "placed_share": 0.005289220112929315,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    }
+  },
+  "UT": {
+    "2020": {
+      "state": "UT",
+      "from_cycle": 2020,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "2020 BAF (2010-era plan)",
+      "new_plan_path": "data/raw/source=census_tiger/dataset=cd118/vintage=2023/tl_2023_49_cd118.zip",
+      "precinct_votes": {
+        "precincts": 2346,
+        "two_party_votes": 1425421.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 71207,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "unplaced_blocks_with_land": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 776,
+        "precincts_unmatched": 1570,
+        "votes_unmatched_to_a_vtd": 918033.0,
+        "unmatched_precincts": [
+          "49001|BEAVER 1",
+          "49001|BEAVER 2",
+          "49001|BEAVER 3",
+          "49001|BEAVER 4",
+          "49001|GREENVILLE 1",
+          "49001|MILFORD 1",
+          "49001|MILFORD 2",
+          "49001|MILFORD 3",
+          "49001|MINERSVILLE 1",
+          "49003|BEAR RIVER",
+          "49003|BEAR RIVER EAST",
+          "49003|BEAVER DAM-COLLINSTON",
+          "49003|BRIGHAM CITY 1",
+          "49003|BRIGHAM CITY 10",
+          "49003|BRIGHAM CITY 11",
+          "49003|BRIGHAM CITY 12",
+          "49003|BRIGHAM CITY 13",
+          "49003|BRIGHAM CITY 14",
+          "49003|BRIGHAM CITY 15",
+          "49003|BRIGHAM CITY 2",
+          "49003|BRIGHAM CITY 3",
+          "49003|BRIGHAM CITY 4",
+          "49003|BRIGHAM CITY 5",
+          "49003|BRIGHAM CITY 6",
+          "49003|BRIGHAM CITY 7"
+        ],
+        "votes_from_county_aggregates": 118104.99999999999,
+        "votes_unplaceable": 799928.0,
+        "votes_offered": 1425421.0,
+        "votes_placed": 625493.0
+      },
+      "old_district_rows": 557246,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 1425421.0,
+        "certified_two_party_votes": 1425422.0,
+        "passed": false
+      },
+      "backtest": {
+        "n_districts": 4,
+        "transfer_mae": 0.21722768228559902,
+        "no_prior_mae": 0.016145919036336318,
+        "state_lean_fallback_mae": 0.05459388498856245,
+        "beats_no_prior": false,
+        "beats_fallback": false,
+        "transfer_sigma": 0.14670568725627778,
+        "confidence_components": {
+          "unsplit_share": {
+            "min": 0.817125022774999,
+            "median": 0.9372424642588122
+          },
+          "old_district_majority_share": {
+            "min": 0.7669352843568427,
+            "median": 0.7976539906955149
+          },
+          "geocoded_share": {
+            "min": 1.0,
+            "median": 1.0
+          }
+        }
+      },
+      "usability": {
+        "placed_share": 0.43881281389849036,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    },
+    "2024": {
+      "state": "UT",
+      "from_cycle": 2024,
+      "generated_on": "2026-10-21",
+      "sources": {
+        "census_pl94171_2020": "registered 2026-09-30; POP20 used in place of VAP, see --weight",
+        "census_baf_2020": "acquired 2026-10-02, data/raw/source=census_baf/",
+        "census_cd120_bef": "registered Census CD120 equivalencies; data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip"
+      },
+      "precinct_boundary_assignment": null,
+      "precinct_boundary_path": null,
+      "old_plan_path": "data/raw/source=tiger/dataset=cd/vintage=2024/state=49/tl_2024_49_cd119.zip",
+      "new_plan_path": "data/raw/source=census_cd120_bef/snapshot=2026-10-21/cd120.zip",
+      "precinct_votes": {
+        "precincts": 3105,
+        "two_party_votes": 1445799.0,
+        "pseudo_precincts": 0,
+        "share_in_pseudo_precincts": 0.0
+      },
+      "block_to_new_district": {
+        "blocks": 71207,
+        "blocks_unplaced": 0,
+        "population_unplaced": 0,
+        "districts": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "assignment_source": "census_cd120_bef",
+        "block_vintage": 2020,
+        "caveat": "Whole-block tabulation plan; the provider reports no split blocks in these nine states"
+      },
+      "apportionment": {
+        "precincts_matched_to_vtd": 711,
+        "precincts_unmatched": 2394,
+        "votes_unmatched_to_a_vtd": 1052915.0,
+        "unmatched_precincts": [
+          "49001|BEAVER 1",
+          "49001|BEAVER 2",
+          "49001|BEAVER 3",
+          "49001|BEAVER 4",
+          "49001|GREENVILLE 1",
+          "49001|MILFORD 1",
+          "49001|MILFORD 2",
+          "49001|MILFORD 3",
+          "49001|MINERSVILLE 1",
+          "49003|Bear River",
+          "49003|Beaver Dam/Collinston",
+          "49003|Box Elder West",
+          "49003|Brigham City 01",
+          "49003|Brigham City 02",
+          "49003|Brigham City 03",
+          "49003|Brigham City 04",
+          "49003|Brigham City 05",
+          "49003|Brigham City 06",
+          "49003|Brigham City 07",
+          "49003|Brigham City 08",
+          "49003|Brigham City 09",
+          "49003|Brigham City 10",
+          "49003|Brigham City 11",
+          "49003|Brigham City 12",
+          "49003|Brigham City 13"
+        ],
+        "votes_from_county_aggregates": 198175.0,
+        "votes_unplaceable": 854740.0,
+        "votes_offered": 1445799.0,
+        "votes_placed": 591059.0
+      },
+      "old_district_rows": 3417341,
+      "votes_without_an_old_district": 0.0,
+      "statewide_reconciliation": {
+        "parsed_two_party_votes": 1445799.0,
+        "certified_two_party_votes": 1446384.0,
+        "passed": false
+      },
+      "usability": {
+        "placed_share": 0.40881132162907846,
+        "usable": false,
+        "admitted": false,
+        "reason": "Candidate only; state-specific calibration and register review required"
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "review_date": "2026-10-25",
+  "checked_at": "2026-10-26T05:58:44.560542+00:00",
+  "checks": [
+    {
+      "command": [
+        "/Users/alexoswald/Projects/Elections/us_election_predictions/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "."
+      ],
+      "returncode": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/alexoswald/Projects/Elections/us_election_predictions/.venv/bin/python",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "."
+      ],
+      "returncode": 0,
+      "stdout": "218 files already formatted\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/alexoswald/Projects/Elections/us_election_predictions/.venv/bin/python",
+        "-m",
+        "mypy",
+        "src/election_prediction"
+      ],
+      "returncode": 0,
+      "stdout": "Success: no issues found in 84 source files\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/alexoswald/Projects/Elections/us_election_predictions/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/unit/test_polling_lean.py",
+        "tests/unit/test_candidate_polls.py",
+        "-q"
+      ],
+      "returncode": 0,
+      "stdout": "....................................................                     [100%]\n52 passed in 5.19s\n",
+      "stderr": ""
+    }
+  ],
+  "all_checks_passed": true,
+  "missing_documentation_targets": [],
+  "user_file_unchanged": true,
+  "source_and_input_hashes_match": true,
+  "implementation_hashes_match": true,
+  "all_sealed_file_hashes_match": true,
+  "full_suite_rerun": false
+}

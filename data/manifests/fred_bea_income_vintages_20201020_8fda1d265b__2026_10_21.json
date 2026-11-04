@@ -1,0 +1,35 @@
+{
+  "acquired_at": "2026-10-21T07:13:48+00:00",
+  "acquisition_method": "api",
+  "checksum_sha256": "8fda1d265bc4cc8c6e4347d0a0e5154dbf77005f379e054f624731c4790388c3",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "A229RX0 as known 2020-10-20",
+  "election_cycle": "2020",
+  "file_format": "json",
+  "geography_coverage": [
+    "national"
+  ],
+  "known_caveats": "Point-in-time API intervals are clipped; exact release_date is not inferred from cutoff.",
+  "license_or_terms": "Public domain; citation requested.",
+  "office_coverage": [
+    "us_house"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan aggregate research with explicit real-time vintage and attribution.",
+  "privacy_tier": 0,
+  "prohibited_use": "Do not replace historical vintages with today's revised values or disclose API keys.",
+  "raw_path": "data/raw/source=fred_alfred/series=A229RX0/vintage=2020-10-20/retrieved=2026-10-21/observations.json",
+  "redistribution_allowed": true,
+  "required_attribution": "U.S. Bureau of Economic Analysis / FRED",
+  "review_date": "2027-10-21",
+  "row_count": 32,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-10-21",
+  "source_id": "fred_bea_income_vintages_20201020_8fda1d265b",
+  "source_owner": "U.S. Bureau of Economic Analysis / FRED",
+  "source_url": "https://api.stlouisfed.org/fred/series/observations?series_id=A229RX0&realtime_start=2020-10-20&realtime_end=2020-10-20&observation_start=2018-01-01&observation_end=2020-10-20&file_type=json",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

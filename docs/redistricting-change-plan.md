@@ -3,6 +3,15 @@
 _Drafted 2026-09-14. Supersedes the implicit design in which a House district's plan was a
 function of the cycle year._
 
+**October 18 implementation note:** public Texas Legislative Council 2020/2024 precinct
+maps now provide the election-vintage block link without an RDH account. PLANC2333 receives
+all 38 live Texas priors (100% vote placement); a third-state 2020->2022 backtest beats the
+state-lean fallback and supplies full transfer sigma 0.1223. The live register checks plan,
+source year, district coverage and table/report/calibration hashes. **135 redrawn House
+seats still fall back.** These are allocated historical votes, not certified results on
+new boundaries. Other states' map acquisition and fresh legal-status review remain open.
+Evidence and reproduction: [`refresh-2026-status.md`](refresh-2026-status.md).
+
 ## The decision this document records
 
 `plan_era(cycle)` in `features/incumbency.py` assigns every House district to one map per
