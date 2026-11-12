@@ -1,0 +1,15 @@
+state_po,office,district_num,dem_ext,dem_cert,rep_ext,rep_cert,share_diff,status
+NC,us_house,1,186341,186341.0,180034,180034.0,0.0,exact
+NC,us_house,2,268662,268662.0,128164,128164.0,0.0,exact
+NC,us_house,3,0,0.0,248276,248276.0,0.0,exact
+NC,us_house,4,308064,308064.0,112084,112084.0,0.0,exact
+NC,us_house,5,162390,162390.0,238304,238304.0,0.0,exact
+NC,us_house,6,0,0.0,233303,233303.0,0.0,exact
+NC,us_house,7,179512,179512.0,254022,254022.0,0.0,exact
+NC,us_house,8,161709,161709.0,238640,238640.0,0.0,exact
+NC,us_house,9,140852,140852.0,210042,210042.0,0.0,exact
+NC,us_house,10,155383,155383.0,233814,233814.0,0.0,exact
+NC,us_house,11,186977,186977.0,245546,245546.0,0.0,exact
+NC,us_house,12,259627,259627.0,91128,91128.0,0.0,exact
+NC,us_house,13,171835,171835.0,243655,243655.0,0.0,exact
+NC,us_house,14,168269,168269.0,232987,232987.0,0.0,exact

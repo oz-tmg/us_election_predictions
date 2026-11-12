@@ -1,0 +1,223 @@
+{
+  "as_of": "2026-11-12",
+  "states": {
+    "MA": {
+      "access": "automated_ok",
+      "source": "https://electionstats.state.ma.us/elections/download/<election_id>/precincts_include:0/",
+      "release_page": "https://electionstats.state.ma.us/elections/search/year_from:2024/year_to:2024/stage:General",
+      "official": "Certified (linked by the Secretary of the Commonwealth as certified results)",
+      "note": "sec.state.ma.us is behind an Imperva bot wall; electionstats.state.ma.us is not. Certified results post weeks after the election; election night has no state feed here.",
+      "preserved": [
+        {
+          "file": "MA_2024GE_CD1_165323_by_town.csv",
+          "sha256": "f6ad4a3ff495ceca194f4d01265b85ffd1d9e0fb083c30b64a0886fb419cb98b",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=f6ad4a3ff495ceca194f4d01265b85ffd1d9e0fb083c30b64a0886fb419cb98b/MA_2024GE_CD1_165323_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_CD2_165343_by_town.csv",
+          "sha256": "3ab74efdb3efe25d03b47b54ecb63899efddc1a83086688b65866c05401d7c97",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=3ab74efdb3efe25d03b47b54ecb63899efddc1a83086688b65866c05401d7c97/MA_2024GE_CD2_165343_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_CD3_165309_by_town.csv",
+          "sha256": "1d20a3f617977bef173357e8aae9a071734c098732905adcb1775c72e6f54ab6",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=1d20a3f617977bef173357e8aae9a071734c098732905adcb1775c72e6f54ab6/MA_2024GE_CD3_165309_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_CD4_165373_by_town.csv",
+          "sha256": "d13f8854a6d0715d071813f53c23e6c57eeccd39b7c92e822042cbc11b7974cf",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=d13f8854a6d0715d071813f53c23e6c57eeccd39b7c92e822042cbc11b7974cf/MA_2024GE_CD4_165373_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_CD5_165353_by_town.csv",
+          "sha256": "ee4351ac6e60b8eaf0e03c181e20849eb3916f1075c20eaf442edb5605394e8a",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=ee4351ac6e60b8eaf0e03c181e20849eb3916f1075c20eaf442edb5605394e8a/MA_2024GE_CD5_165353_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_CD6_165336_by_town.csv",
+          "sha256": "21534b2a8c96ba3e35792e23fc1e780a94c3e64ba92c005f8f6cdd9f717be40c",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=21534b2a8c96ba3e35792e23fc1e780a94c3e64ba92c005f8f6cdd9f717be40c/MA_2024GE_CD6_165336_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_CD7_165413_by_town.csv",
+          "sha256": "f3da0112bd3833b0d24a4a574afbebcdfc2ecbecd6725c621c7df7d51945daee",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=f3da0112bd3833b0d24a4a574afbebcdfc2ecbecd6725c621c7df7d51945daee/MA_2024GE_CD7_165413_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_CD8_165302_by_town.csv",
+          "sha256": "243e329b7148a1f0a5eee80b5759cf4309e393f3edf709d7a5490ec3516fa897",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=243e329b7148a1f0a5eee80b5759cf4309e393f3edf709d7a5490ec3516fa897/MA_2024GE_CD8_165302_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_CD9_165316_by_town.csv",
+          "sha256": "78322b4499330dd7fa5dd98a09a9e3609d5298aab6da4558027cfa7e8fb4c0dd",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=78322b4499330dd7fa5dd98a09a9e3609d5298aab6da4558027cfa7e8fb4c0dd/MA_2024GE_CD9_165316_by_town.csv"
+        },
+        {
+          "file": "MA_2024GE_SEN_165304_by_town.csv",
+          "sha256": "3b05bac222dc8639b32a5797e2ebc68239d2821219313f6d1dd3f560fb1eff52",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MA/sha256=3b05bac222dc8639b32a5797e2ebc68239d2821219313f6d1dd3f560fb1eff52/MA_2024GE_SEN_165304_by_town.csv"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 10,
+        "status_counts": {
+          "exact": 10
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "WI": {
+      "access": "automated_ok",
+      "source": "https://elections.wi.gov/sites/default/files/documents/WardbyWard_byCD_20241105.xlsx",
+      "release_page": "https://elections.wi.gov/election-result/2024-general-election-results",
+      "official": "Certified canvass, 2024-11-29 (Canvass_Congress.pdf, Canvass_Senate.pdf)",
+      "note": "HTML pages sit behind a Cloudflare challenge but /sites/default/files/documents/ files download. WEC publishes no statewide election-night feed; the canvass follows certification. File-name suffixes (_0, _1) can change on re-upload.",
+      "preserved": [
+        {
+          "file": "WardbyWard_byCD_20241105.xlsx",
+          "sha256": "d23ebca4e718274c3890bfc4db9454573ecb6e2048a58b18b70a57d4c6094c67",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=WI/sha256=d23ebca4e718274c3890bfc4db9454573ecb6e2048a58b18b70a57d4c6094c67/WardbyWard_byCD_20241105.xlsx"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 9,
+        "status_counts": {
+          "exact": 9
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "MO": {
+      "access": "automated_ok",
+      "source": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2024GeneralElection.pdf",
+      "release_page": "https://www.sos.mo.gov/elections/s_default",
+      "official": "Certified canvass returns, announced 2024-12-05 (PDF, text layer)",
+      "note": "sos.mo.gov answers the honest research user agent (200) but refuses curl's default (403); enr.sos.mo.gov (election-night) is behind a Cloudflare challenge. Parser checks that candidate votes sum to each printed contest total.",
+      "preserved": [
+        {
+          "file": "2024GeneralElection.pdf",
+          "sha256": "fd3e58901873bde13552b06c2a48b1e47e94f9da6529d174a3e2fb51cccb7ebf",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MO/sha256=fd3e58901873bde13552b06c2a48b1e47e94f9da6529d174a3e2fb51cccb7ebf/2024GeneralElection.pdf"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 9,
+        "status_counts": {
+          "exact": 9
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "MT": {
+      "access": "automated_ok",
+      "source": "https://electionresults.mt.gov/ResultsExport.aspx?eid=450002785",
+      "release_page": "https://electionresults.mt.gov/ResultsExport.aspx?eid=450002785",
+      "official": "Results-site export labelled 'Unofficial' (last updated 2024-12-19, after the canvass); the certified canvass PDF sits behind a Cloudflare-challenged page",
+      "note": "sosmt.gov and the results root are Cloudflare-challenged; the export page works and the workbook is fetched by posting back the page's own form fields (__EVENTTARGET=ctl00$MainContent$Statewide), the request a browser click makes. The file embeds a download timestamp, so its hash changes on every fetch. Never mark a snapshot certified from this file; certification must come from the canvass.",
+      "preserved": [
+        {
+          "file": "mt_2024gen_Statewide_Results.xlsx",
+          "sha256": "058fe1ce5bdc682eda65026c48847012ccff295c49f3a2271ec0ba32901994a7",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MT/sha256=058fe1ce5bdc682eda65026c48847012ccff295c49f3a2271ec0ba32901994a7/mt_2024gen_Statewide_Results.xlsx"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 3,
+        "status_counts": {
+          "exact": 3
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "NC": {
+      "access": "automated_ok",
+      "source": "https://dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+      "release_page": "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data",
+      "official": "NCSBE published precinct results (original administrative precincts), certified canvass",
+      "note": "Same file the registered nc_official_precinct_returns source holds. The 2026 file (ENRS/2026_11_03/results_pct_20261103.zip) downloads with the honest client; it is updated in place until certification, so preserve each retrieval.",
+      "preserved": [
+        {
+          "file": "results_pct_20241105.zip",
+          "sha256": "2fab44e9b12e03c0d88ef832c2e6dc8c569e2b020d64df06a8b551b62bbdb426",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=NC/sha256=2fab44e9b12e03c0d88ef832c2e6dc8c569e2b020d64df06a8b551b62bbdb426/results_pct_20241105.zip"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 14,
+        "status_counts": {
+          "exact": 14
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "MI": {
+      "access": "blocked_manual_download",
+      "blocker": "mielections.us refuses connections (timeouts here and from a separate fetcher); all of michigan.gov returns Akamai 403",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "No 2024 official file URL could be confirmed. Certification 2024-11-22 per search snippet."
+    },
+    "NH": {
+      "access": "blocked_manual_download",
+      "blocker": "www.sos.nh.gov returns Akamai 403 (sos.nh.gov 503), including from a separate fetcher",
+      "official_files": [
+        "https://www.sos.nh.gov/2024-general-election-results"
+      ],
+      "urls_verified": false,
+      "note": "Town-level Excel per congressional district (to be summed); file URLs not confirmed."
+    },
+    "OH": {
+      "access": "blocked_manual_download",
+      "blocker": "Cloudflare managed challenge (403) on every path, static files included",
+      "official_files": [
+        "https://www.ohiosos.gov/globalassets/elections/2024/gen/official/statewide-race-summary.xlsx",
+        "https://www.ohiosos.gov/globalassets/elections/2024/gen/official/statewide-races-precint-level.xlsx"
+      ],
+      "urls_verified": false,
+      "note": "URLs found via Internet Archive snapshots of the release page; layout not inspected."
+    },
+    "TN": {
+      "access": "blocked_manual_download",
+      "blocker": "CloudFront 'Request blocked' (403) on the site and file host; may be geographic",
+      "official_files": [
+        "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105AllbyPrecinct.xlsx"
+      ],
+      "urls_verified": false,
+      "note": "Retest from a U.S. network before treating the block as final."
+    },
+    "AK": {
+      "access": "blocked_manual_download",
+      "blocker": "AWS WAF captcha (HTTP 405) on every path; server also omits its intermediate TLS certificate, which causes the Python certificate error (use a full trust store; never disable verification)",
+      "official_files": [
+        "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
+        "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf"
+      ],
+      "urls_verified": false,
+      "note": "Ranked-choice: capture first round and final round separately (election_round)."
+    },
+    "AZ": {
+      "access": "blocked_manual_download",
+      "blocker": "Cloudflare managed challenge (403) on azsos.gov, apps.azsos.gov, results.arizona.vote",
+      "official_files": [
+        "https://apps.azsos.gov/election/2024/ge/canvass/202411GeneralElectionCanvass-<County>.pdf"
+      ],
+      "urls_verified": false,
+      "note": "Statewide canvass is PDF only; its URL was not confirmed."
+    },
+    "ME": {
+      "access": "blocked_manual_download",
+      "blocker": "CloudFront 'Request blocked' (403) on maine.gov and www11.maine.gov",
+      "official_files": [
+        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024"
+      ],
+      "urls_verified": false,
+      "note": "Town-level tabulations (Excel) need summing; CD2 is ranked-choice: keep first-choice and final-round results as separate rounds."
+    }
+  }
+}
