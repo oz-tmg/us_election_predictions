@@ -52,8 +52,13 @@ def _opener() -> urllib.request.OpenerDirector:
     return urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
 
 
-def _get(opener: urllib.request.OpenerDirector, url: str, data: bytes | None = None) -> bytes:
-    request = urllib.request.Request(url, data=data, headers={"User-Agent": USER_AGENT})
+def _get(
+    opener: urllib.request.OpenerDirector,
+    url: str,
+    data: bytes | None = None,
+    headers: dict[str, str] | None = None,
+) -> bytes:
+    request = urllib.request.Request(url, data=data, headers={"User-Agent": USER_AGENT, **(headers or {})})
     with opener.open(request, timeout=TIMEOUT) as response:
         if response.status != 200:
             raise RuntimeError(f"{url} -> HTTP {response.status}")
@@ -344,3 +349,40 @@ def colorado(dest: Path) -> FetchedRelease:
     return _clarity(
         "CO", "https://results.enr.clarityelections.com/CO/127407", "detailxml.zip", "CO_2026GE", dest
     )
+
+
+PA_REPORT = "https://www.electionreturns.pa.gov/api/Reports/GenerateReport"
+#: The Report Center's own "Generate" request: 2026 General (ElectionID 117, subtype G),
+#: Representative in Congress (OfficeID 11), county-level CSV. One request a day; the
+#: page adds a reCAPTCHA only after 50 submissions, which this never approaches.
+PA_BODY = {
+    "ElectionID": 117,
+    "ElectionsubType": "G",
+    "OfficeIds": [11],
+    "RetOfficeIds": [],
+    "PartyIds": [],
+    "DistrictIds": [],
+    "CandidateIds": [],
+    "CountyIds": [],
+    "ReferendumIds": [],
+    "ReferendumDetailIds": [],
+    "ExportType": "C",
+    "ReportType": "C",
+    "FileName": "UnOfficial",
+}
+
+
+@register("PA")
+def pennsylvania(dest: Path) -> FetchedRelease:
+    """Pennsylvania DOS Report Center county CSV for U.S. House (no 2026 Senate race)."""
+    import json
+
+    retrieved = _now()
+    body = _get(
+        _opener(), PA_REPORT, json.dumps(PA_BODY).encode(), headers={"Content-Type": "application/json"}
+    )
+    if b"Office Name" not in body[:500]:
+        raise RuntimeError("Pennsylvania report did not return the expected CSV")
+    path = dest / "PA_2026GE_county_USC.csv"
+    path.write_bytes(body)
+    return FetchedRelease("PA", path, PA_REPORT, retrieved, "unknown")

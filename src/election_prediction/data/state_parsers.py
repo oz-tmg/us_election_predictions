@@ -668,3 +668,34 @@ def colorado(paths: Sequence[Path]) -> pd.DataFrame:
         senate=r"^United States Senator",
         house=r"^Representative to the \d+th United States Congress - District (\d{1,2})$",
     )
+
+
+_PA_DISTRICT = re.compile(r"^(\d{1,2})(?:st|nd|rd|th) Congressional District$")
+
+
+@register("PA")
+def pennsylvania(paths: Sequence[Path]) -> pd.DataFrame:
+    """Pennsylvania DOS Report Center CSV (county rows; ``Votes`` with thousands commas):
+    summed per office and district. Offices ``Representative in Congress`` (district from
+    ``District Name``) and ``United States Senator``."""
+    rows = []
+    for path in paths:
+        data = pd.read_csv(io.StringIO(_decode(path.read_bytes())), dtype=str, keep_default_na=False)
+        data = data.assign(votes=pd.to_numeric(data["Votes"].str.replace(",", "")).fillna(0))
+        for (office_name, district_name), group in data.groupby(["Office Name", "District Name"]):
+            if office_name.strip() == "Representative in Congress":
+                m = _PA_DISTRICT.match(district_name.strip())
+                if not m:
+                    raise ValueError(f"{path.name}: unrecognised district {district_name!r}")
+                office, district = "us_house", int(m.group(1))
+            elif office_name.strip() == "United States Senator":
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = (
+                group.groupby(["Candidate Name", "Party Name"], as_index=False)["votes"]
+                .sum()
+                .rename(columns={"Party Name": "party"})
+            )
+            rows.append(from_candidates(frame, state_po="PA", office=office, district_num=district))
+    return pd.DataFrame(rows)
