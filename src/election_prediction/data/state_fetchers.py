@@ -112,3 +112,77 @@ def _montana_label(path: Path) -> str:
     if "UNOFFICIAL" in first:
         return "unofficial"
     return "official" if "OFFICIAL" in first else "unknown"
+
+
+WV_BASE = "https://results.enr.clarityelections.com/WV/127496"
+
+
+@register("WV")
+def west_virginia(dest: Path) -> FetchedRelease:
+    """WV SOS on Clarity: the current version number, then that version's summary.zip.
+    The results page states "Unofficial Results" until the canvass; the zip carries no
+    status, so it is reported as unknown and certification is observed separately."""
+    opener = _opener()
+    version = _get(opener, f"{WV_BASE}/current_ver.txt").decode().strip()
+    if not version.isdigit():
+        raise RuntimeError(f"unexpected Clarity version {version!r}")
+    url = f"{WV_BASE}/{version}/reports/summary.zip"
+    retrieved = _now()
+    body = _get(opener, url)
+    path = dest / f"WV_2026GE_{version}_summary.zip"
+    path.write_bytes(body)
+    return FetchedRelease("WV", path, url, retrieved, "unknown")
+
+
+UT_URL = "https://electionresults.utah.gov/cdn/results/Utah/export-General11032026.json"
+
+
+@register("UT")
+def utah(dest: Path) -> FetchedRelease:
+    """Utah Lt. Governor's results export (the page's own media export path)."""
+    retrieved = _now()
+    body = _get(_opener(), UT_URL)
+    path = dest / "UT_2026GE_export-General11032026.json"
+    path.write_bytes(body)
+    return FetchedRelease("UT", path, UT_URL, retrieved, "unknown")
+
+
+VT_STATIC = "https://static.electionresults.vermont.gov/"
+VT_INDEX = VT_STATIC + "elections/68d61e96-1d28-4210-8c1d-8e90512ae105.json"
+
+
+@register("VT")
+def vermont(dest: Path) -> FetchedRelease:
+    """Vermont SOS: the election index names the current federal file (renamed on every
+    update) and states ``isOfficial``."""
+    import json
+
+    opener = _opener()
+    index = json.loads(_get(opener, VT_INDEX))
+    rel = str(index["federal"]["path"]).replace("\\", "/")
+    url = VT_STATIC + rel.lstrip("/")
+    retrieved = _now()
+    body = _get(opener, url)
+    path = dest / f"VT_2026GE_{Path(rel).name}"
+    path.write_bytes(body)
+    official = str(index.get("electionDetails", {}).get("isOfficial", "")).lower()
+    labelled = "official" if official == "true" else "unofficial" if official == "false" else "unknown"
+    return FetchedRelease("VT", path, url, retrieved, labelled)
+
+
+WY_URL = "https://sos.wyo.gov/Elections/Docs/2026/Results/General/2026_Wyoming_General_Results.zip"
+
+
+@register("WY")
+def wyoming(dest: Path) -> FetchedRelease:
+    """Wyoming SOS results zip; its workbook names say OFFICIAL or not."""
+    import zipfile
+
+    retrieved = _now()
+    body = _get(_opener(), WY_URL)
+    path = dest / "WY_2026GE_Wyoming_General_Results.zip"
+    path.write_bytes(body)
+    with zipfile.ZipFile(path) as zf:
+        names = " ".join(zf.namelist()).upper()
+    labelled = "unofficial" if "UNOFFICIAL" in names else "official" if "OFFICIAL" in names else "unknown"
+    return FetchedRelease("WY", path, WY_URL, retrieved, labelled)
