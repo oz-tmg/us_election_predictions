@@ -197,3 +197,79 @@ def test_louisiana_first_round_needs_a_majority(tmp_path: Path) -> None:
     assert not out.loc[5, "outcome_resolved"] and pd.isna(out.loc[5, "winner_party"])
     assert out.loc[4, "outcome_resolved"] and out.loc[4, "winner_party"] == "REPUBLICAN"
     assert set(out["election_round"]) == {"first_round"}
+
+
+def test_vermont_excludes_the_state_total_row_and_checks_it(tmp_path: Path) -> None:
+    import json
+
+    def town(tid: int, d: int, r: int) -> dict:
+        return {
+            "tid": tid,
+            "rc": [{"cn": "A", "pn": "DEMOCRATIC", "vc": d}, {"cn": "B", "pn": "REP/LBRT", "vc": r}],
+            "wc": [],
+        }
+
+    office = {"on": "REPRESENTATIVE TO CONGRESS", "cs": [town(1, 10, 5), town(2, 20, 5), town(0, 30, 10)]}
+    f = tmp_path / "VT_f.json"
+    f.write_text(json.dumps({"d": [{"pid": 0, "o": [office]}]}))
+    row = se.extract("VT", [f]).iloc[0]
+    assert (row.dem_votes, row.rep_votes) == (30, 10)  # fusion label read as its first party
+    office["cs"][2] = town(0, 31, 10)
+    f.write_text(json.dumps({"d": [{"pid": 0, "o": [office]}]}))
+    with pytest.raises(ValueError, match="state total"):
+        se.extract("VT", [f])
+
+
+def test_delaware_drops_verbatim_duplicate_rows(tmp_path: Path) -> None:
+    f = tmp_path / "de.csv"
+    f.write_text(
+        '"office","candidatename","partyname","totalvotessum"\n'
+        '"U.S. Senator","A","Democratic Party","100"\n'
+        '"U.S. Senator","A","Democratic Party","100"\n'
+        '"U.S. Senator","B","Republican Party","90"\n'
+    )
+    row = se.extract("DE", [f]).iloc[0]
+    assert (row.dem_votes, row.rep_votes) == (100, 90)
+
+
+def test_hawaii_reads_utf16_with_a_trailing_delimiter(tmp_path: Path) -> None:
+    header = "#Contest ID,Contest Title,Candidate Name,Total Votes"
+    rows = [
+        '"30","U.S. Representative, Dist II","(D) X, A","70",',
+        '"30","U.S. Representative, Dist II","(R) Y, B","30",',
+    ]
+    f = tmp_path / "summary.txt"
+    f.write_bytes("\n".join(["Format#1", header, *rows]).encode("utf-16"))
+    row = se.extract("HI", [f]).iloc[0]
+    assert (row.district_num, row.dem_votes, row.rep_votes) == (2, 70, 30)
+
+
+def test_indiana_ordinal_districts_and_locality_rows(tmp_path: Path) -> None:
+    f = tmp_path / "AllOfficeResults.csv"
+    off = "United States Representative, Seventh District"
+    f.write_text(
+        '"Office","DataEntryLevelName","NameonBallot","PoliticalParty","TotalVotes"\n'
+        f'"{off}","Precinct","A","Democratic","10"\n'
+        f'"{off}","Locality","A","Democratic","5"\n'
+        f'"{off}","Precinct","B","Republican","12"\n'
+    )
+    row = se.extract("IN", [f]).iloc[0]
+    assert (row.district_num, row.dem_votes, row.rep_votes) == (7, 15, 12)
+
+
+def _clarity_zip(path: Path, rows: list[tuple[str, str, str, int]]) -> Path:
+    import zipfile
+
+    lines = ['"line number","contest name","choice name","party name","total votes"']
+    lines += [f'{i},"{c}","{n}","{p}",{v}' for i, (c, n, p, v) in enumerate(rows, 1)]
+    with zipfile.ZipFile(path, "w") as zf:
+        zf.writestr("summary.csv", "\n".join(lines) + "\n")
+    return path
+
+
+def test_south_carolina_recount_replaces_the_general_race(tmp_path: Path) -> None:
+    cd = "U.S.  House of Representatives, District  2 (Vote For 1)"
+    general = _clarity_zip(tmp_path / "SC_general.zip", [(cd, "D", "DEM", 100), (cd, "R", "REP", 99)])
+    recount = _clarity_zip(tmp_path / "SC_recount.zip", [(cd, "D", "DEM", 98), (cd, "R", "REP", 101)])
+    row = se.extract("SC", [general, recount]).iloc[0]
+    assert (row.dem_votes, row.rep_votes, row.winner_party) == (98, 101, "REPUBLICAN")
