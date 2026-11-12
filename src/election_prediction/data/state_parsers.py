@@ -508,3 +508,47 @@ def minnesota(paths: Sequence[Path]) -> pd.DataFrame:
             frame = pd.DataFrame({"party": group[10], "votes": pd.to_numeric(group[13])})
             rows.append(from_candidates(frame, state_po="MN", office=office, district_num=district))
     return pd.DataFrame(rows)
+
+
+_LA_HOUSE = re.compile(r"^U\. ?S\. Representative -- (\d{1,2})(?:st|nd|rd|th) Congressional District$")
+_LA_PARTY = re.compile(r"\(([A-Z]+)\)\s*$")
+
+
+@register("LA")
+def louisiana(paths: Sequence[Path]) -> pd.DataFrame:
+    """Louisiana SOS voter portal ``ByParish_<raceId>.csv`` files, one race each: an
+    ``Office`` column, a ``Parish`` column, then one column per candidate ``Name (PARTY)``.
+
+    House races on November 3 are first rounds of Louisiana's majority system: a race is
+    resolved only if its top candidate has more than half the votes; otherwise it goes to
+    the December runoff and ``outcome_resolved`` is False (unscoreable until then). The
+    Senate race cannot have a runoff and is an ordinary general.
+    """
+    rows = []
+    for path in paths:
+        data = pd.read_csv(path, dtype=str, keep_default_na=False)
+        offices = data["Office"].str.strip().unique()
+        if len(offices) != 1:
+            raise ValueError(f"{path.name}: expected one race, found {list(offices)}")
+        office_name = offices[0]
+        candidates = []
+        for column in data.columns[2:]:
+            m = _LA_PARTY.search(column)
+            votes = pd.to_numeric(data[column].str.replace(",", "")).sum()
+            candidates.append({"party": m.group(1) if m else "", "votes": int(votes)})
+        frame = pd.DataFrame(candidates)
+        if m := _LA_HOUSE.match(office_name):
+            row = from_candidates(frame, state_po="LA", office="us_house", district_num=int(m.group(1)))
+            total = int(frame["votes"].sum())
+            row["election_round"] = "first_round"
+            row["outcome_resolved"] = bool(total and frame["votes"].max() * 2 > total)
+            if not row["outcome_resolved"]:
+                row["winner_party"] = None  # a first-round leader is not a winner
+        elif office_name.replace(" ", "") == "U.S.Senator":
+            row = from_candidates(frame, state_po="LA", office="us_senate", district_num=None)
+            row["election_round"] = "general"
+            row["outcome_resolved"] = True
+        else:
+            continue
+        rows.append(row)
+    return pd.DataFrame(rows)

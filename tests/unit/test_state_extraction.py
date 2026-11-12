@@ -182,3 +182,18 @@ def test_north_carolina_sums_every_row_including_county_batches(tmp_path: Path) 
     assert (out.loc["us_senate", "dem_votes"], out.loc["us_senate", "rep_votes"]) == (120, 90)
     assert out.loc["us_house", "district_num"] == 2 and out.loc["us_house", "other_votes"] == 3
     assert len(out) == 2  # the governor contest is not a federal race
+
+
+def test_louisiana_first_round_needs_a_majority(tmp_path: Path) -> None:
+    head = 'Office,Parish,"Ann A (DEM)","Bob B (REP)","Cal C (REP)"\n'
+    office = '"U. S. Representative -- 5th Congressional District"'
+    split = tmp_path / "ByParish_1.csv"
+    split.write_text(head + f'{office},"Winn","40","35","25"\n')
+    majority = tmp_path / "ByParish_2.csv"
+    majority.write_text(
+        head.replace("5th", "4th") + office.replace("5th", "4th") + ',"Winn","20","70","10"\n'
+    )
+    out = se.extract("LA", [split, majority]).set_index("district_num")
+    assert not out.loc[5, "outcome_resolved"] and pd.isna(out.loc[5, "winner_party"])
+    assert out.loc[4, "outcome_resolved"] and out.loc[4, "winner_party"] == "REPUBLICAN"
+    assert set(out["election_round"]) == {"first_round"}

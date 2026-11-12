@@ -227,3 +227,23 @@ def south_carolina(dest: Path) -> list[FetchedRelease]:
         path.write_bytes(body)
         out.append(FetchedRelease("SC", path, url, retrieved, "unknown"))
     return out
+
+
+LA_BASE = "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/"
+#: Senate and CD1-CD6 race IDs for the 2026-11-03 election (voter portal ElectionRaces).
+LA_RACES = ("67997", "70195", "70196", "70197", "70198", "70199", "70200")
+
+
+@register("LA")
+def louisiana(dest: Path) -> list[FetchedRelease]:
+    """Louisiana SOS voter portal: one by-parish CSV per federal race."""
+    opener = _opener()
+    out = []
+    for race in LA_RACES:
+        url = f"{LA_BASE}ByParish_{race}.csv"
+        retrieved = _now()
+        body = _get(opener, url)
+        path = dest / f"LA_2026GE_ByParish_{race}.csv"
+        path.write_bytes(body)
+        out.append(FetchedRelease("LA", path, url, retrieved, "unknown"))
+    return out
