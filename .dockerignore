@@ -1,0 +1,8 @@
+# Build context for the dashboard image: pyproject, README and src/ only.
+# Data never enters the image (CLAUDE.md §4); bundles are read from Cloud Storage.
+*
+!pyproject.toml
+!README.md
+!src/
+src/**/__pycache__
+src/**/*.pyc

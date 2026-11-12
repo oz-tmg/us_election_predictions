@@ -156,3 +156,29 @@ def test_missouri_lines_handles_wrapped_names_and_checks_totals() -> None:
     )
     with pytest.raises(ValueError, match="do not sum"):
         state_parsers.missouri_lines([*lines[:5], "Total Votes 1"])
+
+
+def test_north_carolina_sums_every_row_including_county_batches(tmp_path: Path) -> None:
+    import zipfile
+
+    header = (
+        "County\tElection Date\tPrecinct\tContest Group ID\tContest Type\tContest Name\tChoice\t"
+        "Choice Party\tVote For\tElection Day\tEarly Voting\tAbsentee by Mail\tProvisional\t"
+        "Total Votes\tReal Precinct"
+    )
+    house = "US HOUSE OF REPRESENTATIVES DISTRICT 02"
+    rows = [
+        "WAKE\t11/03/2026\t01-01\t1\tC\tUS SENATE\tAnn A\tDEM\t1\t1\t1\t1\t0\t100\tY",
+        "WAKE\t11/03/2026\tABSENTEE\t1\tC\tUS SENATE\tAnn A\tDEM\t1\t0\t0\t20\t0\t20\tN",
+        "WAKE\t11/03/2026\t01-01\t1\tC\tUS SENATE\tBob B\tREP\t1\t1\t1\t1\t0\t90\tY",
+        "WAKE\t11/03/2026\t01-01\t2\tC\t" + house + "\tCal C\tREP\t1\t1\t1\t1\t0\t40\tY",
+        "WAKE\t11/03/2026\t01-01\t2\tC\t" + house + "\tWrite-In\t\t1\t0\t0\t0\t0\t3\tY",
+        "WAKE\t11/03/2026\t01-01\t3\tC\tNC GOVERNOR\tDee D\tDEM\t1\t1\t1\t1\t0\t70\tY",
+    ]
+    f = tmp_path / "results_pct_20261103.zip"
+    with zipfile.ZipFile(f, "w") as zf:
+        zf.writestr("results_pct_20261103.txt", "\n".join([header, *rows]) + "\n")
+    out = se.extract("NC", [f]).set_index("office")
+    assert (out.loc["us_senate", "dem_votes"], out.loc["us_senate", "rep_votes"]) == (120, 90)
+    assert out.loc["us_house", "district_num"] == 2 and out.loc["us_house", "other_votes"] == 3
+    assert len(out) == 2  # the governor contest is not a federal race

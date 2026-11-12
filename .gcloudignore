@@ -1,0 +1,9 @@
+# Cloud Build upload for deploy/gcp/deploy.sh: same allow-list as .dockerignore, so the
+# 13 GB data lake and reports never leave the machine.
+/*
+!/pyproject.toml
+!/README.md
+!/Dockerfile
+!/src/
+__pycache__/
+*.pyc

@@ -816,7 +816,6 @@ def fig09_sealed_vs_current(rows: list[dict]) -> None:
     _save(fig, "fig-09-sealed-vs-current.png")
 
 
-
 # --------------------------------------------------------------------------------------
 # Figure 10 — the contestable seats, each as its own band
 # --------------------------------------------------------------------------------------
@@ -839,7 +838,9 @@ def load_contestable() -> tuple[list[dict], list[dict]]:
         dn = r["district_num"]
         label = r["state_po"] if r["office"] == "us_senate" else f"{r['state_po']}-{int(float(dn)):02d}"
         return {
-            "label": label, "office": r["office"], "state_po": r["state_po"],
+            "label": label,
+            "office": r["office"],
+            "state_po": r["state_po"],
             "holder": {"DEMOCRAT": "D", "REPUBLICAN": "R"}.get(r["incumbent_party"], "O"),
             "candidacy_verified": r["incumbency_assumed"] != "True",
             "source": r["source"],
@@ -850,7 +851,11 @@ def load_contestable() -> tuple[list[dict], list[dict]]:
         }
 
     senate = sorted((pivot(k) for k in by if k[0] == "us_senate"), key=lambda d: d["p50"])
-    house = [pivot(k) for k in by if k[0] == "us_house" and by[k]["shrinkage=0.5"]["source"] != "fallback_state_lean"]
+    house = [
+        pivot(k)
+        for k in by
+        if k[0] == "us_house" and by[k]["shrinkage=0.5"]["source"] != "fallback_state_lean"
+    ]
     house = sorted((d for d in house if 0.25 <= d["p50"] <= 0.75), key=lambda d: d["p50"])
     return senate, house
 
@@ -876,9 +881,11 @@ def fig10_contestable(senate: list[dict], house: list[dict]) -> None:
     def panel(ax, rows, title):
         _frame(ax)
         ys = np.arange(len(rows))
-        for y, d in zip(ys, rows):
+        for y, d in zip(ys, rows, strict=True):
             c = colour[d["holder"]]
-            ax.plot([d["p25"], d["p100"]], [y, y], color=c, lw=2.2, alpha=0.45, solid_capstyle="round", zorder=2)
+            ax.plot(
+                [d["p25"], d["p100"]], [y, y], color=c, lw=2.2, alpha=0.45, solid_capstyle="round", zorder=2
+            )
             marker = "^" if d["source"] == "model_transferred" else "o"
             ax.plot(d["p50"], y, marker=marker, ms=5.6, color=c, mec=SURFACE, mew=0.9, zorder=4)
         ax.axvline(0.5, color=BASELINE, lw=1.3, ls=(0, (4, 3)), zorder=1)

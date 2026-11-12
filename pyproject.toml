@@ -27,6 +27,16 @@ intake = ["pypdf>=5", "openpyxl>=3.1", "beautifulsoup4>=4.12", "lxml>=5"]
 # Figures for public writing only; no modelling code imports these (CLAUDE.md §7).
 # matplotlib: PSF-style BSD-compatible licence (matplotlib/LICENSE).
 viz = ["matplotlib>=3.8"]
+# Dashboard (docs/deployment-plan.md). Never imported by modelling code. Licences:
+# dash, plotly, gunicorn, PyJWT: MIT; cryptography: Apache-2.0/BSD-3-Clause;
+# google-cloud-storage: Apache-2.0.
+dashboard = [
+  "dash>=2.17",
+  "plotly>=5.22",
+  "gunicorn>=22",
+  "pyjwt[crypto]>=2.8",
+  "google-cloud-storage>=2.16",
+]
 
 [project.scripts]
 # Reproducible one-command builds.
@@ -42,13 +52,21 @@ ep-results-2026 = "election_prediction.build_results_2026:main"  # capture 2026 
 ep-build-ballots = "election_prediction.build_ballots:main"
 ep-build-economics = "election_prediction.build_economics:main"
 ep-build-generic-ballot = "election_prediction.build_generic_ballot:main"
+ep-export-dashboard = "election_prediction.dashboard.export:main"  # build artefacts -> run bundles
+ep-dashboard = "election_prediction.dashboard.wsgi:main"  # run the dashboard locally
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"election_prediction.dashboard" = ["assets/*.css"]
+
 [tool.ruff]
 line-length = 110
 target-version = "py312"
+# README.md is a symlink into the private context repo (absolute path); on CI it
+# dangles, and ruff (which now reads Markdown) fails with an io error.
+extend-exclude = ["README.md"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -67,3 +85,5 @@ testpaths = ["tests"]
 # (period, unit, source, snapshot date — CLAUDE.md §6). Wrapping them to the
 # code line length splits sentences across literals and invites silent edits.
 "blog/figures/*.py" = ["E501"]
+# Same reason: the PDF builder's prose literals are the published text, verbatim.
+"blog/build_pdf.py" = ["E501"]

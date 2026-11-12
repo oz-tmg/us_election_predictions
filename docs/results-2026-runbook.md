@@ -160,6 +160,18 @@ states (AK, AZ, ME, MA, MI, MO, MT, NH, OH, TN, WI). Certification status must b
 as it happens; vote extraction for certified results can follow later from the preserved
 releases.
 
+## Capture Log
+
+The ledger lives in the git-ignored data lake; this log is its committed index.
+
+| Observed (UTC) | States | Seats | Certified | Source evidence | Notes |
+|---|---|---:|---:|---|---|
+| 2026-11-03 to 2026-11-11 | none | 0 | 0 | none | **Gap.** The working checkout was on `post-poll-closing-updates`, cut from an unpulled pre-October `main`; the Nov 5 automation refused to capture without the evidence safeguards (`reports/results_capture_blocked_2026-11-05T192029Z.md`). Checkout restored to `origin/main` 2026-11-12. Certification first observed after this date cannot be backdated. |
+| 2026-11-12 | MT, NC | 18 | 0 | `data/raw/source=state_canvass_evidence/state={MT,NC}/retrieved=20261112T06…/` | MT statewide export (labelled unofficial, 728/728 precincts); NC `results_pct_20261103.zip` (last-modified 2026-11-11 22:21 UTC, 100/100 counties, uncertified). Both parsers reproduce 2024 certified exactly. `winner_party` recorded for every row (MT Senate has an independent in second). |
+
+One observation per UTC day: a capture early in a UTC day takes that day's slot, so
+add states to the same compiled snapshot before capturing, never in a second run.
+
 ## State Extraction: the 11 Probe-Failure States (tested 2026-10-30)
 
 `scripts/test_state_extraction.py` ran each state's parser (`data/state_parsers.py`) on

@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -e '.[dev,geo,model,intake]'
+      - run: python -m pip install -e '.[dev,geo,model,intake,dashboard]'
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy src/election_prediction
@@ -32,6 +32,6 @@ jobs:
       EP_DATA_ROOT: ${{ vars.ELECTION_DATA_ROOT }}
     steps:
       - uses: actions/checkout@v4
-      - run: python -m pip install -e '.[dev,geo,model,intake]'
+      - run: python -m pip install -e '.[dev,geo,model,intake,dashboard]'
       - run: python scripts/check_live_runner.py
       - run: python -m pytest -q tests/data_quality

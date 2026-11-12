@@ -1,0 +1,10 @@
+state_po,office,district_num,dem_ext,dem_cert,rep_ext,rep_cert,share_diff,status
+WI,us_house,1.0,172402,172402.0,212515,212515.0,0.0,exact
+WI,us_house,2.0,320317,320317.0,136357,136357.0,0.0,exact
+WI,us_house,3.0,200808,200808.0,212064,212064.0,0.0,exact
+WI,us_house,4.0,249938,249938.0,74921,74921.0,0.0,exact
+WI,us_house,5.0,165653,165653.0,300521,300521.0,0.0,exact
+WI,us_house,6.0,159042,159042.0,251889,251889.0,0.0,exact
+WI,us_house,7.0,156524,156524.0,273553,273553.0,0.0,exact
+WI,us_house,8.0,178666,178666.0,240040,240040.0,0.0,exact
+WI,us_senate,,1672777,1672777.0,1643996,1643996.0,0.0,exact

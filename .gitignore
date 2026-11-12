@@ -90,3 +90,7 @@ htmlcov/
 *CLAUDE.md
 *COMPANY_CONTEXT.md
 *PROJECT_CONTEXT.md
+# --- Dashboard deploy: local per-operator config (docs/deployment-plan.md) ---
+deploy/gcp/env.sh
+deploy/cloudflare/wrangler.toml
+deploy/cloudflare/.wrangler/

@@ -81,6 +81,16 @@ STATES: dict[str, dict] = {
         "embeds a download timestamp, so its hash changes on every fetch. Never mark a snapshot "
         "certified from this file; certification must come from the canvass.",
     },
+    "NC": {
+        "access": "automated_ok",
+        "files": ["results_pct_*.zip"],
+        "source": "https://dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+        "release_page": "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data",
+        "official": "NCSBE published precinct results (original administrative precincts), certified canvass",
+        "note": "Same file the registered nc_official_precinct_returns source holds. The 2026 file "
+        "(ENRS/2026_11_03/results_pct_20261103.zip) downloads with the honest client; it is updated "
+        "in place until certification, so preserve each retrieval.",
+    },
     "MI": {
         "access": "blocked_manual_download",
         "blocker": "mielections.us refuses connections (timeouts here and from a separate fetcher); all of "

@@ -224,3 +224,44 @@ def missouri_lines(lines: Sequence[str], *, source: str = "") -> list[dict[str, 
             from_candidates(pd.DataFrame(candidates), state_po="MO", office=office, district_num=district)
         )
     return rows
+
+
+_NC_CONTEST = re.compile(r"^US (SENATE|HOUSE OF REPRESENTATIVES DISTRICT (\d{1,2}))$")
+
+
+@register("NC")
+def north_carolina(paths: Sequence[Path]) -> pd.DataFrame:
+    """NCSBE ``results_pct_<date>.zip`` (tab-separated precinct results, one file inside).
+
+    Contests ``US SENATE`` and ``US HOUSE OF REPRESENTATIVES DISTRICT NN``. Every row is
+    summed, including county-level absentee/one-stop/provisional batches (``Real Precinct
+    = N``): they are votes, not duplicates. ``Choice Party`` gives the party; write-ins
+    carry none and count as other.
+    """
+    import zipfile
+
+    frames = []
+    for path in paths:
+        with zipfile.ZipFile(path) as zf:
+            members = [n for n in zf.namelist() if n.lower().endswith(".txt")]
+            if len(members) != 1:
+                raise ValueError(f"{path.name}: expected one .txt member, found {members}")
+            with zf.open(members[0]) as handle:
+                raw = pd.read_csv(handle, sep="\t", dtype=str, keep_default_na=False)
+        frames.append(raw)
+    data = pd.concat(frames, ignore_index=True)
+    data["Contest Name"] = data["Contest Name"].str.strip().str.upper()
+    rows = []
+    for contest, group in data.groupby("Contest Name"):
+        m = _NC_CONTEST.match(contest)
+        if not m:
+            continue
+        office, district = ("us_senate", None) if m.group(2) is None else ("us_house", int(m.group(2)))
+        by_choice = (
+            group.assign(votes=pd.to_numeric(group["Total Votes"]))
+            .groupby(["Choice", "Choice Party"], as_index=False)["votes"]
+            .sum()
+            .rename(columns={"Choice Party": "party"})
+        )
+        rows.append(from_candidates(by_choice, state_po="NC", office=office, district_num=district))
+    return pd.DataFrame(rows)
