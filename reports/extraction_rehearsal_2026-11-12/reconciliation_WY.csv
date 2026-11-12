@@ -1,0 +1,3 @@
+state_po,office,district_num,dem_ext,dem_cert,rep_ext,rep_cert,share_diff,status
+WY,us_house,0.0,60778,60778.0,184680,184680.0,0.0,exact
+WY,us_senate,,63727,63727.0,198418,198418.0,0.0,exact

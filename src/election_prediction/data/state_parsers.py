@@ -12,6 +12,7 @@ whose name does not say which contest it holds rather than guessing from its con
 
 from __future__ import annotations
 
+import io
 import re
 from collections.abc import Sequence
 from pathlib import Path
@@ -264,4 +265,575 @@ def north_carolina(paths: Sequence[Path]) -> pd.DataFrame:
             .rename(columns={"Choice Party": "party"})
         )
         rows.append(from_candidates(by_choice, state_po="NC", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+def _decode(raw: bytes) -> str:
+    """UTF-8 when it is, else Windows-1252 (curly quotes in names in some state exports)."""
+    try:
+        return raw.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return raw.decode("cp1252")
+
+
+def clarity_summary(
+    paths: Sequence[Path], *, state: str, senate: str, house: str, exclude: str = r"UNEXPIRED|SPECIAL"
+) -> pd.DataFrame:
+    """Clarity/Scytl ENR ``summary.zip`` (``summary.csv``: one row per contest choice).
+
+    ``senate`` and ``house`` are regexes on ``contest name``; ``house`` must capture the
+    district number. Contests matching ``exclude`` (unexpired-term specials) are skipped,
+    because the scored universe keys each seat to its regular race. Duplicate lines that
+    Clarity sometimes repeats for the same contest choice are collapsed, not summed.
+    """
+    import zipfile
+
+    senate_re, house_re, exclude_re = (re.compile(p, re.IGNORECASE) for p in (senate, house, exclude))
+    frames = []
+    for path in paths:
+        with zipfile.ZipFile(path) as zf:
+            raw = zf.read("summary.csv")
+        frames.append(pd.read_csv(io.StringIO(_decode(raw)), dtype=str, keep_default_na=False))
+    data = pd.concat(frames, ignore_index=True)
+    data = data.drop_duplicates(["contest name", "choice name", "party name", "total votes"])
+    rows = []
+    for contest, group in data.groupby("contest name"):
+        if exclude_re.search(contest):
+            continue
+        if senate_re.search(contest):
+            office, district = "us_senate", None
+        elif m := house_re.search(contest):
+            office, district = "us_house", int(m.group(1))
+        else:
+            continue
+        frame = pd.DataFrame(
+            {"party": group["party name"], "votes": pd.to_numeric(group["total votes"].str.replace(",", ""))}
+        )
+        rows.append(from_candidates(frame, state_po=state, office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+@register("WV")
+def west_virginia(paths: Sequence[Path]) -> pd.DataFrame:
+    """West Virginia SOS Clarity ``summary.zip``."""
+    return clarity_summary(
+        paths,
+        state="WV",
+        senate=r"^U\.S\. SENATOR",
+        house=r"^U\.S\. HOUSE OF REPRESENTATIVES, (\d+)(?:st|nd|rd|th) Congressional District",
+    )
+
+
+_UT_HOUSE = re.compile(r"^U\.S\. House(?: District)? (\d{1,2})\s*$", re.IGNORECASE)
+_UT_SENATE = re.compile(r"^U\.S\. Senate\b", re.IGNORECASE)
+
+
+@register("UT")
+def utah(paths: Sequence[Path]) -> pd.DataFrame:
+    """electionresults.utah.gov JSON export: statewide totals in ``results.ballotItems``.
+
+    Contest names changed between cycles ("U.S. House 1 " in 2024, "U.S. House District 1"
+    in 2026); the pattern accepts both. ``politicalParty`` gives the party.
+    """
+    import json
+
+    rows = []
+    for path in paths:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+        for item in data["results"]["ballotItems"]:
+            name = str(item.get("name") or "")
+            if m := _UT_HOUSE.match(name):
+                office, district = "us_house", int(m.group(1))
+            elif _UT_SENATE.match(name) and "UNEXPIRED" not in name.upper():
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = pd.DataFrame(
+                {
+                    "party": [o.get("politicalParty") or "" for o in item["ballotOptions"]],
+                    "votes": [int(o.get("voteCount") or 0) for o in item["ballotOptions"]],
+                }
+            )
+            rows.append(from_candidates(frame, state_po="UT", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+def _vt_sum(rows: list[dict]) -> dict[tuple[str, str], int]:
+    votes: dict[tuple[str, str], int] = {}
+    for town in rows:
+        for r in [*town.get("rc", []), *town.get("wc", [])]:
+            key = (str(r.get("cn")), str(r.get("pn") or "Write-in").split("/")[0])
+            votes[key] = votes.get(key, 0) + int(r.get("vc") or 0)
+    return votes
+
+
+@register("VT")
+def vermont(paths: Sequence[Path]) -> pd.DataFrame:
+    """static.electionresults.vermont.gov federal file (``...-f-<timestamp>.json``).
+
+    ``d[pid=0].o`` lists offices; each office's ``cs`` rows are towns with candidate votes
+    in ``rc`` and write-ins in ``wc``; statewide totals are sums over towns. Blank and
+    spoiled ballots (``bv``, ``sv``) are not votes and are ignored; the ``tid`` 0 row is the
+    state total, used only as a cross-check. A fusion label such as
+    ``REP/LBRT`` is read as its first party, the line the candidate is nominated on first.
+    """
+    import json
+
+    rows = []
+    for path in paths:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+        block = next(b for b in data["d"] if b.get("pid") == 0)
+        for office_row in block["o"]:
+            name = str(office_row.get("on") or "").upper()
+            if name == "REPRESENTATIVE TO CONGRESS":
+                office, district = "us_house", 0
+            elif name.startswith("US SENATOR") and "UNEXPIRED" not in name:
+                office, district = "us_senate", None
+            else:
+                continue
+            # A town split across representative districts appears once per district;
+            # the row with tid 0 is the statewide total and must not be added again.
+            towns = [t for t in office_row["cs"] if int(t.get("tid") or 0) > 0]
+            totals = [t for t in office_row["cs"] if int(t.get("tid") or 0) == 0]
+            votes = _vt_sum(towns)
+            if totals and _vt_sum(totals) != votes:
+                raise ValueError(f"{path.name} / {name}: town rows do not sum to the state total row")
+            frame = pd.DataFrame([{"party": p, "votes": v} for (_, p), v in votes.items()])
+            rows.append(from_candidates(frame, state_po="VT", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+_WY_PARTY = re.compile(r"\(([A-Za-z]+)\)\s*$")
+
+
+@register("WY")
+def wyoming(paths: Sequence[Path]) -> pd.DataFrame:
+    """Wyoming SOS results zip: ``... General Results Summaries ....xlsx``, sheet
+    ``Statewide Candidates``. Contest blocks sit side by side: a title row names each
+    block at its first column, the next row lists candidates as ``Name (P)`` then
+    ``Write-Ins``, ``Overvotes``, ``Undervotes``; the ``Total`` row holds statewide sums.
+    Over- and undervotes are not votes for anyone and are dropped. Block positions move
+    between cycles, so blocks are found by title, never by column letter.
+    """
+    import zipfile
+
+    import openpyxl
+
+    rows = []
+    for path in paths:
+        with zipfile.ZipFile(path) as zf:
+            members = [n for n in zf.namelist() if "Summaries" in n and n.endswith(".xlsx")]
+            if len(members) != 1:
+                raise ValueError(f"{path.name}: expected one 'Summaries' workbook, found {members}")
+            wb = openpyxl.load_workbook(io.BytesIO(zf.read(members[0])), read_only=True, data_only=True)
+        values = list(wb["Statewide Candidates"].iter_rows(values_only=True))
+        wb.close()
+        head = next(
+            i for i, r in enumerate(values) if "United States Representative" in [str(c).strip() for c in r]
+        )
+        titles = {j: str(c).strip() for j, c in enumerate(values[head]) if c}
+        names = values[head + 1]
+        total = next(r for r in values if str(r[0] or "").strip().lower() == "total")
+        starts = sorted(titles)
+        for k, start in enumerate(starts):
+            title = titles[start]
+            if title == "United States Senator":
+                office, district = "us_senate", None
+            elif title == "United States Representative":
+                office, district = "us_house", 0
+            else:
+                continue
+            end = starts[k + 1] if k + 1 < len(starts) else len(names)
+            candidates = []
+            for j in range(start, end):
+                label = str(names[j] or "").strip()
+                if not label or label in {"Overvotes", "Undervotes"}:
+                    continue
+                m = _WY_PARTY.search(label)
+                party = m.group(1) if m else "Write-in"
+                candidates.append({"party": party, "votes": int(total[j] or 0)})
+            rows.append(
+                from_candidates(pd.DataFrame(candidates), state_po="WY", office=office, district_num=district)
+            )
+    return pd.DataFrame(rows)
+
+
+@register("SC")
+def south_carolina(paths: Sequence[Path]) -> pd.DataFrame:
+    """SC State Election Commission on Clarity: the general election's summary.zip, plus
+    any recount published as a separate Clarity election (file name contains
+    ``recount``). A race found in a recount file replaces the same race from the general
+    file; the recount is the later official count of the same contest."""
+    kwargs = {
+        "state": "SC",
+        "senate": r"^U\.S\.\s+Senate",
+        "house": r"^U\.S\.\s+House of Representatives,\s+District\s+(\d+)",
+    }
+    general = [p for p in paths if "recount" not in p.name.lower()]
+    recounts = [p for p in paths if "recount" in p.name.lower()]
+    if not recounts:
+        return clarity_summary(general, **kwargs)
+    if not general:
+        return clarity_summary(recounts, **kwargs)
+    base = clarity_summary(general, **kwargs)
+    override = clarity_summary(recounts, **kwargs)
+    keys = ["office", "district_num"]
+    kept = base.merge(override[keys], on=keys, how="left", indicator=True)
+    kept = kept[kept["_merge"] == "left_only"].drop(columns="_merge")
+    return pd.concat([kept, override], ignore_index=True)
+
+
+_MN_HOUSE = re.compile(r"^U\.S\. Representative District (\d{1,2})$")
+
+
+@register("MN")
+def minnesota(paths: Sequence[Path]) -> pd.DataFrame:
+    """Minnesota SOS media text files (``ushouse.txt``, ``ussenate.txt``): semicolon-
+    delimited, no header, one row per candidate statewide. Fields used: 4 office name,
+    10 party abbreviation (DFL is the Democratic party), 13 votes. County files
+    (``USHouseCty.txt``) are not read."""
+    rows = []
+    for path in paths:
+        if path.name.lower().endswith("cty.txt"):
+            continue
+        data = pd.read_csv(path, sep=";", header=None, dtype=str, keep_default_na=False, encoding="latin-1")
+        for contest, group in data.groupby(4):
+            name = str(contest).strip()
+            if m := _MN_HOUSE.match(name):
+                office, district = "us_house", int(m.group(1))
+            elif name.startswith("U.S. Senator") and "SPECIAL" not in name.upper():
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = pd.DataFrame({"party": group[10], "votes": pd.to_numeric(group[13])})
+            rows.append(from_candidates(frame, state_po="MN", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+_LA_HOUSE = re.compile(r"^U\. ?S\. Representative -- (\d{1,2})(?:st|nd|rd|th) Congressional District$")
+_LA_PARTY = re.compile(r"\(([A-Z]+)\)\s*$")
+
+
+@register("LA")
+def louisiana(paths: Sequence[Path]) -> pd.DataFrame:
+    """Louisiana SOS voter portal ``ByParish_<raceId>.csv`` files, one race each: an
+    ``Office`` column, a ``Parish`` column, then one column per candidate ``Name (PARTY)``.
+
+    House races on November 3 are first rounds of Louisiana's majority system: a race is
+    resolved only if its top candidate has more than half the votes; otherwise it goes to
+    the December runoff and ``outcome_resolved`` is False (unscoreable until then). The
+    Senate race cannot have a runoff and is an ordinary general.
+    """
+    rows = []
+    for path in paths:
+        data = pd.read_csv(path, dtype=str, keep_default_na=False)
+        offices = data["Office"].str.strip().unique()
+        if len(offices) != 1:
+            raise ValueError(f"{path.name}: expected one race, found {list(offices)}")
+        office_name = offices[0]
+        candidates = []
+        for column in data.columns[2:]:
+            m = _LA_PARTY.search(column)
+            votes = pd.to_numeric(data[column].str.replace(",", "")).sum()
+            candidates.append({"party": m.group(1) if m else "", "votes": int(votes)})
+        frame = pd.DataFrame(candidates)
+        if m := _LA_HOUSE.match(office_name):
+            row = from_candidates(frame, state_po="LA", office="us_house", district_num=int(m.group(1)))
+            total = int(frame["votes"].sum())
+            row["election_round"] = "first_round"
+            row["outcome_resolved"] = bool(total and frame["votes"].max() * 2 > total)
+            if not row["outcome_resolved"]:
+                row["winner_party"] = None  # a first-round leader is not a winner
+        elif office_name.replace(" ", "") == "U.S.Senator":
+            row = from_candidates(frame, state_po="LA", office="us_senate", district_num=None)
+            row["election_round"] = "general"
+            row["outcome_resolved"] = True
+        else:
+            continue
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+_GA_HOUSE = re.compile(r"^US House of Representatives - District (\d{1,2})$")
+
+
+@register("GA")
+def georgia(paths: Sequence[Path]) -> pd.DataFrame:
+    """Georgia SOS results ``Total Votes`` workbook: one row per contest choice (Office
+    Name, Ballot Name, Party, Total) and a ``Total Votes`` row per contest, used only to
+    cross-check that the choices sum to the contest total."""
+    import openpyxl
+
+    rows = []
+    for path in paths:
+        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+        values = list(wb["Total Votes"].iter_rows(values_only=True))
+        wb.close()
+        head = [str(c or "").strip() for c in values[0]]
+        data = pd.DataFrame(values[1:], columns=head)[["Office Name", "Ballot Name", "Party", "Total"]]
+        data = data.dropna(subset=["Office Name"])
+        for contest, group in data.groupby("Office Name"):
+            name = str(contest).strip()
+            if m := _GA_HOUSE.match(name):
+                office, district = "us_house", int(m.group(1))
+            elif name == "US Senate":
+                office, district = "us_senate", None
+            else:
+                continue
+            is_total = group["Ballot Name"].astype(str).str.strip().eq("Total Votes")
+            choices = group[~is_total]
+            frame = pd.DataFrame(
+                {"party": choices["Party"].fillna(""), "votes": pd.to_numeric(choices["Total"])}
+            )
+            if is_total.any() and int(frame["votes"].sum()) != int(
+                pd.to_numeric(group[is_total]["Total"]).sum()
+            ):
+                raise ValueError(f"{path.name} / {name}: choices do not sum to Total Votes")
+            rows.append(from_candidates(frame, state_po="GA", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+_VA_HOUSE = re.compile(r"^Member, House of Representatives \((\d{1,2})(?:st|nd|rd|th) District\)$")
+
+
+@register("VA")
+def virginia(paths: Sequence[Path]) -> pd.DataFrame:
+    """Virginia ELECT ``Election Results`` CSV (precinct level, Windows-1252): summed per
+    office over all precincts, provisional and absentee pseudo-precincts included. Write-in
+    rows (``WRITE IN VOTES``) carry their count in ``WriteInVote``, not ``TOTAL_VOTES``."""
+    rows = []
+    for path in paths:
+        data = pd.read_csv(io.StringIO(_decode(path.read_bytes())), dtype=str, keep_default_na=False)
+        total = pd.to_numeric(data["TOTAL_VOTES"].str.replace(",", ""), errors="coerce")
+        write_in = pd.to_numeric(data["WriteInVote"].str.replace(",", ""), errors="coerce")
+        is_write_in = data["CandidateName"].str.strip().str.upper().eq("WRITE IN VOTES")
+        data = data.assign(
+            votes=total.where(~is_write_in, write_in).fillna(0),
+            party=data["Party"].where(~is_write_in, "Write-in"),
+        )
+        for contest, group in data.groupby("OfficeTitle"):
+            name = str(contest).strip()
+            if m := _VA_HOUSE.match(name):
+                office, district = "us_house", int(m.group(1))
+            elif name == "Member, United States Senate":
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = group.groupby(["CandidateName", "party"], as_index=False)["votes"].sum()
+            rows.append(from_candidates(frame, state_po="VA", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+def clarity_detail(
+    paths: Sequence[Path], *, state: str, senate: str, house: str, exclude: str = r"UNEXPIRED|SPECIAL"
+) -> pd.DataFrame:
+    """Clarity/Scytl ENR ``detailxml.zip`` (``detail.xml``): each ``Contest`` lists its
+    ``Choice`` elements with ``party`` and statewide ``totalVotes``. Same contest
+    selection rules as ``clarity_summary``."""
+    import xml.etree.ElementTree as ET
+    import zipfile
+
+    senate_re, house_re, exclude_re = (re.compile(p, re.IGNORECASE) for p in (senate, house, exclude))
+    rows = []
+    for path in paths:
+        with zipfile.ZipFile(path) as zf:
+            root = ET.fromstring(zf.read("detail.xml"))
+        for contest in root.iter("Contest"):
+            name = contest.get("text", "")
+            if exclude_re.search(name):
+                continue
+            if senate_re.search(name):
+                office, district = "us_senate", None
+            elif m := house_re.search(name):
+                office, district = "us_house", int(m.group(1))
+            else:
+                continue
+            choices = contest.findall("Choice")
+            frame = pd.DataFrame(
+                {
+                    "party": [c.get("party") or "" for c in choices],
+                    "votes": [int(c.get("totalVotes") or 0) for c in choices],
+                }
+            )
+            rows.append(from_candidates(frame, state_po=state, office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+@register("CO")
+def colorado(paths: Sequence[Path]) -> pd.DataFrame:
+    """Colorado SOS Clarity ``detailxml.zip`` (its summary report is not published)."""
+    return clarity_detail(
+        paths,
+        state="CO",
+        senate=r"^United States Senator",
+        house=r"^Representative to the \d+th United States Congress - District (\d{1,2})$",
+    )
+
+
+_PA_DISTRICT = re.compile(r"^(\d{1,2})(?:st|nd|rd|th) Congressional District$")
+
+
+@register("PA")
+def pennsylvania(paths: Sequence[Path]) -> pd.DataFrame:
+    """Pennsylvania DOS Report Center CSV (county rows; ``Votes`` with thousands commas):
+    summed per office and district. Offices ``Representative in Congress`` (district from
+    ``District Name``) and ``United States Senator``."""
+    rows = []
+    for path in paths:
+        data = pd.read_csv(io.StringIO(_decode(path.read_bytes())), dtype=str, keep_default_na=False)
+        data = data.assign(votes=pd.to_numeric(data["Votes"].str.replace(",", "")).fillna(0))
+        for (office_name, district_name), group in data.groupby(["Office Name", "District Name"]):
+            if office_name.strip() == "Representative in Congress":
+                m = _PA_DISTRICT.match(district_name.strip())
+                if not m:
+                    raise ValueError(f"{path.name}: unrecognised district {district_name!r}")
+                office, district = "us_house", int(m.group(1))
+            elif office_name.strip() == "United States Senator":
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = (
+                group.groupby(["Candidate Name", "Party Name"], as_index=False)["votes"]
+                .sum()
+                .rename(columns={"Party Name": "party"})
+            )
+            rows.append(from_candidates(frame, state_po="PA", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+_AR_HOUSE = re.compile(r"^U\.S\. Congress District (\d{1,2})$")
+
+
+@register("AR")
+def arkansas(paths: Sequence[Path]) -> pd.DataFrame:
+    """Arkansas SOS tally-enr JSON: three files from the same version, joined by ID —
+    ``*contestlist*`` (contest names), ``*electioninfo*`` (party names by partyID) and
+    ``*federal_results*`` (statewide votes per choice, with partyID). Write-in choices
+    count as other."""
+    import json
+
+    by_kind = {}
+    for path in paths:
+        for kind in ("contestlist", "electioninfo", "federal_results"):
+            if kind in path.name:
+                by_kind[kind] = json.loads(path.read_text(encoding="utf-8-sig"))
+    missing = {"contestlist", "electioninfo", "federal_results"} - set(by_kind)
+    if missing:
+        raise ValueError(f"Arkansas needs contestlist, electioninfo and federal_results; missing {missing}")
+    names = {k: v["contestName"] for k, v in by_kind["contestlist"]["response"]["contests"].items()}
+    parties = {k: v["partyName"] for k, v in by_kind["electioninfo"]["response"]["parties"].items()}
+    rows = []
+    for contest_id, contest in by_kind["federal_results"]["response"]["contests"].items():
+        name = str(names.get(contest_id, "")).strip()
+        if m := _AR_HOUSE.match(name):
+            office, district = "us_house", int(m.group(1))
+        elif name == "U.S. Senate":
+            office, district = "us_senate", None
+        else:
+            continue
+        choices = [
+            {"party": parties.get(c.get("partyID"), ""), "votes": int(c.get("totalVotes") or 0)}
+            for c in contest.get("choices", [])
+        ] + [
+            {"party": "Write-in", "votes": int(c.get("totalVotes") or 0)}
+            for c in contest.get("writeInChoices", [])
+        ]
+        rows.append(
+            from_candidates(pd.DataFrame(choices), state_po="AR", office=office, district_num=district)
+        )
+    return pd.DataFrame(rows)
+
+
+@register("DE")
+def delaware(paths: Sequence[Path]) -> pd.DataFrame:
+    """Delaware Department of Elections open-data CSV (statewide totals per candidate).
+    The export repeats some rows verbatim, so exact duplicates are dropped before summing.
+    The House office was ``U.S. Representative In Congress`` in 2024 and ``Representative
+    In Congress`` in 2026 (at-large)."""
+    rows = []
+    for path in paths:
+        data = pd.read_csv(io.StringIO(_decode(path.read_bytes())), dtype=str, keep_default_na=False)
+        data = data.drop_duplicates()
+        data = data.assign(votes=pd.to_numeric(data["totalvotessum"].str.replace(",", "")).fillna(0))
+        for contest, group in data.groupby("office"):
+            name = str(contest).strip()
+            if name in {"Representative In Congress", "U.S. Representative In Congress"}:
+                office, district = "us_house", 0
+            elif name == "U.S. Senator":
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = group.groupby(["candidatename", "partyname"], as_index=False)["votes"].sum()
+            frame = frame.rename(columns={"partyname": "party"})
+            frame["party"] = frame["party"].str.replace(r"\s+Party$", "", regex=True)
+            rows.append(from_candidates(frame, state_po="DE", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+_ORDINAL_WORDS = (
+    "first second third fourth fifth sixth seventh eighth ninth tenth eleventh twelfth thirteenth"
+)
+_ORDINALS = {w: i for i, w in enumerate(_ORDINAL_WORDS.split(), 1)}
+_IN_HOUSE = re.compile(r"^United States Representative, (\w+) District$")
+
+
+@register("IN")
+def indiana(paths: Sequence[Path]) -> pd.DataFrame:
+    """Indiana Election Division ``AllOfficeResults.csv``: summed over every row of each
+    office, whether reported at ``Precinct`` or ``Locality`` level (counties use one or the
+    other; they do not overlap). District numbers are written as ordinal words."""
+    rows = []
+    for path in paths:
+        data = pd.read_csv(io.StringIO(_decode(path.read_bytes())), dtype=str, keep_default_na=False)
+        data = data.assign(votes=pd.to_numeric(data["TotalVotes"].str.replace(",", "")).fillna(0))
+        for contest, group in data.groupby("Office"):
+            name = str(contest).strip()
+            if (m := _IN_HOUSE.match(name)) and m.group(1).lower() in _ORDINALS:
+                office, district = "us_house", _ORDINALS[m.group(1).lower()]
+            elif name.startswith("United States Senator"):  # 2024: "... From Indiana, Class 1"
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = group.groupby(["NameonBallot", "PoliticalParty"], as_index=False)["votes"].sum()
+            frame = frame.rename(columns={"PoliticalParty": "party"})
+            rows.append(from_candidates(frame, state_po="IN", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+_HI_HOUSE = re.compile(r"^U\.S\. Representative, Dist (I{1,3})$")
+_HI_PARTY = re.compile(r"^\(([A-Z]+)\)")
+
+
+@register("HI")
+def hawaii(paths: Sequence[Path]) -> pd.DataFrame:
+    """Hawaii Office of Elections ``summary.txt``: tab-delimited ASCII in 2026,
+    comma-delimited UTF-16 in 2024, same columns after a ``#Contest ID`` header line.
+    Party is the candidate-name prefix (``(D) CASE, Ed``); districts are Roman numerals."""
+    rows = []
+    for path in paths:
+        raw = path.read_bytes()
+        text = raw.decode("utf-16") if raw[:2] in (b"\xff\xfe", b"\xfe\xff") else _decode(raw)
+        lines = text.splitlines()
+        start = next(i for i, ln in enumerate(lines) if ln.startswith("#Contest ID"))
+        sep = "\t" if "\t" in lines[start] else ","
+        data = pd.read_csv(
+            io.StringIO("\n".join([lines[start].lstrip("#"), *lines[start + 1 :]])),
+            sep=sep,
+            dtype=str,
+            keep_default_na=False,
+            index_col=False,  # 2024 rows carry a trailing delimiter the header lacks
+        )
+        for contest, group in data.groupby("Contest Title"):
+            name = str(contest).strip()
+            if m := _HI_HOUSE.match(name):
+                office, district = "us_house", len(m.group(1))
+            elif name.startswith("U.S. Senator"):
+                office, district = "us_senate", None
+            else:
+                continue
+            party = group["Candidate Name"].str.extract(_HI_PARTY)[0].fillna("")
+            frame = pd.DataFrame(
+                {"party": party, "votes": pd.to_numeric(group["Total Votes"].str.replace(",", ""))}
+            )
+            rows.append(from_candidates(frame, state_po="HI", office=office, district_num=district))
     return pd.DataFrame(rows)

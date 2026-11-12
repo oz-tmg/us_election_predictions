@@ -30,6 +30,9 @@ EXTRACTED_COLUMNS = [
     "winner_party",
 ]
 OFFICES = {"us_house", "us_senate"}
+#: Optional round fields, required by the ledger for Louisiana House
+#: (``results_2026.validate_snapshot``); carried through when a parser sets them.
+ROUND_COLUMNS = ["election_round", "outcome_resolved"]
 
 Parser = Callable[[Sequence[Path]], pd.DataFrame]
 PARSERS: dict[str, Parser] = {}
@@ -48,7 +51,7 @@ def register(state: str) -> Callable[[Parser], Parser]:
 def party_bucket(label: object) -> str:
     """Map a party label as states print it to DEMOCRAT / REPUBLICAN / OTHER."""
     text = str(label or "").strip().upper().replace(".", "")
-    if text in {"D", "DEM", "DEMOCRAT", "DEMOCRATIC", "DEMOCRATIC PARTY", "DEMOCRATIC-FARMER-LABOR"}:
+    if text in {"D", "DEM", "DEMOCRAT", "DEMOCRATIC", "DEMOCRATIC PARTY", "DEMOCRATIC-FARMER-LABOR", "DFL"}:
         return "DEMOCRAT"
     if text in {"R", "REP", "REPUBLICAN", "REPUBLICAN PARTY", "GOP"}:
         return "REPUBLICAN"
@@ -83,7 +86,7 @@ def validate_extracted(frame: pd.DataFrame) -> pd.DataFrame:
     missing = set(EXTRACTED_COLUMNS) - set(frame.columns)
     if missing:
         raise ValueError(f"extracted frame missing {sorted(missing)}")
-    out = frame[EXTRACTED_COLUMNS].copy()
+    out = frame[EXTRACTED_COLUMNS + [c for c in ROUND_COLUMNS if c in frame]].copy()
     if not out["office"].isin(OFFICES).all():
         raise ValueError("unknown office in extraction")
     for c in ("dem_votes", "rep_votes", "other_votes"):
@@ -110,7 +113,7 @@ def to_snapshot(
 ) -> pd.DataFrame:
     """The capture-schema rows ``build_results_2026 capture`` accepts."""
     out = extracted.assign(certified=bool(certified), source_url=source_url, retrieved_on=retrieved_on)
-    return out[[*SNAPSHOT_COLUMNS, "winner_party"]]
+    return out[[*SNAPSHOT_COLUMNS, "winner_party", *(c for c in ROUND_COLUMNS if c in out)]]
 
 
 def _tolerance(certified_votes: float) -> float:

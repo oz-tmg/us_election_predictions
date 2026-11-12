@@ -1,0 +1,3 @@
+state_po,office,district_num,dem_ext,dem_cert,rep_ext,rep_cert,share_diff,status
+DE,us_house,0.0,287830,287830.0,209606,209606.0,0.0,exact
+DE,us_senate,,283298,283298.0,197753,197753.0,0.0,exact
