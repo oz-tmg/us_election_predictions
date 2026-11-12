@@ -424,3 +424,51 @@ def arkansas(dest: Path) -> list[FetchedRelease]:
             labelled = "official" if official is True else "unofficial" if official is False else "unknown"
         out.append(FetchedRelease("AR", path, url, retrieved, "unknown", role))
     return [FetchedRelease(r.state_po, r.path, r.source_url, r.retrieved_at, labelled, r.role) for r in out]
+
+
+DE_URL = "https://data.delaware.gov/resource/4hbv-7brf.csv?electiondate=2026-11-03T00:00:00.000"
+
+
+@register("DE")
+def delaware(dest: Path) -> FetchedRelease:
+    """Delaware Department of Elections results via the state open-data portal (the
+    results page's own "Download CSV Report" button)."""
+    retrieved = _now()
+    body = _get(_opener(), DE_URL)
+    path = dest / "DE_2026GE_statewide_opendata.csv"
+    path.write_bytes(body)
+    return FetchedRelease("DE", path, DE_URL, retrieved, "unknown")
+
+
+IN_BASE = "https://enr.indianavoters.in.gov/site/"
+
+
+@register("IN")
+def indiana(dest: Path) -> FetchedRelease:
+    """Indiana Election Division results download (``AllOfficeResults.csv``); the site's
+    ``settings.json`` states whether results are certified."""
+    import json
+
+    opener = _opener()
+    settings = json.loads(_get(opener, IN_BASE + "data/settings.json"))
+    url = IN_BASE + "download/AllOfficeResults.csv"
+    retrieved = _now()
+    body = _get(opener, url)
+    path = dest / "IN_2026GE_AllOfficeResults.csv"
+    path.write_bytes(body)
+    flag = str(settings.get("Root", settings).get("Certified", "")).upper()
+    labelled = "official" if flag == "T" else "unofficial" if flag == "F" else "unknown"
+    return FetchedRelease("IN", path, url, retrieved, labelled)
+
+
+HI_URL = "https://elections.hawaii.gov/wp-content/results/2026%20General/summary.txt"
+
+
+@register("HI")
+def hawaii(dest: Path) -> FetchedRelease:
+    """Hawaii Office of Elections statewide ``summary.txt``."""
+    retrieved = _now()
+    body = _get(_opener(), HI_URL)
+    path = dest / "HI_2026GE_summary.txt"
+    path.write_bytes(body)
+    return FetchedRelease("HI", path, HI_URL, retrieved, "unknown")

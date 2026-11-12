@@ -742,3 +742,98 @@ def arkansas(paths: Sequence[Path]) -> pd.DataFrame:
             from_candidates(pd.DataFrame(choices), state_po="AR", office=office, district_num=district)
         )
     return pd.DataFrame(rows)
+
+
+@register("DE")
+def delaware(paths: Sequence[Path]) -> pd.DataFrame:
+    """Delaware Department of Elections open-data CSV (statewide totals per candidate).
+    The export repeats some rows verbatim, so exact duplicates are dropped before summing.
+    The House office was ``U.S. Representative In Congress`` in 2024 and ``Representative
+    In Congress`` in 2026 (at-large)."""
+    rows = []
+    for path in paths:
+        data = pd.read_csv(io.StringIO(_decode(path.read_bytes())), dtype=str, keep_default_na=False)
+        data = data.drop_duplicates()
+        data = data.assign(votes=pd.to_numeric(data["totalvotessum"].str.replace(",", "")).fillna(0))
+        for contest, group in data.groupby("office"):
+            name = str(contest).strip()
+            if name in {"Representative In Congress", "U.S. Representative In Congress"}:
+                office, district = "us_house", 0
+            elif name == "U.S. Senator":
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = group.groupby(["candidatename", "partyname"], as_index=False)["votes"].sum()
+            frame = frame.rename(columns={"partyname": "party"})
+            frame["party"] = frame["party"].str.replace(r"\s+Party$", "", regex=True)
+            rows.append(from_candidates(frame, state_po="DE", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+_ORDINAL_WORDS = (
+    "first second third fourth fifth sixth seventh eighth ninth tenth eleventh twelfth thirteenth"
+)
+_ORDINALS = {w: i for i, w in enumerate(_ORDINAL_WORDS.split(), 1)}
+_IN_HOUSE = re.compile(r"^United States Representative, (\w+) District$")
+
+
+@register("IN")
+def indiana(paths: Sequence[Path]) -> pd.DataFrame:
+    """Indiana Election Division ``AllOfficeResults.csv``: summed over every row of each
+    office, whether reported at ``Precinct`` or ``Locality`` level (counties use one or the
+    other; they do not overlap). District numbers are written as ordinal words."""
+    rows = []
+    for path in paths:
+        data = pd.read_csv(io.StringIO(_decode(path.read_bytes())), dtype=str, keep_default_na=False)
+        data = data.assign(votes=pd.to_numeric(data["TotalVotes"].str.replace(",", "")).fillna(0))
+        for contest, group in data.groupby("Office"):
+            name = str(contest).strip()
+            if (m := _IN_HOUSE.match(name)) and m.group(1).lower() in _ORDINALS:
+                office, district = "us_house", _ORDINALS[m.group(1).lower()]
+            elif name.startswith("United States Senator"):  # 2024: "... From Indiana, Class 1"
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = group.groupby(["NameonBallot", "PoliticalParty"], as_index=False)["votes"].sum()
+            frame = frame.rename(columns={"PoliticalParty": "party"})
+            rows.append(from_candidates(frame, state_po="IN", office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+_HI_HOUSE = re.compile(r"^U\.S\. Representative, Dist (I{1,3})$")
+_HI_PARTY = re.compile(r"^\(([A-Z]+)\)")
+
+
+@register("HI")
+def hawaii(paths: Sequence[Path]) -> pd.DataFrame:
+    """Hawaii Office of Elections ``summary.txt``: tab-delimited ASCII in 2026,
+    comma-delimited UTF-16 in 2024, same columns after a ``#Contest ID`` header line.
+    Party is the candidate-name prefix (``(D) CASE, Ed``); districts are Roman numerals."""
+    rows = []
+    for path in paths:
+        raw = path.read_bytes()
+        text = raw.decode("utf-16") if raw[:2] in (b"\xff\xfe", b"\xfe\xff") else _decode(raw)
+        lines = text.splitlines()
+        start = next(i for i, ln in enumerate(lines) if ln.startswith("#Contest ID"))
+        sep = "\t" if "\t" in lines[start] else ","
+        data = pd.read_csv(
+            io.StringIO("\n".join([lines[start].lstrip("#"), *lines[start + 1 :]])),
+            sep=sep,
+            dtype=str,
+            keep_default_na=False,
+            index_col=False,  # 2024 rows carry a trailing delimiter the header lacks
+        )
+        for contest, group in data.groupby("Contest Title"):
+            name = str(contest).strip()
+            if m := _HI_HOUSE.match(name):
+                office, district = "us_house", len(m.group(1))
+            elif name.startswith("U.S. Senator"):
+                office, district = "us_senate", None
+            else:
+                continue
+            party = group["Candidate Name"].str.extract(_HI_PARTY)[0].fillna("")
+            frame = pd.DataFrame(
+                {"party": party, "votes": pd.to_numeric(group["Total Votes"].str.replace(",", ""))}
+            )
+            rows.append(from_candidates(frame, state_po="HI", office=office, district_num=district))
+    return pd.DataFrame(rows)
