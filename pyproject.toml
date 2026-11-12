@@ -64,6 +64,9 @@ where = ["src"]
 [tool.ruff]
 line-length = 110
 target-version = "py312"
+# README.md is a symlink into the private context repo (absolute path); on CI it
+# dangles, and ruff (which now reads Markdown) fails with an io error.
+extend-exclude = ["README.md"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
