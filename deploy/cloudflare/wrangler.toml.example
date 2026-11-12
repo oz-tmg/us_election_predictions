@@ -1,0 +1,16 @@
+# Copy to wrangler.toml, fill in the two run.app URLs printed by deploy/gcp/deploy.sh,
+# then: npx wrangler deploy
+name = "elections-dashboard-proxy"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+routes = [
+  { pattern = "elections.alexoswald.ca/*", zone_name = "alexoswald.ca" },
+  { pattern = "elections-vault.alexoswald.ca/*", zone_name = "alexoswald.ca" },
+]
+
+[vars]
+PUBLIC_HOST = "elections.alexoswald.ca"
+VAULT_HOST = "elections-vault.alexoswald.ca"
+PUBLIC_ORIGIN = "https://dash-public-XXXXXXXXXX-uw.a.run.app"
+VAULT_ORIGIN = "https://dash-vault-XXXXXXXXXX-uw.a.run.app"
