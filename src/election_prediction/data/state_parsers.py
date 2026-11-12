@@ -552,3 +552,42 @@ def louisiana(paths: Sequence[Path]) -> pd.DataFrame:
             continue
         rows.append(row)
     return pd.DataFrame(rows)
+
+
+_GA_HOUSE = re.compile(r"^US House of Representatives - District (\d{1,2})$")
+
+
+@register("GA")
+def georgia(paths: Sequence[Path]) -> pd.DataFrame:
+    """Georgia SOS results ``Total Votes`` workbook: one row per contest choice (Office
+    Name, Ballot Name, Party, Total) and a ``Total Votes`` row per contest, used only to
+    cross-check that the choices sum to the contest total."""
+    import openpyxl
+
+    rows = []
+    for path in paths:
+        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+        values = list(wb["Total Votes"].iter_rows(values_only=True))
+        wb.close()
+        head = [str(c or "").strip() for c in values[0]]
+        data = pd.DataFrame(values[1:], columns=head)[["Office Name", "Ballot Name", "Party", "Total"]]
+        data = data.dropna(subset=["Office Name"])
+        for contest, group in data.groupby("Office Name"):
+            name = str(contest).strip()
+            if m := _GA_HOUSE.match(name):
+                office, district = "us_house", int(m.group(1))
+            elif name == "US Senate":
+                office, district = "us_senate", None
+            else:
+                continue
+            is_total = group["Ballot Name"].astype(str).str.strip().eq("Total Votes")
+            choices = group[~is_total]
+            frame = pd.DataFrame(
+                {"party": choices["Party"].fillna(""), "votes": pd.to_numeric(choices["Total"])}
+            )
+            if is_total.any() and int(frame["votes"].sum()) != int(
+                pd.to_numeric(group[is_total]["Total"]).sum()
+            ):
+                raise ValueError(f"{path.name} / {name}: choices do not sum to Total Votes")
+            rows.append(from_candidates(frame, state_po="GA", office=office, district_num=district))
+    return pd.DataFrame(rows)

@@ -247,3 +247,44 @@ def louisiana(dest: Path) -> list[FetchedRelease]:
         path.write_bytes(body)
         out.append(FetchedRelease("LA", path, url, retrieved, "unknown"))
     return out
+
+
+GA_API = "https://results.sos.ga.gov/results/public/api/elections/Georgia/11032026GeneralAndSpecialElection"
+GA_CDN = "https://results.sos.ga.gov/cdn/results/"
+
+
+def _find_report(node: object, name: str) -> dict | None:
+    if isinstance(node, dict):
+        if node.get("reportName") == name and node.get("blobName"):
+            return node
+        children: list[object] = list(node.values())
+    elif isinstance(node, list):
+        children = list(node)
+    else:
+        return None
+    for child in children:
+        found = _find_report(child, name)
+        if found:
+            return found
+    return None
+
+
+@register("GA")
+def georgia(dest: Path) -> FetchedRelease:
+    """Georgia SOS: the elections API names the current "Total Votes Excel" report (its
+    file name changes with each publish) and states ``isOfficialResults``."""
+    import json
+
+    opener = _opener()
+    meta = json.loads(_get(opener, GA_API))
+    report = _find_report(meta, "Total Votes Excel")
+    if report is None:
+        raise RuntimeError("Georgia API lists no 'Total Votes Excel' report")
+    url = GA_CDN + meta["jurisdictionId"] + "/" + urllib.parse.quote(report["blobName"])
+    retrieved = _now()
+    body = _get(opener, url)
+    path = dest / "GA_2026GE_TotalVotes.xlsx"
+    path.write_bytes(body)
+    official = meta.get("isOfficialResults")
+    labelled = "official" if official is True else "unofficial" if official is False else "unknown"
+    return FetchedRelease("GA", path, url, retrieved, labelled)
