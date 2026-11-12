@@ -116,6 +116,8 @@ def run(
             # file it came from; a later release (e.g. a recount) replaces the same race.
             parts: list[pd.DataFrame] = []
             records = []
+            support: list[Path] = []
+            preserved = []
             for release in releases:
                 manifest = results_sources.preserve_source(
                     release.path,
@@ -125,7 +127,13 @@ def run(
                     **({"directory": evidence_dir} if evidence_dir else {}),
                 )
                 record = json.loads(manifest.read_text())
-                part = se.extract(state, [Path(record["raw_path"])])
+                records.append((manifest, record))
+                if release.role == "support":
+                    support.append(Path(record["raw_path"]))
+                else:
+                    preserved.append(record)
+            for record in preserved:
+                part = se.extract(state, [Path(record["raw_path"]), *support])
                 part = part.assign(_url=record["source_url"], _retrieved_on=record["retrieved_on"])
                 keys = ["office", "district_num"]
                 parts = [
@@ -135,7 +143,6 @@ def run(
                     for p in parts
                 ]
                 parts.append(part)
-                records.append((manifest, record))
             extracted = pd.concat(parts, ignore_index=True)
             check_coverage(extracted, expected_races(universe, state), state)
             for (url, day), group in extracted.groupby(["_url", "_retrieved_on"]):

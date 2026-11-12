@@ -32,6 +32,9 @@ class FetchedRelease:
     source_url: str
     retrieved_at: str  # ISO 8601 with an explicit UTC offset
     labelled: str  # "unofficial", "official" or "unknown": what the release says of itself
+    # "results" files carry votes; "support" files (e.g. contest or party name lookups)
+    # are preserved as evidence and passed alongside every results file when extracting.
+    role: str = "results"
 
 
 Fetcher = Callable[[Path], "FetchedRelease | list[FetchedRelease]"]
@@ -386,3 +389,38 @@ def pennsylvania(dest: Path) -> FetchedRelease:
     path = dest / "PA_2026GE_county_USC.csv"
     path.write_bytes(body)
     return FetchedRelease("PA", path, PA_REPORT, retrieved, "unknown")
+
+
+AR_API = "https://enr-results-api.totalresults.com/"
+AR_ELECTION = "11b07106-031e-4d7c-911a-d01fb473d6dd"
+
+
+@register("AR")
+def arkansas(dest: Path) -> list[FetchedRelease]:
+    """Arkansas SOS results (tally-enr) JSON API: federal contest results plus the contest
+    and party name lookups needed to label them; ``isOfficial`` from the election info."""
+    import json
+
+    opener = _opener()
+    parts = [
+        (
+            "Contest/GetContestResults?cId=arkansas&electionID={e}&contestType=Federal",
+            "federal_results",
+            "results",
+        ),
+        ("Contest/GetContestSearchList?cid=arkansas&electionID={e}", "contestlist", "support"),
+        ("Election/GetElectionInfo?cId=arkansas&electionID={e}", "electioninfo", "support"),
+    ]
+    out = []
+    labelled = "unknown"
+    for query, tag, role in parts:
+        url = AR_API + query.format(e=AR_ELECTION)
+        retrieved = _now()
+        body = _get(opener, url)
+        path = dest / f"AR_2026GE_{tag}.json"
+        path.write_bytes(body)
+        if tag == "electioninfo":
+            official = json.loads(body).get("isOfficial")
+            labelled = "official" if official is True else "unofficial" if official is False else "unknown"
+        out.append(FetchedRelease("AR", path, url, retrieved, "unknown", role))
+    return [FetchedRelease(r.state_po, r.path, r.source_url, r.retrieved_at, labelled, r.role) for r in out]

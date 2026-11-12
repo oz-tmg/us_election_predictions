@@ -699,3 +699,46 @@ def pennsylvania(paths: Sequence[Path]) -> pd.DataFrame:
             )
             rows.append(from_candidates(frame, state_po="PA", office=office, district_num=district))
     return pd.DataFrame(rows)
+
+
+_AR_HOUSE = re.compile(r"^U\.S\. Congress District (\d{1,2})$")
+
+
+@register("AR")
+def arkansas(paths: Sequence[Path]) -> pd.DataFrame:
+    """Arkansas SOS tally-enr JSON: three files from the same version, joined by ID —
+    ``*contestlist*`` (contest names), ``*electioninfo*`` (party names by partyID) and
+    ``*federal_results*`` (statewide votes per choice, with partyID). Write-in choices
+    count as other."""
+    import json
+
+    by_kind = {}
+    for path in paths:
+        for kind in ("contestlist", "electioninfo", "federal_results"):
+            if kind in path.name:
+                by_kind[kind] = json.loads(path.read_text(encoding="utf-8-sig"))
+    missing = {"contestlist", "electioninfo", "federal_results"} - set(by_kind)
+    if missing:
+        raise ValueError(f"Arkansas needs contestlist, electioninfo and federal_results; missing {missing}")
+    names = {k: v["contestName"] for k, v in by_kind["contestlist"]["response"]["contests"].items()}
+    parties = {k: v["partyName"] for k, v in by_kind["electioninfo"]["response"]["parties"].items()}
+    rows = []
+    for contest_id, contest in by_kind["federal_results"]["response"]["contests"].items():
+        name = str(names.get(contest_id, "")).strip()
+        if m := _AR_HOUSE.match(name):
+            office, district = "us_house", int(m.group(1))
+        elif name == "U.S. Senate":
+            office, district = "us_senate", None
+        else:
+            continue
+        choices = [
+            {"party": parties.get(c.get("partyID"), ""), "votes": int(c.get("totalVotes") or 0)}
+            for c in contest.get("choices", [])
+        ] + [
+            {"party": "Write-in", "votes": int(c.get("totalVotes") or 0)}
+            for c in contest.get("writeInChoices", [])
+        ]
+        rows.append(
+            from_candidates(pd.DataFrame(choices), state_po="AR", office=office, district_num=district)
+        )
+    return pd.DataFrame(rows)
