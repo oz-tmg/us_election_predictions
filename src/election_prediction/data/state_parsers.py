@@ -456,3 +456,55 @@ def wyoming(paths: Sequence[Path]) -> pd.DataFrame:
                 from_candidates(pd.DataFrame(candidates), state_po="WY", office=office, district_num=district)
             )
     return pd.DataFrame(rows)
+
+
+@register("SC")
+def south_carolina(paths: Sequence[Path]) -> pd.DataFrame:
+    """SC State Election Commission on Clarity: the general election's summary.zip, plus
+    any recount published as a separate Clarity election (file name contains
+    ``recount``). A race found in a recount file replaces the same race from the general
+    file; the recount is the later official count of the same contest."""
+    kwargs = {
+        "state": "SC",
+        "senate": r"^U\.S\.\s+Senate",
+        "house": r"^U\.S\.\s+House of Representatives,\s+District\s+(\d+)",
+    }
+    general = [p for p in paths if "recount" not in p.name.lower()]
+    recounts = [p for p in paths if "recount" in p.name.lower()]
+    if not recounts:
+        return clarity_summary(general, **kwargs)
+    if not general:
+        return clarity_summary(recounts, **kwargs)
+    base = clarity_summary(general, **kwargs)
+    override = clarity_summary(recounts, **kwargs)
+    keys = ["office", "district_num"]
+    kept = base.merge(override[keys], on=keys, how="left", indicator=True)
+    kept = kept[kept["_merge"] == "left_only"].drop(columns="_merge")
+    return pd.concat([kept, override], ignore_index=True)
+
+
+_MN_HOUSE = re.compile(r"^U\.S\. Representative District (\d{1,2})$")
+
+
+@register("MN")
+def minnesota(paths: Sequence[Path]) -> pd.DataFrame:
+    """Minnesota SOS media text files (``ushouse.txt``, ``ussenate.txt``): semicolon-
+    delimited, no header, one row per candidate statewide. Fields used: 4 office name,
+    10 party abbreviation (DFL is the Democratic party), 13 votes. County files
+    (``USHouseCty.txt``) are not read."""
+    rows = []
+    for path in paths:
+        if path.name.lower().endswith("cty.txt"):
+            continue
+        data = pd.read_csv(path, sep=";", header=None, dtype=str, keep_default_na=False, encoding="latin-1")
+        for contest, group in data.groupby(4):
+            name = str(contest).strip()
+            if m := _MN_HOUSE.match(name):
+                office, district = "us_house", int(m.group(1))
+            elif name.startswith("U.S. Senator") and "SPECIAL" not in name.upper():
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = pd.DataFrame({"party": group[10], "votes": pd.to_numeric(group[13])})
+            rows.append(from_candidates(frame, state_po="MN", office=office, district_num=district))
+    return pd.DataFrame(rows)

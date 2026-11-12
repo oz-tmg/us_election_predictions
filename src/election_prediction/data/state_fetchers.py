@@ -34,7 +34,7 @@ class FetchedRelease:
     labelled: str  # "unofficial", "official" or "unknown": what the release says of itself
 
 
-Fetcher = Callable[[Path], FetchedRelease]
+Fetcher = Callable[[Path], "FetchedRelease | list[FetchedRelease]"]
 FETCHERS: dict[str, Fetcher] = {}
 
 
@@ -186,3 +186,44 @@ def wyoming(dest: Path) -> FetchedRelease:
         names = " ".join(zf.namelist()).upper()
     labelled = "unofficial" if "UNOFFICIAL" in names else "official" if "OFFICIAL" in names else "unknown"
     return FetchedRelease("WY", path, WY_URL, retrieved, labelled)
+
+
+MN_BASE = "https://electionresultsfiles.sos.mn.gov/20261103/"
+
+
+@register("MN")
+def minnesota(dest: Path) -> list[FetchedRelease]:
+    """Minnesota SOS media files: statewide U.S. House and U.S. Senate text files. The
+    HTML results site rate-limits with a captcha; these files are served for media use."""
+    opener = _opener()
+    out = []
+    for name in ("ushouse.txt", "ussenate.txt"):
+        retrieved = _now()
+        body = _get(opener, MN_BASE + name)
+        path = dest / f"MN_2026GE_{name}"
+        path.write_bytes(body)
+        out.append(FetchedRelease("MN", path, MN_BASE + name, retrieved, "unknown"))
+    return out
+
+
+SC_BASE = "https://www.enr-scvotes.org/SC"
+SC_GENERAL, SC_RECOUNTS = "127300", ("127592",)
+
+
+@register("SC")
+def south_carolina(dest: Path) -> list[FetchedRelease]:
+    """SC Election Commission on Clarity: the general election, then each recount election
+    (published separately; its races replace the general's). Versions from current_ver.txt."""
+    opener = _opener()
+    out = []
+    for election, tag in [(SC_GENERAL, "general"), *((e, "recount") for e in SC_RECOUNTS)]:
+        version = _get(opener, f"{SC_BASE}/{election}/current_ver.txt").decode().strip()
+        if not version.isdigit():
+            raise RuntimeError(f"unexpected Clarity version {version!r} for {election}")
+        url = f"{SC_BASE}/{election}/{version}/reports/summary.zip"
+        retrieved = _now()
+        body = _get(opener, url)
+        path = dest / f"SC_2026GE_{tag}_{election}_{version}_summary.zip"
+        path.write_bytes(body)
+        out.append(FetchedRelease("SC", path, url, retrieved, "unknown"))
+    return out

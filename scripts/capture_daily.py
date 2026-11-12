@@ -107,36 +107,62 @@ def run(
     frames, evidence, report_states, failures = [], [], {}, {}
     for state in states:
         try:
-            release = state_fetchers.FETCHERS[state](work)
-            if state in certified and release.labelled == "unofficial":
+            fetched = state_fetchers.FETCHERS[state](work)
+            releases = fetched if isinstance(fetched, list) else [fetched]
+            labels = {r.labelled for r in releases}
+            if state in certified and "unofficial" in labels:
                 raise ValueError(f"{state}: release labels itself unofficial; refusing --certified")
-            manifest = results_sources.preserve_source(
-                release.path,
-                state=state,
-                url=release.source_url,
-                retrieved_at=release.retrieved_at,
-                **({"directory": evidence_dir} if evidence_dir else {}),
-            )
-            record = json.loads(manifest.read_text())
-            extracted = se.extract(state, [Path(record["raw_path"])])
-            check_coverage(extracted, expected_races(universe, state), state)
-            frames.append(
-                se.to_snapshot(
-                    extracted,
-                    source_url=record["source_url"],
-                    retrieved_on=record["retrieved_on"],
-                    certified=state in certified,
+            # Each release is preserved and extracted on its own, so every row names the
+            # file it came from; a later release (e.g. a recount) replaces the same race.
+            parts: list[pd.DataFrame] = []
+            records = []
+            for release in releases:
+                manifest = results_sources.preserve_source(
+                    release.path,
+                    state=state,
+                    url=release.source_url,
+                    retrieved_at=release.retrieved_at,
+                    **({"directory": evidence_dir} if evidence_dir else {}),
                 )
-            )
-            evidence.append(manifest)
+                record = json.loads(manifest.read_text())
+                part = se.extract(state, [Path(record["raw_path"])])
+                part = part.assign(_url=record["source_url"], _retrieved_on=record["retrieved_on"])
+                keys = ["office", "district_num"]
+                parts = [
+                    p.merge(part[keys], on=keys, how="left", indicator=True)
+                    .query("_merge == 'left_only'")
+                    .drop(columns="_merge")
+                    for p in parts
+                ]
+                parts.append(part)
+                records.append((manifest, record))
+            extracted = pd.concat(parts, ignore_index=True)
+            check_coverage(extracted, expected_races(universe, state), state)
+            for (url, day), group in extracted.groupby(["_url", "_retrieved_on"]):
+                frames.append(
+                    se.to_snapshot(
+                        group.drop(columns=["_url", "_retrieved_on"]),
+                        source_url=url,
+                        retrieved_on=day,
+                        certified=state in certified,
+                    )
+                )
+            evidence.extend(m for m, _ in records)
             report_states[state] = {
                 "seats": int(len(extracted)),
                 "certified": state in certified,
                 "certification_evidence": certified.get(state),
-                "labelled": release.labelled,
-                "source_url": release.source_url,
-                "retrieved_at": release.retrieved_at,
-                "sha256": record["checksum_sha256"],
+                "labelled": "unofficial"
+                if "unofficial" in labels
+                else (labels.pop() if len(labels) == 1 else "mixed"),
+                "releases": [
+                    {
+                        "source_url": r["source_url"],
+                        "retrieved_at": r["retrieved_at"],
+                        "sha256": r["checksum_sha256"],
+                    }
+                    for _, r in records
+                ],
             }
         except Exception as exc:  # noqa: BLE001 - one state's failure must not lose the others
             failures[state] = f"{type(exc).__name__}: {exc}"

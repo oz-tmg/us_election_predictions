@@ -61,7 +61,7 @@ def test_capture_writes_one_snapshot_and_a_report(env: dict) -> None:
     snap = pd.read_csv(env["ledger_dir"] / f"snapshot={TODAY}.csv")
     assert snap.loc[0, "dem_votes"] == 60_000 and snap.loc[0, "certified"] in (False, "False")
     saved = json.loads((env["report_dir"] / f"capture_{TODAY}.json").read_text())
-    assert saved["states"]["MA"]["sha256"]
+    assert saved["states"]["MA"]["releases"][0]["sha256"]
 
 
 def test_the_day_slot_is_checked_before_fetching(env: dict) -> None:
@@ -111,3 +111,34 @@ def test_parse_certified_requires_https_evidence() -> None:
     assert capture_daily.parse_certified(["nc=https://ncsbe.gov/c"]) == {"NC": "https://ncsbe.gov/c"}
     with pytest.raises(SystemExit):
         capture_daily.parse_certified(["NC"])
+
+
+def test_a_later_release_replaces_the_same_race_and_keeps_its_own_source(
+    env: dict, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def two_releases(dest: Path) -> list[state_fetchers.FetchedRelease]:
+        out = []
+        for i, (dem, tag) in enumerate(((60_000, "general"), (61_000, "recount"))):
+            path = dest / f"MA_2026GE_SEN_{tag}_{i}.csv"
+            path.write_text(
+                'City/Town,,,"Ann A","Bob B","All Others",Blanks,"Total Votes Cast"\n'
+                ",,,Democratic,Republican\n"
+                f'TOTALS,,,"{dem}","40,000",10,500,"1"\n'
+            )
+            out.append(
+                state_fetchers.FetchedRelease(
+                    "MA",
+                    path,
+                    f"https://electionstats.state.ma.us/{tag}",
+                    datetime.now(UTC).isoformat(),
+                    "unknown",
+                )
+            )
+        return out
+
+    monkeypatch.setitem(state_fetchers.FETCHERS, "MA", two_releases)
+    report = capture_daily.run(states=["MA"], certified={}, dry_run=False, **env)
+    snap = pd.read_csv(env["ledger_dir"] / f"snapshot={TODAY}.csv")
+    assert len(snap) == 1 and snap.loc[0, "dem_votes"] == 61_000
+    assert snap.loc[0, "source_url"].endswith("/recount")
+    assert len(report["states"]["MA"]["releases"]) == 2

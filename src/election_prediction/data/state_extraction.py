@@ -48,7 +48,7 @@ def register(state: str) -> Callable[[Parser], Parser]:
 def party_bucket(label: object) -> str:
     """Map a party label as states print it to DEMOCRAT / REPUBLICAN / OTHER."""
     text = str(label or "").strip().upper().replace(".", "")
-    if text in {"D", "DEM", "DEMOCRAT", "DEMOCRATIC", "DEMOCRATIC PARTY", "DEMOCRATIC-FARMER-LABOR"}:
+    if text in {"D", "DEM", "DEMOCRAT", "DEMOCRATIC", "DEMOCRATIC PARTY", "DEMOCRATIC-FARMER-LABOR", "DFL"}:
         return "DEMOCRAT"
     if text in {"R", "REP", "REPUBLICAN", "REPUBLICAN PARTY", "GOP"}:
         return "REPUBLICAN"
