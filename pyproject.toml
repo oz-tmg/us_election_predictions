@@ -67,3 +67,5 @@ testpaths = ["tests"]
 # (period, unit, source, snapshot date — CLAUDE.md §6). Wrapping them to the
 # code line length splits sentences across literals and invites silent edits.
 "blog/figures/*.py" = ["E501"]
+# Same reason: the PDF builder's prose literals are the published text, verbatim.
+"blog/build_pdf.py" = ["E501"]
