@@ -591,3 +591,34 @@ def georgia(paths: Sequence[Path]) -> pd.DataFrame:
                 raise ValueError(f"{path.name} / {name}: choices do not sum to Total Votes")
             rows.append(from_candidates(frame, state_po="GA", office=office, district_num=district))
     return pd.DataFrame(rows)
+
+
+_VA_HOUSE = re.compile(r"^Member, House of Representatives \((\d{1,2})(?:st|nd|rd|th) District\)$")
+
+
+@register("VA")
+def virginia(paths: Sequence[Path]) -> pd.DataFrame:
+    """Virginia ELECT ``Election Results`` CSV (precinct level, Windows-1252): summed per
+    office over all precincts, provisional and absentee pseudo-precincts included. Write-in
+    rows (``WRITE IN VOTES``) carry their count in ``WriteInVote``, not ``TOTAL_VOTES``."""
+    rows = []
+    for path in paths:
+        data = pd.read_csv(io.StringIO(_decode(path.read_bytes())), dtype=str, keep_default_na=False)
+        total = pd.to_numeric(data["TOTAL_VOTES"].str.replace(",", ""), errors="coerce")
+        write_in = pd.to_numeric(data["WriteInVote"].str.replace(",", ""), errors="coerce")
+        is_write_in = data["CandidateName"].str.strip().str.upper().eq("WRITE IN VOTES")
+        data = data.assign(
+            votes=total.where(~is_write_in, write_in).fillna(0),
+            party=data["Party"].where(~is_write_in, "Write-in"),
+        )
+        for contest, group in data.groupby("OfficeTitle"):
+            name = str(contest).strip()
+            if m := _VA_HOUSE.match(name):
+                office, district = "us_house", int(m.group(1))
+            elif name == "Member, United States Senate":
+                office, district = "us_senate", None
+            else:
+                continue
+            frame = group.groupby(["CandidateName", "party"], as_index=False)["votes"].sum()
+            rows.append(from_candidates(frame, state_po="VA", office=office, district_num=district))
+    return pd.DataFrame(rows)

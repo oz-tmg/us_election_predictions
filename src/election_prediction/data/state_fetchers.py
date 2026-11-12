@@ -269,22 +269,55 @@ def _find_report(node: object, name: str) -> dict | None:
     return None
 
 
-@register("GA")
-def georgia(dest: Path) -> FetchedRelease:
-    """Georgia SOS: the elections API names the current "Total Votes Excel" report (its
-    file name changes with each publish) and states ``isOfficialResults``."""
+def _published_report(
+    *, state: str, api: str, cdn: str, report_name: str, filename: str, dest: Path
+) -> FetchedRelease:
+    """Results platforms (GA, VA) whose elections API names each public report's current
+    blob (renamed on every publish) and states ``isOfficialResults``. The report is
+    matched by its exact name, so an unrequested report (e.g. an absentee raw-data file,
+    which may hold personal records) can never be fetched by accident."""
     import json
 
     opener = _opener()
-    meta = json.loads(_get(opener, GA_API))
-    report = _find_report(meta, "Total Votes Excel")
+    meta = json.loads(_get(opener, api))
+    report = _find_report(meta, report_name)
     if report is None:
-        raise RuntimeError("Georgia API lists no 'Total Votes Excel' report")
-    url = GA_CDN + meta["jurisdictionId"] + "/" + urllib.parse.quote(report["blobName"])
+        raise RuntimeError(f"{state} API lists no {report_name!r} report")
+    url = cdn + meta["jurisdictionId"] + "/" + urllib.parse.quote(report["blobName"])
     retrieved = _now()
     body = _get(opener, url)
-    path = dest / "GA_2026GE_TotalVotes.xlsx"
+    path = dest / filename
     path.write_bytes(body)
     official = meta.get("isOfficialResults")
     labelled = "official" if official is True else "unofficial" if official is False else "unknown"
-    return FetchedRelease("GA", path, url, retrieved, labelled)
+    return FetchedRelease(state, path, url, retrieved, labelled)
+
+
+@register("GA")
+def georgia(dest: Path) -> FetchedRelease:
+    """Georgia SOS "Total Votes Excel" report."""
+    return _published_report(
+        state="GA",
+        api=GA_API,
+        cdn=GA_CDN,
+        report_name="Total Votes Excel",
+        filename="GA_2026GE_TotalVotes.xlsx",
+        dest=dest,
+    )
+
+
+VA_API = "https://enr.elections.virginia.gov/results/public/api/elections/Virginia/2026-November-General"
+VA_CDN = "https://enr.elections.virginia.gov/cdn/results/"
+
+
+@register("VA")
+def virginia(dest: Path) -> FetchedRelease:
+    """Virginia ELECT "Election Results" CSV (precinct-level aggregate results)."""
+    return _published_report(
+        state="VA",
+        api=VA_API,
+        cdn=VA_CDN,
+        report_name="Election Results",
+        filename="VA_2026GE_ElectionResults.csv",
+        dest=dest,
+    )
