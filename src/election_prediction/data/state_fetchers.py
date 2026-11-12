@@ -321,3 +321,26 @@ def virginia(dest: Path) -> FetchedRelease:
         filename="VA_2026GE_ElectionResults.csv",
         dest=dest,
     )
+
+
+def _clarity(state: str, base: str, report: str, filename_prefix: str, dest: Path) -> FetchedRelease:
+    """A Clarity/Scytl election: current_ver.txt gives the live version, then that
+    version's report zip (``summary.zip`` or ``detailxml.zip``)."""
+    opener = _opener()
+    version = _get(opener, f"{base}/current_ver.txt").decode().strip()
+    if not version.isdigit():
+        raise RuntimeError(f"unexpected Clarity version {version!r} at {base}")
+    url = f"{base}/{version}/reports/{report}"
+    retrieved = _now()
+    body = _get(opener, url)
+    path = dest / f"{filename_prefix}_{version}_{report}"
+    path.write_bytes(body)
+    return FetchedRelease(state, path, url, retrieved, "unknown")
+
+
+@register("CO")
+def colorado(dest: Path) -> FetchedRelease:
+    """Colorado SOS on Clarity (election 127407): detailxml.zip (no summary report)."""
+    return _clarity(
+        "CO", "https://results.enr.clarityelections.com/CO/127407", "detailxml.zip", "CO_2026GE", dest
+    )

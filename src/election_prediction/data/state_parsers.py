@@ -622,3 +622,49 @@ def virginia(paths: Sequence[Path]) -> pd.DataFrame:
             frame = group.groupby(["CandidateName", "party"], as_index=False)["votes"].sum()
             rows.append(from_candidates(frame, state_po="VA", office=office, district_num=district))
     return pd.DataFrame(rows)
+
+
+def clarity_detail(
+    paths: Sequence[Path], *, state: str, senate: str, house: str, exclude: str = r"UNEXPIRED|SPECIAL"
+) -> pd.DataFrame:
+    """Clarity/Scytl ENR ``detailxml.zip`` (``detail.xml``): each ``Contest`` lists its
+    ``Choice`` elements with ``party`` and statewide ``totalVotes``. Same contest
+    selection rules as ``clarity_summary``."""
+    import xml.etree.ElementTree as ET
+    import zipfile
+
+    senate_re, house_re, exclude_re = (re.compile(p, re.IGNORECASE) for p in (senate, house, exclude))
+    rows = []
+    for path in paths:
+        with zipfile.ZipFile(path) as zf:
+            root = ET.fromstring(zf.read("detail.xml"))
+        for contest in root.iter("Contest"):
+            name = contest.get("text", "")
+            if exclude_re.search(name):
+                continue
+            if senate_re.search(name):
+                office, district = "us_senate", None
+            elif m := house_re.search(name):
+                office, district = "us_house", int(m.group(1))
+            else:
+                continue
+            choices = contest.findall("Choice")
+            frame = pd.DataFrame(
+                {
+                    "party": [c.get("party") or "" for c in choices],
+                    "votes": [int(c.get("totalVotes") or 0) for c in choices],
+                }
+            )
+            rows.append(from_candidates(frame, state_po=state, office=office, district_num=district))
+    return pd.DataFrame(rows)
+
+
+@register("CO")
+def colorado(paths: Sequence[Path]) -> pd.DataFrame:
+    """Colorado SOS Clarity ``detailxml.zip`` (its summary report is not published)."""
+    return clarity_detail(
+        paths,
+        state="CO",
+        senate=r"^United States Senator",
+        house=r"^Representative to the \d+th United States Congress - District (\d{1,2})$",
+    )
