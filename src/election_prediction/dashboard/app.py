@@ -423,6 +423,107 @@ def page_runs(stores: Sequence[BundleStore]) -> list[Any]:
     ]
 
 
+def _race_label(office: pd.Series, state: pd.Series, district: pd.Series) -> pd.Series:
+    number = pd.to_numeric(district, errors="coerce").fillna(0).astype(int).astype(str).str.zfill(2)
+    return state.where(office == "us_senate", state + "-" + number) + office.map(
+        {"us_senate": " Senate", "us_house": ""}
+    )
+
+
+def page_results(store: BundleStore, run_id: str, assumption: str) -> list[Any]:
+    """2026 results as observed, beside the selected run. Displays; never scores."""
+    results_run = _latest(store, RunKind.RESULTS)
+    if results_run is None:
+        return [_empty("No 2026 results have been exported yet.")]
+    m, seats, _ = _projection_frame(store, run_id, assumption)
+    results = store.table(results_run.run_id, "results_2026")
+    cov = store.document(results_run.run_id, "coverage")
+    joined = results.merge(
+        seats[["office", "geography_id", "mean_dem_share", "sigma", "dem_win_prob"]],
+        on=["office", "geography_id"],
+        how="left",
+    )
+    joined["label"] = _race_label(joined["office"], joined["state_po"], joined["district_num"])
+    plotted = joined.dropna(subset=["mean_dem_share", "two_party_dem_share"])
+    lo, hi = figures.interval_90(joined["mean_dem_share"], joined["sigma"])
+    table = pd.DataFrame(
+        {
+            "Race": joined["label"],
+            "Status": joined["status"],
+            "Round": joined["election_round"],
+            "Observed Dem share": joined["two_party_dem_share"].round(3),
+            "Winner": joined["winner_party"].replace("", "unresolved").str.title(),
+            "Predicted share": joined["mean_dem_share"].round(3),
+            "90% low": lo.round(3),
+            "90% high": hi.round(3),
+            "P(Dem win)": joined["dem_win_prob"].round(3),
+            "Observed on": joined["observed_on"],
+        }
+    ).sort_values(["Status", "Race"])
+    states = ", ".join(f"{k} ({v})" for k, v in sorted(cov["states_observed"].items()))
+    return [
+        html.Div(
+            className="status status-results",
+            children=[
+                html.Strong(results_run.status_label),
+                html.Span(f" · observed through {cov['as_of']}"),
+            ],
+        ),
+        html.Section(
+            className="card",
+            children=[
+                html.H3("Coverage"),
+                html.P(
+                    f"{cov['seats_observed']} of {cov['seats_registered']} registered seats observed; "
+                    f"{cov['seats_certified']} certified, {cov['seats_observed'] - cov['seats_certified']} "
+                    f"unofficial, {cov['seats_unresolved']} unresolved (runoff pending). "
+                    f"Ledger snapshots: {len(cov['snapshots'])}, latest {cov['latest_observation']}.",
+                    className="summary",
+                ),
+                html.P(
+                    f"States observed (seats): {states}. Every other state is not yet captured.",
+                    className="summary",
+                ),
+                _caveats(results_run),
+            ],
+        ),
+        _status_banner(m),
+        chart_card(
+            f"Observed against predicted · {assumption}",
+            _graph(figures.results_vs_run(plotted), "results-scatter"),
+            Caption(
+                period="2026 general election (November 3); results as observed through " + cov["as_of"],
+                unit="Seat (state for Senate, congressional district for House)",
+                source=f"Official state releases via the results ledger ({results_run.run_id}); "
+                + _sources_text(m),
+                snapshot=cov["latest_observation"],
+                uncertainty="Bars are the run's 90% interval per seat. Unofficial counts still change "
+                "and are not scored; scoring uses certified seats only (see the scorecards).",
+                summary="Each marker is one seat: where the selected run put its two-party share, and "
+                "where the count stands. Hollow markers are unofficial.",
+            ),
+        ),
+        html.Section(
+            className="card",
+            children=[
+                html.H3("Observed seats"),
+                DataTable(
+                    id="results-table",
+                    data=table.to_dict("records"),
+                    columns=[{"name": c, "id": c} for c in table.columns],
+                    filter_action="native",
+                    sort_action="native",
+                    page_size=25,
+                    style_as_list_view=True,
+                    style_table={"overflowX": "auto"},
+                    style_cell={"fontFamily": figures.FONT, "padding": "6px", "textAlign": "left"},
+                    style_header={"fontWeight": "600"},
+                ),
+            ],
+        ),
+    ]
+
+
 def _latest(store: BundleStore, kind: RunKind, prefix: str = "") -> RunManifest | None:
     runs = [m for m in store.runs() if m.kind is kind and m.run_id.startswith(prefix)]
     return runs[0] if runs else None
@@ -795,12 +896,16 @@ def create_app(
             ("/races", "Races"),
             ("/diagnostics", "Diagnostics"),
             ("/history", "Results history"),
+            ("/results", "Results"),
             ("/texas", "Texas"),
             ("/runs", "Runs"),
             ("/about", "About"),
         ]
 
     projection_runs = [m for m in vault_store.runs() if m.kind in PROJECTION_KINDS] if vault_store else []
+    # Open on the latest refresh, not a scenario that happens to share its date.
+    refreshes = [m for m in projection_runs if m.kind is RunKind.REFRESH]
+    default_run = (refreshes or projection_runs)[0].run_id if projection_runs else None
     controls: list[Any] = []
     if tier is Tier.VAULT:
         controls = [
@@ -808,7 +913,7 @@ def create_app(
             dcc.Dropdown(
                 id="run-select",
                 options=[{"label": f"{m.as_of} · {m.title}", "value": m.run_id} for m in projection_runs],
-                value=projection_runs[0].run_id if projection_runs else None,
+                value=default_run,
                 clearable=False,
             ),
             html.Label("Assumption", htmlFor="assumption-select"),
@@ -904,7 +1009,7 @@ def create_app(
             return page_texas(vault_store), hide, hide
         if not run_id or not assumption:
             return [_empty("No projection runs have been exported yet.")], show, hide
-        pages = {"/": page_overview, "/map": page_map, "/races": page_races}
+        pages = {"/": page_overview, "/map": page_map, "/races": page_races, "/results": page_results}
         if path not in pages:
             return [_empty("Page not found.")], hide, hide
         return pages[path](vault_store, run_id, assumption), show, hide
