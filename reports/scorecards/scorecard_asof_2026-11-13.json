@@ -1,0 +1,153 @@
+{
+  "as_of": "2026-11-13",
+  "interim": true,
+  "what_this_is": "Scores on seats certified by the as-of date only. Not a verdict on any run: the certified subset is not a random sample of seats, and chamber-level error and the registered failure condition are not evaluable until every House seat is scoreable.",
+  "void_geographies": "none asserted (no map changed after sealing has been recorded)",
+  "coverage": {
+    "seats_observed": 18,
+    "seats_certified_by_as_of": 0,
+    "states_observed": [
+      "MT",
+      "NC"
+    ],
+    "states_with_certified_seats": [],
+    "snapshots_used": [
+      "2026-11-12",
+      "2026-11-13"
+    ]
+  },
+  "scoring_rule": "Every run is scored by the registered scorer on the same certified returns and as_of dates, all assumptions reported; selecting the best-performing run or assumption afterwards is not permitted.",
+  "runs": {
+    "preregistration_2026-11-03": {
+      "role": "scored holdout (sealed 2026-09-30)",
+      "verified": "sealed registration: digest verified",
+      "registration": {
+        "election_date": "2026-11-03",
+        "registered_on": "2026-09-30",
+        "predictions_sha256": "4de09ecf82f218ee807edc6d4eaae9b50d51968d0957177f33b762fad4100882",
+        "seal_verified": true
+      },
+      "audit": {
+        "as_of": "2026-11-13",
+        "seats_registered": 468,
+        "scored": 0,
+        "unscored_not_certified": 468,
+        "unscored_missing_vote_share": 0,
+        "void_map_changed_after_sealing": 0,
+        "void_sources": {},
+        "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted"
+      },
+      "declared_defects": [
+        "173 House seats have no prior on their 2026 boundaries. They use their state's presidential lean with sigma 0.1450 against a modelled 0.1121. RD-003's vote transfer is unbuilt, so these seats are the least informed part of the chamber and should show visibly worse per-seat scores.",
+        "The derived Democratic Senate caucus is 45 of 100, two short of the actual 47. The candidate/party crosswalk (P0-003) cannot resolve every member's affiliation from two-party share, so Senate Democratic seats are likely understated by about two.",
+        "Renomination is assumed for every sitting member. 458 have a 2026 FEC filing and 10 were not found; primaries are not compiled at all, so retirements and primary defeats are invisible to this forecast.",
+        "The national environment is unidentified. The shrinkage factor is an assumption swept over, not an estimate, and no historical calibration for it exists yet (NE-002 open).",
+        "Maps in AL, LA, MO, TN are under live litigation and could move before election day. The register records the plan in effect at the snapshot date; a late court order would invalidate those seats' boundaries.",
+        "The simulation's correlated-error split (45/25/30 national/regional/state) is asserted, not estimated from residuals. Chamber-level interval width is sensitive to it."
+      ],
+      "every_assumption_scored": [],
+      "results": {},
+      "chamber": {},
+      "failure_condition": {
+        "declared": "If the realised Democratic seat count falls outside the 90% interval under every assumption in the band, the model's stated uncertainty was too narrow. This is a failure of the forecast, not of the band, and is to be reported as such.",
+        "assumptions_whose_interval_contained_the_truth": 0,
+        "assumptions_checked": 0,
+        "status": "not_evaluable_incomplete_chamber",
+        "triggered": null
+      }
+    },
+    "refresh_2026-10-22": {
+      "role": "comparison: last refresh before the Senate specification change",
+      "verified": "frozen run: file SHA-256 verified against the comparison set",
+      "registration": {
+        "election_date": "2026-11-03",
+        "registered_on": "2026-10-22",
+        "predictions_sha256": "5b5cb2e668fd47c88779ef7a93fd51ab964b76129c1ea841e046e68f3af55100",
+        "seal_verified": true
+      },
+      "audit": {
+        "as_of": "2026-11-13",
+        "seats_registered": 470,
+        "scored": 0,
+        "unscored_not_certified": 470,
+        "unscored_missing_vote_share": 0,
+        "void_map_changed_after_sealing": 0,
+        "void_sources": {},
+        "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted"
+      },
+      "declared_defects": [],
+      "every_assumption_scored": [],
+      "results": {},
+      "chamber": {},
+      "failure_condition": {
+        "declared": null,
+        "assumptions_whose_interval_contained_the_truth": 0,
+        "assumptions_checked": 0,
+        "status": "not_evaluable_incomplete_chamber",
+        "triggered": null
+      }
+    },
+    "refresh_2026-10-29": {
+      "role": "comparison: final pre-election refresh (v1_open_seat_holder)",
+      "verified": "frozen run: file SHA-256 verified against the comparison set",
+      "registration": {
+        "election_date": "2026-11-03",
+        "registered_on": "2026-10-29",
+        "predictions_sha256": "517f558273e4d6e4d4abdc89e5bc51fd42c3d747eefee787c34903420969d5bb",
+        "seal_verified": true
+      },
+      "audit": {
+        "as_of": "2026-11-13",
+        "seats_registered": 470,
+        "scored": 0,
+        "unscored_not_certified": 470,
+        "unscored_missing_vote_share": 0,
+        "void_map_changed_after_sealing": 0,
+        "void_sources": {},
+        "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted"
+      },
+      "declared_defects": [],
+      "every_assumption_scored": [],
+      "results": {},
+      "chamber": {},
+      "failure_condition": {
+        "declared": null,
+        "assumptions_whose_interval_contained_the_truth": 0,
+        "assumptions_checked": 0,
+        "status": "not_evaluable_incomplete_chamber",
+        "triggered": null
+      }
+    },
+    "scenario_south_texas_2026-10-29": {
+      "role": "scenario, scored for information only (not a forecast)",
+      "verified": "frozen run: file SHA-256 verified against the comparison set",
+      "registration": {
+        "election_date": "2026-11-03",
+        "registered_on": "2026-10-29",
+        "predictions_sha256": "fcc89b89eaa8bf6f8d3fcaf8896906efd668aafac58b4572bc824e50506d69b5",
+        "seal_verified": true
+      },
+      "audit": {
+        "as_of": "2026-11-13",
+        "seats_registered": 470,
+        "scored": 0,
+        "unscored_not_certified": 470,
+        "unscored_missing_vote_share": 0,
+        "void_map_changed_after_sealing": 0,
+        "void_sources": {},
+        "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted"
+      },
+      "declared_defects": [],
+      "every_assumption_scored": [],
+      "results": {},
+      "chamber": {},
+      "failure_condition": {
+        "declared": null,
+        "assumptions_whose_interval_contained_the_truth": 0,
+        "assumptions_checked": 0,
+        "status": "not_evaluable_incomplete_chamber",
+        "triggered": null
+      }
+    }
+  }
+}
