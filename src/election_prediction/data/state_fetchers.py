@@ -237,23 +237,43 @@ def south_carolina(dest: Path) -> list[FetchedRelease]:
     return out
 
 
-LA_BASE = "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/"
-#: Senate and CD1-CD6 race IDs for the 2026-11-03 election (voter portal ElectionRaces).
-LA_RACES = ("67997", "70195", "70196", "70197", "70198", "70199", "70200")
+LA_DATA = "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob="
+#: The November general and, once the state posts it, the December runoff (House races
+#: where no candidate won a first-round majority). Tags name the round in the file name,
+#: which is how the parser tells a runoff from a first round.
+LA_ELECTIONS = (("11/03/2026", "20261103", "GE"), ("12/12/2026", "20261212", "RO"))
 
 
 @register("LA")
 def louisiana(dest: Path) -> list[FetchedRelease]:
-    """Louisiana SOS voter portal: one by-parish CSV per federal race."""
+    """Louisiana SOS voter portal: one by-parish CSV per federal race, for each posted
+    2026 election. ``ElectionDates`` lists posted elections with ``ResultsOfficial``;
+    each election's race list gives the federal race IDs, so a runoff is captured as
+    soon as the state publishes it and never before."""
+    import json
+
     opener = _opener()
+    dates = json.loads(_get(opener, LA_DATA + "ElectionDates.htm"))["Dates"]["Date"]
+    posted = {d["ElectionDate"]: d for d in (dates if isinstance(dates, list) else [dates])}
     out = []
-    for race in LA_RACES:
-        url = f"{LA_BASE}ByParish_{race}.csv"
-        retrieved = _now()
-        body = _get(opener, url)
-        path = dest / f"LA_2026GE_ByParish_{race}.csv"
-        path.write_bytes(body)
-        out.append(FetchedRelease("LA", path, url, retrieved, "unknown"))
+    for date, blob, tag in LA_ELECTIONS:
+        if date not in posted:
+            continue
+        labelled = "official" if str(posted[date].get("ResultsOfficial")) == "1" else "unofficial"
+        races = json.loads(_get(opener, f"{LA_DATA}{blob}/RacesCandidates_Multiparish.htm"))["Races"]["Race"]
+        federal = [
+            r["ID"]
+            for r in (races if isinstance(races, list) else [races])
+            if r.get("GeneralTitle") in {"U.S. Senator", "U.S. Representative"}
+        ]
+        if tag == "GE" and len(federal) != 7:
+            raise RuntimeError(f"Louisiana general lists {len(federal)} federal races, expected 7")
+        for race in federal:
+            url = f"{LA_DATA}{blob}/csv/ByParish_{race}.csv"
+            retrieved = _now()
+            path = dest / f"LA_2026{tag}_ByParish_{race}.csv"
+            path.write_bytes(_get(opener, url))
+            out.append(FetchedRelease("LA", path, url, retrieved, labelled))
     return out
 
 
