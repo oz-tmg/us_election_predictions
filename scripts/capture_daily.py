@@ -5,8 +5,10 @@
     python scripts/capture_daily.py                     # today's UTC observation
     python scripts/capture_daily.py --certified NC=https://www.ncsbe.gov/...certification
 
-For every state with a registered fetcher (``data/state_fetchers.py``: honest download
-and a parser proven against 2024 certified results) this downloads the official release,
+For every state with a registered fetcher (``data/state_fetchers.py`` and
+``data/state_layouts/``: an honest download and a parser that is either proven against
+2024 certified results or, where the 2026 layout is new, cross-checked against the
+state's own summary; the report names which) this downloads the official release,
 preserves it with its retrieval time and checksum (``results_sources.preserve_source``),
 extracts every U.S. House and Senate race, checks the state's races against the frozen
 universe, and compiles ONE snapshot for the UTC day. The ledger takes one observation per
@@ -38,6 +40,7 @@ from election_prediction.data import (  # noqa: E402
     results_2026,
     results_sources,
     state_fetchers,
+    state_layouts,  # noqa: E402,F401  (registers the changed-layout states)
     state_parsers,  # noqa: E402,F401  (registers parsers)
 )
 from election_prediction.data import state_extraction as se  # noqa: E402
@@ -96,6 +99,7 @@ def run(
     slot = ledger / f"snapshot={observed_on}.csv"
     if slot.exists() and not dry_run:
         raise SystemExit(f"{slot} exists: today's UTC slot is taken (one observation per UTC day)")
+    trust = results_sources.load_catalog().set_index("state_po")["extraction_status"]
     unknown = sorted(set(states) - set(state_fetchers.FETCHERS))
     if unknown:
         raise SystemExit(f"no fetcher for {unknown}; capture those states manually (runbook)")
@@ -107,6 +111,8 @@ def run(
     frames, evidence, report_states, failures = [], [], {}, {}
     for state in states:
         try:
+            if trust.get(state, "manual_review_pending") == "manual_review_pending":
+                raise ValueError(f"{state}: parser has no recorded test or cross-check")
             fetched = state_fetchers.FETCHERS[state](work)
             releases = fetched if isinstance(fetched, list) else [fetched]
             labels = {r.labelled for r in releases}
@@ -157,6 +163,7 @@ def run(
             evidence.extend(m for m, _ in records)
             report_states[state] = {
                 "seats": int(len(extracted)),
+                "parser_status": trust[state],
                 "certified": state in certified,
                 "certification_evidence": certified.get(state),
                 "labelled": "unofficial"
