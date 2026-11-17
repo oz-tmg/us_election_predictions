@@ -43,6 +43,14 @@ def _broken(dest: Path) -> state_fetchers.FetchedRelease:
 def env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
     monkeypatch.setitem(state_fetchers.FETCHERS, "MA", _fake_ma())
     monkeypatch.setitem(state_fetchers.FETCHERS, "ZZ", _broken)
+    monkeypatch.setitem(state_fetchers.FETCHERS, "YY", _broken)
+    catalog = pd.DataFrame(
+        {
+            "state_po": ["MA", "ZZ", "YY"],
+            "extraction_status": ["parser_tested_2024", "parser_cross_checked_2026", "manual_review_pending"],
+        }
+    )
+    monkeypatch.setattr(capture_daily.results_sources, "load_catalog", lambda: catalog)
     universe = tmp_path / "seats.csv"
     pd.DataFrame(
         {"state_po": ["MA"], "office": ["us_senate"], "geography_id": ["state:25"], "district_num": [None]}
@@ -142,3 +150,9 @@ def test_a_later_release_replaces_the_same_race_and_keeps_its_own_source(
     assert len(snap) == 1 and snap.loc[0, "dem_votes"] == 61_000
     assert snap.loc[0, "source_url"].endswith("/recount")
     assert len(report["states"]["MA"]["releases"]) == 2
+
+
+def test_a_parser_without_a_recorded_check_is_not_captured(env: dict) -> None:
+    report = capture_daily.run(states=["MA", "YY"], certified={}, dry_run=False, **env)
+    assert set(report["states"]) == {"MA"} and "no recorded test" in report["failures"]["YY"]
+    assert report["states"]["MA"]["parser_status"] == "parser_tested_2024"

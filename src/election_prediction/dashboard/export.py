@@ -13,6 +13,7 @@ recomputed from per-seat probabilities (that would treat seats as independent â€
     ep-export-dashboard scenario reports/scenario_south_texas_2026-10-29
     ep-export-dashboard polls reports/poll_cross_check_texas_2026-10-29
     ep-export-dashboard context reports/texas_context_2026-10-29
+    ep-export-dashboard results "data/raw/source=state_canvass/dataset=us_house_2026" --as-of 2026-11-14
 
 Bundles are written to ``data/gold/dashboard_bundles/<tier>/<run_id>/`` (git-ignored with
 the rest of gold) and are immutable: re-exporting an existing run raises unless
@@ -351,6 +352,84 @@ def export_preregistration(
     return write_bundle(out_root, manifest, {"seats": seats}, {"band": doc}, replace=replace)
 
 
+# --- 2026 results ledger ----------------------------------------------------------------
+
+
+def export_results(
+    ledger_dir: Path, out_root: Path = DEFAULT_OUT, *, as_of: str, replace: bool = False
+) -> Path:
+    """The 2026 results ledger as of one UTC date, for display beside the frozen runs.
+
+    Status comes only from the ledger: a seat is ``certified`` if a snapshot observed it
+    certified with a resolved outcome by ``as_of``; otherwise it is ``unofficial``. A
+    seat with an unresolved outcome (a Louisiana first round headed to a runoff) carries
+    no winner. Nothing here scores anything.
+    """
+    from election_prediction.build_results_2026 import _state_fips_map
+    from election_prediction.data import results_2026
+
+    snapshots = results_2026.read_snapshots(ledger_dir)
+    ledger = results_2026.certification_ledger(snapshots, as_of=as_of)
+    if not len(ledger):
+        raise BundleError(f"{ledger_dir}: no observation on or before {as_of}")
+    actual = results_2026.to_actual(ledger, state_fips=_state_fips_map())
+    frame = ledger.reset_index(drop=True)
+    frame["geography_id"] = actual["geography_id"].to_numpy()
+    frame["two_party_dem_share"] = actual["actual_dem_share"].to_numpy()
+    certified = pd.to_datetime(frame["certified_on"], errors="coerce").notna()
+    frame["status"] = certified.map({True: "certified", False: "unofficial"})
+    resolved = frame["outcome_resolved"].astype(bool)
+    frame["winner_party"] = frame.get("winner_party", pd.Series("", index=frame.index)).where(resolved, "")
+    for column in ("election_round",):
+        if column not in frame:
+            frame[column] = "general"
+    frame["certified_on"] = frame["certified_on"].astype("string")
+    frame["observed_on"] = frame["observed_on"].astype("string")
+
+    seats_by_state = frame.groupby("state_po").size()
+    snapshot_dates = sorted(snapshots["observed_on"].astype(str).unique().tolist())
+    coverage: dict[str, Any] = {
+        "as_of": as_of,
+        "seats_observed": int(len(frame)),
+        "seats_registered": 468,
+        "seats_certified": int(certified.sum()),
+        "seats_unresolved": int((~resolved).sum()),
+        "states_observed": {k: int(v) for k, v in seats_by_state.items()},
+        "states_with_certified_seats": sorted(frame.loc[certified, "state_po"].unique()),
+        "snapshots": [d for d in snapshot_dates if d <= as_of],
+        "latest_observation": str(frame["observed_on"].max()),
+    }
+    manifest = RunManifest(
+        run_id=f"results_2026_asof_{as_of}",
+        kind=RunKind.RESULTS,
+        tier=Tier.VAULT,
+        title=f"2026 results as observed through {as_of}",
+        as_of=as_of,
+        summary=(
+            f"{coverage['seats_observed']} of 468 registered House and Senate seats observed in "
+            f"{len(seats_by_state)} states; {coverage['seats_certified']} certified, the rest "
+            "unofficial. Shares are two-party Democratic vote share."
+        ),
+        tables=("results_2026",),
+        documents=("coverage",),
+        offices=tuple(sorted(frame["office"].unique())),
+        caveats=(
+            "Unofficial counts change until certification and are never scored.",
+            "States not listed have not been captured; absence is not a result.",
+            "Certification is recorded when first observed in the ledger; no observation "
+            "exists for 2026-11-03 through 2026-11-11.",
+        ),
+        sources={
+            f"ledger snapshot {d}": sha256_file(Path(ledger_dir) / f"snapshot={d}.csv")
+            for d in snapshot_dates
+            if d <= as_of
+        },
+        exporter_git_commit=_git_commit(Path.cwd()),
+        exported_on=dt.date.today().isoformat(),
+    )
+    return write_bundle(out_root, manifest, {"results_2026": frame}, {"coverage": coverage}, replace=replace)
+
+
 # --- diagnostics ------------------------------------------------------------------------
 
 _BACKTEST_OFFICES = {
@@ -454,6 +533,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("path", type=Path)
     p = sub.add_parser("context", help="a reports/texas_context_<date>/ directory")
     p.add_argument("path", type=Path)
+    p = sub.add_parser("results", help="the 2026 results ledger directory (snapshot=*.csv)")
+    p.add_argument("path", type=Path)
+    p.add_argument("--as-of", required=True, help="UTC date of the latest observation to include")
     p = sub.add_parser("preregistration", help="a reports/preregistration_<date>.json seal")
     p.add_argument("path", type=Path)
     p = sub.add_parser("backtest", help="reports/p1_results.json")
@@ -472,6 +554,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             out = export_poll_cross_check(args.path, args.out, replace=args.replace)
         elif args.cmd == "context":
             out = export_texas_context(args.path, args.out, replace=args.replace)
+        elif args.cmd == "results":
+            out = export_results(args.path, args.out, as_of=args.as_of, replace=args.replace)
         elif args.cmd == "preregistration":
             out = export_preregistration(args.path, args.out, replace=args.replace)
         elif args.cmd == "backtest":

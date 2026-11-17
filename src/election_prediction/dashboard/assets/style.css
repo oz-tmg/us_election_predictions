@@ -42,7 +42,7 @@ nav a:hover { color: var(--ink); text-decoration: underline; }
   background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--muted);
 }
 .status-preregistration, .status-refresh, .status-scenario { border-left-color: var(--vault); }
-.status-historical, .status-backtest { border-left-color: var(--accent); }
+.status-historical, .status-backtest, .status-results { border-left-color: var(--accent); }
 
 .card {
   background: var(--surface); border: 1px solid var(--border); border-radius: 10px;

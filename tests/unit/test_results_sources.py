@@ -20,6 +20,10 @@ def test_catalog_exact_fifty_states():
         assert report.is_file(), report
         summary = json.loads(report.read_text())
         assert summary["states"][row.state_po]["reconciliation"]["passed"], row.state_po
+    # A cross-checked parser needs both weaker checks: 2024 layout vs certified, 2026 vs summary.
+    for row in frame[frame.extraction_status.eq("parser_cross_checked_2026")].itertuples():
+        entry = json.loads(Path(row.extraction_evidence).read_text())["states"][row.state_po]
+        assert entry["reconciliation_2024"]["passed"] and entry["cross_check_2026"]["passed"], row.state_po
 
 
 def test_catalog_refuses_untested_upgrade_and_unknown_access(tmp_path):
