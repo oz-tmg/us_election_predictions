@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-11-12T11:09:10+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "afd764d1d96f9a3374e5ac5d66d2014c5a53ccc510508aa85611de41b5761059",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "DE_2024_general_statewide_opendata.csv",
+  "election_cycle": "2024",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Public official election results; cite the state authority.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan rehearsal of results extraction against certified history.",
+  "privacy_tier": 0,
+  "prohibited_use": "No personal data; aggregate results only.",
+  "raw_path": "data/raw/source=state_results_rehearsal_2024/state=DE/sha256=afd764d1d96f9a3374e5ac5d66d2014c5a53ccc510508aa85611de41b5761059/DE_2024_general_statewide_opendata.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "",
+  "review_date": "2027-11-12",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-11-12",
+  "source_id": "state_results_rehearsal_2024_de_afd764d1d96f",
+  "source_owner": "DE state election authority",
+  "source_url": "https://data.delaware.gov/resource/4hbv-7brf.csv?electiondate=2024-11-05T00:00:00.000",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

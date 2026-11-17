@@ -1,0 +1,4 @@
+state_po,office,district_num,dem_ext,dem_cert,rep_ext,rep_cert,share_diff,status
+WV,us_house,1.0,90038,90038.0,228491,228491.0,0.0,exact
+WV,us_house,2.0,110775,110775.0,268190,268190.0,0.0,exact
+WV,us_senate,,207548,207548.0,514079,514079.0,0.0,exact

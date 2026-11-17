@@ -160,6 +160,43 @@ states (AK, AZ, ME, MA, MI, MO, MT, NH, OH, TN, WI). Certification status must b
 as it happens; vote extraction for certified results can follow later from the preserved
 releases.
 
+## Daily Capture: One Command (from 2026-11-12)
+
+```bash
+python scripts/capture_daily.py --dry-run     # fetch, preserve to a temp dir, extract, validate
+python scripts/capture_daily.py               # write today's UTC observation + reports/captures/
+python scripts/capture_daily.py --certified NC=https://<certification evidence URL>
+```
+
+- Covers every state with a registered fetcher (`data/state_fetchers.py`): its release
+  downloads with the honest research client **and** its parser reproduced 2024 certified
+  results (exactly, except Colorado CD1 within tolerance). As of 2026-11-12, 17 states,
+  123 seats: AR, CO, DE, GA, HI, IN, LA, MN, MT, NC, PA, SC, UT, VA, VT, WV, WY. Other
+  states are manual (preserve-source + capture) and must be compiled into the **same**
+  snapshot, because the ledger takes one observation per UTC day: add their rows and
+  evidence to one `build_results_2026 capture` call, or add their fetchers first.
+
+  | Status (2026-11-12) | States |
+  |---|---|
+  | Parser tested, fetcher pending the certified release | MA, WI, MO (certified files post after certification) |
+  | Blocked to automated clients (manual browser download) | AK, AZ, FL, KS, KY, ME, MI, NH, NM, NV, NY, OH, OK, RI, TN |
+  | Downloadable, but 2024 and 2026 layouts differ (parser untestable against 2024) | AL, CA, ID, MD, ND, NE, WA |
+  | 2024 release unavailable to test against | IA, OR, TX (2024 blocked or timed out) |
+  | 2026 release not yet published | IL (after the December canvass), MS, NJ |
+  | Other | CT (lookup file holds candidate addresses; manual), SD (no party labels in the export) |
+
+  Louisiana House rows are first rounds; CD5 and CD6 are unresolved until the
+  December 12 runoff, which needs its own race IDs and runoff rows before capture.
+- The run refuses before fetching if today's UTC slot is taken, refuses a state whose
+  races do not match the frozen universe (`reports/refresh_2026-10-29/projection_seats.csv`),
+  and reports a failing state while still capturing the rest (exit 1 if any failed).
+- **Certification is never inferred.** `--certified STATE=URL` is the operator's
+  attestation, with the URL of the certification evidence; it is refused if the release
+  labels itself unofficial (Montana's export always does: certify MT from its canvass).
+- Each run writes `reports/captures/capture_<date>.json` (seats, certification flags and
+  evidence URLs, release checksums, failures): commit it, as the index of the git-ignored
+  ledger, and add a line to the Capture Log below.
+
 ## Capture Log
 
 The ledger lives in the git-ignored data lake; this log is its committed index.

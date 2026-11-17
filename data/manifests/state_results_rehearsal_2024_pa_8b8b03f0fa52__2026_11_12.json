@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-11-12T11:09:09+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "8b8b03f0fa52b11b0131af303a6deeaf6b7834f08b153d73bcedb6e7098b8819",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "PA_2024_county_USP_USS_USC.csv",
+  "election_cycle": "2024",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Public official election results; cite the state authority.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan rehearsal of results extraction against certified history.",
+  "privacy_tier": 0,
+  "prohibited_use": "No personal data; aggregate results only.",
+  "raw_path": "data/raw/source=state_results_rehearsal_2024/state=PA/sha256=8b8b03f0fa52b11b0131af303a6deeaf6b7834f08b153d73bcedb6e7098b8819/PA_2024_county_USP_USS_USC.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "",
+  "review_date": "2027-11-12",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-11-12",
+  "source_id": "state_results_rehearsal_2024_pa_8b8b03f0fa52",
+  "source_owner": "PA state election authority",
+  "source_url": "POST https://www.electionreturns.pa.gov/api/Reports/GenerateReport body={\"ElectionID\":105,\"ElectionsubType\":\"G\",\"OfficeIds\":[1,2,11],\"RetOfficeIds\":[],\"PartyIds\":[],\"DistrictIds\":[],\"CandidateIds\":[],\"CountyIds\":[],\"ReferendumIds\":[],\"ReferendumDetailIds\":[],\"ExportType\":\"C\",\"ReportType\":\"C\",\"FileName\":\"Official\"}",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

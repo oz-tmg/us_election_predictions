@@ -39,6 +39,206 @@ RAW_SOURCE = "state_results_rehearsal_2024"
 # What each state's 2024 release looked like to an honest client from this machine on
 # 2026-10-29/30 (Canadian egress; WebFetch from a US egress agreed where tried).
 STATES: dict[str, dict] = {
+    # Added 2026-11-12 from the second research pass (fetch logs under the scratch
+    # extraction directory); the 15 tested states each have a 2026 fetcher.
+    **{
+        "WV": {
+            "access": "automated_ok",
+            "files": ["WV_2024_*summary.zip"],
+            "source": "https://results.enr.clarityelections.com/WV/122766/356048/reports/summary.zip",
+            "release_page": "https://results.enr.clarityelections.com/WV/122766/web.345435/#/summary (linked "
+            "from "
+            "https://sos.wv.gov/elections/election-data/historical-election-results-and-turnout)",
+            "official": "official (banner 'Official Results'; websiteupdatedat 12/18/2024 8:58:00 AM EST)",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "UT": {
+            "access": "automated_ok",
+            "files": ["UT_2024_export-*.json"],
+            "source": "https://electionresults.utah.gov/cdn/results/Utah/export-general11052024.json",
+            "release_page": "https://electionresults.utah.gov/results/public/Utah/elections/general11052024",
+            "official": "official (isOfficialResults=true; lastUpdated 2024-11-22T22:37:41Z; export regenerated "
+            "2025-11-04)",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "VT": {
+            "access": "automated_ok",
+            "files": ["VT_2024_ENR_federal*.json"],
+            "source": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
+            "release_page": "https://electionresults.vermont.gov/ (GENERAL ELECTION 2024-11-05, guid "
+            "67a35c79-05a2-4ae3-a77d-97812256188b)",
+            "official": "official (isOfficial=true; lastUpdatedDate 06/11/2026 03:31 PM; carries an election "
+            "note on a Bennington state-senate correction)",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "WY": {
+            "access": "automated_ok",
+            "files": ["WY_2024_*Results.zip"],
+            "source": "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+            "release_page": "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx",
+            "official": "official/certified",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "MN": {
+            "access": "automated_ok",
+            "files": ["MN_2024_*.txt"],
+            "source": "https://electionresultsfiles.sos.mn.gov/20241105/USHouseCty.txt",
+            "release_page": "https://electionresults.sos.mn.gov/ (2024 General media files)",
+            "official": "certified (post-canvass; Last-Modified 2024-12-19)",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "SC": {
+            "access": "automated_ok",
+            "files": ["SC_2024_*summary.zip"],
+            "source": "https://www.enr-scvotes.org/SC/122436/359624/reports/summary.zip",
+            "release_page": "https://www.enr-scvotes.org/SC/122436/web.345435/#/summary ('2024 General "
+            "Election')",
+            "official": "certified/final (ENR archived; detail.xml Timestamp '7/30/2025 10:46:52 AM EDT')",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "LA": {
+            "access": "automated_ok",
+            "files": ["LA_2024_*ByParish*.csv"],
+            "source": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20241105/csv/ByParish_67171.csv",
+            "release_page": "https://voterportal.sos.la.gov/graphical (election 11/05/2024, PKElectionID 331)",
+            "official": "certified (ResultsOfficial='1'); WriteTime 2026-01-10",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "GA": {
+            "access": "automated_ok",
+            "files": ["GA_2024_TotalVotes.xlsx"],
+            "source": "https://results.sos.ga.gov/cdn/results/09378a07-e6cf-4f66-be7c-ca4aa534f99a/Total%20Votes%20Results_3675bf50-5eeb-4407-b538-c04b909ccd08.xlsx",
+            "release_page": "https://results.sos.ga.gov/results/public/Georgia/elections/2024NovGen",
+            "official": "CERTIFIED/OFFICIAL (isOfficialResults=true)",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "VA": {
+            "access": "automated_ok",
+            "files": ["VA_2024_ElectionResults.csv"],
+            "source": "https://enr.elections.virginia.gov/cdn/results/d2c804ee-4ec2-46bb-91d7-5b41526eab03/Election%20Results_e5b689ae-a931-4b8a-a5f7-7392e9571c61.csv",
+            "release_page": "https://enr.elections.virginia.gov/results/public/virginia/elections/2024NovemberGeneral",
+            "official": "OFFICIAL/CERTIFIED (isOfficialResults=true)",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "CO": {
+            "access": "automated_ok",
+            "files": ["CO_2024_detailxml.zip"],
+            "source": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+            "release_page": "https://results.enr.clarityelections.com/CO/122598/ (EID 122598 '2024 General'); "
+            "certified abstract: "
+            "https://www.coloradosos.gov/pubs/elections/Results/Archives.html -> 2023-2024 "
+            "Biennial abstract",
+            "official": "Clarity ENR final (re-published 11/25/2025, after state certification 2024-12-06; not "
+            "itself labeled 'certified'); Biennial Abstract PDF = official certified results "
+            "(General Election from p.103)",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "PA": {
+            "access": "automated_ok",
+            "files": ["PA_2024_*.csv"],
+            "source": "POST https://www.electionreturns.pa.gov/api/Reports/GenerateReport "
+            'body={"ElectionID":105,"ElectionsubType":"G","OfficeIds":[1,2,11],"RetOfficeIds":[],"PartyIds":[],"DistrictIds":[],"CandidateIds":[],"CountyIds":[],"ReferendumIds":[],"ReferendumDetailIds":[],"ExportType":"C","ReportType":"C","FileName":"Official"}',
+            "release_page": "https://www.electionreturns.pa.gov/ReportCenter/Reports (ElectionID 105 '2024 "
+            "Presidential Election')",
+            "official": "OFFICIAL (ElectionStatus='O')",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "AR": {
+            "access": "automated_ok",
+            "files": ["AR_2024_general_tally_*.json"],
+            "source": "https://enr-results-api.totalresults.com/Contest/GetContestResults?cId=arkansas&electionID=1846&contestType=FED",
+            "release_page": "https://arkansas.tally-enr.com/#election=1846 ; "
+            "https://www.sos.arkansas.gov/elections/research/election-results",
+            "official": "certified/official: Tally isOfficial=true, versionID v1-1, lastUpdated 2025-12-16 "
+            "(legacy archive). SOS precinct XLSX is the certified precinct file.",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "DE": {
+            "access": "automated_ok",
+            "files": ["DE_2024_general_statewide_opendata.csv"],
+            "source": "https://data.delaware.gov/resource/4hbv-7brf.csv?electiondate=2024-11-05T00:00:00.000",
+            "release_page": "https://elections.delaware.gov/reports/GE2024.html (archive 'Results Report')",
+            "official": "official: report shows 'OFFICIAL RESULTS', 'Data as of 11/12/2024 12:59:37'; open-data "
+            "xmlreporttime 2024-11-12T12:59:37.",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "IN": {
+            "access": "automated_ok",
+            "files": ["IN_2024_*AllOfficeResults.csv"],
+            "source": "https://enr.indianavoters.in.gov/archive/2024General/download/AllOfficeResults.csv",
+            "release_page": "https://enr.indianavoters.in.gov/archive/2024General/index.html (same ENR app, "
+            "archived; pattern follows the SOS-linked "
+            "https://enr.indianavoters.in.gov/archive/2020General/index.html)",
+            "official": "certified: archive settings.json Certified='T', VersionCode 20241213_160047, WriteTime "
+            "2025-04-17T18:32:33",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "HI": {
+            "access": "automated_ok",
+            "files": ["HI_2024_*summary.txt"],
+            "source": "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
+            "release_page": "https://elections.hawaii.gov/election-results/ (2024 General section: 'Certified "
+            "Reports' / 'Certified Text Files', Last Updated November 27, 2024 10:15 am)",
+            "official": "certified; statewide PDF 'SUMMARY REPORT Final', printed 11/13/2024 06:51:06 pm",
+            "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+        },
+        "KY": {
+            "access": "blocked_manual_download",
+            "blocker": "Azure firewall 403 / state board anti-scraping page on elect.ky.gov and vrsws.sos.ky.gov",
+            "official_files": [],
+            "urls_verified": False,
+            "note": "Found 2026-11-12 by honest-client probe; manual browser download needed.",
+        },
+        "NY": {
+            "access": "blocked_manual_download",
+            "blocker": "Cloudflare challenge on all three state hosts",
+            "official_files": [],
+            "urls_verified": False,
+            "note": "Found 2026-11-12 by honest-client probe; manual browser download needed.",
+        },
+        "NV": {
+            "access": "blocked_manual_download",
+            "blocker": "Imperva JavaScript challenge on silverstateelection.nv.gov and nvsos.gov",
+            "official_files": [],
+            "urls_verified": False,
+            "note": "Found 2026-11-12 by honest-client probe; manual browser download needed.",
+        },
+        "OK": {
+            "access": "blocked_manual_download",
+            "blocker": "HTTP 403 on results.okelections.us",
+            "official_files": [],
+            "urls_verified": False,
+            "note": "Found 2026-11-12 by honest-client probe; manual browser download needed.",
+        },
+        "FL": {
+            "access": "blocked_manual_download",
+            "blocker": "Cloudflare challenge on floridaelectionwatch.gov and dos.fl.gov (2026)",
+            "official_files": [],
+            "urls_verified": False,
+            "note": "Found 2026-11-12 by honest-client probe; manual browser download needed.",
+        },
+        "KS": {
+            "access": "blocked_manual_download",
+            "blocker": "Cloudflare 403 on ent.sos.ks.gov (2026), apparently geographic",
+            "official_files": [],
+            "urls_verified": False,
+            "note": "Found 2026-11-12 by honest-client probe; manual browser download needed.",
+        },
+        "NM": {
+            "access": "blocked_manual_download",
+            "blocker": "F5 403 on electionresults.sos.nm.gov (2026)",
+            "official_files": [],
+            "urls_verified": False,
+            "note": "Found 2026-11-12 by honest-client probe; manual browser download needed.",
+        },
+        "RI": {
+            "access": "blocked_manual_download",
+            "blocker": "HTTP 403 on elections.ri.gov (2026)",
+            "official_files": [],
+            "urls_verified": False,
+            "note": "Found 2026-11-12 by honest-client probe; manual browser download needed.",
+        },
+    },
     "MA": {
         "access": "automated_ok",
         "files": ["MA_2024GE_*_by_town.csv"],
@@ -167,9 +367,14 @@ def preserve(state: str, files: list[Path], as_of: str, source: str) -> list[dic
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.exists():
             shutil.copyfile(f, target)
+        source_id = f"{RAW_SOURCE}_{state.lower()}_{digest[:12]}"
+        if any(Path("data/manifests").glob(f"{source_id}__*.json")):
+            # Same bytes already have a manifest: re-running must not add duplicates.
+            out.append({"file": f.name, "sha256": digest, "raw_path": str(target)})
+            continue
         manifest = SourceManifest.for_snapshot(
             raw_path=target,
-            source_id=f"{RAW_SOURCE}_{state.lower()}_{digest[:12]}",
+            source_id=source_id,
             dataset_name=f.name,
             source_owner=f"{state} state election authority",
             source_url=source,

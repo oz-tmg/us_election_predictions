@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-11-12T11:09:09+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "95e1128a9aa40b72a22ac6be6a5a6b5c1238722b6473070fab5969616c3d43db",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "VA_2024_ElectionResults.csv",
+  "election_cycle": "2024",
+  "file_format": "csv",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Public official election results; cite the state authority.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan rehearsal of results extraction against certified history.",
+  "privacy_tier": 0,
+  "prohibited_use": "No personal data; aggregate results only.",
+  "raw_path": "data/raw/source=state_results_rehearsal_2024/state=VA/sha256=95e1128a9aa40b72a22ac6be6a5a6b5c1238722b6473070fab5969616c3d43db/VA_2024_ElectionResults.csv",
+  "redistribution_allowed": true,
+  "required_attribution": "",
+  "review_date": "2027-11-12",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-11-12",
+  "source_id": "state_results_rehearsal_2024_va_95e1128a9aa4",
+  "source_owner": "VA state election authority",
+  "source_url": "https://enr.elections.virginia.gov/cdn/results/d2c804ee-4ec2-46bb-91d7-5b41526eab03/Election%20Results_e5b689ae-a931-4b8a-a5f7-7392e9571c61.csv",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

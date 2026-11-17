@@ -1,0 +1,5 @@
+state_po,office,district_num,dem_ext,dem_cert,rep_ext,rep_cert,share_diff,status
+AR,us_house,1,64113,64113.0,194711,194711.0,0.0,exact
+AR,us_house,2,125777,125777.0,180509,180509.0,0.0,exact
+AR,us_house,3,95652,95652.0,192101,192101.0,0.0,exact
+AR,us_house,4,73207,73207.0,197046,197046.0,0.0,exact

@@ -1,0 +1,7 @@
+state_po,office,district_num,dem_ext,dem_cert,rep_ext,rep_cert,share_diff,status
+LA,us_house,1,85911,85911.0,265028,265028.0,0.0,exact
+LA,us_house,2,216491,216491.0,88693,88693.0,0.0,exact
+LA,us_house,3,81157,81157.0,239525,239525.0,0.0,exact
+LA,us_house,4,0,0.0,306248,306248.0,0.0,exact
+LA,us_house,5,82981,82981.0,236870,236870.0,0.0,exact
+LA,us_house,6,184296,184296.0,111737,111737.0,0.0,exact

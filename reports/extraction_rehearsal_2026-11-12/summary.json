@@ -1,6 +1,438 @@
 {
   "as_of": "2026-11-12",
   "states": {
+    "WV": {
+      "access": "automated_ok",
+      "source": "https://results.enr.clarityelections.com/WV/122766/356048/reports/summary.zip",
+      "release_page": "https://results.enr.clarityelections.com/WV/122766/web.345435/#/summary (linked from https://sos.wv.gov/elections/election-data/historical-election-results-and-turnout)",
+      "official": "official (banner 'Official Results'; websiteupdatedat 12/18/2024 8:58:00 AM EST)",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "WV_2024_122766_v356048_summary.zip",
+          "sha256": "b969d26eb6fbd294b0d78f117ec899f6350e07e650bb5b2a8356d4a4ae324025",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=WV/sha256=b969d26eb6fbd294b0d78f117ec899f6350e07e650bb5b2a8356d4a4ae324025/WV_2024_122766_v356048_summary.zip"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 3,
+        "status_counts": {
+          "exact": 3
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "UT": {
+      "access": "automated_ok",
+      "source": "https://electionresults.utah.gov/cdn/results/Utah/export-general11052024.json",
+      "release_page": "https://electionresults.utah.gov/results/public/Utah/elections/general11052024",
+      "official": "official (isOfficialResults=true; lastUpdated 2024-11-22T22:37:41Z; export regenerated 2025-11-04)",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "UT_2024_export-general11052024_official.json",
+          "sha256": "85b2f1af2c360f2b597ef54e470812299860c4cc14915eeaadfbad798ced6aee",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=UT/sha256=85b2f1af2c360f2b597ef54e470812299860c4cc14915eeaadfbad798ced6aee/UT_2024_export-general11052024_official.json"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 5,
+        "status_counts": {
+          "exact": 5
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "VT": {
+      "access": "automated_ok",
+      "source": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
+      "release_page": "https://electionresults.vermont.gov/ (GENERAL ELECTION 2024-11-05, guid 67a35c79-05a2-4ae3-a77d-97812256188b)",
+      "official": "official (isOfficial=true; lastUpdatedDate 06/11/2026 03:31 PM; carries an election note on a Bennington state-senate correction)",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "VT_2024_ENR_federal_official.json",
+          "sha256": "2269e68ae1f7a9d3b8389ddfccd2f6fbcc1e83c7a0b891624e29537df6684812",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=VT/sha256=2269e68ae1f7a9d3b8389ddfccd2f6fbcc1e83c7a0b891624e29537df6684812/VT_2024_ENR_federal_official.json"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 2,
+        "status_counts": {
+          "exact": 2
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "WY": {
+      "access": "automated_ok",
+      "source": "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+      "release_page": "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx",
+      "official": "official/certified",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "WY_2024_Wyoming_General_Results.zip",
+          "sha256": "71d1918528e25f2c39e4274b57b6ca608a4463776d5ab29079a6456ce7a22541",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=WY/sha256=71d1918528e25f2c39e4274b57b6ca608a4463776d5ab29079a6456ce7a22541/WY_2024_Wyoming_General_Results.zip"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 2,
+        "status_counts": {
+          "exact": 2
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "MN": {
+      "access": "automated_ok",
+      "source": "https://electionresultsfiles.sos.mn.gov/20241105/USHouseCty.txt",
+      "release_page": "https://electionresults.sos.mn.gov/ (2024 General media files)",
+      "official": "certified (post-canvass; Last-Modified 2024-12-19)",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "MN_2024_20241105_USHouseCty.txt",
+          "sha256": "e4729469ea9e701e70798b00e6b25bd8ff49d27ac0f747d5bb485c8cf1d43bdd",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MN/sha256=e4729469ea9e701e70798b00e6b25bd8ff49d27ac0f747d5bb485c8cf1d43bdd/MN_2024_20241105_USHouseCty.txt"
+        },
+        {
+          "file": "MN_2024_20241105_ushouse.txt",
+          "sha256": "b62944ddc9debc68edc20792f2da11720bfef7310dbb1faee50f7245b07969b0",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MN/sha256=b62944ddc9debc68edc20792f2da11720bfef7310dbb1faee50f7245b07969b0/MN_2024_20241105_ushouse.txt"
+        },
+        {
+          "file": "MN_2024_20241105_ussenate.txt",
+          "sha256": "8d513ac8b45c445d6f78dbc498253695bef1e357be2d3e9cad4d3e32fa10fdc9",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=MN/sha256=8d513ac8b45c445d6f78dbc498253695bef1e357be2d3e9cad4d3e32fa10fdc9/MN_2024_20241105_ussenate.txt"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 9,
+        "status_counts": {
+          "exact": 9
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "SC": {
+      "access": "automated_ok",
+      "source": "https://www.enr-scvotes.org/SC/122436/359624/reports/summary.zip",
+      "release_page": "https://www.enr-scvotes.org/SC/122436/web.345435/#/summary ('2024 General Election')",
+      "official": "certified/final (ENR archived; detail.xml Timestamp '7/30/2025 10:46:52 AM EDT')",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "SC_2024_122436_v359624_summary.zip",
+          "sha256": "a6bb8202f6bedb13075d0b6b64cd51fa8f73e81f82b76a8d2727a1ae2a1474f5",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=SC/sha256=a6bb8202f6bedb13075d0b6b64cd51fa8f73e81f82b76a8d2727a1ae2a1474f5/SC_2024_122436_v359624_summary.zip"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 7,
+        "status_counts": {
+          "exact": 7
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "LA": {
+      "access": "automated_ok",
+      "source": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20241105/csv/ByParish_67171.csv",
+      "release_page": "https://voterportal.sos.la.gov/graphical (election 11/05/2024, PKElectionID 331)",
+      "official": "certified (ResultsOfficial='1'); WriteTime 2026-01-10",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "LA_2024_20241105_ByParish_67171_USHouse_CD1.csv",
+          "sha256": "146e4689555fdbc78f02347606a8f10e3bcd2963e208ef468a74046834ad8217",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=LA/sha256=146e4689555fdbc78f02347606a8f10e3bcd2963e208ef468a74046834ad8217/LA_2024_20241105_ByParish_67171_USHouse_CD1.csv"
+        },
+        {
+          "file": "LA_2024_20241105_ByParish_67174_USHouse_CD4.csv",
+          "sha256": "c9a97a5726e876fa4bf32885215f4b633f4b09d4fd7dc4f24cd9d4b49f4bb5f0",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=LA/sha256=c9a97a5726e876fa4bf32885215f4b633f4b09d4fd7dc4f24cd9d4b49f4bb5f0/LA_2024_20241105_ByParish_67174_USHouse_CD4.csv"
+        },
+        {
+          "file": "LA_2024_20241105_ByParish_67175_USHouse_CD5.csv",
+          "sha256": "16109738461c13f7624c0dbd343374fa2550f3ad16ffe72d4b1914f352047209",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=LA/sha256=16109738461c13f7624c0dbd343374fa2550f3ad16ffe72d4b1914f352047209/LA_2024_20241105_ByParish_67175_USHouse_CD5.csv"
+        },
+        {
+          "file": "LA_2024_20241105_ByParish_67187_USHouse_CD2.csv",
+          "sha256": "1352970de575a1292acf807beee9b8f2cc6c967093f4a3ad8409e4b76a652e89",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=LA/sha256=1352970de575a1292acf807beee9b8f2cc6c967093f4a3ad8409e4b76a652e89/LA_2024_20241105_ByParish_67187_USHouse_CD2.csv"
+        },
+        {
+          "file": "LA_2024_20241105_ByParish_67188_USHouse_CD3.csv",
+          "sha256": "eea019fc93d7b6eadbd0487764278c22c847e96d4d4f6fb815773faeec98f25d",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=LA/sha256=eea019fc93d7b6eadbd0487764278c22c847e96d4d4f6fb815773faeec98f25d/LA_2024_20241105_ByParish_67188_USHouse_CD3.csv"
+        },
+        {
+          "file": "LA_2024_20241105_ByParish_67189_USHouse_CD6.csv",
+          "sha256": "1c83221c39d9159ab843a7f03aa79f4756b82de553ae217d89adec8ac61940bb",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=LA/sha256=1c83221c39d9159ab843a7f03aa79f4756b82de553ae217d89adec8ac61940bb/LA_2024_20241105_ByParish_67189_USHouse_CD6.csv"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 6,
+        "status_counts": {
+          "exact": 6
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "GA": {
+      "access": "automated_ok",
+      "source": "https://results.sos.ga.gov/cdn/results/09378a07-e6cf-4f66-be7c-ca4aa534f99a/Total%20Votes%20Results_3675bf50-5eeb-4407-b538-c04b909ccd08.xlsx",
+      "release_page": "https://results.sos.ga.gov/results/public/Georgia/elections/2024NovGen",
+      "official": "CERTIFIED/OFFICIAL (isOfficialResults=true)",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "GA_2024_TotalVotes.xlsx",
+          "sha256": "eb7eac1a24b93334102e1dd227cac07f7f8d0d1d6d510a6311554d2790c603c7",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=GA/sha256=eb7eac1a24b93334102e1dd227cac07f7f8d0d1d6d510a6311554d2790c603c7/GA_2024_TotalVotes.xlsx"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 14,
+        "status_counts": {
+          "exact": 14
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "VA": {
+      "access": "automated_ok",
+      "source": "https://enr.elections.virginia.gov/cdn/results/d2c804ee-4ec2-46bb-91d7-5b41526eab03/Election%20Results_e5b689ae-a931-4b8a-a5f7-7392e9571c61.csv",
+      "release_page": "https://enr.elections.virginia.gov/results/public/virginia/elections/2024NovemberGeneral",
+      "official": "OFFICIAL/CERTIFIED (isOfficialResults=true)",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "VA_2024_ElectionResults.csv",
+          "sha256": "95e1128a9aa40b72a22ac6be6a5a6b5c1238722b6473070fab5969616c3d43db",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=VA/sha256=95e1128a9aa40b72a22ac6be6a5a6b5c1238722b6473070fab5969616c3d43db/VA_2024_ElectionResults.csv"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 12,
+        "status_counts": {
+          "exact": 12
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "CO": {
+      "access": "automated_ok",
+      "source": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+      "release_page": "https://results.enr.clarityelections.com/CO/122598/ (EID 122598 '2024 General'); certified abstract: https://www.coloradosos.gov/pubs/elections/Results/Archives.html -> 2023-2024 Biennial abstract",
+      "official": "Clarity ENR final (re-published 11/25/2025, after state certification 2024-12-06; not itself labeled 'certified'); Biennial Abstract PDF = official certified results (General Election from p.103)",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "CO_2024_detailxml.zip",
+          "sha256": "9192e20abd974825ec49b387d5a2c242534090fe56fd0226d99f136d32acea7c",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=CO/sha256=9192e20abd974825ec49b387d5a2c242534090fe56fd0226d99f136d32acea7c/CO_2024_detailxml.zip"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 8,
+        "status_counts": {
+          "exact": 7,
+          "within_tolerance": 1
+        },
+        "max_abs_share_diff": 5.7039442419304365e-05
+      }
+    },
+    "PA": {
+      "access": "automated_ok",
+      "source": "POST https://www.electionreturns.pa.gov/api/Reports/GenerateReport body={\"ElectionID\":105,\"ElectionsubType\":\"G\",\"OfficeIds\":[1,2,11],\"RetOfficeIds\":[],\"PartyIds\":[],\"DistrictIds\":[],\"CandidateIds\":[],\"CountyIds\":[],\"ReferendumIds\":[],\"ReferendumDetailIds\":[],\"ExportType\":\"C\",\"ReportType\":\"C\",\"FileName\":\"Official\"}",
+      "release_page": "https://www.electionreturns.pa.gov/ReportCenter/Reports (ElectionID 105 '2024 Presidential Election')",
+      "official": "OFFICIAL (ElectionStatus='O')",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "PA_2024_county_USP_USS_USC.csv",
+          "sha256": "8b8b03f0fa52b11b0131af303a6deeaf6b7834f08b153d73bcedb6e7098b8819",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=PA/sha256=8b8b03f0fa52b11b0131af303a6deeaf6b7834f08b153d73bcedb6e7098b8819/PA_2024_county_USP_USS_USC.csv"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 18,
+        "status_counts": {
+          "exact": 18
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "AR": {
+      "access": "automated_ok",
+      "source": "https://enr-results-api.totalresults.com/Contest/GetContestResults?cId=arkansas&electionID=1846&contestType=FED",
+      "release_page": "https://arkansas.tally-enr.com/#election=1846 ; https://www.sos.arkansas.gov/elections/research/election-results",
+      "official": "certified/official: Tally isOfficial=true, versionID v1-1, lastUpdated 2025-12-16 (legacy archive). SOS precinct XLSX is the certified precinct file.",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "AR_2024_general_tally_contestlist.json",
+          "sha256": "abe481a0197d7337e25322d7314afe5a679d8e9709fd434d61cf983ce6105edd",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=AR/sha256=abe481a0197d7337e25322d7314afe5a679d8e9709fd434d61cf983ce6105edd/AR_2024_general_tally_contestlist.json"
+        },
+        {
+          "file": "AR_2024_general_tally_electioninfo.json",
+          "sha256": "ec1317f0d3ed92630928210e6f486c56d227186846bfa8344d523968cfc6e730",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=AR/sha256=ec1317f0d3ed92630928210e6f486c56d227186846bfa8344d523968cfc6e730/AR_2024_general_tally_electioninfo.json"
+        },
+        {
+          "file": "AR_2024_general_tally_federal_results.json",
+          "sha256": "028eb2b4b7ab63be24f39cd88b1215f60160a485821185b8651b8e20c36b5cb4",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=AR/sha256=028eb2b4b7ab63be24f39cd88b1215f60160a485821185b8651b8e20c36b5cb4/AR_2024_general_tally_federal_results.json"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 4,
+        "status_counts": {
+          "exact": 4
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "DE": {
+      "access": "automated_ok",
+      "source": "https://data.delaware.gov/resource/4hbv-7brf.csv?electiondate=2024-11-05T00:00:00.000",
+      "release_page": "https://elections.delaware.gov/reports/GE2024.html (archive 'Results Report')",
+      "official": "official: report shows 'OFFICIAL RESULTS', 'Data as of 11/12/2024 12:59:37'; open-data xmlreporttime 2024-11-12T12:59:37.",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "DE_2024_general_statewide_opendata.csv",
+          "sha256": "afd764d1d96f9a3374e5ac5d66d2014c5a53ccc510508aa85611de41b5761059",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=DE/sha256=afd764d1d96f9a3374e5ac5d66d2014c5a53ccc510508aa85611de41b5761059/DE_2024_general_statewide_opendata.csv"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 2,
+        "status_counts": {
+          "exact": 2
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "IN": {
+      "access": "automated_ok",
+      "source": "https://enr.indianavoters.in.gov/archive/2024General/download/AllOfficeResults.csv",
+      "release_page": "https://enr.indianavoters.in.gov/archive/2024General/index.html (same ENR app, archived; pattern follows the SOS-linked https://enr.indianavoters.in.gov/archive/2020General/index.html)",
+      "official": "certified: archive settings.json Certified='T', VersionCode 20241213_160047, WriteTime 2025-04-17T18:32:33",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "IN_2024_general_enr_archive_AllOfficeResults.csv",
+          "sha256": "aa4d206b529185e7908e89660960babf31a60756070de1ed9948118373486a90",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=IN/sha256=aa4d206b529185e7908e89660960babf31a60756070de1ed9948118373486a90/IN_2024_general_enr_archive_AllOfficeResults.csv"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 10,
+        "status_counts": {
+          "exact": 10
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "HI": {
+      "access": "automated_ok",
+      "source": "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
+      "release_page": "https://elections.hawaii.gov/election-results/ (2024 General section: 'Certified Reports' / 'Certified Text Files', Last Updated November 27, 2024 10:15 am)",
+      "official": "certified; statewide PDF 'SUMMARY REPORT Final', printed 11/13/2024 06:51:06 pm",
+      "note": "2026 fetcher in data/state_fetchers.py; tested 2026-11-12.",
+      "preserved": [
+        {
+          "file": "HI_2024_general_certified_summary.txt",
+          "sha256": "e8d80cdd62ec5cd18f6e4c2b399c3b06c5b251527c67f5043e640c58176be238",
+          "raw_path": "data/raw/source=state_results_rehearsal_2024/state=HI/sha256=e8d80cdd62ec5cd18f6e4c2b399c3b06c5b251527c67f5043e640c58176be238/HI_2024_general_certified_summary.txt"
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 3,
+        "status_counts": {
+          "exact": 3
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "KY": {
+      "access": "blocked_manual_download",
+      "blocker": "Azure firewall 403 / state board anti-scraping page on elect.ky.gov and vrsws.sos.ky.gov",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "Found 2026-11-12 by honest-client probe; manual browser download needed."
+    },
+    "NY": {
+      "access": "blocked_manual_download",
+      "blocker": "Cloudflare challenge on all three state hosts",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "Found 2026-11-12 by honest-client probe; manual browser download needed."
+    },
+    "NV": {
+      "access": "blocked_manual_download",
+      "blocker": "Imperva JavaScript challenge on silverstateelection.nv.gov and nvsos.gov",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "Found 2026-11-12 by honest-client probe; manual browser download needed."
+    },
+    "OK": {
+      "access": "blocked_manual_download",
+      "blocker": "HTTP 403 on results.okelections.us",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "Found 2026-11-12 by honest-client probe; manual browser download needed."
+    },
+    "FL": {
+      "access": "blocked_manual_download",
+      "blocker": "Cloudflare challenge on floridaelectionwatch.gov and dos.fl.gov (2026)",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "Found 2026-11-12 by honest-client probe; manual browser download needed."
+    },
+    "KS": {
+      "access": "blocked_manual_download",
+      "blocker": "Cloudflare 403 on ent.sos.ks.gov (2026), apparently geographic",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "Found 2026-11-12 by honest-client probe; manual browser download needed."
+    },
+    "NM": {
+      "access": "blocked_manual_download",
+      "blocker": "F5 403 on electionresults.sos.nm.gov (2026)",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "Found 2026-11-12 by honest-client probe; manual browser download needed."
+    },
+    "RI": {
+      "access": "blocked_manual_download",
+      "blocker": "HTTP 403 on elections.ri.gov (2026)",
+      "official_files": [],
+      "urls_verified": false,
+      "note": "Found 2026-11-12 by honest-client probe; manual browser download needed."
+    },
     "MA": {
       "access": "automated_ok",
       "source": "https://electionstats.state.ma.us/elections/download/<election_id>/precincts_include:0/",

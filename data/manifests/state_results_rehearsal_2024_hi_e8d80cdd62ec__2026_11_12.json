@@ -1,0 +1,37 @@
+{
+  "acquired_at": "2026-11-12T11:09:12+00:00",
+  "acquisition_method": "http_download",
+  "checksum_sha256": "e8d80cdd62ec5cd18f6e4c2b399c3b06c5b251527c67f5043e640c58176be238",
+  "contains_personal_data": false,
+  "contains_sensitive_data": false,
+  "dataset_name": "HI_2024_general_certified_summary.txt",
+  "election_cycle": "2024",
+  "file_format": "txt",
+  "geography_coverage": [
+    "state",
+    "district"
+  ],
+  "known_caveats": "",
+  "license_or_terms": "Public official election results; cite the state authority.",
+  "office_coverage": [
+    "us_house",
+    "us_senate"
+  ],
+  "owner": "Alex Oswald (data steward)",
+  "permitted_use": "Nonpartisan rehearsal of results extraction against certified history.",
+  "privacy_tier": 0,
+  "prohibited_use": "No personal data; aggregate results only.",
+  "raw_path": "data/raw/source=state_results_rehearsal_2024/state=HI/sha256=e8d80cdd62ec5cd18f6e4c2b399c3b06c5b251527c67f5043e640c58176be238/HI_2024_general_certified_summary.txt",
+  "redistribution_allowed": true,
+  "required_attribution": "",
+  "review_date": "2027-11-12",
+  "row_count": null,
+  "schema_version": "1.0",
+  "snapshot_date": "2026-11-12",
+  "source_id": "state_results_rehearsal_2024_hi_e8d80cdd62ec",
+  "source_owner": "HI state election authority",
+  "source_url": "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
+  "unique_key": [],
+  "update_cadence": "per_cycle",
+  "validation_status": "passed"
+}

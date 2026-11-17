@@ -1,0 +1,9 @@
+state_po,office,district_num,dem_ext,dem_cert,rep_ext,rep_cert,share_diff,status
+CO,us_house,1,264606,264694.0,74598,74598.0,-5.7039442419304365e-05,within_tolerance
+CO,us_house,2,284994,284994.0,120633,120633.0,0.0,exact
+CO,us_house,3,182147,182147.0,201951,201951.0,0.0,exact
+CO,us_house,4,188249,188249.0,240213,240213.0,0.0,exact
+CO,us_house,5,147972,147972.0,197924,197924.0,0.0,exact
+CO,us_house,6,202686,202686.0,132174,132174.0,0.0,exact
+CO,us_house,7,235688,235688.0,175273,175273.0,0.0,exact
+CO,us_house,8,160871,160871.0,163320,163320.0,0.0,exact
