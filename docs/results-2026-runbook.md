@@ -238,10 +238,33 @@ The ledger lives in the git-ignored data lake; this log is its committed index.
 | 2026-11-03 to 2026-11-11 | none | 0 | 0 | none | **Gap.** The working checkout was on `post-poll-closing-updates`, cut from an unpulled pre-October `main`; the Nov 5 automation refused to capture without the evidence safeguards (`reports/results_capture_blocked_2026-11-05T192029Z.md`). Checkout restored to `origin/main` 2026-11-12. Certification first observed after this date cannot be backdated. |
 | 2026-11-12 | MT, NC | 18 | 0 | `data/raw/source=state_canvass_evidence/state={MT,NC}/retrieved=20261112T06…/` | MT statewide export (labelled unofficial, 728/728 precincts); NC `results_pct_20261103.zip` (last-modified 2026-11-11 22:21 UTC, 100/100 counties, uncertified). Both parsers reproduce 2024 certified exactly. `winner_party` recorded for every row (MT Senate has an independent in second). |
 | 2026-11-13 | MT, NC | 18 | 0 | `data/raw/source=state_canvass_evidence/state={MT,NC}/retrieved=20261113T2208…/` | Fresh official aggregate releases and NC unofficial-status page preserved with the module CLI; appended with matching source evidence. Historical parser replay and stored-byte validation passed. Counts revised in 14 NC and two MT contests versus the November 12 daily snapshot; no leading-party changes. Forty-eight states remain missing. See `reports/results_capture_2026-11-13T220413Z.md`. |
-| 2026-11-14 | AL, AR, CA, CO, DE, GA, HI, ID, IN, LA, MD, MN, MT, NC, ND, NE, PA, SC, UT, VA, VT, WA, WV, WY | 209 | 0 | `data/raw/source=state_canvass_evidence/state=<ST>/retrieved=20261114T00…/`; index `reports/captures/capture_2026-11-14.json` | First `capture_daily.py` run (00:05 UTC), no failures. 18 states at `parser_tested_2024`, 6 (AL, CA, ID, ND, NE, WA) at the weaker `parser_cross_checked_2026`. Releases label themselves: 12 unofficial, 10 no statement, 2 official (VT, WY). No state marked certified: no operator attestation was given. LA CD5 and CD6 are first rounds. Interim scorecard `reports/scorecards/scorecard_asof_2026-11-14.md`: 0 scoreable seats. |
+| 2026-11-14 | AL, AR, CA, CO, DE, GA, HI, ID, IN, LA, MD, MN, MT, NC, ND, NE, PA, SC, UT, VA, VT, WA, WV, WY | 209 | 0 | `data/raw/source=state_canvass_evidence/state=<ST>/retrieved=20261114T00…/`; index `reports/captures/capture_2026-11-14.json` | First `capture_daily.py` run (00:05 UTC), no failures. 18 states at `parser_tested_2024`, 6 (AL, CA, ID, ND, NE, WA) at the weaker `parser_cross_checked_2026`. Releases label themselves: 12 unofficial, 10 no statement, 2 official (VT, WY). No state marked certified: no operator attestation was given. LA CD5 and CD6 are first rounds. Interim scorecard `reports/scorecards/scorecard_asof_2026-11-14.md`: 0 scoreable seats. Re-verified by the November 15 scheduled run (schema, compiled hash and all 37 source receipts), which did not rewrite it. |
+| 2026-11-15 | 24 states | 209 | 3 | 40 receipts in `snapshot=2026-11-15.manifest.json` | Fresh releases preserved and captured with the module CLI. VT House and WY House/Senate accepted as certified from preserved authority evidence, first observed November 15 UTC. Only those three resolved contests scored, across every frozen run/assumption. Twenty-six states remain missing; LA-05/06 first rounds unresolved. See `reports/results_capture_2026-11-15T015048Z.md` and `reports/captures/capture_2026-11-15.json`. |
+| 2026-11-16 | none | 0 | 0 | none | **Gap.** No observation was captured for this UTC day. It cannot be backdated; a certification first seen on a later day is recorded on that day. |
 
 One observation per UTC day: a capture early in a UTC day takes that day's slot, so
 add states to the same compiled snapshot before capturing, never in a second run.
+
+The November 15 acquisition reused the reviewed capture implementation at commit
+`5845f08680f410fc48cfcea1adb91e517cac641e` from the separate `-capture-run` worktree,
+read-only; preservation and the production append ran through the main checkout's
+module CLI. Its catalog distinguishes historical parser tests from weaker 2026
+summary cross-checks. The main checkout's catalog/code were not silently replaced
+or promoted. The capture JSON records the implementation and source catalog used.
+Integrating that broader implementation into the main automation checkout remains
+operator-reviewed work; no branch switch or merge is implied by this capture.
+
+That integration was done on 2026-11-16: the 24-state capture code, its catalog and the
+scheduled run's November 12 to 15 reports are now in this checkout, so later captures
+run `scripts/capture_daily.py` here and no longer need the `-capture-run` worktree.
+
+The later November 15 UTC heartbeat preserved a further 40 intraday source receipts
+for the same 24 states, including refreshed VT/WY certification context. Today's
+compiled observation and scores were not overwritten: no new certification,
+leading-party, coverage or Louisiana resolution change was verified. Four
+uncertified IN/MD contests had revised counts. See
+`reports/captures/intraday_2026-11-15T220056Z.json` and
+`reports/results_intraday_2026-11-15T220056Z.md`; these are not a second daily capture.
 
 ## State Extraction: the 11 Probe-Failure States (tested 2026-10-30)
 
