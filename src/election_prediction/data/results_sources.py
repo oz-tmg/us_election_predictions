@@ -20,7 +20,7 @@ SOURCE_DIR = Path("data/raw/source=state_canvass_evidence")
 #: ``extraction_status`` moves off ``manual_review_pending`` only when a parser reproduced
 #: a past certified result from that state's own release (``state_extraction.reconcile``),
 #: and the row then names the reconciliation report. Reachability is never enough.
-EXTRACTION_STATUSES = {"manual_review_pending", "parser_tested_2024"}
+EXTRACTION_STATUSES = {"manual_review_pending", "parser_tested_2024", "parser_cross_checked_2026"}
 #: How the release can be fetched, recorded apart from extraction so that a blocked site
 #: never reads as a reviewed one.
 DOWNLOAD_ACCESS = {"untested", "automated_ok", "blocked_manual_download"}
@@ -49,9 +49,9 @@ def load_catalog(path: Path = CATALOG) -> pd.DataFrame:
         raise ValueError(f"extraction_status must be one of {sorted(EXTRACTION_STATUSES)}")
     if not frame.download_access.isin(DOWNLOAD_ACCESS).all():
         raise ValueError(f"download_access must be one of {sorted(DOWNLOAD_ACCESS)}")
-    tested = frame.extraction_status.eq("parser_tested_2024")
+    tested = frame.extraction_status.isin({"parser_tested_2024", "parser_cross_checked_2026"})
     if (frame.loc[tested, "extraction_evidence"] == "").any():
-        raise ValueError("a parser_tested_2024 row must name its reconciliation report")
+        raise ValueError("a tested or cross-checked row must name its reconciliation report")
     return frame
 
 

@@ -521,8 +521,9 @@ def louisiana(paths: Sequence[Path]) -> pd.DataFrame:
 
     House races on November 3 are first rounds of Louisiana's majority system: a race is
     resolved only if its top candidate has more than half the votes; otherwise it goes to
-    the December runoff and ``outcome_resolved`` is False (unscoreable until then). The
-    Senate race cannot have a runoff and is an ordinary general.
+    the December runoff and ``outcome_resolved`` is False (unscoreable until then). Runoff
+    files replace the first-round row for the same seat when both are passed (later files
+    win). The Senate race cannot have a runoff and is an ordinary general.
     """
     rows = []
     for path in paths:
@@ -540,10 +541,15 @@ def louisiana(paths: Sequence[Path]) -> pd.DataFrame:
         if m := _LA_HOUSE.match(office_name):
             row = from_candidates(frame, state_po="LA", office="us_house", district_num=int(m.group(1)))
             total = int(frame["votes"].sum())
-            row["election_round"] = "first_round"
+            # A runoff file (named ``..._2026RO_...`` by the fetcher) decides the seat
+            # between the top two; anything else is a first round under the majority rule.
+            runoff = "RO_BYPARISH" in path.name.upper()
+            row["election_round"] = "runoff" if runoff else "first_round"
             row["outcome_resolved"] = bool(total and frame["votes"].max() * 2 > total)
+            if runoff and len(frame) != 2:
+                raise ValueError(f"{path.name}: a runoff has two candidates, found {len(frame)}")
             if not row["outcome_resolved"]:
-                row["winner_party"] = None  # a first-round leader is not a winner
+                row["winner_party"] = None  # a first-round leader (or a tie) is not a winner
         elif office_name.replace(" ", "") == "U.S.Senator":
             row = from_candidates(frame, state_po="LA", office="us_senate", district_num=None)
             row["election_round"] = "general"
@@ -551,7 +557,11 @@ def louisiana(paths: Sequence[Path]) -> pd.DataFrame:
         else:
             continue
         rows.append(row)
-    return pd.DataFrame(rows)
+    out = pd.DataFrame(rows)
+    # First-round and runoff files for the same seat: keep the runoff.
+    order = out["election_round"].map({"first_round": 0, "general": 0, "runoff": 1})
+    out = out.assign(_o=order).sort_values("_o").drop_duplicates(["office", "district_num"], keep="last")
+    return out.drop(columns="_o").reset_index(drop=True)
 
 
 _GA_HOUSE = re.compile(r"^US House of Representatives - District (\d{1,2})$")

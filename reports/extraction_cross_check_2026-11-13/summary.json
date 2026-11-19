@@ -1,0 +1,737 @@
+{
+  "as_of": "2026-11-13",
+  "states": {
+    "AL": {
+      "extraction_status": "parser_cross_checked_2026",
+      "state": "AL",
+      "checked_at_utc": "2026-11-13T22:39:44.186162+00:00",
+      "parsed_file_url": "https://www2.alabamavotes.gov/electionNight/statewideResultsByContest.aspx?ecode=1001305",
+      "parsed_file_sha256": "1163f54048046da5c61c6b971908c07400dff06ae3cbbca7efe0ba1b33517989",
+      "parsed_file_retrieved_at": [
+        "2026-11-13T22:39:42.637139+00:00"
+      ],
+      "summary_source_url": "https://www2.alabamavotes.gov/electionNight/statewideResultsByContest.aspx?ecode=1001305",
+      "summary_sha256_or_note": "cd367668a687b4412ae32d311f40d1804bf102cc102807ba508f02ddffb80dd3",
+      "reconciliation_2024": {
+        "passed": true,
+        "races": 7,
+        "status_counts": {
+          "exact": 7
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "cross_check_2026": {
+        "passed": true,
+        "races": 8,
+        "status_counts": {
+          "exact": 8
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "notes": "Summary = contest totals printed on the SOS statewide results HTML page; parsed file = the page's Export Data workbook (county x candidate rows, summed by the parser). 2024 reconciliation input: ['AL_2024_general_precinct_results.zip']. Fetcher labelled: ['unofficial']. 2024 parser needs xlrd (BIFF .xls), not installed in the project venv; run here with xlrd from a scratch dir.",
+      "races_2026": [
+        {
+          "office": "us_house",
+          "district_num": 1.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 2.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 3.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 4.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 5.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 6.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 7.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_senate",
+          "district_num": null,
+          "status": "exact",
+          "share_diff": 0.0
+        }
+      ]
+    },
+    "CA": {
+      "extraction_status": "parser_cross_checked_2026",
+      "state": "CA",
+      "checked_at_utc": "2026-11-13T22:39:46.646420+00:00",
+      "parsed_file_url": "https://media.sos.ca.gov/media/us-rep.json",
+      "parsed_file_sha256": "dcac3ae72c323e59c5ca44de34c7b9d7190854944c45344a720eafe886afbffc",
+      "parsed_file_retrieved_at": [
+        "2026-11-13T22:39:46.363248+00:00"
+      ],
+      "summary_source_url": "https://media.sos.ca.gov/media/V26GG.txt (parties from https://media.sos.ca.gov/media/C26GG.txt)",
+      "summary_sha256_or_note": "V26GG e56ea9114cc510f42a4cf634844c2362a90cb058c6211e9de078bf578beedbd3; C26GG 62fe9851e4b8bc19eaaa9dd9b33ee39a786b222e13eb28d9d4d3096c14574610",
+      "reconciliation_2024": {
+        "passed": true,
+        "races": 53,
+        "status_counts": {
+          "exact": 53
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "cross_check_2026": {
+        "passed": true,
+        "races": 52,
+        "status_counts": {
+          "exact": 52
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "notes": "Summary = SOS ASCII media feed V26GG.txt county-59 (statewide) vote messages with party codes from C26GG.txt (format guide cms.cdn.sos.ca.gov/media/2-ascii-file-format-v19.pdf); parsed file = us-rep.json. Both are SOS media publications of the same count in different formats. 2024 reconciliation input: ['CA_2024_sov_csv-all-candidates.xlsx']. Fetcher labelled: ['unknown'].",
+      "races_2026": [
+        {
+          "office": "us_house",
+          "district_num": 1,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 2,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 3,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 4,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 5,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 6,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 7,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 8,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 9,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 10,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 11,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 12,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 13,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 14,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 15,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 16,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 17,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 18,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 19,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 20,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 21,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 22,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 23,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 24,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 25,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 26,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 27,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 28,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 29,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 30,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 31,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 32,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 33,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 34,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 35,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 36,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 37,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 38,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 39,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 40,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 41,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 42,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 43,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 44,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 45,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 46,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 47,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 48,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 49,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 50,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 51,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 52,
+          "status": "exact",
+          "share_diff": 0.0
+        }
+      ]
+    },
+    "ID": {
+      "extraction_status": "parser_cross_checked_2026",
+      "state": "ID",
+      "checked_at_utc": "2026-11-13T22:39:48.071788+00:00",
+      "parsed_file_url": "https://results.voteidaho.gov/results/public/api/elections/id/nov2026/ballot-items",
+      "parsed_file_sha256": "71540fc5995f3d4e630815db04520bffb03b0ea802ffa4bf8398abf0552ebdb4",
+      "parsed_file_retrieved_at": [
+        "2026-11-13T22:39:47.799507+00:00"
+      ],
+      "summary_source_url": "https://results.voteidaho.gov/cdn/results/8c9d6490-6c2e-460e-8e42-0d1c8609ce42/Results_60be45a2-c2ec-4346-8489-820c557b6c68.xlsx",
+      "summary_sha256_or_note": "aa0c5ba5cbcf5f4928612f8bd29dd089b253ced298bb621d1ec0c651d08fff46",
+      "reconciliation_2024": {
+        "passed": true,
+        "races": 2,
+        "status_counts": {
+          "exact": 2
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "cross_check_2026": {
+        "passed": true,
+        "races": 3,
+        "status_counts": {
+          "exact": 3
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "notes": "Summary = the state's published report 'Summary and Precinct Results Excel' (sheet 'Summary Results', county x choice rows summed over 44 counties); parsed file = results API /ballot-items contest totals. Election record: isOfficialResults=False, asOf=2026-11-11T04:35:47.5504657Z. 2024 reconciliation input: ['ID_2024_general_raw_races.xlsx']. Fetcher labelled: ['unofficial'].",
+      "races_2026": [
+        {
+          "office": "us_house",
+          "district_num": 1.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 2.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_senate",
+          "district_num": null,
+          "status": "exact",
+          "share_diff": 0.0
+        }
+      ]
+    },
+    "MD": {
+      "extraction_status": "parser_tested_2024",
+      "state": "MD",
+      "checked_at_utc": "2026-11-13T22:40:39.605399+00:00",
+      "parsed_file_url": "https://elections.maryland.gov/elections/2026/general_results/gen_results_2026_4.html",
+      "parsed_file_sha256": "f77efe37008e1f792793bc7e05c8a0737c7410c3327b95d48e7b565683e1e95f",
+      "parsed_file_retrieved_at": [
+        "2026-11-13T22:40:38.900895+00:00"
+      ],
+      "summary_source_url": "https://elections.maryland.gov/elections/2026/general_results/gen_detail_results_2026_4_1_District%201.html; https://elections.maryland.gov/elections/2026/general_results/gen_detail_results_2026_4_2_District%202.html; https://elections.maryland.gov/elections/2026/general_results/gen_detail_results_2026_4_3_District%203.html; https://elections.maryland.gov/elections/2026/general_results/gen_detail_results_2026_4_4_District%204.html; https://elections.maryland.gov/elections/2026/general_results/gen_detail_results_2026_4_5_District%205.html; https://elections.maryland.gov/elections/2026/general_results/gen_detail_results_2026_4_6_District%206.html; https://elections.maryland.gov/elections/2026/general_results/gen_detail_results_2026_4_7_District%207.html; https://elections.maryland.gov/elections/2026/general_results/gen_detail_results_2026_4_8_District%208.html",
+      "summary_sha256_or_note": "CD1 6ea28fc5e6b03ea1699994faee447c31283238ab2d37875c512d2899bd460146; CD2 fed712994f5c0fa16309f0d21f0246f8be199f7ba0b1dc08a2493e2d8b113c5d; CD3 785e60a8926e49a9d67085dab9799ccdc8808049d3e4a8334905301c97ec8047; CD4 fb31761ed469068f549ae5a746643b3ee81f1a9d052323e16e85a2918dfea2f3; CD5 1d8d5b81c49bb2a2f3c153b89102ef0ed653ea8a8dc7221b9b736ffd386b59d6; CD6 93b255e57f474698d8e6562158a16cedaafec2e4f79f937f86e1f8139df6e2c1; CD7 30a01b0c225685569dba0335457ce85bedeca9d97d0dde30e9130e45a47d972b; CD8 ed657077f95f3f52188992525fc80d81d74c00484ea22f1afe5e1cd877b26c40",
+      "reconciliation_2024": {
+        "passed": true,
+        "races": 9,
+        "status_counts": {
+          "exact": 9
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "cross_check_2026": {
+        "passed": true,
+        "races": 8,
+        "status_counts": {
+          "exact": 8
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "notes": "Parsed page 'Last refreshed' 11/13/2026 05:32:13 PM; County Break Down pages 'Last refreshed' ['11/13/2026 05:32:13 PM']. An earlier run today caught the site mid-refresh (parsed page stamped 05:22:12 PM, break-down pages 05:32:13 PM) and CD1 differed (148515/163970 vs 149418/164289); pages with equal stamps agree. Summary = the State Board's 8 'County Break Down' pages (county x candidate tables, summed over counties); parsed file = the 'Representative in Congress' page (district totals by vote type). Same site, different table. 2024 reconciliation input: ['MD_2024_general_gen_results_2024_2_USSenate.html', 'MD_2024_general_gen_results_2024_3_1_USHouse_CD1.html', 'MD_2024_general_gen_results_2024_3_2_USHouse_CD2.html', 'MD_2024_general_gen_results_2024_3_3_USHouse_CD3.html', 'MD_2024_general_gen_results_2024_3_4_USHouse_CD4.html', 'MD_2024_general_gen_results_2024_3_5_USHouse_CD5.html', 'MD_2024_general_gen_results_2024_3_6_USHouse_CD6.html', 'MD_2024_general_gen_results_2024_3_7_USHouse_CD7.html', 'MD_2024_general_gen_results_2024_3_8_USHouse_CD8.html']. Fetcher labelled: ['unofficial']. The 2024 reconciliation used the SAME registered parser (se.extract) on the archived official 2024 HTML pages (U.S. Senator + CD1-8): no historical parser is registered, so MD qualifies as parser_tested_2024.",
+      "races_2026": [
+        {
+          "office": "us_house",
+          "district_num": 1,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 2,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 3,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 4,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 5,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 6,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 7,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 8,
+          "status": "exact",
+          "share_diff": 0.0
+        }
+      ],
+      "reconciliation": {
+        "passed": true,
+        "races": 9,
+        "status_counts": {
+          "exact": 9
+        },
+        "max_abs_share_diff": 0.0
+      }
+    },
+    "ND": {
+      "extraction_status": "parser_cross_checked_2026",
+      "state": "ND",
+      "checked_at_utc": "2026-11-13T22:39:45.253933+00:00",
+      "parsed_file_url": "https://api.resultsnd.sos.nd.gov/Contest/GetContestResults?cId=north-dakota&electionID=348&contestType=SW ; https://api.resultsnd.sos.nd.gov/Contest/GetContestSearchList?cid=north-dakota&electionID=348",
+      "parsed_file_sha256": "55b17e8dd9d4b0dfebc9b33df72dd5961a43fe524d1218b1dd5da71182c56643 ; 3714f13d2e2aa52fd8e414e2535469ab6b1c890c4c23e76bea252b69d1eb1222",
+      "summary_source_url": "https://resultsnd.sos.nd.gov/results/north-dakota/348/FullDataFile.json",
+      "summary_sha256_or_note": "3027a5335c1d456e49a7d462c7a48167a1ef2072e5b91f15168cc5a54f1b1c3b",
+      "reconciliation_2024": {
+        "passed": true,
+        "races": 2,
+        "status_counts": {
+          "exact": 2
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "cross_check_2026": {
+        "passed": true,
+        "races": 1,
+        "status_counts": {
+          "exact": 1
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "notes": "Independent summary: the site's 'FullDataFile.json' download (static file on resultsnd.sos.nd.gov, IsOfficial=False), contest 'Representative in Congress' Choices[].TotalVotes by PartyID. Parsed file: api.resultsnd.sos.nd.gov GetContestResults (statewide choices; parser also requires county rows to sum to them). Fetcher labelled: ['unofficial']. Universe coverage: exact (1 races).",
+      "races_2026": [
+        {
+          "office": "us_house",
+          "district_num": 0,
+          "status": "exact",
+          "share_diff": 0.0
+        }
+      ]
+    },
+    "NE": {
+      "extraction_status": "parser_cross_checked_2026",
+      "state": "NE",
+      "checked_at_utc": "2026-11-13T22:39:58.422878+00:00",
+      "parsed_file_url": "https://electionresults.nebraska.gov/resultsCSV.aspx?text=All&type=CG&map=DIST ; https://electionresults.nebraska.gov/resultsCSV.aspx?text=All&type=SW&map=CTY",
+      "parsed_file_sha256": "a4b53c95d332a620520794d06e10016e5aa04d93efbe8f1c724229ad9d479f66 ; 2a4a9aa1f62d2585d7830ebae702445e38c99e8e07245183a64293249108b8dd",
+      "summary_source_url": "https://electionresults.nebraska.gov/resultsSW.aspx?type=CG&map=DIST ; https://electionresults.nebraska.gov/resultsSW.aspx?type=SW&map=CTY",
+      "summary_sha256_or_note": "98fb300b775e7445272adaf36e85949bed81e0a4823c87e8313e746a153c3260 ; 0ddc4704ce4383c182c492c34021ea615b432a438de5da817f467e6dcd1d06a6",
+      "reconciliation_2024": {
+        "passed": true,
+        "races": 4,
+        "status_counts": {
+          "exact": 4
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "cross_check_2026": {
+        "passed": true,
+        "races": 4,
+        "status_counts": {
+          "exact": 4
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "notes": "Independent summary: the results site's HTML contest pages (resultsSW.aspx, candidate lines with party names and a printed 'total votes' that the candidate lines were checked to sum to). Parsed files: resultsCSV.aspx CSV exports (party codes). Fetcher labelled: ['unofficial']. Universe coverage: exact (4 races).",
+      "races_2026": [
+        {
+          "office": "us_house",
+          "district_num": 1.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 2.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 3.0,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_senate",
+          "district_num": null,
+          "status": "exact",
+          "share_diff": 0.0
+        }
+      ]
+    },
+    "WA": {
+      "extraction_status": "parser_cross_checked_2026",
+      "state": "WA",
+      "checked_at_utc": "2026-11-13T22:39:59.635610+00:00",
+      "parsed_file_url": "https://results.votewa.gov/cdn/results/01000000-f977-1a83-1ed4-08ddd69e9e69/All%20Results_84b172b2-4df5-4ae1-848a-da282d7028c0.xlsx",
+      "parsed_file_sha256": "24edeb7ca6f37d13d6f78627d8eedaa4c529353f1ae53ea02d66bfa3c07b2945",
+      "summary_source_url": "https://results.votewa.gov/results/public/api/elections/washington/20261103/ballot-items",
+      "summary_sha256_or_note": "23d53cf70a4b7067895adb01bb319a8bfff44391f8e05af42dfb3c0d2eaa77e4",
+      "reconciliation_2024": {
+        "passed": true,
+        "races": 11,
+        "status_counts": {
+          "exact": 11
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "cross_check_2026": {
+        "passed": true,
+        "races": 10,
+        "status_counts": {
+          "exact": 10
+        },
+        "max_abs_share_diff": 0.0
+      },
+      "notes": "Independent summary: the results site's ballot-items JSON API (what the public results page displays), summaryResults.ballotOptions[].voteCount by the state's party abbreviation (DEM/REP); asOf ['2026-11-13T22:31:07.5900375Z']. Parsed file: 'All Results Excel' workbook, Summary Results sheet (party from the '(Prefers X Party)' label). Fetcher labelled: ['unofficial']. Universe coverage: exact (10 races).",
+      "races_2026": [
+        {
+          "office": "us_house",
+          "district_num": 1,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 2,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 3,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 4,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 5,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 6,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 7,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 8,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 9,
+          "status": "exact",
+          "share_diff": 0.0
+        },
+        {
+          "office": "us_house",
+          "district_num": 10,
+          "status": "exact",
+          "share_diff": 0.0
+        }
+      ]
+    }
+  }
+}

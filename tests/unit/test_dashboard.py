@@ -617,3 +617,83 @@ def test_texas_page_degrades_without_optional_bundles(bundles: Path) -> None:
     page = app_mod.page_texas(BundleStore(bundles, Tier.VAULT))
     assert "U.S. Senate: fundamentals across runs" in str(page)
     assert "South Texas" not in str(page)
+
+
+# --- 2026 results bundle and page ------------------------------------------------------------
+
+
+def _ledger(tmp_path: Path) -> Path:
+    from election_prediction.data import results_2026
+
+    rows = pd.DataFrame(
+        {
+            "state_po": ["VA", "TX", "KS", "LA"],
+            "district_num": [1, 2, None, 5],
+            "office": ["us_house", "us_house", "us_senate", "us_house"],
+            "dem_votes": [60, 40, 45, 30],
+            "rep_votes": [40, 60, 55, 45],
+            "other_votes": [0, 0, 0, 25],
+            "certified": [True, False, False, False],
+            "source_url": ["https://example.gov/r"] * 4,
+            "retrieved_on": ["2026-11-20"] * 4,
+            "winner_party": ["DEMOCRAT", "REPUBLICAN", "REPUBLICAN", ""],
+            "election_round": ["general", "general", "general", "first_round"],
+            "outcome_resolved": [True, True, True, False],
+        }
+    )
+    d = tmp_path / "ledger"
+    results_2026.write_snapshot(rows, observed_on="2026-11-20", directory=d)
+    return d
+
+
+def test_results_bundle_labels_status_from_the_ledger_only(tmp_path: Path) -> None:
+    from election_prediction.dashboard.export import export_results
+
+    out = export_results(_ledger(tmp_path), tmp_path / "b", as_of="2026-11-20")
+    m = RunManifest.read(out)
+    assert m.kind is RunKind.RESULTS and m.tier is Tier.VAULT
+    t = pd.read_parquet(out / "results_2026.parquet").set_index("state_po")
+    assert t.loc["VA", "status"] == "certified" and t.loc["TX", "status"] == "unofficial"
+    assert t.loc["LA", "winner_party"] == "" and not t.loc["LA", "outcome_resolved"]
+    cov = json.loads((out / "coverage.json").read_text())
+    assert (cov["seats_observed"], cov["seats_certified"], cov["seats_unresolved"]) == (4, 1, 1)
+
+
+def test_results_cannot_be_public() -> None:
+    with pytest.raises(BundleError, match="cannot be public"):
+        RunManifest(run_id="r", kind=RunKind.RESULTS, tier=Tier.PUBLIC, title="t", as_of="x", summary="s")
+
+
+def test_results_page_renders_beside_a_run(bundles: Path, tmp_path: Path) -> None:
+    from election_prediction.dashboard import app as app_mod
+    from election_prediction.dashboard.export import export_results
+
+    vault = BundleStore(bundles, Tier.VAULT)
+    assert "No 2026 results" in str(app_mod.page_results(vault, "refresh_2026-10-22", "shrinkage=0.5"))
+    export_results(_ledger(tmp_path), bundles, as_of="2026-11-20")
+    vault = BundleStore(bundles, Tier.VAULT)
+    text = str(app_mod.page_results(vault, "refresh_2026-10-22", "shrinkage=0.5"))
+    for expected in (
+        "Coverage",
+        "1 certified",
+        "Observed against predicted",
+        "unresolved",
+        "VA-01",
+        "KS Senate",
+    ):
+        assert expected in text, expected
+
+
+def test_results_figure_separates_certified_from_unofficial() -> None:
+    joined = pd.DataFrame(
+        {
+            "label": ["A", "B"],
+            "status": ["certified", "unofficial"],
+            "mean_dem_share": [0.5, 0.4],
+            "sigma": [0.1, 0.1],
+            "two_party_dem_share": [0.55, 0.42],
+        }
+    )
+    fig = figures.results_vs_run(joined)
+    symbols = {t.name: t.marker.symbol for t in fig.data if t.name}
+    assert symbols == {"Certified": "circle", "Unofficial": "circle-open"}

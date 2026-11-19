@@ -33,6 +33,7 @@ class RunKind(StrEnum):
     SCENARIO = "scenario"
     BACKTEST = "backtest"
     CROSS_CHECK = "cross_check"
+    RESULTS = "results"
     HISTORICAL = "historical"
 
 
@@ -44,6 +45,7 @@ KIND_LABELS: dict[RunKind, str] = {
     RunKind.SCENARIO: "Scenario — conditional on the stated assumptions, not a forecast",
     RunKind.BACKTEST: "Historical backtest — out-of-sample by held-out cycle",
     RunKind.CROSS_CHECK: "Poll cross-check — compiled releases, not blended into the projection",
+    RunKind.RESULTS: "2026 results as observed — unofficial and certified are labelled per seat",
     RunKind.HISTORICAL: "Historical certified results",
 }
 
@@ -95,6 +97,25 @@ TABLE_COLUMNS: dict[str, tuple[str, ...]] = {
         "two_party_dem_share",
         "two_party_votes",
         "n_counties",
+    ),
+    # The 2026 ledger as of one date. ``status`` is "certified" only where the ledger
+    # observed certification of a resolved outcome; everything else is "unofficial".
+    "results_2026": (
+        "state_po",
+        "office",
+        "district_num",
+        "geography_id",
+        "dem_votes",
+        "rep_votes",
+        "other_votes",
+        "two_party_dem_share",
+        "winner_party",
+        "status",
+        "certified_on",
+        "election_round",
+        "outcome_resolved",
+        "observed_on",
+        "source_url",
     ),
     # A scenario's per-district weights.
     "region_shares": ("new_district", "region_share", "two_party_votes", "dem_share"),

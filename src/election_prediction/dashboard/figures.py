@@ -568,3 +568,80 @@ def region_history_chart(history: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(tickformat=".0%")
     fig.update_annotations(font=dict(color=INK, size=12))
     return fig
+
+
+# --- 2026 results beside a run ------------------------------------------------------------
+
+
+def results_vs_run(joined: pd.DataFrame) -> go.Figure:
+    """Observed two-party share against a run's predicted mean, one marker per seat.
+
+    ``joined`` has ``label``, ``status``, ``mean_dem_share``, ``sigma`` and
+    ``two_party_dem_share``. Filled markers are certified, hollow markers unofficial: the
+    fill carries the status, so an unofficial count can never read as a result. The
+    dotted diagonal is "observed equals predicted"; horizontal bars are the run's own 90%
+    interval for the seat.
+    """
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=[0, 1],
+            y=[0, 1],
+            mode="lines",
+            hoverinfo="skip",
+            showlegend=False,
+            line=dict(color=AXIS, width=1, dash="dot"),
+        )
+    )
+    for status, symbol, name in (
+        ("certified", "circle", "Certified"),
+        ("unofficial", "circle-open", "Unofficial"),
+    ):
+        part = joined[joined["status"] == status]
+        if part.empty:
+            continue
+        lo, hi = interval_90(part["mean_dem_share"], part["sigma"])
+        fig.add_trace(
+            go.Scatter(
+                x=part["mean_dem_share"],
+                y=part["two_party_dem_share"],
+                mode="markers",
+                name=name,
+                marker=dict(symbol=symbol, size=9, color=INK_2, line=dict(width=1.5, color=INK_2)),
+                error_x=dict(
+                    type="data",
+                    symmetric=False,
+                    array=hi - part["mean_dem_share"],
+                    arrayminus=part["mean_dem_share"] - lo,
+                    color=GRID,
+                    thickness=1,
+                    width=0,
+                ),
+                customdata=np.stack([part["label"], part["status"], lo, hi], axis=-1),
+                hovertemplate=(
+                    "<b>%{customdata[0]}</b> · %{customdata[1]}<br>Predicted %{x:.1%} "
+                    "(90%: %{customdata[2]:.1%}–%{customdata[3]:.1%})<br>Observed %{y:.1%}<extra></extra>"
+                ),
+            )
+        )
+    fig.add_hline(y=0.5, line=dict(color=AXIS, width=1, dash="dot"))
+    fig.add_vline(x=0.5, line=dict(color=AXIS, width=1, dash="dot"))
+    _base_layout(fig, height=440)
+    fig.update_layout(
+        showlegend=True,
+        legend=dict(orientation="h", x=0, y=1.1, font=dict(color=INK_2)),
+        margin=dict(l=56, r=24, t=48, b=44),
+    )
+    fig.update_xaxes(
+        title=dict(
+            text="Predicted two-party Dem share (selected run and assumption)", font=dict(color=INK_2)
+        ),
+        tickformat=".0%",
+        range=[0.1, 0.9],
+    )
+    fig.update_yaxes(
+        title=dict(text="Observed two-party Dem share", font=dict(color=INK_2)),
+        tickformat=".0%",
+        range=[0.1, 0.9],
+    )
+    return fig

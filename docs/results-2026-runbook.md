@@ -168,25 +168,38 @@ python scripts/capture_daily.py               # write today's UTC observation + 
 python scripts/capture_daily.py --certified NC=https://<certification evidence URL>
 ```
 
-- Covers every state with a registered fetcher (`data/state_fetchers.py`): its release
-  downloads with the honest research client **and** its parser reproduced 2024 certified
-  results (exactly, except Colorado CD1 within tolerance). As of 2026-11-12, 17 states,
-  123 seats: AR, CO, DE, GA, HI, IN, LA, MN, MT, NC, PA, SC, UT, VA, VT, WV, WY. Other
-  states are manual (preserve-source + capture) and must be compiled into the **same**
-  snapshot, because the ledger takes one observation per UTC day: add their rows and
-  evidence to one `build_results_2026 capture` call, or add their fetchers first.
+- Covers every state with a registered fetcher (`data/state_fetchers.py` and
+  `data/state_layouts/`): its release downloads with the honest research client **and**
+  its parser has a recorded check. As of 2026-11-13, 24 states, 209 seats.
+  - `parser_tested_2024` (18 states, 131 seats): the parser that reads 2026 reproduced
+    2024 certified results (exactly, except Colorado CD1 within tolerance). AR, CO, DE,
+    GA, HI, IN, LA, MD, MN, MT, NC, PA, SC, UT, VA, VT, WV, WY.
+  - `parser_cross_checked_2026` (6 states, 78 seats): the state changed its layout, so
+    the 2026 parser cannot be run on certified data. The 2024-layout parser reproduced
+    certified 2024 exactly, and the 2026 parser matched, race by race, a summary the
+    state publishes separately (`reports/extraction_cross_check_2026-11-13/`). This is
+    weaker: treat these seats' counts with that in mind, and re-run
+    `scripts/record_cross_checks.py` if a state changes its page. AL, CA, ID, ND, NE, WA.
+  - Each capture report names every state's `parser_status`; a state whose catalog row
+    is still `manual_review_pending` is refused.
 
-  | Status (2026-11-12) | States |
+  Other states are manual (preserve-source + capture) and must be compiled into the
+  **same** snapshot, because the ledger takes one observation per UTC day: add their
+  rows and evidence to one `build_results_2026 capture` call, or add their fetchers first.
+
+  | Status (2026-11-13) | States |
   |---|---|
   | Parser tested, fetcher pending the certified release | MA, WI, MO (certified files post after certification) |
   | Blocked to automated clients (manual browser download) | AK, AZ, FL, KS, KY, ME, MI, NH, NM, NV, NY, OH, OK, RI, TN |
-  | Downloadable, but 2024 and 2026 layouts differ (parser untestable against 2024) | AL, CA, ID, MD, ND, NE, WA |
   | 2024 release unavailable to test against | IA, OR, TX (2024 blocked or timed out) |
   | 2026 release not yet published | IL (after the December canvass), MS, NJ |
   | Other | CT (lookup file holds candidate addresses; manual), SD (no party labels in the export) |
 
   Louisiana House rows are first rounds; CD5 and CD6 are unresolved until the
-  December 12 runoff, which needs its own race IDs and runoff rows before capture.
+  December 12 runoff. The Louisiana fetcher reads the portal's election list on every
+  run and adds the runoff's race files as soon as the state posts that election (it
+  was not posted as of 2026-11-13); runoff rows replace the first-round rows for the
+  same seats. No operator step is needed, but check the first capture after December 12.
 - The run refuses before fetching if today's UTC slot is taken, refuses a state whose
   races do not match the frozen universe (`reports/refresh_2026-10-29/projection_seats.csv`),
   and reports a failing state while still capturing the rest (exit 1 if any failed).
@@ -197,6 +210,25 @@ python scripts/capture_daily.py --certified NC=https://<certification evidence U
   evidence URLs, release checksums, failures): commit it, as the index of the git-ignored
   ledger, and add a line to the Capture Log below.
 
+## Interim Scorecards and the Results Page
+
+```bash
+python scripts/interim_scorecard.py --as-of 2026-11-20      # certified seats only
+ep-export-dashboard results "data/raw/source=state_canvass/dataset=us_house_2026" --as-of 2026-11-20
+```
+
+- `interim_scorecard.py` scores all four frozen runs (seal, both refreshes, scenario) with
+  the registered scorer on the as-of ledger. The seal is verified by digest and the other
+  runs by the comparison set's checksums. Every assumption is reported; nothing is
+  selected. Only **certified, resolved** seats count; chamber error and the failure
+  condition stay `not_evaluable` until all 435 House seats are scoreable. Output goes to
+  `reports/scorecards/scorecard_asof_<date>.{json,md}` and is never overwritten.
+- A seat becomes certified in the ledger only through `capture_daily.py --certified
+  STATE=<evidence URL>`. Dates to expect are in `data/reference/certification_calendar_2026.csv`.
+- `ep-export-dashboard results` writes the vault's Results bundle: every observed seat
+  with its status (certified or unofficial) beside the selected run. It displays; it
+  does not score.
+
 ## Capture Log
 
 The ledger lives in the git-ignored data lake; this log is its committed index.
@@ -205,6 +237,8 @@ The ledger lives in the git-ignored data lake; this log is its committed index.
 |---|---|---:|---:|---|---|
 | 2026-11-03 to 2026-11-11 | none | 0 | 0 | none | **Gap.** The working checkout was on `post-poll-closing-updates`, cut from an unpulled pre-October `main`; the Nov 5 automation refused to capture without the evidence safeguards (`reports/results_capture_blocked_2026-11-05T192029Z.md`). Checkout restored to `origin/main` 2026-11-12. Certification first observed after this date cannot be backdated. |
 | 2026-11-12 | MT, NC | 18 | 0 | `data/raw/source=state_canvass_evidence/state={MT,NC}/retrieved=20261112T06…/` | MT statewide export (labelled unofficial, 728/728 precincts); NC `results_pct_20261103.zip` (last-modified 2026-11-11 22:21 UTC, 100/100 counties, uncertified). Both parsers reproduce 2024 certified exactly. `winner_party` recorded for every row (MT Senate has an independent in second). |
+| 2026-11-13 | MT, NC | 18 | 0 | `data/raw/source=state_canvass_evidence/state={MT,NC}/retrieved=20261113T2208…/` | Fresh official aggregate releases and NC unofficial-status page preserved with the module CLI; appended with matching source evidence. Historical parser replay and stored-byte validation passed. Counts revised in 14 NC and two MT contests versus the November 12 daily snapshot; no leading-party changes. Forty-eight states remain missing. See `reports/results_capture_2026-11-13T220413Z.md`. |
+| 2026-11-14 | AL, AR, CA, CO, DE, GA, HI, ID, IN, LA, MD, MN, MT, NC, ND, NE, PA, SC, UT, VA, VT, WA, WV, WY | 209 | 0 | `data/raw/source=state_canvass_evidence/state=<ST>/retrieved=20261114T00…/`; index `reports/captures/capture_2026-11-14.json` | First `capture_daily.py` run (00:05 UTC), no failures. 18 states at `parser_tested_2024`, 6 (AL, CA, ID, ND, NE, WA) at the weaker `parser_cross_checked_2026`. Releases label themselves: 12 unofficial, 10 no statement, 2 official (VT, WY). No state marked certified: no operator attestation was given. LA CD5 and CD6 are first rounds. Interim scorecard `reports/scorecards/scorecard_asof_2026-11-14.md`: 0 scoreable seats. |
 
 One observation per UTC day: a capture early in a UTC day takes that day's slot, so
 add states to the same compiled snapshot before capturing, never in a second run.

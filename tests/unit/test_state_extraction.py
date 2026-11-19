@@ -273,3 +273,22 @@ def test_south_carolina_recount_replaces_the_general_race(tmp_path: Path) -> Non
     recount = _clarity_zip(tmp_path / "SC_recount.zip", [(cd, "D", "DEM", 98), (cd, "R", "REP", 101)])
     row = se.extract("SC", [general, recount]).iloc[0]
     assert (row.dem_votes, row.rep_votes, row.winner_party) == (98, 101, "REPUBLICAN")
+
+
+def test_louisiana_runoff_file_replaces_the_first_round(tmp_path: Path) -> None:
+    office = '"U. S. Representative -- 5th Congressional District"'
+    first = tmp_path / "LA_2026GE_ByParish_1.csv"
+    first.write_text('Office,Parish,"A (DEM)","B (REP)","C (REP)"\n' + f'{office},"Winn","40","35","25"\n')
+    runoff = tmp_path / "LA_2026RO_ByParish_9.csv"
+    runoff.write_text('Office,Parish,"A (DEM)","B (REP)"\n' + f'{office},"Winn","45","55"\n')
+    row = se.extract("LA", [first, runoff]).iloc[0]
+    assert (row.election_round, bool(row.outcome_resolved), row.winner_party) == (
+        "runoff",
+        True,
+        "REPUBLICAN",
+    )
+    assert (row.dem_votes, row.rep_votes) == (45, 55)
+    three = tmp_path / "LA_2026RO_ByParish_8.csv"
+    three.write_text('Office,Parish,"A (DEM)","B (REP)","C (REP)"\n' + f'{office},"Winn","1","2","3"\n')
+    with pytest.raises(ValueError, match="two candidates"):
+        se.extract("LA", [three])

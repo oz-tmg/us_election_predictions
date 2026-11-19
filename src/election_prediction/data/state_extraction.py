@@ -38,6 +38,25 @@ Parser = Callable[[Sequence[Path]], pd.DataFrame]
 PARSERS: dict[str, Parser] = {}
 
 
+#: Parsers for a state's *previous* release format, where the state changed format between
+#: cycles. They exist only to prove the historical path against certified returns; the
+#: daily capture never uses them. A state in this registry cannot claim
+#: ``parser_tested_2024`` for its current-format parser: that one is checked against the
+#: state's own published summary instead (``cross_check``), a weaker test recorded as
+#: ``parser_cross_checked_2026``.
+HISTORICAL_PARSERS: dict[str, Parser] = {}
+
+
+def register_historical(state: str) -> Callable[[Parser], Parser]:
+    def wrap(fn: Parser) -> Parser:
+        if state in HISTORICAL_PARSERS:
+            raise ValueError(f"historical parser for {state} already registered")
+        HISTORICAL_PARSERS[state] = fn
+        return fn
+
+    return wrap
+
+
 def register(state: str) -> Callable[[Parser], Parser]:
     def wrap(fn: Parser) -> Parser:
         if state in PARSERS:
@@ -106,6 +125,23 @@ def extract(state: str, paths: Sequence[Path]) -> pd.DataFrame:
     frame = PARSERS[state](paths)
     frame["state_po"] = state
     return validate_extracted(frame)
+
+
+def extract_historical(state: str, paths: Sequence[Path]) -> pd.DataFrame:
+    if state not in HISTORICAL_PARSERS:
+        raise KeyError(f"no historical parser registered for {state}")
+    frame = HISTORICAL_PARSERS[state](paths)
+    frame["state_po"] = state
+    return validate_extracted(frame)
+
+
+def cross_check(extracted: pd.DataFrame, summary: pd.DataFrame, *, state: str) -> pd.DataFrame:
+    """Compare a current-format extraction with the state's own separately published
+    summary of the same count (``office``, ``district_num``, ``dem_votes``, ``rep_votes``),
+    race by race, under the same tolerance as ``reconcile``. This shows the parser reads
+    the file the way the state does; it cannot show agreement with a certified result."""
+    reference = summary.assign(state_po=state, cycle=0, race_id="x_gen", uncontested_flag=False)
+    return reconcile(extracted, reference, state=state, cycle=0)
 
 
 def to_snapshot(
