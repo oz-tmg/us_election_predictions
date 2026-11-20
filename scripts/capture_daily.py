@@ -17,7 +17,12 @@ day's slot is already taken.
 
 Certification is never inferred. A state is marked certified only when the operator
 passes ``--certified STATE=<URL of the certification evidence>``, and never when the
-release labels itself unofficial. The run writes ``reports/captures/capture_<date>.json``,
+release labels itself unofficial. An accepted attestation is written to
+``data/reference/certifications_2026.csv`` and applied to every later capture, because
+the ledger reads a certified seat that later appears uncertified as a revocation. To
+revoke, remove the state's row from that file and say why in the commit.
+
+The run writes ``reports/captures/capture_<date>.json``,
 the committed index of what the git-ignored ledger now holds. A state that fails (blocked,
 changed layout, incomplete) is reported and left out; the others are still captured.
 """
@@ -48,6 +53,33 @@ from election_prediction.data.manifest import sha256_file  # noqa: E402
 
 UNIVERSE = Path("reports/refresh_2026-10-29/projection_seats.csv")
 REPORT_DIR = Path("reports/captures")
+ATTESTATIONS = Path("data/reference/certifications_2026.csv")
+ATTESTATION_COLUMNS = ["state_po", "certification_evidence", "first_captured_on"]
+
+
+def load_attestations(path: Path) -> pd.DataFrame:
+    """Certifications the operator has already attested, one row per state."""
+    if not path.is_file():
+        return pd.DataFrame(columns=ATTESTATION_COLUMNS)
+    frame = pd.read_csv(path, dtype=str).fillna("")
+    if list(frame.columns) != ATTESTATION_COLUMNS or frame.state_po.duplicated().any():
+        raise SystemExit(f"{path}: expected columns {ATTESTATION_COLUMNS}, one row per state")
+    if not frame.certification_evidence.str.startswith("https://").all():
+        raise SystemExit(f"{path}: every attestation needs an https evidence URL")
+    return frame
+
+
+def record_attestations(path: Path, new: dict[str, str], observed_on: str) -> None:
+    """Append newly captured attestations; an existing row is never rewritten."""
+    known = load_attestations(path)
+    rows = [
+        {"state_po": state, "certification_evidence": url, "first_captured_on": observed_on}
+        for state, url in sorted(new.items())
+        if state not in set(known.state_po)
+    ]
+    if rows:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        pd.concat([known, pd.DataFrame(rows)], ignore_index=True).to_csv(path, index=False)
 
 
 def expected_races(universe: Path, state: str) -> set[tuple[str, int | None]]:
@@ -93,9 +125,18 @@ def run(
     report_dir: Path,
     universe: Path,
     observed_on: str | None = None,
+    attestations: Path | None = None,
 ) -> dict:
     observed_on = observed_on or datetime.now(UTC).date().isoformat()
     ledger = ledger_dir or results_2026.SNAPSHOT_DIR
+    # Earlier attestations carry forward; a new --certified for the same state does not
+    # replace the evidence already on record.
+    carried = (
+        dict(zip(*(load_attestations(attestations)[c] for c in ATTESTATION_COLUMNS[:2]), strict=True))
+        if attestations
+        else {}
+    )
+    certified = {**certified, **carried}
     slot = ledger / f"snapshot={observed_on}.csv"
     if slot.exists() and not dry_run:
         raise SystemExit(f"{slot} exists: today's UTC slot is taken (one observation per UTC day)")
@@ -166,6 +207,7 @@ def run(
                 "parser_status": trust[state],
                 "certified": state in certified,
                 "certification_evidence": certified.get(state),
+                "certification_carried_forward": state in carried,
                 "labelled": "unofficial"
                 if "unofficial" in labels
                 else (labels.pop() if len(labels) == 1 else "mixed"),
@@ -200,6 +242,9 @@ def run(
         "universe": str(universe),
     }
     if not dry_run:
+        if attestations:
+            captured = {s: certified[s] for s, info in report_states.items() if info["certified"]}
+            record_attestations(attestations, captured, observed_on)
         report_dir.mkdir(parents=True, exist_ok=True)
         (report_dir / f"capture_{observed_on}.json").write_text(json.dumps(report, indent=2) + "\n")
     return report
@@ -220,6 +265,7 @@ def main(argv: list[str] | None = None) -> int:
         evidence_dir=None,
         report_dir=REPORT_DIR,
         universe=args.universe,
+        attestations=ATTESTATIONS,
     )
     print(json.dumps({k: v for k, v in report.items() if k != "states"}, indent=2))
     for state, info in report["states"].items():

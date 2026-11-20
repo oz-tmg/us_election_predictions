@@ -206,6 +206,11 @@ python scripts/capture_daily.py --certified NC=https://<certification evidence U
 - **Certification is never inferred.** `--certified STATE=URL` is the operator's
   attestation, with the URL of the certification evidence; it is refused if the release
   labels itself unofficial (Montana's export always does: certify MT from its canvass).
+- **An attestation carries forward.** A captured `--certified` state is written to
+  `data/reference/certifications_2026.csv` and applied to every later run, so a plain
+  `python scripts/capture_daily.py` keeps those seats certified. Without this the ledger
+  would read the next plain capture as a revocation. Commit the file with the capture
+  index. To revoke, delete the state's row and give the reason in the commit message.
 - Each run writes `reports/captures/capture_<date>.json` (seats, certification flags and
   evidence URLs, release checksums, failures): commit it, as the index of the git-ignored
   ledger, and add a line to the Capture Log below.
