@@ -211,3 +211,32 @@ def test_the_committed_attestations_cover_every_state_a_capture_index_certified(
         if info["certified"]
     }
     assert indexed and indexed <= set(book.state_po)
+
+
+def test_a_seat_under_recount_stays_unresolved_when_its_state_is_certified(env: dict, tmp_path: Path) -> None:
+    pending = tmp_path / "unresolved.csv"
+    pending.write_text(
+        "state_po,office,district_num,reason,evidence_url\n"
+        "MA,us_senate,,recount requested,https://example.gov/recount\n"
+    )
+    report = capture_daily.run(
+        states=["MA"],
+        certified={"MA": "https://example.gov/canvass"},
+        dry_run=False,
+        unresolved=pending,
+        **env,
+    )
+    assert report["states"]["MA"]["unresolved_seats"][0]["reason"] == "recount requested"
+    snap = pd.read_csv(env["ledger_dir"] / f"snapshot={TODAY}.csv")
+    assert str(snap.loc[0, "certified"]) == "True" and str(snap.loc[0, "outcome_resolved"]) == "False"
+    assert pd.isna(snap.loc[0, "winner_party"])
+
+
+def test_an_unresolved_seat_missing_from_the_release_fails_that_state(env: dict, tmp_path: Path) -> None:
+    pending = tmp_path / "unresolved.csv"
+    pending.write_text(
+        "state_po,office,district_num,reason,evidence_url\n"
+        "MA,us_house,9,recount requested,https://example.gov/recount\n"
+    )
+    with pytest.raises(SystemExit, match="not in the release"):
+        capture_daily.run(states=["MA"], certified={}, dry_run=False, unresolved=pending, **env)

@@ -20,7 +20,9 @@ passes ``--certified STATE=<URL of the certification evidence>``, and never when
 release labels itself unofficial. An accepted attestation is written to
 ``data/reference/certifications_2026.csv`` and applied to every later capture, because
 the ledger reads a certified seat that later appears uncertified as a revocation. To
-revoke, remove the state's row from that file and say why in the commit.
+revoke, remove the state's row from that file and say why in the commit. A seat listed
+in ``data/reference/unresolved_seats_2026.csv`` (a pending recount) is captured as
+unresolved, so certifying its state does not make that seat scoreable.
 
 The run writes ``reports/captures/capture_<date>.json``,
 the committed index of what the git-ignored ledger now holds. A state that fails (blocked,
@@ -55,6 +57,50 @@ UNIVERSE = Path("reports/refresh_2026-10-29/projection_seats.csv")
 REPORT_DIR = Path("reports/captures")
 ATTESTATIONS = Path("data/reference/certifications_2026.csv")
 ATTESTATION_COLUMNS = ["state_po", "certification_evidence", "first_captured_on"]
+UNRESOLVED = Path("data/reference/unresolved_seats_2026.csv")
+UNRESOLVED_COLUMNS = ["state_po", "office", "district_num", "reason", "evidence_url"]
+
+
+def load_unresolved(path: Path | None) -> pd.DataFrame:
+    """Seats whose outcome is not final (a pending recount, say), one row per seat.
+
+    A state can certify while one of its contests is still being recounted. Such a seat
+    stays unscoreable: it is captured with ``outcome_resolved=False`` and no winner until
+    its row is removed from this file.
+    """
+    if path is None or not path.is_file():
+        return pd.DataFrame(columns=UNRESOLVED_COLUMNS)
+    frame = pd.read_csv(path, dtype=str).fillna("")
+    if list(frame.columns) != UNRESOLVED_COLUMNS:
+        raise SystemExit(f"{path}: expected columns {UNRESOLVED_COLUMNS}")
+    if not frame.office.isin({"us_house", "us_senate"}).all() or (frame.reason == "").any():
+        raise SystemExit(f"{path}: each row needs office us_house or us_senate and a reason")
+    if not frame.evidence_url.str.startswith("https://").all():
+        raise SystemExit(f"{path}: each row needs an https evidence URL")
+    return frame
+
+
+def mark_unresolved(extracted: pd.DataFrame, pending: pd.DataFrame, state: str) -> tuple[pd.DataFrame, list]:
+    """Apply the unresolved-seat list to one state's extracted races."""
+    pending = pending[pending.state_po == state]
+    if pending.empty:
+        return extracted, []
+    out = extracted.copy()
+    if "outcome_resolved" not in out:
+        out["outcome_resolved"] = True
+    out["outcome_resolved"] = out["outcome_resolved"].fillna(True).astype(bool)
+    marked = []
+    for row in pending.itertuples():
+        district = None if row.office == "us_senate" else int(row.district_num)
+        hit = out.office.eq(row.office) & (
+            out.district_num.isna() if district is None else out.district_num.eq(district)
+        )
+        if hit.sum() != 1:
+            raise ValueError(f"{state}: unresolved seat {row.office} {row.district_num} not in the release")
+        out.loc[hit, "outcome_resolved"] = False
+        out.loc[hit, "winner_party"] = None
+        marked.append({"office": row.office, "district_num": district, "reason": row.reason})
+    return out, marked
 
 
 def load_attestations(path: Path) -> pd.DataFrame:
@@ -126,6 +172,7 @@ def run(
     universe: Path,
     observed_on: str | None = None,
     attestations: Path | None = None,
+    unresolved: Path | None = None,
 ) -> dict:
     observed_on = observed_on or datetime.now(UTC).date().isoformat()
     ledger = ledger_dir or results_2026.SNAPSHOT_DIR
@@ -137,6 +184,7 @@ def run(
         else {}
     )
     certified = {**certified, **carried}
+    pending = load_unresolved(unresolved)
     slot = ledger / f"snapshot={observed_on}.csv"
     if slot.exists() and not dry_run:
         raise SystemExit(f"{slot} exists: today's UTC slot is taken (one observation per UTC day)")
@@ -192,6 +240,7 @@ def run(
                 parts.append(part)
             extracted = pd.concat(parts, ignore_index=True)
             check_coverage(extracted, expected_races(universe, state), state)
+            extracted, marked = mark_unresolved(extracted, pending, state)
             for (url, day), group in extracted.groupby(["_url", "_retrieved_on"]):
                 frames.append(
                     se.to_snapshot(
@@ -208,6 +257,7 @@ def run(
                 "certified": state in certified,
                 "certification_evidence": certified.get(state),
                 "certification_carried_forward": state in carried,
+                "unresolved_seats": marked,
                 "labelled": "unofficial"
                 if "unofficial" in labels
                 else (labels.pop() if len(labels) == 1 else "mixed"),
@@ -266,6 +316,7 @@ def main(argv: list[str] | None = None) -> int:
         report_dir=REPORT_DIR,
         universe=args.universe,
         attestations=ATTESTATIONS,
+        unresolved=UNRESOLVED,
     )
     print(json.dumps({k: v for k, v in report.items() if k != "states"}, indent=2))
     for state, info in report["states"].items():
