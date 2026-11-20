@@ -1,0 +1,4208 @@
+{
+  "as_of": "2026-11-20",
+  "interim": true,
+  "what_this_is": "Scores on seats certified by the as-of date only. Not a verdict on any run: the certified subset is not a random sample of seats, and chamber-level error and the registered failure condition are not evaluable until every House seat is scoreable.",
+  "void_geographies": "none asserted (no map changed after sealing has been recorded)",
+  "coverage": {
+    "seats_observed": 209,
+    "seats_certified_by_as_of": 3,
+    "states_observed": [
+      "AL",
+      "AR",
+      "CA",
+      "CO",
+      "DE",
+      "GA",
+      "HI",
+      "ID",
+      "IN",
+      "LA",
+      "MD",
+      "MN",
+      "MT",
+      "NC",
+      "ND",
+      "NE",
+      "PA",
+      "SC",
+      "UT",
+      "VA",
+      "VT",
+      "WA",
+      "WV",
+      "WY"
+    ],
+    "states_with_certified_seats": [
+      "VT",
+      "WY"
+    ],
+    "snapshots_used": [
+      "2026-11-12",
+      "2026-11-13",
+      "2026-11-14",
+      "2026-11-15",
+      "2026-11-20"
+    ]
+  },
+  "scoring_rule": "Every run is scored by the registered scorer on the same certified returns and as_of dates, all assumptions reported; selecting the best-performing run or assumption afterwards is not permitted.",
+  "runs": {
+    "preregistration_2026-11-03": {
+      "role": "scored holdout (sealed 2026-09-30)",
+      "verified": "sealed registration: digest verified",
+      "registration": {
+        "election_date": "2026-11-03",
+        "registered_on": "2026-09-30",
+        "predictions_sha256": "4de09ecf82f218ee807edc6d4eaae9b50d51968d0957177f33b762fad4100882",
+        "seal_verified": true
+      },
+      "audit": {
+        "as_of": "2026-11-20",
+        "seats_registered": 468,
+        "scored": 3,
+        "unscored_not_certified": 465,
+        "unscored_missing_vote_share": 0,
+        "void_map_changed_after_sealing": 0,
+        "void_sources": {},
+        "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted"
+      },
+      "declared_defects": [
+        "173 House seats have no prior on their 2026 boundaries. They use their state's presidential lean with sigma 0.1450 against a modelled 0.1121. RD-003's vote transfer is unbuilt, so these seats are the least informed part of the chamber and should show visibly worse per-seat scores.",
+        "The derived Democratic Senate caucus is 45 of 100, two short of the actual 47. The candidate/party crosswalk (P0-003) cannot resolve every member's affiliation from two-party share, so Senate Democratic seats are likely understated by about two.",
+        "Renomination is assumed for every sitting member. 458 have a 2026 FEC filing and 10 were not found; primaries are not compiled at all, so retirements and primary defeats are invisible to this forecast.",
+        "The national environment is unidentified. The shrinkage factor is an assumption swept over, not an estimate, and no historical calibration for it exists yet (NE-002 open).",
+        "Maps in AL, LA, MO, TN are under live litigation and could move before election day. The register records the plan in effect at the snapshot date; a late court order would invalidate those seats' boundaries.",
+        "The simulation's correlated-error split (45/25/30 national/regional/state) is asserted, not estimated from residuals. Chamber-level interval width is sensitive to it."
+      ],
+      "every_assumption_scored": [
+        "shrinkage=0.25",
+        "shrinkage=0.33",
+        "shrinkage=0.5",
+        "shrinkage=0.75",
+        "shrinkage=1"
+      ],
+      "results": {
+        "shrinkage=0.25": {
+          "overall": {
+            "n": 3,
+            "brier": 0.002933722499999998,
+            "log_score": 0.05318073009594874,
+            "ece": 0.051649999999999974,
+            "mae_vote_share": 0.04101581967984208,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 2,
+                "mean_pred": 0.05814999999999999,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.96135,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0016142724999999984,
+              "log_score": 0.04097947781473326,
+              "ece": 0.04014999999999998,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04165,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96135,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.005572622499999999,
+              "log_score": 0.07758323465837971,
+              "ece": 0.07465,
+              "mae_vote_share": 0.029776083934370923,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.07465,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0016142724999999984,
+              "log_score": 0.04097947781473326,
+              "ece": 0.04014999999999998,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04165,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96135,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0016142724999999984,
+              "log_score": 0.04097947781473326,
+              "ece": 0.04014999999999998,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04165,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96135,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0016142724999999984,
+              "log_score": 0.04097947781473326,
+              "ece": 0.04014999999999998,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04165,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96135,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0016142724999999984,
+              "log_score": 0.04097947781473326,
+              "ece": 0.04014999999999998,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04165,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96135,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.33": {
+          "overall": {
+            "n": 3,
+            "brier": 0.0034247025,
+            "log_score": 0.05641392034103917,
+            "ece": 0.05461666666666667,
+            "mae_vote_share": 0.038512840761589374,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 2,
+                "mean_pred": 0.06495,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.96605,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0016551025000000013,
+              "log_score": 0.041051551603177076,
+              "ece": 0.040200000000000014,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04645,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96605,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.006963902499999999,
+              "log_score": 0.08713865781676335,
+              "ece": 0.08345,
+              "mae_vote_share": 0.022267147179612867,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.08345,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0016551025000000013,
+              "log_score": 0.041051551603177076,
+              "ece": 0.040200000000000014,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04645,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96605,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0016551025000000013,
+              "log_score": 0.041051551603177076,
+              "ece": 0.040200000000000014,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04645,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96605,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0016551025000000013,
+              "log_score": 0.041051551603177076,
+              "ece": 0.040200000000000014,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04645,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96605,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0016551025000000013,
+              "log_score": 0.041051551603177076,
+              "ece": 0.040200000000000014,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.04645,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96605,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.5": {
+          "overall": {
+            "n": 3,
+            "brier": 0.005051355,
+            "log_score": 0.0660566225977391,
+            "ece": 0.06336666666666667,
+            "mae_vote_share": 0.033194010560302446,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0598,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.10445,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.97415,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.002122131250000001,
+              "log_score": 0.04392632174117388,
+              "ece": 0.042825000000000016,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0598,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.97415,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.0109098025,
+              "log_score": 0.11031722431086954,
+              "ece": 0.10445,
+              "mae_vote_share": 0.006310656575752083,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.10445,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.002122131250000001,
+              "log_score": 0.04392632174117388,
+              "ece": 0.042825000000000016,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0598,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.97415,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.002122131250000001,
+              "log_score": 0.04392632174117388,
+              "ece": 0.042825000000000016,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0598,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.97415,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.002122131250000001,
+              "log_score": 0.04392632174117388,
+              "ece": 0.042825000000000016,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0598,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.97415,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.002122131250000001,
+              "log_score": 0.04392632174117388,
+              "ece": 0.042825000000000016,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0598,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.97415,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.75": {
+          "overall": {
+            "n": 3,
+            "brier": 0.009368162499999999,
+            "log_score": 0.08697340142501331,
+            "ece": 0.08184999999999998,
+            "mae_vote_share": 0.03680871529600732,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.08635,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.14275,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.98355,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.003863462499999999,
+              "log_score": 0.05344725831796634,
+              "ece": 0.05139999999999998,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.08635,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.98355,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.020377562499999998,
+              "log_score": 0.15402568763910723,
+              "ece": 0.14275,
+              "mae_vote_share": 0.017154770782866702,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14275,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.003863462499999999,
+              "log_score": 0.05344725831796634,
+              "ece": 0.05139999999999998,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.08635,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.98355,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.003863462499999999,
+              "log_score": 0.05344725831796634,
+              "ece": 0.05139999999999998,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.08635,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.98355,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.003863462499999999,
+              "log_score": 0.05344725831796634,
+              "ece": 0.05139999999999998,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.08635,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.98355,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.003863462499999999,
+              "log_score": 0.05344725831796634,
+              "ece": 0.05139999999999998,
+              "mae_vote_share": 0.04663568755257763,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.08635,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.98355,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=1": {
+          "overall": {
+            "n": 3,
+            "brier": 0.016684204999999997,
+            "log_score": 0.11562466478977913,
+            "ece": 0.1062,
+            "mae_vote_share": 0.044630524415546956,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 2,
+                "mean_pred": 0.15415,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9897,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0071752562499999995,
+              "log_score": 0.06872420994166198,
+              "ece": 0.064825,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.11935,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9897,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.0357021025,
+              "log_score": 0.20942557448601345,
+              "ece": 0.18895,
+              "mae_vote_share": 0.04062019814148554,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.18895,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0071752562499999995,
+              "log_score": 0.06872420994166198,
+              "ece": 0.064825,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.11935,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9897,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0071752562499999995,
+              "log_score": 0.06872420994166198,
+              "ece": 0.064825,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.11935,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9897,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0071752562499999995,
+              "log_score": 0.06872420994166198,
+              "ece": 0.064825,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.11935,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9897,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0071752562499999995,
+              "log_score": 0.06872420994166198,
+              "ece": 0.064825,
+              "mae_vote_share": 0.04663568755257766,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.11935,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9897,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        }
+      },
+      "chamber": {
+        "realised_dem_seats_among_scored": 1,
+        "scored_seats": 2,
+        "registered_house_seats": 435,
+        "complete": false,
+        "shrinkage=0.25": {
+          "predicted_mean_seats": 228.2,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.33": {
+          "predicted_mean_seats": 233.1,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.5": {
+          "predicted_mean_seats": 243.6,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.75": {
+          "predicted_mean_seats": 259.3,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=1": {
+          "predicted_mean_seats": 275.1,
+          "absolute_error": null,
+          "inside_90_interval": null
+        }
+      },
+      "failure_condition": {
+        "declared": "If the realised Democratic seat count falls outside the 90% interval under every assumption in the band, the model's stated uncertainty was too narrow. This is a failure of the forecast, not of the band, and is to be reported as such.",
+        "assumptions_whose_interval_contained_the_truth": 0,
+        "assumptions_checked": 0,
+        "status": "not_evaluable_incomplete_chamber",
+        "triggered": null
+      }
+    },
+    "refresh_2026-10-22": {
+      "role": "comparison: last refresh before the Senate specification change",
+      "verified": "frozen run: file SHA-256 verified against the comparison set",
+      "registration": {
+        "election_date": "2026-11-03",
+        "registered_on": "2026-10-22",
+        "predictions_sha256": "5b5cb2e668fd47c88779ef7a93fd51ab964b76129c1ea841e046e68f3af55100",
+        "seal_verified": true
+      },
+      "audit": {
+        "as_of": "2026-11-20",
+        "seats_registered": 470,
+        "scored": 3,
+        "unscored_not_certified": 467,
+        "unscored_missing_vote_share": 0,
+        "void_map_changed_after_sealing": 0,
+        "void_sources": {},
+        "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted"
+      },
+      "declared_defects": [],
+      "every_assumption_scored": [
+        "shrinkage=0.25",
+        "shrinkage=0.33",
+        "shrinkage=0.5",
+        "shrinkage=0.75",
+        "shrinkage=1"
+      ],
+      "results": {
+        "shrinkage=0.25": {
+          "overall": {
+            "n": 3,
+            "brier": 0.027890467500000005,
+            "log_score": 0.13850951095213865,
+            "ece": 0.12131666666666668,
+            "mae_vote_share": 0.057585750473074904,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0446,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.2,
+                "bin_high": 0.30000000000000004,
+                "n": 1,
+                "mean_pred": 0.28355,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9642,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.08040060250000002,
+              "log_score": 0.3334468178195252,
+              "ece": 0.28355,
+              "mae_vote_share": 0.079687291486714,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.2,
+                  "bin_high": 0.30000000000000004,
+                  "n": 1,
+                  "mean_pred": 0.28355,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.33": {
+          "overall": {
+            "n": 3,
+            "brier": 0.03226530166666666,
+            "log_score": 0.1489519763830284,
+            "ece": 0.12866666666666665,
+            "mae_vote_share": 0.060411391760541056,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0502,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.30000000000000004,
+                "bin_high": 0.4,
+                "n": 1,
+                "mean_pred": 0.30555,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.96975,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.09336080249999999,
+              "log_score": 0.3646351136199091,
+              "ece": 0.30555,
+              "mae_vote_share": 0.0881642153491125,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.30000000000000004,
+                  "bin_high": 0.4,
+                  "n": 1,
+                  "mean_pred": 0.30555,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.5": {
+          "overall": {
+            "n": 3,
+            "brier": 0.04466152416666667,
+            "log_score": 0.1788227422215993,
+            "ece": 0.14934999999999998,
+            "mae_vote_share": 0.06641587949640672,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0673,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.30000000000000004,
+                "bin_high": 0.4,
+                "n": 1,
+                "mean_pred": 0.35915,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9784,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.1289887225,
+              "log_score": 0.4449598588063042,
+              "ece": 0.35915,
+              "mae_vote_share": 0.1061776785567094,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.30000000000000004,
+                  "bin_high": 0.4,
+                  "n": 1,
+                  "mean_pred": 0.35915,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.75": {
+          "overall": {
+            "n": 3,
+            "brier": 0.0676486875,
+            "log_score": 0.23261947998483448,
+            "ece": 0.1844833333333333,
+            "mae_vote_share": 0.07524600851973855,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.1018,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.4,
+                "bin_high": 0.5,
+                "n": 1,
+                "mean_pred": 0.43865,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.987,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.1924138225,
+              "log_score": 0.5774106820773486,
+              "ece": 0.43865,
+              "mae_vote_share": 0.1326680656267049,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.4,
+                  "bin_high": 0.5,
+                  "n": 1,
+                  "mean_pred": 0.43865,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=1": {
+          "overall": {
+            "n": 3,
+            "brier": 0.09722780166666666,
+            "log_score": 0.29922637727559265,
+            "ece": 0.22386666666666669,
+            "mae_vote_share": 0.08414373500389956,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.14335,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.5,
+                "bin_high": 0.6000000000000001,
+                "n": 1,
+                "mean_pred": 0.52065,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9924,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 0.6666666666666666
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.27107642249999997,
+              "log_score": 0.7353242594591314,
+              "ece": 0.52065,
+              "mae_vote_share": 0.15915845269670037,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.5,
+                  "bin_high": 0.6000000000000001,
+                  "n": 1,
+                  "mean_pred": 0.52065,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 0.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        }
+      },
+      "chamber": {
+        "realised_dem_seats_among_scored": 1,
+        "scored_seats": 2,
+        "registered_house_seats": 435,
+        "complete": false,
+        "shrinkage=0.25": {
+          "predicted_mean_seats": 234.7,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.33": {
+          "predicted_mean_seats": 240.3,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.5": {
+          "predicted_mean_seats": 252.3,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.75": {
+          "predicted_mean_seats": 270.0,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=1": {
+          "predicted_mean_seats": 287.8,
+          "absolute_error": null,
+          "inside_90_interval": null
+        }
+      },
+      "failure_condition": {
+        "declared": null,
+        "assumptions_whose_interval_contained_the_truth": 0,
+        "assumptions_checked": 0,
+        "status": "not_evaluable_incomplete_chamber",
+        "triggered": null
+      }
+    },
+    "refresh_2026-10-29": {
+      "role": "comparison: final pre-election refresh (v1_open_seat_holder)",
+      "verified": "frozen run: file SHA-256 verified against the comparison set",
+      "registration": {
+        "election_date": "2026-11-03",
+        "registered_on": "2026-10-29",
+        "predictions_sha256": "517f558273e4d6e4d4abdc89e5bc51fd42c3d747eefee787c34903420969d5bb",
+        "seal_verified": true
+      },
+      "audit": {
+        "as_of": "2026-11-20",
+        "seats_registered": 470,
+        "scored": 3,
+        "unscored_not_certified": 467,
+        "unscored_missing_vote_share": 0,
+        "void_map_changed_after_sealing": 0,
+        "void_sources": {},
+        "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted"
+      },
+      "declared_defects": [],
+      "every_assumption_scored": [
+        "shrinkage=0.25",
+        "shrinkage=0.33",
+        "shrinkage=0.5",
+        "shrinkage=0.75",
+        "shrinkage=1"
+      ],
+      "results": {
+        "shrinkage=0.25": {
+          "overall": {
+            "n": 3,
+            "brier": 0.011533266666666667,
+            "log_score": 0.09229359778065267,
+            "ece": 0.08580000000000002,
+            "mae_vote_share": 0.043431594013708275,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0446,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.177,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9642,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.031328999999999996,
+              "log_score": 0.1947990783050673,
+              "ece": 0.177,
+              "mae_vote_share": 0.03722482210861411,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.177,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.33": {
+          "overall": {
+            "n": 3,
+            "brier": 0.01378106416666667,
+            "log_score": 0.0995870719032713,
+            "ece": 0.09171666666666667,
+            "mae_vote_share": 0.04625723530117446,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0502,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.1947,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.96975,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.037908090000000005,
+              "log_score": 0.2165404001806378,
+              "ece": 0.1947,
+              "mae_vote_share": 0.04570174597101273,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1947,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.5": {
+          "overall": {
+            "n": 3,
+            "brier": 0.020538684166666665,
+            "log_score": 0.12108382550292403,
+            "ece": 0.10894999999999998,
+            "mae_vote_share": 0.05226172303704013,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0673,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.2,
+                "bin_high": 0.30000000000000004,
+                "n": 1,
+                "mean_pred": 0.23795,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9784,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.056620202499999994,
+              "log_score": 0.2717431086502784,
+              "ece": 0.23795,
+              "mae_vote_share": 0.06371520917860962,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.2,
+                  "bin_high": 0.30000000000000004,
+                  "n": 1,
+                  "mean_pred": 0.23795,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.75": {
+          "overall": {
+            "n": 3,
+            "brier": 0.035009000000000005,
+            "log_score": 0.1625834682969901,
+            "ece": 0.14073333333333332,
+            "mae_vote_share": 0.06109185206037193,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.1018,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.30000000000000004,
+                "bin_high": 0.4,
+                "n": 1,
+                "mean_pred": 0.3074,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.987,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.09449476000000001,
+              "log_score": 0.3673026470138155,
+              "ece": 0.3074,
+              "mae_vote_share": 0.09020559624860508,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.30000000000000004,
+                  "bin_high": 0.4,
+                  "n": 1,
+                  "mean_pred": 0.3074,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=1": {
+          "overall": {
+            "n": 3,
+            "brier": 0.05676619750000001,
+            "log_score": 0.2171940321937138,
+            "ece": 0.17928333333333338,
+            "mae_vote_share": 0.06998957854453297,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.14335,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.30000000000000004,
+                "bin_high": 0.4,
+                "n": 1,
+                "mean_pred": 0.3869,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9924,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.14969161000000003,
+              "log_score": 0.48922722421349485,
+              "ece": 0.3869,
+              "mae_vote_share": 0.1166959833186006,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.30000000000000004,
+                  "bin_high": 0.4,
+                  "n": 1,
+                  "mean_pred": 0.3869,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        }
+      },
+      "chamber": {
+        "realised_dem_seats_among_scored": 1,
+        "scored_seats": 2,
+        "registered_house_seats": 435,
+        "complete": false,
+        "shrinkage=0.25": {
+          "predicted_mean_seats": 234.7,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.33": {
+          "predicted_mean_seats": 240.3,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.5": {
+          "predicted_mean_seats": 252.3,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.75": {
+          "predicted_mean_seats": 270.0,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=1": {
+          "predicted_mean_seats": 287.8,
+          "absolute_error": null,
+          "inside_90_interval": null
+        }
+      },
+      "failure_condition": {
+        "declared": null,
+        "assumptions_whose_interval_contained_the_truth": 0,
+        "assumptions_checked": 0,
+        "status": "not_evaluable_incomplete_chamber",
+        "triggered": null
+      }
+    },
+    "scenario_south_texas_2026-10-29": {
+      "role": "scenario, scored for information only (not a forecast)",
+      "verified": "frozen run: file SHA-256 verified against the comparison set",
+      "registration": {
+        "election_date": "2026-11-03",
+        "registered_on": "2026-10-29",
+        "predictions_sha256": "fcc89b89eaa8bf6f8d3fcaf8896906efd668aafac58b4572bc824e50506d69b5",
+        "seal_verified": true
+      },
+      "audit": {
+        "as_of": "2026-11-20",
+        "seats_registered": 470,
+        "scored": 3,
+        "unscored_not_certified": 467,
+        "unscored_missing_vote_share": 0,
+        "void_map_changed_after_sealing": 0,
+        "void_sources": {},
+        "no_carve_out_for": "retirements, primary losses, candidate quality -- scored as predicted"
+      },
+      "declared_defects": [],
+      "every_assumption_scored": [
+        "shrinkage=0.25",
+        "shrinkage=0.33",
+        "shrinkage=0.5",
+        "shrinkage=0.75",
+        "shrinkage=1"
+      ],
+      "results": {
+        "shrinkage=0.25": {
+          "overall": {
+            "n": 3,
+            "brier": 0.011533266666666667,
+            "log_score": 0.09229359778065267,
+            "ece": 0.08580000000000002,
+            "mae_vote_share": 0.043431594013708275,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0446,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.177,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9642,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.031328999999999996,
+              "log_score": 0.1947990783050673,
+              "ece": 0.177,
+              "mae_vote_share": 0.03722482210861411,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.177,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0016354000000000021,
+              "log_score": 0.041040857518445384,
+              "ece": 0.04020000000000003,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0446,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9642,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.33": {
+          "overall": {
+            "n": 3,
+            "brier": 0.01378106416666667,
+            "log_score": 0.0995870719032713,
+            "ece": 0.09171666666666667,
+            "mae_vote_share": 0.04625723530117446,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0502,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.1947,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.96975,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.037908090000000005,
+              "log_score": 0.2165404001806378,
+              "ece": 0.1947,
+              "mae_vote_share": 0.04570174597101273,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1947,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.0017175512500000002,
+              "log_score": 0.041110407764588054,
+              "ece": 0.040225,
+              "mae_vote_share": 0.04653497996625533,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0502,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.96975,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.5": {
+          "overall": {
+            "n": 3,
+            "brier": 0.020538684166666665,
+            "log_score": 0.12108382550292403,
+            "ece": 0.10894999999999998,
+            "mae_vote_share": 0.05226172303704013,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.0,
+                "bin_high": 0.1,
+                "n": 1,
+                "mean_pred": 0.0673,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.2,
+                "bin_high": 0.30000000000000004,
+                "n": 1,
+                "mean_pred": 0.23795,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9784,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.056620202499999994,
+              "log_score": 0.2717431086502784,
+              "ece": 0.23795,
+              "mae_vote_share": 0.06371520917860962,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.2,
+                  "bin_high": 0.30000000000000004,
+                  "n": 1,
+                  "mean_pred": 0.23795,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.002497924999999999,
+              "log_score": 0.045754183929246836,
+              "ece": 0.044449999999999976,
+              "mae_vote_share": 0.046534979966255385,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.0,
+                  "bin_high": 0.1,
+                  "n": 1,
+                  "mean_pred": 0.0673,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9784,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=0.75": {
+          "overall": {
+            "n": 3,
+            "brier": 0.035009000000000005,
+            "log_score": 0.1625834682969901,
+            "ece": 0.14073333333333332,
+            "mae_vote_share": 0.06109185206037193,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.1018,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.30000000000000004,
+                "bin_high": 0.4,
+                "n": 1,
+                "mean_pred": 0.3074,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.987,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.09449476000000001,
+              "log_score": 0.3673026470138155,
+              "ece": 0.3074,
+              "mae_vote_share": 0.09020559624860508,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.30000000000000004,
+                  "bin_high": 0.4,
+                  "n": 1,
+                  "mean_pred": 0.3074,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.005266120000000001,
+              "log_score": 0.06022387893857743,
+              "ece": 0.05740000000000001,
+              "mae_vote_share": 0.04653497996625536,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.1018,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.987,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        },
+        "shrinkage=1": {
+          "overall": {
+            "n": 3,
+            "brier": 0.05676619750000001,
+            "log_score": 0.2171940321937138,
+            "ece": 0.17928333333333338,
+            "mae_vote_share": 0.06998957854453297,
+            "coverage_90": 1.0,
+            "coverage_95": 1.0,
+            "calibration_curve": [
+              {
+                "bin_low": 0.1,
+                "bin_high": 0.2,
+                "n": 1,
+                "mean_pred": 0.14335,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.30000000000000004,
+                "bin_high": 0.4,
+                "n": 1,
+                "mean_pred": 0.3869,
+                "observed_freq": 0.0
+              },
+              {
+                "bin_low": 0.9,
+                "bin_high": 1.0,
+                "n": 1,
+                "mean_pred": 0.9924,
+                "observed_freq": 1.0
+              }
+            ],
+            "winner_accuracy": 1.0
+          },
+          "by_office": {
+            "us_house": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "us_senate": {
+              "n": 1,
+              "brier": 0.14969161000000003,
+              "log_score": 0.48922722421349485,
+              "ece": 0.3869,
+              "mae_vote_share": 0.1166959833186006,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.30000000000000004,
+                  "bin_high": 0.4,
+                  "n": 1,
+                  "mean_pred": 0.3869,
+                  "observed_freq": 0.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "comparators": {
+            "backtest_reference_house_mae": 0.078694
+          },
+          "uncontested": {
+            "included": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            },
+            "excluded": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_source": {
+            "model": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          },
+          "house_by_boundary_confidence": {
+            "unchanged": {
+              "n": 2,
+              "brier": 0.010303491250000001,
+              "log_score": 0.08117743618382328,
+              "ece": 0.07547500000000003,
+              "mae_vote_share": 0.04663637615749916,
+              "coverage_90": 1.0,
+              "coverage_95": 1.0,
+              "calibration_curve": [
+                {
+                  "bin_low": 0.1,
+                  "bin_high": 0.2,
+                  "n": 1,
+                  "mean_pred": 0.14335,
+                  "observed_freq": 0.0
+                },
+                {
+                  "bin_low": 0.9,
+                  "bin_high": 1.0,
+                  "n": 1,
+                  "mean_pred": 0.9924,
+                  "observed_freq": 1.0
+                }
+              ],
+              "winner_accuracy": 1.0
+            }
+          }
+        }
+      },
+      "chamber": {
+        "realised_dem_seats_among_scored": 1,
+        "scored_seats": 2,
+        "registered_house_seats": 435,
+        "complete": false,
+        "shrinkage=0.25": {
+          "predicted_mean_seats": 234.8,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.33": {
+          "predicted_mean_seats": 240.5,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.5": {
+          "predicted_mean_seats": 252.4,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=0.75": {
+          "predicted_mean_seats": 270.1,
+          "absolute_error": null,
+          "inside_90_interval": null
+        },
+        "shrinkage=1": {
+          "predicted_mean_seats": 288.0,
+          "absolute_error": null,
+          "inside_90_interval": null
+        }
+      },
+      "failure_condition": {
+        "declared": null,
+        "assumptions_whose_interval_contained_the_truth": 0,
+        "assumptions_checked": 0,
+        "status": "not_evaluable_incomplete_chamber",
+        "triggered": null
+      }
+    }
+  }
+}

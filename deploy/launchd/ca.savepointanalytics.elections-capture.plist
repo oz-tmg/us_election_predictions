@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Daily results capture at 22:05 by this Mac's clock (currently UTC-7), which is 05:05 UTC
+     early in the UTC day, after U.S. offices have closed. launchd uses the system time
+     zone: if the clock's zone changes, adjust Hour so the run stays near 05:00 UTC. Install
+     (after replacing REPO with the checkout path):
+       cp deploy/launchd/ca.savepointanalytics.elections-capture.plist ~/Library/LaunchAgents/
+       launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ca.savepointanalytics.elections-capture.plist
+     Remove:
+       launchctl bootout gui/$(id -u)/ca.savepointanalytics.elections-capture
+     Edit REPO below if the checkout moves. Logs: ~/Library/Logs/elections-capture/ -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>ca.savepointanalytics.elections-capture</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>REPO/scripts/run_scheduled_capture.sh</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict><key>Hour</key><integer>22</integer><key>Minute</key><integer>5</integer></dict>
+  <key>ProcessType</key><string>Background</string>
+  <key>StandardOutPath</key><string>/tmp/elections-capture.launchd.log</string>
+  <key>StandardErrorPath</key><string>/tmp/elections-capture.launchd.log</string>
+</dict>
+</plist>

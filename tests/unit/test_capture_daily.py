@@ -156,3 +156,87 @@ def test_a_parser_without_a_recorded_check_is_not_captured(env: dict) -> None:
     report = capture_daily.run(states=["MA", "YY"], certified={}, dry_run=False, **env)
     assert set(report["states"]) == {"MA"} and "no recorded test" in report["failures"]["YY"]
     assert report["states"]["MA"]["parser_status"] == "parser_tested_2024"
+
+
+def test_an_attested_certification_carries_into_later_captures(env: dict, tmp_path: Path) -> None:
+    book = tmp_path / "certifications.csv"
+    first = capture_daily.run(
+        states=["MA"],
+        certified={"MA": "https://example.gov/canvass"},
+        dry_run=False,
+        observed_on="2026-11-20",
+        attestations=book,
+        **env,
+    )
+    assert first["certified_seats"] == 1 and not first["states"]["MA"]["certification_carried_forward"]
+    assert pd.read_csv(book).to_dict("records") == [
+        {
+            "state_po": "MA",
+            "certification_evidence": "https://example.gov/canvass",
+            "first_captured_on": "2026-11-20",
+        }
+    ]
+    # The next day's plain run must not record the seat as uncertified (a revocation).
+    later = capture_daily.run(
+        states=["MA"], certified={}, dry_run=False, observed_on="2026-11-21", attestations=book, **env
+    )
+    assert later["certified_seats"] == 1 and later["states"]["MA"]["certification_carried_forward"]
+    snap = pd.read_csv(env["ledger_dir"] / "snapshot=2026-11-21.csv")
+    assert str(snap.loc[0, "certified"]) == "True"
+    assert len(pd.read_csv(book)) == 1
+
+
+def test_a_dry_run_or_failed_state_records_no_attestation(env: dict, tmp_path: Path) -> None:
+    book = tmp_path / "certifications.csv"
+    capture_daily.run(
+        states=["MA"], certified={"MA": "https://example.gov/canvass"}, dry_run=True, attestations=book, **env
+    )
+    assert not book.exists()
+    capture_daily.run(
+        states=["MA", "ZZ"],
+        certified={"ZZ": "https://example.gov/zz"},
+        dry_run=False,
+        attestations=book,
+        **env,
+    )
+    assert not book.exists()
+
+
+def test_the_committed_attestations_cover_every_state_a_capture_index_certified() -> None:
+    book = capture_daily.load_attestations(capture_daily.ATTESTATIONS)
+    indexed = {
+        state
+        for path in Path("reports/captures").glob("capture_*.json")
+        for state, info in json.loads(path.read_text())["states"].items()
+        if info["certified"]
+    }
+    assert indexed and indexed <= set(book.state_po)
+
+
+def test_a_seat_under_recount_stays_unresolved_when_its_state_is_certified(env: dict, tmp_path: Path) -> None:
+    pending = tmp_path / "unresolved.csv"
+    pending.write_text(
+        "state_po,office,district_num,reason,evidence_url\n"
+        "MA,us_senate,,recount requested,https://example.gov/recount\n"
+    )
+    report = capture_daily.run(
+        states=["MA"],
+        certified={"MA": "https://example.gov/canvass"},
+        dry_run=False,
+        unresolved=pending,
+        **env,
+    )
+    assert report["states"]["MA"]["unresolved_seats"][0]["reason"] == "recount requested"
+    snap = pd.read_csv(env["ledger_dir"] / f"snapshot={TODAY}.csv")
+    assert str(snap.loc[0, "certified"]) == "True" and str(snap.loc[0, "outcome_resolved"]) == "False"
+    assert pd.isna(snap.loc[0, "winner_party"])
+
+
+def test_an_unresolved_seat_missing_from_the_release_fails_that_state(env: dict, tmp_path: Path) -> None:
+    pending = tmp_path / "unresolved.csv"
+    pending.write_text(
+        "state_po,office,district_num,reason,evidence_url\n"
+        "MA,us_house,9,recount requested,https://example.gov/recount\n"
+    )
+    with pytest.raises(SystemExit, match="not in the release"):
+        capture_daily.run(states=["MA"], certified={}, dry_run=False, unresolved=pending, **env)

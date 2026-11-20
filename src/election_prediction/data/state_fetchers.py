@@ -244,20 +244,31 @@ LA_DATA = "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?b
 LA_ELECTIONS = (("11/03/2026", "20261103", "GE"), ("12/12/2026", "20261212", "RO"))
 
 
+def _la_has_votes(path: Path) -> bool:
+    """True when a by-parish race file reports at least one vote."""
+    import csv
+
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        rows = list(csv.reader(handle))[1:]
+    return any(int(cell.replace(",", "") or 0) for row in rows for cell in row[2:])
+
+
 @register("LA")
 def louisiana(dest: Path) -> list[FetchedRelease]:
     """Louisiana SOS voter portal: one by-parish CSV per federal race, for each posted
     2026 election. ``ElectionDates`` lists posted elections with ``ResultsOfficial``;
-    each election's race list gives the federal race IDs, so a runoff is captured as
-    soon as the state publishes it and never before."""
+    each election's race list gives the federal race IDs. Future elections may already
+    have empty result templates, so those are not fetched before their election day,
+    and a runoff file with no votes yet is dropped."""
     import json
 
     opener = _opener()
     dates = json.loads(_get(opener, LA_DATA + "ElectionDates.htm"))["Dates"]["Date"]
     posted = {d["ElectionDate"]: d for d in (dates if isinstance(dates, list) else [dates])}
     out = []
+    today = datetime.now(UTC).date()
     for date, blob, tag in LA_ELECTIONS:
-        if date not in posted:
+        if date not in posted or datetime.strptime(date, "%m/%d/%Y").date() > today:
             continue
         labelled = "official" if str(posted[date].get("ResultsOfficial")) == "1" else "unofficial"
         races = json.loads(_get(opener, f"{LA_DATA}{blob}/RacesCandidates_Multiparish.htm"))["Races"]["Race"]
@@ -273,6 +284,11 @@ def louisiana(dest: Path) -> list[FetchedRelease]:
             retrieved = _now()
             path = dest / f"LA_2026{tag}_ByParish_{race}.csv"
             path.write_bytes(_get(opener, url))
+            if tag == "RO" and not _la_has_votes(path):
+                # Polls not yet counted (the date guard admits election day itself): an
+                # empty runoff file must not replace the first-round tallies.
+                path.unlink()
+                continue
             out.append(FetchedRelease("LA", path, url, retrieved, labelled))
     return out
 
