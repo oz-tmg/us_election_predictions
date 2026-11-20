@@ -190,7 +190,7 @@ python scripts/capture_daily.py --certified NC=https://<certification evidence U
   | Status (2026-11-13) | States |
   |---|---|
   | Parser tested, fetcher pending the certified release | MA, WI, MO (certified files post after certification) |
-  | Blocked to automated clients (manual browser download) | AK, AZ, FL, KS, KY, ME, MI, NH, NM, NV, NY, OH, OK, RI, TN |
+  | Blocked to automated clients (manual browser download) | AK, AZ, FL, KS, KY, ME, MI, NH, NM, NV, NY, OH, OK, RI, TN; PA from 2026-11-20 (the whole site now answers the research client with an Incapsula challenge, HTTP 403; its November 15 rows stand until a manual download) |
   | 2024 release unavailable to test against | IA, OR, TX (2024 blocked or timed out) |
   | 2026 release not yet published | IL (after the December canvass), MS, NJ |
   | Other | CT (lookup file holds candidate addresses; manual), SD (no party labels in the export) |
@@ -212,9 +212,32 @@ python scripts/capture_daily.py --certified NC=https://<certification evidence U
   `python scripts/capture_daily.py` keeps those seats certified. Without this the ledger
   would read the next plain capture as a revocation. Commit the file with the capture
   index. To revoke, delete the state's row and give the reason in the commit message.
+- **A recount keeps one seat unresolved.** A state can certify while one contest is
+  being recounted. List that seat in `data/reference/unresolved_seats_2026.csv`
+  (state, office, district, reason, evidence URL) and it is captured with
+  `outcome_resolved=False` and no winner, so certifying the state does not make it
+  scoreable. Remove the row when the recount is final.
 - Each run writes `reports/captures/capture_<date>.json` (seats, certification flags and
   evidence URLs, release checksums, failures): commit it, as the index of the git-ignored
   ledger, and add a line to the Capture Log below.
+
+### Scheduled run (from 2026-11-20)
+
+`scripts/run_scheduled_capture.sh` is run once a day by a launchd agent on the operator's
+Mac (`deploy/launchd/ca.savepointanalytics.elections-capture.plist`, installed under
+`~/Library/LaunchAgents/`), at 22:05 by the Mac's clock, which is 05:05 UTC. It runs
+`capture_daily.py` and then the interim scorecard for that UTC day, and logs to
+`~/Library/Logs/elections-capture/capture_<UTC date>.log`.
+
+- If the day's observation already exists it does nothing, so it coexists with a manual
+  capture or the older heartbeat job: whoever runs first takes the day.
+- It commits and pushes nothing. Review and commit `reports/captures/`,
+  `reports/scorecards/` and any change to the two reference files above.
+- It marks no new certification: that still needs `--certified STATE=URL` by hand, on a
+  day whose slot is still free (run the capture by hand before 05:05 UTC).
+- The Mac must be awake; a run missed while asleep fires at the next wake. Check the log
+  after each morning. Remove with
+  `launchctl bootout gui/$(id -u)/ca.savepointanalytics.elections-capture`.
 
 ## Interim Scorecards and the Results Page
 
@@ -247,7 +270,7 @@ The ledger lives in the git-ignored data lake; this log is its committed index.
 | 2026-11-14 | AL, AR, CA, CO, DE, GA, HI, ID, IN, LA, MD, MN, MT, NC, ND, NE, PA, SC, UT, VA, VT, WA, WV, WY | 209 | 0 | `data/raw/source=state_canvass_evidence/state=<ST>/retrieved=20261114T00…/`; index `reports/captures/capture_2026-11-14.json` | First `capture_daily.py` run (00:05 UTC), no failures. 18 states at `parser_tested_2024`, 6 (AL, CA, ID, ND, NE, WA) at the weaker `parser_cross_checked_2026`. Releases label themselves: 12 unofficial, 10 no statement, 2 official (VT, WY). No state marked certified: no operator attestation was given. LA CD5 and CD6 are first rounds. Interim scorecard `reports/scorecards/scorecard_asof_2026-11-14.md`: 0 scoreable seats. Re-verified by the November 15 scheduled run (schema, compiled hash and all 37 source receipts), which did not rewrite it. |
 | 2026-11-15 | 24 states | 209 | 3 | 40 receipts in `snapshot=2026-11-15.manifest.json` | Fresh releases preserved and captured with the module CLI. VT House and WY House/Senate accepted as certified from preserved authority evidence, first observed November 15 UTC. Only those three resolved contests scored, across every frozen run/assumption. Twenty-six states remain missing; LA-05/06 first rounds unresolved. See `reports/results_capture_2026-11-15T015048Z.md` and `reports/captures/capture_2026-11-15.json`. |
 | 2026-11-16 to 2026-11-19 | none | 0 | 0 | none | **Gap.** No observation was captured on these four UTC days; the scheduled job did not run after November 15. They cannot be backdated; a certification first seen on a later day is recorded on that day. |
-| 2026-11-20 | 23 states (the November 14 list without PA) | 192 | 3 | index `reports/captures/capture_2026-11-20.json` | `capture_daily.py` at 19:46 UTC. Pennsylvania's Report Center returned HTTP 403 to the research client and was left out; its November 15 rows stand. VT House and WY House/Senate stay certified, carried forward from `data/reference/certifications_2026.csv`. Releases label themselves: 8 unofficial, 9 no statement, 6 official (AR, GA, ID, ND, VT, WY). No new state was marked certified: an official label is not an attestation. |
+| 2026-11-20 | 23 states (the November 14 list without PA) | 192 | 3 | index `reports/captures/capture_2026-11-20.json` | `capture_daily.py` at 19:46 UTC. Pennsylvania's Report Center returned HTTP 403 to the research client and was left out; its November 15 rows stand. VT House and WY House/Senate stay certified, carried forward from `data/reference/certifications_2026.csv`. Releases label themselves: 8 unofficial, 9 no statement, 6 official (AR, GA, ID, ND, VT, WY). No new state was marked certified: an official label is not an attestation. **Flawed rows:** LA-05 and LA-06 were recorded as zero-vote December 12 runoff templates instead of their November first rounds (fetcher fault, fixed the same day). Both seats were unresolved either way; the next capture restores the first-round tallies. |
 
 One observation per UTC day: a capture early in a UTC day takes that day's slot, so
 add states to the same compiled snapshot before capturing, never in a second run.
