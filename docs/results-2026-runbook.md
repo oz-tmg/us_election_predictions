@@ -197,9 +197,10 @@ python scripts/capture_daily.py --certified NC=https://<certification evidence U
 
   Louisiana House rows are first rounds; CD5 and CD6 are unresolved until the
   December 12 runoff. The Louisiana fetcher reads the portal's election list on every
-  run and adds the runoff's race files as soon as the state posts that election (it
-  was not posted as of 2026-11-13); runoff rows replace the first-round rows for the
-  same seats. No operator step is needed, but check the first capture after December 12.
+  run and adds the runoff's race files on or after its election day, once posted.
+  Posting an election in advance can expose empty templates, not returns. The
+  November 20 safeguard skips future elections; check the first capture after
+  December 12 before allowing runoff rows to replace first-round tallies.
 - The run refuses before fetching if today's UTC slot is taken, refuses a state whose
   races do not match the frozen universe (`reports/refresh_2026-10-29/projection_seats.csv`),
   and reports a failing state while still capturing the rest (exit 1 if any failed).
@@ -271,6 +272,54 @@ leading-party, coverage or Louisiana resolution change was verified. Four
 uncertified IN/MD contests had revised counts. See
 `reports/captures/intraday_2026-11-15T220056Z.json` and
 `reports/results_intraday_2026-11-15T220056Z.md`; these are not a second daily capture.
+
+**November 20 intraday review (trigger 19:39:52 UTC).** A separate capture completed
+during the review and took today's slot. Its snapshot, manifest and scorecard were
+verified and left unchanged. A further **57 source receipts** were preserved with the
+module CLI, including authority certification statements, publisher flags and two
+empty future runoff templates. The full evidence index and missing-state checks are
+in `reports/captures/intraday_2026-11-20T193952Z.json`.
+
+The review verified new certification evidence for **SC, MN and ND**, but these
+certifications are **not yet recorded in a daily snapshot**. Recheck and include them
+on the next actual UTC observation day; never backdate their ledger certification to
+this evidence review or the authority's earlier board date. Minnesota's authority
+explicitly reports a requested recount in **U.S. House District 1**, starting November
+30, with the board reconvening December 8 if necessary. Compile that seat with
+`outcome_resolved=False` while the recount remains pending. A blanket Minnesota
+`--certified` invocation without that per-seat flag would incorrectly make it
+scoreable. SC's authority also describes its recount returns as official; ND's
+announced legislative District 41 recount concerns a state office, not its federal
+at-large House seat. AR/GA/ID/LA publisher official flags were preserved separately
+and were not treated as additional certification attestations.
+
+**Two Louisiana rows in the already-saved November 20 snapshot require a later dated
+correction.** The earlier capture replaced LA-05/06 November counts with zero-filled
+December 12 templates. Those zeros are not observed runoff results. Both seats remain
+uncertified and unscoreable, so the three scored contests are unaffected. The fetcher
+now skips future elections; replay against today's preserved responses restores seven
+November contests, with LA-05/06 still unresolved first rounds. Two regression cases
+verify that future templates do not erase those counts and that actual runoff-day
+returns can subsequently replace them. Preserve the flawed daily observation as
+history and restore the verified November rows in the next dated capture.
+
+Pennsylvania's aggregate export returned HTTP 403, leaving 17 November 15 contests
+stale; the ledger still covers 209 contests in 24 states, with **26 states missing**.
+Reachable landing pages for missing states were not promoted to validated feeds.
+Today's existing four-run scorecard still scores only VT House and WY House/Senate
+under all five assumptions; its primary scores were independently reproduced from
+`data/gold/actual_2026_certified_asof_2026-11-20.csv`. Chamber evaluation remains
+incomplete. Only the September registration is sealed: other scorecard runtime
+digest checks do not create historical seals; their original files were verified
+against the frozen comparison manifest. Ninety-two focused tests passed before the
+guard change, 32 capture/extraction tests passed with it, and the two final regression
+cases and changed-file lint/format checks passed. Sealed/frozen files and previous
+observations remain unchanged. AGENTS.md and PROJECT_CONTEXT.md remain absent.
+
+This heartbeat arrived at **12:39 Vancouver**, not the intended 22:00. Scheduler
+execution remains unverified and the manual fallback remains necessary. No schedule
+change, new certification append, overwrite, merge, commit or unattended complete
+capture is claimed by this intraday review.
 
 ## State Extraction: the 11 Probe-Failure States (tested 2026-10-30)
 
