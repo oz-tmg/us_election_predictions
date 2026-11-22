@@ -1,0 +1,2093 @@
+{
+  "heartbeat_id": "capture-official-2026-election-results",
+  "heartbeat_triggered_at": "2026-11-20T19:39:52.164000+00:00",
+  "completed_at": "2026-11-20T19:53:39.063681+00:00",
+  "intraday_evidence_only": true,
+  "new_daily_snapshot_written_by_this_review": false,
+  "daily_slot_became_occupied_during_review": true,
+  "existing_daily_snapshot": {
+    "path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass/dataset=us_house_2026/snapshot=2026-11-20.csv",
+    "sha256": "757bb95376585827a0e745e14b9a5f1a5c00a1920f7989ff89599dccc71b904f",
+    "source_receipts": 38,
+    "fresh_states": 23,
+    "fresh_contests": 192,
+    "certified_resolved_contests": 3,
+    "semantic_exclusions": [
+      {
+        "state_po": "LA",
+        "office": "us_house",
+        "district_num": 5,
+        "reason": "Future December 12 zero template was included by the earlier capture; not a general-election result. Do not overwrite; restore verified November first-round counts in a later daily observation."
+      },
+      {
+        "state_po": "LA",
+        "office": "us_house",
+        "district_num": 6,
+        "reason": "Future December 12 zero template was included by the earlier capture; not a general-election result. Do not overwrite; restore verified November first-round counts in a later daily observation."
+      }
+    ]
+  },
+  "raw_preservation_cli": "python -m election_prediction.build_results_2026 preserve-source --aggregate-only",
+  "fresh_receipts": [
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AL/retrieved=20261120T194443593804Z/sha256=06bd128719926e0904e66cd10fa7909a78108ea983222d5bdcf76078afe76fa3/AL_2026GE_sosEnrExport.xlsx.source.json",
+      "role": "results",
+      "state_po": "AL",
+      "source_url": "https://www2.alabamavotes.gov/electionNight/statewideResultsByContest.aspx?ecode=1001305",
+      "retrieved_at": "2026-11-20T19:44:43.593804+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AL/retrieved=20261120T194443593804Z/sha256=06bd128719926e0904e66cd10fa7909a78108ea983222d5bdcf76078afe76fa3/AL_2026GE_sosEnrExport.xlsx",
+      "checksum_sha256": "06bd128719926e0904e66cd10fa7909a78108ea983222d5bdcf76078afe76fa3",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AR/retrieved=20261120T194442345750Z/sha256=b5496fb325feff236af1854556ee8e77a7444f0744717778aa0b97b9aabfc300/AR_2026GE_federal_results.json.source.json",
+      "role": "results",
+      "state_po": "AR",
+      "source_url": "https://enr-results-api.totalresults.com/Contest/GetContestResults?cId=arkansas&electionID=11b07106-031e-4d7c-911a-d01fb473d6dd&contestType=Federal",
+      "retrieved_at": "2026-11-20T19:44:42.345750+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AR/retrieved=20261120T194442345750Z/sha256=b5496fb325feff236af1854556ee8e77a7444f0744717778aa0b97b9aabfc300/AR_2026GE_federal_results.json",
+      "checksum_sha256": "b5496fb325feff236af1854556ee8e77a7444f0744717778aa0b97b9aabfc300",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AR/retrieved=20261120T194443138009Z/sha256=20f3000df1fff148fae86cc107a024f6b690e219ab45231668b6754d451ecd1d/AR_2026GE_contestlist.json.source.json",
+      "role": "support",
+      "state_po": "AR",
+      "source_url": "https://enr-results-api.totalresults.com/Contest/GetContestSearchList?cid=arkansas&electionID=11b07106-031e-4d7c-911a-d01fb473d6dd",
+      "retrieved_at": "2026-11-20T19:44:43.138009+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AR/retrieved=20261120T194443138009Z/sha256=20f3000df1fff148fae86cc107a024f6b690e219ab45231668b6754d451ecd1d/AR_2026GE_contestlist.json",
+      "checksum_sha256": "20f3000df1fff148fae86cc107a024f6b690e219ab45231668b6754d451ecd1d",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AR/retrieved=20261120T194443790604Z/sha256=aaad78724461a7c4e282a655c7b6a6cfd9cba45ea2e1203ebe688aa2ec644f77/AR_2026GE_electioninfo.json.source.json",
+      "role": "support",
+      "state_po": "AR",
+      "source_url": "https://enr-results-api.totalresults.com/Election/GetElectionInfo?cId=arkansas&electionID=11b07106-031e-4d7c-911a-d01fb473d6dd",
+      "retrieved_at": "2026-11-20T19:44:43.790604+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AR/retrieved=20261120T194443790604Z/sha256=aaad78724461a7c4e282a655c7b6a6cfd9cba45ea2e1203ebe688aa2ec644f77/AR_2026GE_electioninfo.json",
+      "checksum_sha256": "aaad78724461a7c4e282a655c7b6a6cfd9cba45ea2e1203ebe688aa2ec644f77",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=CA/retrieved=20261120T194442157109Z/sha256=c2a3a1c0f28c87803bdddf391d2b4ba3d79710f9b0e7c5094f1d9af55175ed27/CA_2026GE_us-rep.json.source.json",
+      "role": "results",
+      "state_po": "CA",
+      "source_url": "https://media.sos.ca.gov/media/us-rep.json",
+      "retrieved_at": "2026-11-20T19:44:42.157109+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=CA/retrieved=20261120T194442157109Z/sha256=c2a3a1c0f28c87803bdddf391d2b4ba3d79710f9b0e7c5094f1d9af55175ed27/CA_2026GE_us-rep.json",
+      "checksum_sha256": "c2a3a1c0f28c87803bdddf391d2b4ba3d79710f9b0e7c5094f1d9af55175ed27",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=CO/retrieved=20261120T194442458315Z/sha256=8305c8ba463935576a54cd21a8195570d17e9933a0c2044d07da48d5265ff0db/CO_2026GE_387356_detailxml.zip.source.json",
+      "role": "results",
+      "state_po": "CO",
+      "source_url": "https://results.enr.clarityelections.com/CO/127407/387356/reports/detailxml.zip",
+      "retrieved_at": "2026-11-20T19:44:42.458315+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=CO/retrieved=20261120T194442458315Z/sha256=8305c8ba463935576a54cd21a8195570d17e9933a0c2044d07da48d5265ff0db/CO_2026GE_387356_detailxml.zip",
+      "checksum_sha256": "8305c8ba463935576a54cd21a8195570d17e9933a0c2044d07da48d5265ff0db",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=DE/retrieved=20261120T194443121947Z/sha256=f75e9b91fceea53ce29618411c3491b1294787a1210a2b5614f88f6ba52d1fb2/DE_2026GE_statewide_opendata.csv.source.json",
+      "role": "results",
+      "state_po": "DE",
+      "source_url": "https://data.delaware.gov/resource/4hbv-7brf.csv?electiondate=2026-11-03T00:00:00.000",
+      "retrieved_at": "2026-11-20T19:44:43.121947+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=DE/retrieved=20261120T194443121947Z/sha256=f75e9b91fceea53ce29618411c3491b1294787a1210a2b5614f88f6ba52d1fb2/DE_2026GE_statewide_opendata.csv",
+      "checksum_sha256": "f75e9b91fceea53ce29618411c3491b1294787a1210a2b5614f88f6ba52d1fb2",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=GA/retrieved=20261120T194443594156Z/sha256=d7e73f159766804fa0ea3848a592429f0e3e5f8f318c80170ef07879e35ec510/GA_2026GE_TotalVotes.xlsx.source.json",
+      "role": "results",
+      "state_po": "GA",
+      "source_url": "https://results.sos.ga.gov/cdn/results/09378a07-e6cf-4f66-be7c-ca4aa534f99a/Total%20Votes%20Results_b4156d6b-fdd0-46b8-885a-2cb1b8c0349b.xlsx",
+      "retrieved_at": "2026-11-20T19:44:43.594156+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=GA/retrieved=20261120T194443594156Z/sha256=d7e73f159766804fa0ea3848a592429f0e3e5f8f318c80170ef07879e35ec510/GA_2026GE_TotalVotes.xlsx",
+      "checksum_sha256": "d7e73f159766804fa0ea3848a592429f0e3e5f8f318c80170ef07879e35ec510",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=HI/retrieved=20261120T194443454135Z/sha256=b262fa9df3b4d828468dbb2ad2f28f2273455af190b79cb2948073265c835db4/HI_2026GE_summary.txt.source.json",
+      "role": "results",
+      "state_po": "HI",
+      "source_url": "https://elections.hawaii.gov/wp-content/results/2026%20General/summary.txt",
+      "retrieved_at": "2026-11-20T19:44:43.454135+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=HI/retrieved=20261120T194443454135Z/sha256=b262fa9df3b4d828468dbb2ad2f28f2273455af190b79cb2948073265c835db4/HI_2026GE_summary.txt",
+      "checksum_sha256": "b262fa9df3b4d828468dbb2ad2f28f2273455af190b79cb2948073265c835db4",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ID/retrieved=20261120T194444031273Z/sha256=3b80bb946a5ee0e5728225019587b1ba32115f7fee24b5d6e021b91d18e78b8e/ID_2026GE_ballot_items.json.source.json",
+      "role": "results",
+      "state_po": "ID",
+      "source_url": "https://results.voteidaho.gov/results/public/api/elections/id/nov2026/ballot-items",
+      "retrieved_at": "2026-11-20T19:44:44.031273+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ID/retrieved=20261120T194444031273Z/sha256=3b80bb946a5ee0e5728225019587b1ba32115f7fee24b5d6e021b91d18e78b8e/ID_2026GE_ballot_items.json",
+      "checksum_sha256": "3b80bb946a5ee0e5728225019587b1ba32115f7fee24b5d6e021b91d18e78b8e",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ID/retrieved=20261120T194443897631Z/sha256=3fe67ba37d02a65d31efb7680a3322f3ec2906eb063ed0bafd4f0cf2f646ee1d/ID_2026GE_election.json.source.json",
+      "role": "support",
+      "state_po": "ID",
+      "source_url": "https://results.voteidaho.gov/results/public/api/elections/id/nov2026",
+      "retrieved_at": "2026-11-20T19:44:43.897631+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ID/retrieved=20261120T194443897631Z/sha256=3fe67ba37d02a65d31efb7680a3322f3ec2906eb063ed0bafd4f0cf2f646ee1d/ID_2026GE_election.json",
+      "checksum_sha256": "3fe67ba37d02a65d31efb7680a3322f3ec2906eb063ed0bafd4f0cf2f646ee1d",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=IN/retrieved=20261120T194449045752Z/sha256=fe537e140c7ac917b765cd448be070ba5ac1cda7b8a67a5dbb07a3708bdce6c6/IN_2026GE_AllOfficeResults.csv.source.json",
+      "role": "results",
+      "state_po": "IN",
+      "source_url": "https://enr.indianavoters.in.gov/site/download/AllOfficeResults.csv",
+      "retrieved_at": "2026-11-20T19:44:49.045752+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=IN/retrieved=20261120T194449045752Z/sha256=fe537e140c7ac917b765cd448be070ba5ac1cda7b8a67a5dbb07a3708bdce6c6/IN_2026GE_AllOfficeResults.csv",
+      "checksum_sha256": "fe537e140c7ac917b765cd448be070ba5ac1cda7b8a67a5dbb07a3708bdce6c6",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194445865430Z/sha256=66947eb67880e3525f5c94fdb27d9b38ccfa58b883d729c164d22cdbc3a32132/LA_2026GE_ByParish_67997.csv.source.json",
+      "role": "results",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_67997.csv",
+      "retrieved_at": "2026-11-20T19:44:45.865430+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194445865430Z/sha256=66947eb67880e3525f5c94fdb27d9b38ccfa58b883d729c164d22cdbc3a32132/LA_2026GE_ByParish_67997.csv",
+      "checksum_sha256": "66947eb67880e3525f5c94fdb27d9b38ccfa58b883d729c164d22cdbc3a32132",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194446145931Z/sha256=b992f91582a2387a70dd877618d2081bcf4ee53594e9071bf81ee954d83e5dee/LA_2026GE_ByParish_70195.csv.source.json",
+      "role": "results",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70195.csv",
+      "retrieved_at": "2026-11-20T19:44:46.145931+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194446145931Z/sha256=b992f91582a2387a70dd877618d2081bcf4ee53594e9071bf81ee954d83e5dee/LA_2026GE_ByParish_70195.csv",
+      "checksum_sha256": "b992f91582a2387a70dd877618d2081bcf4ee53594e9071bf81ee954d83e5dee",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194446529869Z/sha256=f3e5285db5ad49457b6a739f94d41f9278d34acd7f5f779ccd48b67207770d41/LA_2026GE_ByParish_70196.csv.source.json",
+      "role": "results",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70196.csv",
+      "retrieved_at": "2026-11-20T19:44:46.529869+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194446529869Z/sha256=f3e5285db5ad49457b6a739f94d41f9278d34acd7f5f779ccd48b67207770d41/LA_2026GE_ByParish_70196.csv",
+      "checksum_sha256": "f3e5285db5ad49457b6a739f94d41f9278d34acd7f5f779ccd48b67207770d41",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194446836187Z/sha256=fcabfadc356d8ccd4b63d758c2f217fc9d85027e8a23d208c90671d60156cee6/LA_2026GE_ByParish_70197.csv.source.json",
+      "role": "results",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70197.csv",
+      "retrieved_at": "2026-11-20T19:44:46.836187+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194446836187Z/sha256=fcabfadc356d8ccd4b63d758c2f217fc9d85027e8a23d208c90671d60156cee6/LA_2026GE_ByParish_70197.csv",
+      "checksum_sha256": "fcabfadc356d8ccd4b63d758c2f217fc9d85027e8a23d208c90671d60156cee6",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447111659Z/sha256=5560e277cf3cc3ce59b6ff50a7cffd40e240da74d9e94cd1f4d72b5fbc844085/LA_2026GE_ByParish_70198.csv.source.json",
+      "role": "results",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70198.csv",
+      "retrieved_at": "2026-11-20T19:44:47.111659+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447111659Z/sha256=5560e277cf3cc3ce59b6ff50a7cffd40e240da74d9e94cd1f4d72b5fbc844085/LA_2026GE_ByParish_70198.csv",
+      "checksum_sha256": "5560e277cf3cc3ce59b6ff50a7cffd40e240da74d9e94cd1f4d72b5fbc844085",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447250638Z/sha256=3aaf5a2184af681e6df916a8790a7dbddde8d2aea62cacf18d7010589c0fb3f9/LA_2026GE_ByParish_70199.csv.source.json",
+      "role": "results",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70199.csv",
+      "retrieved_at": "2026-11-20T19:44:47.250638+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447250638Z/sha256=3aaf5a2184af681e6df916a8790a7dbddde8d2aea62cacf18d7010589c0fb3f9/LA_2026GE_ByParish_70199.csv",
+      "checksum_sha256": "3aaf5a2184af681e6df916a8790a7dbddde8d2aea62cacf18d7010589c0fb3f9",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447378633Z/sha256=0462454ebf3091fdc1cc22adfa6bb8a026975fc44c0ff843b5bb7ed4d27686e4/LA_2026GE_ByParish_70200.csv.source.json",
+      "role": "results",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70200.csv",
+      "retrieved_at": "2026-11-20T19:44:47.378633+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447378633Z/sha256=0462454ebf3091fdc1cc22adfa6bb8a026975fc44c0ff843b5bb7ed4d27686e4/LA_2026GE_ByParish_70200.csv",
+      "checksum_sha256": "0462454ebf3091fdc1cc22adfa6bb8a026975fc44c0ff843b5bb7ed4d27686e4",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447898447Z/sha256=1537937e9c46a7e0b5a494f17ea07c84e1f6d42a121d33a58c714439244437d6/LA_2026RO_ByParish_71423.csv.source.json",
+      "role": "future_round_template_excluded",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261212/csv/ByParish_71423.csv",
+      "retrieved_at": "2026-11-20T19:44:47.898447+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447898447Z/sha256=1537937e9c46a7e0b5a494f17ea07c84e1f6d42a121d33a58c714439244437d6/LA_2026RO_ByParish_71423.csv",
+      "checksum_sha256": "1537937e9c46a7e0b5a494f17ea07c84e1f6d42a121d33a58c714439244437d6",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194448168246Z/sha256=77de9c2c9284dfe06cfc22000c68453087ff0d4fbc7a62cd092151cc3d411f66/LA_2026RO_ByParish_71424.csv.source.json",
+      "role": "future_round_template_excluded",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261212/csv/ByParish_71424.csv",
+      "retrieved_at": "2026-11-20T19:44:48.168246+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194448168246Z/sha256=77de9c2c9284dfe06cfc22000c68453087ff0d4fbc7a62cd092151cc3d411f66/LA_2026RO_ByParish_71424.csv",
+      "checksum_sha256": "77de9c2c9284dfe06cfc22000c68453087ff0d4fbc7a62cd092151cc3d411f66",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MD/retrieved=20261120T194447538680Z/sha256=89a778955af10fda2cf5ad0309447c215a3f4f63c6b3c4764c8b09f9088c5933/MD_2026GE_USHouse_gen_results_2026_4.html.source.json",
+      "role": "results",
+      "state_po": "MD",
+      "source_url": "https://elections.maryland.gov/elections/2026/general_results/gen_results_2026_4.html",
+      "retrieved_at": "2026-11-20T19:44:47.538680+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MD/retrieved=20261120T194447538680Z/sha256=89a778955af10fda2cf5ad0309447c215a3f4f63c6b3c4764c8b09f9088c5933/MD_2026GE_USHouse_gen_results_2026_4.html",
+      "checksum_sha256": "89a778955af10fda2cf5ad0309447c215a3f4f63c6b3c4764c8b09f9088c5933",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194447426367Z/sha256=69cc9e24e88147ae4ebd1cb279cc18235a042a2237ae4a6952fde9ac43ebf4c7/MN_2026GE_ushouse.txt.source.json",
+      "role": "results",
+      "state_po": "MN",
+      "source_url": "https://electionresultsfiles.sos.mn.gov/20261103/ushouse.txt",
+      "retrieved_at": "2026-11-20T19:44:47.426367+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194447426367Z/sha256=69cc9e24e88147ae4ebd1cb279cc18235a042a2237ae4a6952fde9ac43ebf4c7/MN_2026GE_ushouse.txt",
+      "checksum_sha256": "69cc9e24e88147ae4ebd1cb279cc18235a042a2237ae4a6952fde9ac43ebf4c7",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194447672937Z/sha256=ec68ec40dbfbbeae51e427998f85791bbe43ae056fbf6bbaa31ba106f8356824/MN_2026GE_ussenate.txt.source.json",
+      "role": "results",
+      "state_po": "MN",
+      "source_url": "https://electionresultsfiles.sos.mn.gov/20261103/ussenate.txt",
+      "retrieved_at": "2026-11-20T19:44:47.672937+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194447672937Z/sha256=ec68ec40dbfbbeae51e427998f85791bbe43ae056fbf6bbaa31ba106f8356824/MN_2026GE_ussenate.txt",
+      "checksum_sha256": "ec68ec40dbfbbeae51e427998f85791bbe43ae056fbf6bbaa31ba106f8356824",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MT/retrieved=20261120T194451040719Z/sha256=d7fdd38a820bc044af7443a368f547585a34c115a62e6e345b0715dbe96592ea/MT_2026GE_Statewide_Results.xlsx.source.json",
+      "role": "results",
+      "state_po": "MT",
+      "source_url": "https://electionresults.mt.gov/ResultsExport.aspx",
+      "retrieved_at": "2026-11-20T19:44:51.040719+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MT/retrieved=20261120T194451040719Z/sha256=d7fdd38a820bc044af7443a368f547585a34c115a62e6e345b0715dbe96592ea/MT_2026GE_Statewide_Results.xlsx",
+      "checksum_sha256": "d7fdd38a820bc044af7443a368f547585a34c115a62e6e345b0715dbe96592ea",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=NC/retrieved=20261120T194449902334Z/sha256=4fcc5999bbafe8f6e3e350632fa9f7f6009e10b00e14df2d4f86d095cc90fc8c/NC_2026GE_results_pct_20261103.zip.source.json",
+      "role": "results",
+      "state_po": "NC",
+      "source_url": "https://dl.ncsbe.gov/ENRS/2026_11_03/results_pct_20261103.zip",
+      "retrieved_at": "2026-11-20T19:44:49.902334+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=NC/retrieved=20261120T194449902334Z/sha256=4fcc5999bbafe8f6e3e350632fa9f7f6009e10b00e14df2d4f86d095cc90fc8c/NC_2026GE_results_pct_20261103.zip",
+      "checksum_sha256": "4fcc5999bbafe8f6e3e350632fa9f7f6009e10b00e14df2d4f86d095cc90fc8c",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ND/retrieved=20261120T194513966609Z/sha256=61449fb899c380a43f8880bd44310d19ea26eec7310deb10ba50b8211c168ed7/ND_2026GE_statewide_results.json.source.json",
+      "role": "results",
+      "state_po": "ND",
+      "source_url": "https://api.resultsnd.sos.nd.gov/Contest/GetContestResults?cId=north-dakota&electionID=348&contestType=SW",
+      "retrieved_at": "2026-11-20T19:45:13.966609+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ND/retrieved=20261120T194513966609Z/sha256=61449fb899c380a43f8880bd44310d19ea26eec7310deb10ba50b8211c168ed7/ND_2026GE_statewide_results.json",
+      "checksum_sha256": "61449fb899c380a43f8880bd44310d19ea26eec7310deb10ba50b8211c168ed7",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ND/retrieved=20261120T194517368319Z/sha256=f31d79eece58f4f39907d1c198a8c463c9a954ddd7eae3d47976b307491320dc/ND_2026GE_contestlist.json.source.json",
+      "role": "support",
+      "state_po": "ND",
+      "source_url": "https://api.resultsnd.sos.nd.gov/Contest/GetContestSearchList?cid=north-dakota&electionID=348",
+      "retrieved_at": "2026-11-20T19:45:17.368319+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ND/retrieved=20261120T194517368319Z/sha256=f31d79eece58f4f39907d1c198a8c463c9a954ddd7eae3d47976b307491320dc/ND_2026GE_contestlist.json",
+      "checksum_sha256": "f31d79eece58f4f39907d1c198a8c463c9a954ddd7eae3d47976b307491320dc",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=NE/retrieved=20261120T194517231900Z/sha256=2da0be26b6a90dc4d0a35fd454b97f84533df7c79491d1534d4cf8d6821bb573/NE_2026GE_resultsCSV_CG.csv.source.json",
+      "role": "results",
+      "state_po": "NE",
+      "source_url": "https://electionresults.nebraska.gov/resultsCSV.aspx?text=All&type=CG&map=DIST",
+      "retrieved_at": "2026-11-20T19:45:17.231900+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=NE/retrieved=20261120T194517231900Z/sha256=2da0be26b6a90dc4d0a35fd454b97f84533df7c79491d1534d4cf8d6821bb573/NE_2026GE_resultsCSV_CG.csv",
+      "checksum_sha256": "2da0be26b6a90dc4d0a35fd454b97f84533df7c79491d1534d4cf8d6821bb573",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=NE/retrieved=20261120T194517583104Z/sha256=b664cf74bc48e141c52e7a529a2ab165b59ef484c1172a03fe0647f517438dba/NE_2026GE_resultsCSV_SW.csv.source.json",
+      "role": "results",
+      "state_po": "NE",
+      "source_url": "https://electionresults.nebraska.gov/resultsCSV.aspx?text=All&type=SW&map=CTY",
+      "retrieved_at": "2026-11-20T19:45:17.583104+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=NE/retrieved=20261120T194517583104Z/sha256=b664cf74bc48e141c52e7a529a2ab165b59ef484c1172a03fe0647f517438dba/NE_2026GE_resultsCSV_SW.csv",
+      "checksum_sha256": "b664cf74bc48e141c52e7a529a2ab165b59ef484c1172a03fe0647f517438dba",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=SC/retrieved=20261120T194518289470Z/sha256=910b1f0c4eaf6d4cb5a8d298acb4d165ba0ea232f8c556a37310a8cd5af47886/SC_2026GE_general_127300_386661_summary.zip.source.json",
+      "role": "results",
+      "state_po": "SC",
+      "source_url": "https://www.enr-scvotes.org/SC/127300/386661/reports/summary.zip",
+      "retrieved_at": "2026-11-20T19:45:18.289470+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=SC/retrieved=20261120T194518289470Z/sha256=910b1f0c4eaf6d4cb5a8d298acb4d165ba0ea232f8c556a37310a8cd5af47886/SC_2026GE_general_127300_386661_summary.zip",
+      "checksum_sha256": "910b1f0c4eaf6d4cb5a8d298acb4d165ba0ea232f8c556a37310a8cd5af47886",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=SC/retrieved=20261120T194518557037Z/sha256=035bc0b7ba6a5c944f04e525c1b72d45f59fc984e8c0e1df47941fcc4e252cb9/SC_2026GE_recount_127592_386752_summary.zip.source.json",
+      "role": "results",
+      "state_po": "SC",
+      "source_url": "https://www.enr-scvotes.org/SC/127592/386752/reports/summary.zip",
+      "retrieved_at": "2026-11-20T19:45:18.557037+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=SC/retrieved=20261120T194518557037Z/sha256=035bc0b7ba6a5c944f04e525c1b72d45f59fc984e8c0e1df47941fcc4e252cb9/SC_2026GE_recount_127592_386752_summary.zip",
+      "checksum_sha256": "035bc0b7ba6a5c944f04e525c1b72d45f59fc984e8c0e1df47941fcc4e252cb9",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=UT/retrieved=20261120T194518955227Z/sha256=7aac7753410b21ee2be279f6c62632bd070bc62ad0dd3191f779f64f7a8b50d3/UT_2026GE_export-General11032026.json.source.json",
+      "role": "results",
+      "state_po": "UT",
+      "source_url": "https://electionresults.utah.gov/cdn/results/Utah/export-General11032026.json",
+      "retrieved_at": "2026-11-20T19:45:18.955227+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=UT/retrieved=20261120T194518955227Z/sha256=7aac7753410b21ee2be279f6c62632bd070bc62ad0dd3191f779f64f7a8b50d3/UT_2026GE_export-General11032026.json",
+      "checksum_sha256": "7aac7753410b21ee2be279f6c62632bd070bc62ad0dd3191f779f64f7a8b50d3",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VA/retrieved=20261120T194519796555Z/sha256=da159103d2e1d36c3bcbd0eccd21753ee940400b17a465b2d00013ee5d64ed1b/VA_2026GE_ElectionResults.csv.source.json",
+      "role": "results",
+      "state_po": "VA",
+      "source_url": "https://enr.elections.virginia.gov/cdn/results/d2c804ee-4ec2-46bb-91d7-5b41526eab03/Election%20Results_7f7be5d7-18ce-4fe6-a3a3-69ed451307c4.csv",
+      "retrieved_at": "2026-11-20T19:45:19.796555+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VA/retrieved=20261120T194519796555Z/sha256=da159103d2e1d36c3bcbd0eccd21753ee940400b17a465b2d00013ee5d64ed1b/VA_2026GE_ElectionResults.csv",
+      "checksum_sha256": "da159103d2e1d36c3bcbd0eccd21753ee940400b17a465b2d00013ee5d64ed1b",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VT/retrieved=20261120T194521613274Z/sha256=144361738949a56b731b9de97a04118210167940e3d55b7332c81251ccc7a31c/VT_2026GE_68d61e96-1d28-4210-8c1d-8e90512ae105-f-20261117185828.json.source.json",
+      "role": "results",
+      "state_po": "VT",
+      "source_url": "https://static.electionresults.vermont.gov/elections/68d61e96-1d28-4210-8c1d-8e90512ae105-f-20261117185828.json",
+      "retrieved_at": "2026-11-20T19:45:21.613274+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VT/retrieved=20261120T194521613274Z/sha256=144361738949a56b731b9de97a04118210167940e3d55b7332c81251ccc7a31c/VT_2026GE_68d61e96-1d28-4210-8c1d-8e90512ae105-f-20261117185828.json",
+      "checksum_sha256": "144361738949a56b731b9de97a04118210167940e3d55b7332c81251ccc7a31c",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WA/retrieved=20261120T194518866705Z/sha256=d619fd9cdac43904c0367f4d89ed704e9ff04b8213be45ac8b3fbc3655146cc6/WA_2026GE_AllResults.xlsx.source.json",
+      "role": "results",
+      "state_po": "WA",
+      "source_url": "https://results.votewa.gov/cdn/results/01000000-f977-1a83-1ed4-08ddd69e9e69/All%20Results_7ffb55f4-51d2-49b9-ada0-8998c37ed509.xlsx",
+      "retrieved_at": "2026-11-20T19:45:18.866705+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WA/retrieved=20261120T194518866705Z/sha256=d619fd9cdac43904c0367f4d89ed704e9ff04b8213be45ac8b3fbc3655146cc6/WA_2026GE_AllResults.xlsx",
+      "checksum_sha256": "d619fd9cdac43904c0367f4d89ed704e9ff04b8213be45ac8b3fbc3655146cc6",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WV/retrieved=20261120T194519280696Z/sha256=9ee3a000215bb9a730a37ecae7b1a94fe28a2ea8e65c154198ccc1fc50c017b0/WV_2026GE_387101_summary.zip.source.json",
+      "role": "results",
+      "state_po": "WV",
+      "source_url": "https://results.enr.clarityelections.com/WV/127496/387101/reports/summary.zip",
+      "retrieved_at": "2026-11-20T19:45:19.280696+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WV/retrieved=20261120T194519280696Z/sha256=9ee3a000215bb9a730a37ecae7b1a94fe28a2ea8e65c154198ccc1fc50c017b0/WV_2026GE_387101_summary.zip",
+      "checksum_sha256": "9ee3a000215bb9a730a37ecae7b1a94fe28a2ea8e65c154198ccc1fc50c017b0",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WY/retrieved=20261120T194520181680Z/sha256=c378306bd8df97437a3d11fac7792e23a8297a7e3eded8129a9cd61e3e654ff1/WY_2026GE_Wyoming_General_Results.zip.source.json",
+      "role": "results",
+      "state_po": "WY",
+      "source_url": "https://sos.wyo.gov/Elections/Docs/2026/Results/General/2026_Wyoming_General_Results.zip",
+      "retrieved_at": "2026-11-20T19:45:20.181680+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WY/retrieved=20261120T194520181680Z/sha256=c378306bd8df97437a3d11fac7792e23a8297a7e3eded8129a9cd61e3e654ff1/WY_2026GE_Wyoming_General_Results.zip",
+      "checksum_sha256": "c378306bd8df97437a3d11fac7792e23a8297a7e3eded8129a9cd61e3e654ff1",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=SC/retrieved=20261120T194629581761Z/sha256=7325a8e5c2ea6dcb8786a1a7cc5fc3a70efcad046e718620fd07a1d384471bc4/SC_official_recounts.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "SC",
+      "source_url": "https://scvotes.gov/",
+      "retrieved_at": "2026-11-20T19:46:29.581761+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=SC/retrieved=20261120T194629581761Z/sha256=7325a8e5c2ea6dcb8786a1a7cc5fc3a70efcad046e718620fd07a1d384471bc4/SC_official_recounts.html",
+      "checksum_sha256": "7325a8e5c2ea6dcb8786a1a7cc5fc3a70efcad046e718620fd07a1d384471bc4",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194629751120Z/sha256=a4221fbf953361805f3fda546dee9e6f23f58ec8a66eeb4144a9970df88b2067/MN_canvass.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "MN",
+      "source_url": "https://sos.mn.gov/elections-voting/election-results/2026/2026-general-election-results/2026-state-canvassing-board-general/",
+      "retrieved_at": "2026-11-20T19:46:29.751120+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194629751120Z/sha256=a4221fbf953361805f3fda546dee9e6f23f58ec8a66eeb4144a9970df88b2067/MN_canvass.html",
+      "checksum_sha256": "a4221fbf953361805f3fda546dee9e6f23f58ec8a66eeb4144a9970df88b2067",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194629823840Z/sha256=8e9daf7295ac330f2e046e3de542f3189670c3a854eef0d6991f3b0616ef5e36/MN_certification.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "MN",
+      "source_url": "https://sos.mn.gov/about-the-office/news-room/state-canvassing-board-certifies-results-of-the-2026-general-election/",
+      "retrieved_at": "2026-11-20T19:46:29.823840+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194629823840Z/sha256=8e9daf7295ac330f2e046e3de542f3189670c3a854eef0d6991f3b0616ef5e36/MN_certification.html",
+      "checksum_sha256": "8e9daf7295ac330f2e046e3de542f3189670c3a854eef0d6991f3b0616ef5e36",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194630231724Z/sha256=0e135bc817dd3a5177825025f1acb89d7eefb81352d34b1b653fbd6aaf645dce/MN_recounts.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "MN",
+      "source_url": "https://sos.mn.gov/elections-voting/election-results/2026/2026-general-election-results/2026-state-recounts/",
+      "retrieved_at": "2026-11-20T19:46:30.231724+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=MN/retrieved=20261120T194630231724Z/sha256=0e135bc817dd3a5177825025f1acb89d7eefb81352d34b1b653fbd6aaf645dce/MN_recounts.html",
+      "checksum_sha256": "0e135bc817dd3a5177825025f1acb89d7eefb81352d34b1b653fbd6aaf645dce",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=SC/retrieved=20261120T194630328787Z/sha256=601545b9534df5214ff7f35edbd29be6ebdc36c75d83ba1b63d9ead10dd84e41/SC_certification.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "SC",
+      "source_url": "https://scvotes.gov/state-election-commission-certifies-2026-statewide-general-election/",
+      "retrieved_at": "2026-11-20T19:46:30.328787+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=SC/retrieved=20261120T194630328787Z/sha256=601545b9534df5214ff7f35edbd29be6ebdc36c75d83ba1b63d9ead10dd84e41/SC_certification.html",
+      "checksum_sha256": "601545b9534df5214ff7f35edbd29be6ebdc36c75d83ba1b63d9ead10dd84e41",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ND/retrieved=20261120T194630429692Z/sha256=a2d42e69c8c1034ac4be3bc2b97c23424285d56f1e56969fb708b1cf0ac12dcc/ND_certification.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "ND",
+      "source_url": "https://www.sos.nd.gov/news/state-canvassing-board-certifies-2026-general-election-results",
+      "retrieved_at": "2026-11-20T19:46:30.429692+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=ND/retrieved=20261120T194630429692Z/sha256=a2d42e69c8c1034ac4be3bc2b97c23424285d56f1e56969fb708b1cf0ac12dcc/ND_certification.html",
+      "checksum_sha256": "a2d42e69c8c1034ac4be3bc2b97c23424285d56f1e56969fb708b1cf0ac12dcc",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=HI/retrieved=20261120T194630811501Z/sha256=8cd7879896e35a23d51d9df61106ffe9b3cc89c01c67a9314801fdcb6ecb113d/HI_status.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "HI",
+      "source_url": "https://elections.hawaii.gov/election-results/",
+      "retrieved_at": "2026-11-20T19:46:30.811501+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=HI/retrieved=20261120T194630811501Z/sha256=8cd7879896e35a23d51d9df61106ffe9b3cc89c01c67a9314801fdcb6ecb113d/HI_status.html",
+      "checksum_sha256": "8cd7879896e35a23d51d9df61106ffe9b3cc89c01c67a9314801fdcb6ecb113d",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WY/retrieved=20261120T194630878623Z/sha256=e4edc3d9e2c7ced6102eeb5678e844e5fbb708f18de8d668098df2f7362837a6/WY_certification.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "WY",
+      "source_url": "https://sos.wyo.gov/",
+      "retrieved_at": "2026-11-20T19:46:30.878623+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WY/retrieved=20261120T194630878623Z/sha256=e4edc3d9e2c7ced6102eeb5678e844e5fbb708f18de8d668098df2f7362837a6/WY_certification.html",
+      "checksum_sha256": "e4edc3d9e2c7ced6102eeb5678e844e5fbb708f18de8d668098df2f7362837a6",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AR/retrieved=20261120T194631134015Z/sha256=31bc2a3cb082fe850b8e6cec0f30a1e8ea6ca8de74fa25f4ecb6e3db91564e4b/AR_results.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "AR",
+      "source_url": "https://www.sos.arkansas.gov/elections/research/election-results",
+      "retrieved_at": "2026-11-20T19:46:31.134015+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=AR/retrieved=20261120T194631134015Z/sha256=31bc2a3cb082fe850b8e6cec0f30a1e8ea6ca8de74fa25f4ecb6e3db91564e4b/AR_results.html",
+      "checksum_sha256": "31bc2a3cb082fe850b8e6cec0f30a1e8ea6ca8de74fa25f4ecb6e3db91564e4b",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VT/retrieved=20261120T194631562286Z/sha256=60652d15432da6056cc1fed866d6f91b85e15c4904b94128231030728cd81815/VT_official.html.source.json",
+      "role": "certification_or_status_context",
+      "state_po": "VT",
+      "source_url": "https://sos.vermont.gov/elections/election-info-resources/elections-results-data",
+      "retrieved_at": "2026-11-20T19:46:31.562286+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VT/retrieved=20261120T194631562286Z/sha256=60652d15432da6056cc1fed866d6f91b85e15c4904b94128231030728cd81815/VT_official.html",
+      "checksum_sha256": "60652d15432da6056cc1fed866d6f91b85e15c4904b94128231030728cd81815",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=GA/retrieved=20261120T194442816204Z/sha256=3d5683e8c6c13d6406d91061d703e757f045cc5397d157de4c606d6c6c70bb82/GA_official_status.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "GA",
+      "source_url": "https://results.sos.ga.gov/results/public/api/elections/Georgia/11032026GeneralAndSpecialElection",
+      "retrieved_at": "2026-11-20T19:44:42.816204+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=GA/retrieved=20261120T194442816204Z/sha256=3d5683e8c6c13d6406d91061d703e757f045cc5397d157de4c606d6c6c70bb82/GA_official_status.json",
+      "checksum_sha256": "3d5683e8c6c13d6406d91061d703e757f045cc5397d157de4c606d6c6c70bb82",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=IN/retrieved=20261120T194444266684Z/sha256=4d25adbba15c9872f62aaa35e51abe922dbe051e8d1e37b1da73a9467d72b6fe/IN_publisher_status.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "IN",
+      "source_url": "https://enr.indianavoters.in.gov/site/data/settings.json",
+      "retrieved_at": "2026-11-20T19:44:44.266684+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=IN/retrieved=20261120T194444266684Z/sha256=4d25adbba15c9872f62aaa35e51abe922dbe051e8d1e37b1da73a9467d72b6fe/IN_publisher_status.json",
+      "checksum_sha256": "4d25adbba15c9872f62aaa35e51abe922dbe051e8d1e37b1da73a9467d72b6fe",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194445000355Z/sha256=2a9e9bc5cbb161e7893a2887cb7e859f55c73990f3e0f56dc4551f98c14183e7/LA_election_dates.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=ElectionDates.htm",
+      "retrieved_at": "2026-11-20T19:44:45.000355+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194445000355Z/sha256=2a9e9bc5cbb161e7893a2887cb7e859f55c73990f3e0f56dc4551f98c14183e7/LA_election_dates.json",
+      "checksum_sha256": "2a9e9bc5cbb161e7893a2887cb7e859f55c73990f3e0f56dc4551f98c14183e7",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194445449987Z/sha256=b98c9a8d92ae6ed8d5c3651418fca234928e84a22d698817f9ccfa884fbdd0a8/LA_november_federal_races.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/RacesCandidates_Multiparish.htm",
+      "retrieved_at": "2026-11-20T19:44:45.449987+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194445449987Z/sha256=b98c9a8d92ae6ed8d5c3651418fca234928e84a22d698817f9ccfa884fbdd0a8/LA_november_federal_races.json",
+      "checksum_sha256": "b98c9a8d92ae6ed8d5c3651418fca234928e84a22d698817f9ccfa884fbdd0a8",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447621325Z/sha256=bed3903526c81821e5878f09045a64d527735840848e759608a5cb7c718069b0/LA_december_federal_races.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "LA",
+      "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261212/RacesCandidates_Multiparish.htm",
+      "retrieved_at": "2026-11-20T19:44:47.621325+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=LA/retrieved=20261120T194447621325Z/sha256=bed3903526c81821e5878f09045a64d527735840848e759608a5cb7c718069b0/LA_december_federal_races.json",
+      "checksum_sha256": "bed3903526c81821e5878f09045a64d527735840848e759608a5cb7c718069b0",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VA/retrieved=20261120T194518506729Z/sha256=ed14a2d231fd8ea5dec0e5485968e07efb120c0ffdc38dc5c852d38cc351a243/VA_publisher_status.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "VA",
+      "source_url": "https://enr.elections.virginia.gov/results/public/api/elections/Virginia/2026-November-General",
+      "retrieved_at": "2026-11-20T19:45:18.506729+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VA/retrieved=20261120T194518506729Z/sha256=ed14a2d231fd8ea5dec0e5485968e07efb120c0ffdc38dc5c852d38cc351a243/VA_publisher_status.json",
+      "checksum_sha256": "ed14a2d231fd8ea5dec0e5485968e07efb120c0ffdc38dc5c852d38cc351a243",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WA/retrieved=20261120T194518791503Z/sha256=7d62c77dcd0c1c322ed518df38f6485ad79fc0a3c2611fd1c47c64ef92821e8f/WA_publisher_status.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "WA",
+      "source_url": "https://results.votewa.gov/results/public/api/elections/washington/20261103",
+      "retrieved_at": "2026-11-20T19:45:18.791503+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=WA/retrieved=20261120T194518791503Z/sha256=7d62c77dcd0c1c322ed518df38f6485ad79fc0a3c2611fd1c47c64ef92821e8f/WA_publisher_status.json",
+      "checksum_sha256": "7d62c77dcd0c1c322ed518df38f6485ad79fc0a3c2611fd1c47c64ef92821e8f",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VT/retrieved=20261120T194520063706Z/sha256=f4f6a07a93c0765c14083284c64cfabec6c618854e5f875728ae3f40aa37c035/VT_election_index.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "VT",
+      "source_url": "https://static.electionresults.vermont.gov/elections/68d61e96-1d28-4210-8c1d-8e90512ae105.json",
+      "retrieved_at": "2026-11-20T19:45:20.063706+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VT/retrieved=20261120T194520063706Z/sha256=f4f6a07a93c0765c14083284c64cfabec6c618854e5f875728ae3f40aa37c035/VT_election_index.json",
+      "checksum_sha256": "f4f6a07a93c0765c14083284c64cfabec6c618854e5f875728ae3f40aa37c035",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    },
+    {
+      "receipt": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VT/retrieved=20261120T194521613274Z/sha256=144361738949a56b731b9de97a04118210167940e3d55b7332c81251ccc7a31c/VT_election_index.json.source.json",
+      "role": "publisher_metadata",
+      "state_po": "VT",
+      "source_url": "https://static.electionresults.vermont.gov/elections/68d61e96-1d28-4210-8c1d-8e90512ae105-f-20261117185828.json",
+      "retrieved_at": "2026-11-20T19:45:21.613274+00:00",
+      "retrieved_on": "2026-11-20",
+      "raw_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/raw/source=state_canvass_evidence/state=VT/retrieved=20261120T194521613274Z/sha256=144361738949a56b731b9de97a04118210167940e3d55b7332c81251ccc7a31c/VT_election_index.json",
+      "checksum_sha256": "144361738949a56b731b9de97a04118210167940e3d55b7332c81251ccc7a31c",
+      "privacy_tier": 0,
+      "contains_personal_data": false,
+      "review": "Caller attests public aggregate release; no inferred certification"
+    }
+  ],
+  "fresh_receipt_count": 57,
+  "daily_schema_evidence_and_hashes_verified": true,
+  "all_prior_snapshot_and_frozen_artifact_hashes_unchanged": true,
+  "unrelated_capture_script_test_and_attestation_file_hashes_unchanged": true,
+  "certifications_reviewed_but_not_in_ledger": {
+    "SC": {
+      "evidence_url": "https://scvotes.gov/state-election-commission-certifies-2026-statewide-general-election/",
+      "certification_announcement_date": "2026-11-12",
+      "reported_board_date": "2026-11-11",
+      "evidence_observed_on": "2026-11-20",
+      "ledger_first_certified_on": null,
+      "contests": 8,
+      "note": "Authority homepage separately describes official results including recounts. Both summary releases were preserved; later recount replaces the overlapping district."
+    },
+    "MN": {
+      "evidence_url": "https://sos.mn.gov/about-the-office/news-room/state-canvassing-board-certifies-results-of-the-2026-general-election/",
+      "reported_board_date": "2026-11-19",
+      "evidence_observed_on": "2026-11-20",
+      "ledger_first_certified_on": null,
+      "certified_contests": 9,
+      "resolved_contests": 8,
+      "unresolved": [
+        {
+          "office": "us_house",
+          "district_num": 1,
+          "outcome_resolved": false,
+          "official_leader": "Jake Johnson",
+          "other_candidate": "Brad Finstad",
+          "reported_margin_votes": 324,
+          "recount_begins": "2026-11-30",
+          "board_reconvenes_if_needed": "2026-12-08"
+        }
+      ],
+      "note": "Do not use state-level certification alone with a default-resolved first district. Compile an explicit per-seat unresolved flag before the next daily append."
+    },
+    "ND": {
+      "evidence_url": "https://www.sos.nd.gov/news/state-canvassing-board-certifies-2026-general-election-results",
+      "reported_board_date": "2026-11-18",
+      "evidence_observed_on": "2026-11-20",
+      "ledger_first_certified_on": null,
+      "contests": 1,
+      "note": "Official statewide House API flag corroborates the general-election certification announcement. The announced legislative district 41 recount concerns a state office, not the federal House seat."
+    }
+  },
+  "certification_labels_pending_further_review": [
+    "AR",
+    "GA",
+    "ID",
+    "LA"
+  ],
+  "certification_labels_note": "Publisher official flags were preserved, but no additional certification was entered in the occupied daily ledger. Preserve distinctions between official source labels and operator certification attestation.",
+  "louisiana": {
+    "future_round_templates_preserved_but_excluded_from_review": 2,
+    "correct_november_rows": [
+      {
+        "state_po": "LA",
+        "district_num": null,
+        "office": "us_senate",
+        "dem_votes": 720516,
+        "rep_votes": 746466,
+        "other_votes": 0,
+        "winner_party": "REPUBLICAN",
+        "election_round": "general",
+        "outcome_resolved": true
+      },
+      {
+        "state_po": "LA",
+        "district_num": 1.0,
+        "office": "us_house",
+        "dem_votes": 89440,
+        "rep_votes": 169672,
+        "other_votes": 4279,
+        "winner_party": "REPUBLICAN",
+        "election_round": "first_round",
+        "outcome_resolved": true
+      },
+      {
+        "state_po": "LA",
+        "district_num": 2.0,
+        "office": "us_house",
+        "dem_votes": 192286,
+        "rep_votes": 36369,
+        "other_votes": 11961,
+        "winner_party": "DEMOCRAT",
+        "election_round": "first_round",
+        "outcome_resolved": true
+      },
+      {
+        "state_po": "LA",
+        "district_num": 3.0,
+        "office": "us_house",
+        "dem_votes": 85923,
+        "rep_votes": 144864,
+        "other_votes": 4208,
+        "winner_party": "REPUBLICAN",
+        "election_round": "first_round",
+        "outcome_resolved": true
+      },
+      {
+        "state_po": "LA",
+        "district_num": 4.0,
+        "office": "us_house",
+        "dem_votes": 85767,
+        "rep_votes": 144592,
+        "other_votes": 0,
+        "winner_party": "REPUBLICAN",
+        "election_round": "first_round",
+        "outcome_resolved": true
+      },
+      {
+        "state_po": "LA",
+        "district_num": 5.0,
+        "office": "us_house",
+        "dem_votes": 84210,
+        "rep_votes": 143713,
+        "other_votes": 0,
+        "winner_party": null,
+        "election_round": "first_round",
+        "outcome_resolved": false
+      },
+      {
+        "state_po": "LA",
+        "district_num": 6.0,
+        "office": "us_house",
+        "dem_votes": 108505,
+        "rep_votes": 150729,
+        "other_votes": 3478,
+        "winner_party": null,
+        "election_round": "first_round",
+        "outcome_resolved": false
+      }
+    ],
+    "unresolved_house_districts": [
+      5,
+      6
+    ],
+    "code_guard": "src/election_prediction/data/state_fetchers.py skips an election dated after actual UTC today",
+    "actual_preserved_response_replay_passed": true,
+    "next_daily_action": "Re-fetch; use November first_round rows with explicit outcome_resolved=False for districts 5 and 6 until actual runoff results exist. Preserve the earlier flawed observation as history."
+  },
+  "coverage": {
+    "ledger_states": 24,
+    "ledger_contests": 209,
+    "today_fresh_states": 23,
+    "today_fresh_contests": 192,
+    "missing_states": [
+      "AK",
+      "AZ",
+      "CT",
+      "FL",
+      "IA",
+      "IL",
+      "KS",
+      "KY",
+      "MA",
+      "ME",
+      "MI",
+      "MO",
+      "MS",
+      "NH",
+      "NJ",
+      "NM",
+      "NV",
+      "NY",
+      "OH",
+      "OK",
+      "OR",
+      "RI",
+      "SD",
+      "TN",
+      "TX",
+      "WI"
+    ],
+    "no_fresh_observation_today": [
+      "PA"
+    ],
+    "stale_pennsylvania_last_observed_on": "2026-11-15",
+    "failures": {
+      "PA": "HTTPError: HTTP Error 403: Forbidden"
+    },
+    "missing_state_landing_checks": {
+      "AZ": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "AZ_primary_probe",
+          "state_po": "AZ",
+          "url": "https://azsos.gov/elections/results-data/election-results",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:31.847694+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "AZ_fallback_probe",
+          "state_po": "AZ",
+          "url": "https://azsos.gov/elections",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:31.902572+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "AK": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "AK_primary_probe",
+          "state_po": "AK",
+          "url": "https://www.elections.alaska.gov/election-results/",
+          "error": "HTTPError: HTTP Error 405: Not Allowed",
+          "checked_at": "2026-11-20T19:46:31.903133+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "AK_fallback_probe",
+          "state_po": "AK",
+          "url": "https://www.elections.alaska.gov/",
+          "error": "HTTPError: HTTP Error 405: Not Allowed",
+          "checked_at": "2026-11-20T19:46:31.936884+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "FL": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "FL_primary_probe",
+          "state_po": "FL",
+          "url": "https://results.elections.myflorida.com/",
+          "final_url": "https://results.elections.myflorida.com/",
+          "content_type": "text/html",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:32.234074+00:00",
+          "sha256": "d99f120d3eb0e5073701f78c16c20c4caa97685e5bdb44c4635543bb9d4e8eaa",
+          "bytes": 2043,
+          "links": [],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "CT": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "untested",
+        "primary": {
+          "name": "CT_primary_probe",
+          "state_po": "CT",
+          "url": "https://portal.ct.gov/sots/election-services/election-results/election-results",
+          "final_url": "https://portal.ct.gov/sots/election-services/election-results/election-results",
+          "content_type": "text/html; charset=utf-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:32.613021+00:00",
+          "sha256": "e73cb0340c9f65e2ffae89658f9e35b1e0d6e7fd47ae501169173cbb2ed81f17",
+          "bytes": 32741,
+          "links": [],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "IL": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "untested",
+        "primary": {
+          "name": "IL_primary_probe",
+          "state_po": "IL",
+          "url": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx",
+          "final_url": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx",
+          "content_type": "text/html; charset=utf-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:32.921541+00:00",
+          "sha256": "d3e5eddc33e2b97740eb4552c6d73c8c730514e0d297f6ea66ebba3fb1732f5b",
+          "bytes": 266009,
+          "links": [
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-150-UNITED STATES SENATOR-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-180-GOVERNOR AND LIEUTENANT GOVERNOR-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-190-ATTORNEY GENERAL-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-200-SECRETARY OF STATE-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-210-COMPTROLLER-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-220-TREASURER-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-250-1ST CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-260-2ND CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-270-3RD CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-280-4TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-290-5TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-300-6TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-310-7TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-320-8TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-330-9TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-340-10TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-350-11TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-360-12TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-370-13TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-380-14TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-390-15TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-400-16TH CONGRESS-2026GP.csv"
+            },
+            {
+              "text": "Download Results",
+              "url": "https://www.elections.il.gov/ElectionOperations/\\Downloads\\ElectionOperations\\ElectionResults\\ByOffice\\69\\69-410-17TH CONGRESS-2026GP.csv"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "KY": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "KY_primary_probe",
+          "state_po": "KY",
+          "url": "https://elect.ky.gov/results/Pages/default.aspx",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:32.980099+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "KY_fallback_probe",
+          "state_po": "KY",
+          "url": "https://elect.ky.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:33.052992+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "ME": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "ME_primary_probe",
+          "state_po": "ME",
+          "url": "https://www.maine.gov/sos/cec/elec/results/index.html",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:33.116744+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "ME_fallback_probe",
+          "state_po": "ME",
+          "url": "https://www.maine.gov/sos/elections-voting",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:33.156055+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "KS": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "KS_primary_probe",
+          "state_po": "KS",
+          "url": "https://ent.sos.ks.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:32.522523+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "KS_fallback_probe",
+          "state_po": "KS",
+          "url": "https://sos.ks.gov/elections/elections-statistics-data.html",
+          "final_url": "https://sos.ks.gov/messages/page404.html",
+          "content_type": "text/html",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:33.336879+00:00",
+          "sha256": "183e8131953d81d6d512e61ae51e32ad31d1af2b9d0277d25200f40052ed989f",
+          "bytes": 30732,
+          "links": [
+            {
+              "text": "Copies & Certifications",
+              "url": "https://sos.ks.gov/businesses/copies-and-certifications.html"
+            },
+            {
+              "text": "Certified Election Training",
+              "url": "https://sos.ks.gov/elections/certified-election-training-program.html"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "IA": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "untested",
+        "primary": {
+          "name": "IA_primary_probe",
+          "state_po": "IA",
+          "url": "https://electionresults.iowa.gov/",
+          "final_url": "https://electionresults.iowa.gov:443/IA/",
+          "content_type": "text/html; charset=utf-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:33.259330+00:00",
+          "sha256": "110d50fd09481661a0b1d5b9350f7270275048e09dff6c39016904ff81a4ce4d",
+          "bytes": 1749,
+          "links": [],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "MA": {
+        "parser_status": "parser_tested_2024",
+        "download_access_catalog": "automated_ok",
+        "primary": {
+          "name": "MA_primary_probe",
+          "state_po": "MA",
+          "url": "https://electionstats.state.ma.us/",
+          "final_url": "https://electionstats.state.ma.us/",
+          "content_type": "text/html; charset=UTF-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:33.563462+00:00",
+          "sha256": "0e4360383588fb011702d94a6fea79cd81a9a617d6b62ca8bcc236c569a179ae",
+          "bytes": 346386,
+          "links": [
+            {
+              "text": "Certificates of Good Standing",
+              "url": "https://corp.sec.state.ma.us/CorpWeb/Certificates/CertificateOrderForm.aspx"
+            },
+            {
+              "text": "Certified Election Results",
+              "url": "https://electionstats.state.ma.us/"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "MS": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "untested",
+        "primary": {
+          "name": "MS_primary_probe",
+          "state_po": "MS",
+          "url": "https://www.sos.ms.gov/elections-voting/election-results",
+          "final_url": "https://www.sos.ms.gov/elections-voting/election-results",
+          "content_type": "text/html; charset=UTF-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:34.000681+00:00",
+          "sha256": "83638591536f7320d4487dc78934faedd528fb78fbb87c75b5ff5b364c4d19c6",
+          "bytes": 183237,
+          "links": [
+            {
+              "text": "Municipal Elections Training and Certification",
+              "url": "https://www.sos.ms.gov/elections-voting/elections-officials-training/municipal-elections-training-and-certification"
+            },
+            {
+              "text": "March 10, 2026 Democratic Primary Results",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2026/march-10-2026-democratic-primary-results"
+            },
+            {
+              "text": "March 10, 2026 Republican Primary Results",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2026/march-10-2026-republican-primary-results"
+            },
+            {
+              "text": "2026 General Election Results",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2026/2026-general-election-results"
+            },
+            {
+              "text": "August 23, 2011 Primary Runoff Election Results: Republican Primary (Certified)",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2011/august-23-2011-primary-runoff-election-results-republican"
+            },
+            {
+              "text": "August 23, 2011 Primary Runoff Election Results: Democratic Primary (Certified)",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2011/august-23-2011-primary-runoff-election-results-democratic"
+            },
+            {
+              "text": "August 2, 2011 Primary Election Results: Republican Primary (Certified)",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2011/august-2-2011-primary-election-results-republican-primary"
+            },
+            {
+              "text": "August 2, 2011 Primary Election Results: Democratic Primary (Certified)",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2011/august-2-2011-primary-election-results-democratic-primary"
+            },
+            {
+              "text": "2010 General Election Certifications",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2010/2010-general-election-certifications"
+            },
+            {
+              "text": "2010 General Election Runoff Certification",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2010/2010-general-election-runoff-certification"
+            },
+            {
+              "text": "Special Election Certification",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2010/special-election-certification"
+            },
+            {
+              "text": "Special Runof\u200bf Certification",
+              "url": "https://www.sos.ms.gov/elections-voting/election-results/2010/special-runof-f-certification"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "NV": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "NV_primary_probe",
+          "state_po": "NV",
+          "url": "https://silverstateelection.nv.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:33.899175+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "NV_fallback_probe",
+          "state_po": "NV",
+          "url": "https://www.nvsos.gov/sos/elections/election-information",
+          "final_url": "https://www.nvsos.gov/sos/elections/election-information",
+          "content_type": "text/html",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:34.132699+00:00",
+          "sha256": "cd8dbf122116dea50edd4cc42d6836a6cdc96d1dcde4eb5e2b5736158de0fc73",
+          "bytes": 1040,
+          "links": [],
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "NH": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "NH_primary_probe",
+          "state_po": "NH",
+          "url": "https://www.sos.nh.gov/2026-general-election-results",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:34.192997+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "NH_fallback_probe",
+          "state_po": "NH",
+          "url": "https://www.sos.nh.gov/elections",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:34.255311+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "MO": {
+        "parser_status": "parser_tested_2024",
+        "download_access_catalog": "automated_ok",
+        "primary": {
+          "name": "MO_primary_probe",
+          "state_po": "MO",
+          "url": "https://enr.sos.mo.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:33.770696+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "MO_fallback_probe",
+          "state_po": "MO",
+          "url": "https://www.sos.mo.gov/elections/s_default",
+          "final_url": "https://www.sos.mo.gov/elections/s_default",
+          "content_type": "text/html; charset=utf-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:34.388437+00:00",
+          "sha256": "2268dd4899975587e444b9a395fce30647f0db5efed4bef9b582a1b1c5440e98",
+          "bytes": 40732,
+          "links": [
+            {
+              "text": "Certified Candidates - November 2026",
+              "url": "https://www.sos.mo.gov/CMSImages/ElectionCandidates/2026GeneralElectionCertifiedCandidates.pdf"
+            },
+            {
+              "text": "Missouri Register",
+              "url": "https://www.sos.mo.gov/adrules/moreg/moreg/2026"
+            },
+            {
+              "text": "2025-2026 Missouri Roster",
+              "url": "https://www.sos.mo.gov/CMSImages/Publications/MORoster/2025-2026_MO_Roster.pdf"
+            },
+            {
+              "text": "2026 General Assembly Roster",
+              "url": "https://www.sos.mo.gov/CMSImages/Publications/GARoster/2026GARoster.pdf"
+            },
+            {
+              "text": "2025-2026 Official Manual",
+              "url": "https://www.sos.mo.gov/bluebook/2025-2026"
+            },
+            {
+              "text": "Grand Totals",
+              "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2026PrimaryElection.pdf"
+            },
+            {
+              "text": "Results by County",
+              "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-August42026.pdf"
+            },
+            {
+              "text": "Recount - State Representative, District 17",
+              "url": "https://www.sos.mo.gov/elections/2022StateRep17Recount"
+            },
+            {
+              "text": "Recount - State Representative, District 21",
+              "url": "https://www.sos.mo.gov/elections/2020StateRep21Recount"
+            },
+            {
+              "text": "Recount - State Representative, District 14",
+              "url": "https://www.sos.mo.gov/default.aspx?PageID=9536"
+            },
+            {
+              "text": "Recount - State Representative, District 102 (Republican Party)",
+              "url": "https://www.sos.mo.gov/default.aspx?PageID=9479"
+            },
+            {
+              "text": "Recount - Constitutional Amendment 1",
+              "url": "https://www.sos.mo.gov/elections/amendment1/default"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "NY": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "NY_primary_probe",
+          "state_po": "NY",
+          "url": "https://nyenr.elections.ny.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:34.617886+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "NY_fallback_probe",
+          "state_po": "NY",
+          "url": "https://elections.ny.gov/election-results",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:34.740675+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "NJ": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "untested",
+        "primary": {
+          "name": "NJ_primary_probe",
+          "state_po": "NJ",
+          "url": "https://www.nj.gov/state/elections/election-information-2026.shtml",
+          "final_url": "https://www.nj.gov/state/elections/election-information-2026.shtml",
+          "content_type": "text/html",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:34.753760+00:00",
+          "sha256": "541c96d05dd5949378359dfb37fa46e1911d825701e64b4f00a97f8d1141ef89",
+          "bytes": 87488,
+          "links": [
+            {
+              "text": "Voting Equipment Certification",
+              "url": "https://www.nj.gov/state/elections/resources-voting-equipment.shtml"
+            },
+            {
+              "text": "Electronic Poll Book Certification",
+              "url": "https://www.nj.gov/state/elections/county-electronic-poll-book-certification.shtml"
+            },
+            {
+              "text": "2026 Election Year Information",
+              "url": "https://www.nj.gov/state/elections/election-information-2026.shtml"
+            },
+            {
+              "text": "2026 Periodic Election Reporting",
+              "url": "https://www.nj.gov/state/elections/election-results-information.shtml"
+            },
+            {
+              "text": "Election Certifications",
+              "url": "https://www.nj.gov/state/elections/election-information-2026.shtml#certifications"
+            },
+            {
+              "text": "Statewide Voter Registration Statistics",
+              "url": "https://www.nj.gov/state/elections/election-information-svrs.shtml#2026"
+            },
+            {
+              "text": "Bergen County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-bergen.pdf"
+            },
+            {
+              "text": "Burlington County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-burlington.pdf"
+            },
+            {
+              "text": "Camden County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-camden.pdf"
+            },
+            {
+              "text": "Cumberland County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-cumberland.pdf"
+            },
+            {
+              "text": "Essex County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-essex.pdf"
+            },
+            {
+              "text": "Gloucester County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-gloucester.pdf"
+            },
+            {
+              "text": "Hudson County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-hudson.pdf"
+            },
+            {
+              "text": "Hunterdon County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-hunterdon.pdf"
+            },
+            {
+              "text": "Mercer County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-mercer.pdf"
+            },
+            {
+              "text": "Middlesex County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-middlesex.pdf"
+            },
+            {
+              "text": "Morris County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-morris.pdf"
+            },
+            {
+              "text": "Ocean County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-ocean.pdf"
+            },
+            {
+              "text": "Passaic County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-passaic.pdf"
+            },
+            {
+              "text": "Salem County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-salem.pdf"
+            },
+            {
+              "text": "Sussex County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-sussex.pdf"
+            },
+            {
+              "text": "Union County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-union.pdf"
+            },
+            {
+              "text": "Warren County Post-Election Audit of Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-election-audit-report-warren.pdf"
+            },
+            {
+              "text": "Official General Election Candidates: U.S. Senate",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-general-candidates-us-senate.pdf"
+            },
+            {
+              "text": "Unofficial General Election Candidates Email: U.S. Senate",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-unofficial-general-candidates-us-senate-emails-0727.pdf"
+            },
+            {
+              "text": "Official General Election Candidates: U.S. House of Representatives",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-general-candidates-us-house-0904.pdf"
+            },
+            {
+              "text": "Unofficial General Election Candidates Email: U.S. House of Representatives",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-unofficial-general-candidates-us-house-emails.pdf"
+            },
+            {
+              "text": "Official Primary Election Results: U.S. Senate",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-primary-results-us-senate.pdf"
+            },
+            {
+              "text": "Official Primary Election Results: U.S. House of Representatives",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-primary-results-us-house.pdf"
+            },
+            {
+              "text": "Primary Election Voter Turnout",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-primary-election-voter-turnout.pdf"
+            },
+            {
+              "text": "Official Primary Election Candidates: U.S. Senate",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-primary-candidates-us-senate.pdf"
+            },
+            {
+              "text": "Unofficial Primary Election Candidates Email: U.S. Senate",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-unofficial-primary-candidates-us-senate-emails.pdf"
+            },
+            {
+              "text": "Official Primary Election Candidates: U.S. House of Representatives",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-primary-candidates-us-house.pdf"
+            },
+            {
+              "text": "Unofficial Primary Election Candidates Email: U.S. House of Representatives",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-unofficial-primary-candidates-us-house-emails.pdf"
+            },
+            {
+              "text": "Official Special General Election Results: U.S. House of Representatives 11th Congressional District",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-special-general-results-us-house-11cd.pdf"
+            },
+            {
+              "text": "Special General Election Voter Turnout",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-special-general-election-voter-turnout.pdf"
+            },
+            {
+              "text": "Essex County Post-Election Audit of Special General Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-special-general-election-audit-report-essex.pdf"
+            },
+            {
+              "text": "Morris County Post-Election Audit of Special General Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-special-general-election-audit-report-morris.pdf"
+            },
+            {
+              "text": "Passaic County Post-Election Audit of Special General Election Results",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/audits/2026-post-special-general-election-audit-report-passaic.pdf"
+            },
+            {
+              "text": "Official Special General Election Candidates: U.S. House of Representatives 11th Congressional District",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-special-general-candidates-us-house-11cd.pdf"
+            },
+            {
+              "text": "Unofficial Special General Election Candidates Email: U.S. House of Representatives 11th Congressional District",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-unofficial-special-general-candidates-us-house-11cd-emails.pdf"
+            },
+            {
+              "text": "Official Special Primary Election Results: U.S. House of Representatives 11th Congressional District",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-special-primary-results-us-house-11cd.pdf"
+            },
+            {
+              "text": "Special Primary Election Voter Turnout",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-special-primary-election-voter-turnout.pdf"
+            },
+            {
+              "text": "Official Special Primary Election Candidates: U.S. House of Representatives 11th Congressional District",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-special-primary-candidates-us-house-11cd.pdf"
+            },
+            {
+              "text": "Unofficial Special Primary Election Candidates Email: U.S. House of Representatives 11th Congressional District",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-unofficial-special-primary-candidates-us-house-11cd-emails.pdf"
+            },
+            {
+              "text": "Writ of Election - English",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-writ-of-election.pdf"
+            },
+            {
+              "text": "Writ of Election - Spanish",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-writ-of-election-spanish.pdf"
+            },
+            {
+              "text": "Amended Certification of Nominees General Election U.S. House of Representatives: 7th Congressional District",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-certification-amended-7th-congressional-district-us-house.pdf"
+            },
+            {
+              "text": "Certification of General Election Nominees:  U.S. Senate & U.S. House of Representatives",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-certification-of-general-election-nominees_us-senate_us-house.pdf"
+            },
+            {
+              "text": "Certification of Primary Election Nominees",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-certification-of-primary-nominees.pdf"
+            },
+            {
+              "text": "Certification of Special General Election Nominees",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-certification-of-special-general-election-nominees.pdf"
+            },
+            {
+              "text": "Certification of Special Primary Election Nominees",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-certification-of-special-primary-nominees.pdf"
+            },
+            {
+              "text": "2026 Special Primary Election Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-special-primary-election.pdf"
+            },
+            {
+              "text": "2026 Special General Election Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-special-general-election.pdf"
+            },
+            {
+              "text": "2026 Primary Election Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-primary-election.pdf"
+            },
+            {
+              "text": "2026 General Election Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-general-election-0109.pdf"
+            },
+            {
+              "text": "2026 January Special School Board Elections Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-jan-special-school-board-election.pdf"
+            },
+            {
+              "text": "2026 February Fire District Election Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-fire-election-0113.pdf"
+            },
+            {
+              "text": "2026 March Special School Board Elections Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-mar-special-school-board-election-0113.pdf"
+            },
+            {
+              "text": "2026 Annual School Board Election Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-annual-school-board-election.pdf"
+            },
+            {
+              "text": "2026 May Municipal Non-Partisan Election Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-municipal-non-partisan.pdf"
+            },
+            {
+              "text": "2026 September Special School Board Elections Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-sep-special-school-board-election.pdf"
+            },
+            {
+              "text": "2026 December Special School Board Elections Timeline",
+              "url": "https://www.nj.gov/state/elections/assets/pdf/chrons/2026-chron-dec-special-school-board-election.pdf"
+            },
+            {
+              "text": "Certified Civil Celebrants",
+              "url": "https://www.nj.gov/state/dos-civil-celebrant.shtml"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "NM": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "NM_primary_probe",
+          "state_po": "NM",
+          "url": "https://electionresults.sos.nm.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:34.507401+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "NM_fallback_probe",
+          "state_po": "NM",
+          "url": "https://www.sos.nm.gov/voting-and-elections/election-results/",
+          "final_url": "https://www.sos.nm.gov/voting-and-elections/election-results/",
+          "content_type": "text/html; charset=UTF-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:34.800532+00:00",
+          "sha256": "7b4fb96b9159e95d3f8b937f6800b99a28ad19eb1fe56696d19db4c7639a394a",
+          "bytes": 112385,
+          "links": [
+            {
+              "text": "2026 Election Results",
+              "url": "https://www.sos.nm.gov/voting-and-elections/election-results/2026-election-results/"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "OH": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "OH_primary_probe",
+          "state_po": "OH",
+          "url": "https://liveresults.ohiosos.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:34.957260+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "OH_fallback_probe",
+          "state_po": "OH",
+          "url": "https://www.ohiosos.gov/elections/election-results-and-data/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:35.110411+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "OR": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "untested",
+        "primary": {
+          "name": "OR_primary_probe",
+          "state_po": "OR",
+          "url": "https://results.oregonvotes.gov/",
+          "final_url": "https://results.oregonvotes.gov/",
+          "content_type": "text/html; charset=utf-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:35.382119+00:00",
+          "sha256": "28a6715d694682599e022a985b2952f7c8c8fa67967c1316134acb919c3f1079",
+          "bytes": 36830,
+          "links": [],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "OK": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "OK_primary_probe",
+          "state_po": "OK",
+          "url": "https://results.okelections.gov/OKER/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:35.140887+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "OK_fallback_probe",
+          "state_po": "OK",
+          "url": "https://oklahoma.gov/elections/elections-results/election-results.html",
+          "final_url": "https://oklahoma.gov/elections/elections-results/election-results.html",
+          "content_type": "text/html;charset=utf-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:35.715000+00:00",
+          "sha256": "dd1bcf88d8c0d017b620e726a2bfdc593cd30a8bf9ee38b32ba4f8aea43d4809",
+          "bytes": 138127,
+          "links": [
+            {
+              "text": "National Voter Registration Day 2026",
+              "url": "https://oklahoma.gov/elections/voter-registration/national-voter-registration-day-2026.html"
+            },
+            {
+              "text": "2026 Candidate Filing Information",
+              "url": "https://oklahoma.gov/elections/candidates/2026-candidate-filing-information.html"
+            },
+            {
+              "text": "2026",
+              "url": "https://oklahoma.gov/elections/elections-results/election-results/2026-election-results.html"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "RI": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "RI_primary_probe",
+          "state_po": "RI",
+          "url": "https://www.ri.gov/election/",
+          "final_url": "https://www.ri.gov/edemocracy/",
+          "content_type": "text/html; charset=iso-8859-1",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:36.255717+00:00",
+          "sha256": "103e0eba28cd2d2f5a450d9cbf33e88d22698eb5761771ae22a6b0e9dadba36a",
+          "bytes": 27852,
+          "links": [
+            {
+              "text": "Local Board of Canvassers",
+              "url": "http://www.elections.ri.gov/canvassers/"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "PA": {
+        "parser_status": "parser_tested_2024",
+        "download_access_catalog": "automated_ok",
+        "primary": {
+          "name": "PA_primary_probe",
+          "state_po": "PA",
+          "url": "https://www.electionreturns.pa.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:35.158746+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "PA_fallback_probe",
+          "state_po": "PA",
+          "url": "https://www.pa.gov/agencies/vote/elections/election-results.html",
+          "final_url": "https://www.pa.gov/agencies/vote/elections/election-results",
+          "content_type": "text/html;charset=utf-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:36.353442+00:00",
+          "sha256": "befb554dcdf5add6e7858984659183b79eab79ea0333806f433b87a8582b4dcd",
+          "bytes": 218039,
+          "links": [
+            {
+              "text": "2026 Primary Risk-Limiting Audit Report",
+              "url": "https://www.pa.gov/agencies/vote/elections/post-election-audits/2026-primary-rla-report"
+            },
+            {
+              "text": "Get a Birth Certificate",
+              "url": "https://www.pa.gov/agencies/health/programs/vital-records/birth-certificates"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "SD": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "untested",
+        "primary": {
+          "name": "SD_primary_probe",
+          "state_po": "SD",
+          "url": "https://electionresults.sd.gov/",
+          "final_url": "https://electionresults.sd.gov/",
+          "content_type": "text/html; charset=utf-8",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:36.740783+00:00",
+          "sha256": "4c1ae78a960ea393bf37ae595f71a3886b2f08d868b1cc4342e8c4d21d8b7bd8",
+          "bytes": 44585,
+          "links": [
+            {
+              "text": "Possible Recounts",
+              "url": "https://electionresults.sd.gov/ResultsSW.aspx?type=RECOUNT"
+            },
+            {
+              "text": "Possible Recounts",
+              "url": "https://electionresults.sd.gov/ResultsSW.aspx?type=RECOUNT"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false
+      },
+      "TN": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "TN_primary_probe",
+          "state_po": "TN",
+          "url": "https://elections.tn.gov/results.php",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:36.740631+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "TN_fallback_probe",
+          "state_po": "TN",
+          "url": "https://sos.tn.gov/elections/results",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:36.894777+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "WI": {
+        "parser_status": "parser_tested_2024",
+        "download_access_catalog": "automated_ok",
+        "primary": {
+          "name": "WI_primary_probe",
+          "state_po": "WI",
+          "url": "https://elections.wi.gov/elections/election-results",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:36.990192+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "WI_fallback_probe",
+          "state_po": "WI",
+          "url": "https://elections.wi.gov/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:37.041472+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "TX": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "untested",
+        "primary": {
+          "name": "TX_primary_probe",
+          "state_po": "TX",
+          "url": "https://results.texas-election.com/",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:36.932479+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "TX_fallback_probe",
+          "state_po": "TX",
+          "url": "https://www.sos.state.tx.us/elections/historical/index.shtml",
+          "final_url": "https://www.sos.state.tx.us/elections/historical/index.shtml",
+          "content_type": "text/html",
+          "http_status": 200,
+          "retrieved_at": "2026-11-20T19:46:37.338472+00:00",
+          "sha256": "32345d8d1d28d0783ddb446a7d0c6c3dc8c001f2dbbf939e97281921fa83a388",
+          "bytes": 18749,
+          "links": [
+            {
+              "text": "Copies and Certificates",
+              "url": "https://www.sos.state.tx.us/corp/copies.shtml"
+            },
+            {
+              "text": "Business Copies and Certificates",
+              "url": "https://www.sos.state.tx.us/corp/filingandothergeneralfaqs.shtml#CC"
+            }
+          ],
+          "landing_only_not_a_validated_feed": true
+        }
+      },
+      "MI": {
+        "parser_status": "manual_review_pending",
+        "download_access_catalog": "blocked_manual_download",
+        "primary": {
+          "name": "MI_primary_probe",
+          "state_po": "MI",
+          "url": "https://mielections.us/election/results/2026GEN_CENR.html",
+          "error": "URLError: <urlopen error timed out>",
+          "checked_at": "2026-11-20T19:46:51.495319+00:00",
+          "landing_only_not_a_validated_feed": true
+        },
+        "validated_aggregate_feed": false,
+        "fallback": {
+          "name": "MI_fallback_probe",
+          "state_po": "MI",
+          "url": "https://www.michigan.gov/sos/elections/election-results-and-data",
+          "error": "HTTPError: HTTP Error 403: Forbidden",
+          "checked_at": "2026-11-20T19:46:51.778060+00:00",
+          "landing_only_not_a_validated_feed": true
+        }
+      }
+    },
+    "landing_checks_do_not_validate_feeds": true,
+    "unrecoverable_capture_gaps": [
+      "2026-11-03 through 2026-11-11",
+      "2026-11-16 through 2026-11-19"
+    ],
+    "today_changed_count_rows_vs_nov15_including_two_defective_future_templates": 118
+  },
+  "scoring": {
+    "actual_path": "/Users/alexoswald/Projects/Elections/us_election_predictions/data/gold/actual_2026_certified_asof_2026-11-20.csv",
+    "actual_sha256": "8e57a240a91b638e1827cc739ba1b5295b899863e99fee579befcbc89d0baa6e",
+    "as_of": "2026-11-20",
+    "scoreable_contests": 3,
+    "scored_states": [
+      "VT",
+      "WY"
+    ],
+    "existing_scorecard": "/Users/alexoswald/Projects/Elections/us_election_predictions/reports/scorecards/scorecard_asof_2026-11-20.json",
+    "existing_scorecard_sha256": "8753cc2d664df03bbd00f0d50356c7e0e28bfb386fcd53539fdbf74654091ae7",
+    "primary_recalculation_matches_existing_scorecard": true,
+    "frozen_runs": 4,
+    "assumptions_each": 5,
+    "chamber_evaluable": false,
+    "failure_triggered": null,
+    "integrity_note": "Only the September registration is sealed. Other scorecard registration-shaped runtime digests are API self-checks, not new historical seals; their original file SHA-256 values match the frozen comparison manifest. Existing scorecards were not changed."
+  },
+  "verification": {
+    "focused_tests_before_fix": 92,
+    "capture_and_extraction_tests_with_new_round_guard": 32,
+    "new_round_regression_tests": 2,
+    "known_warning": "Existing Hawaii trailing-delimiter fixture ParserWarning",
+    "ruff_changed_files_passed": true,
+    "existing_daily_snapshot_overwritten": false,
+    "scores_overwritten": false
+  },
+  "scheduler": {
+    "intended_local_time": "22:00 America/Vancouver",
+    "heartbeat_local_time": "2026-11-20T12:39:52.164000-07:00",
+    "execution_matches_intended_time": false,
+    "manual_fallback_still_required": true,
+    "configuration_changed": false
+  },
+  "remaining_work": [
+    "Next free actual UTC day: re-fetch, recheck certifications and resolution, append once with all preserved evidence. Do not backdate new certifications to authority announcement or intraday evidence dates.",
+    "Apply an explicit unresolved flag to Minnesota congressional district 1 before certifying Minnesota in a compiled snapshot.",
+    "Restore Louisiana districts 5 and 6 to actual November first-round tallies in a new dated observation; never rewrite the flawed November 20 rows.",
+    "Recover Pennsylvania official aggregate export manually if its HTTP 403 persists.",
+    "Acquire and validate the 26 still-missing states; landing reachability does not settle feed readiness.",
+    "Continue official certification, revocation, recount and December 12 runoff review; stop after final resolution or January 4, 2027."
+  ]
+}

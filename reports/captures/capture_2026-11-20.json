@@ -1,0 +1,433 @@
+{
+  "observed_on": "2026-11-20",
+  "dry_run": false,
+  "seats": 192,
+  "certified_seats": 3,
+  "states": {
+    "AL": {
+      "seats": 8,
+      "parser_status": "parser_cross_checked_2026",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unofficial",
+      "releases": [
+        {
+          "source_url": "https://www2.alabamavotes.gov/electionNight/statewideResultsByContest.aspx?ecode=1001305",
+          "retrieved_at": "2026-11-20T19:46:29.055258+00:00",
+          "sha256": "37501b2a63803fa39664790f9675db087210b3e16a7d5704001d8a6326d72b7f"
+        }
+      ]
+    },
+    "AR": {
+      "seats": 5,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "official",
+      "releases": [
+        {
+          "source_url": "https://enr-results-api.totalresults.com/Contest/GetContestResults?cId=arkansas&electionID=11b07106-031e-4d7c-911a-d01fb473d6dd&contestType=Federal",
+          "retrieved_at": "2026-11-20T19:46:31.385266+00:00",
+          "sha256": "b5496fb325feff236af1854556ee8e77a7444f0744717778aa0b97b9aabfc300"
+        },
+        {
+          "source_url": "https://enr-results-api.totalresults.com/Contest/GetContestSearchList?cid=arkansas&electionID=11b07106-031e-4d7c-911a-d01fb473d6dd",
+          "retrieved_at": "2026-11-20T19:46:31.835623+00:00",
+          "sha256": "20f3000df1fff148fae86cc107a024f6b690e219ab45231668b6754d451ecd1d"
+        },
+        {
+          "source_url": "https://enr-results-api.totalresults.com/Election/GetElectionInfo?cId=arkansas&electionID=11b07106-031e-4d7c-911a-d01fb473d6dd",
+          "retrieved_at": "2026-11-20T19:46:32.537609+00:00",
+          "sha256": "aaad78724461a7c4e282a655c7b6a6cfd9cba45ea2e1203ebe688aa2ec644f77"
+        }
+      ]
+    },
+    "CA": {
+      "seats": 52,
+      "parser_status": "parser_cross_checked_2026",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://media.sos.ca.gov/media/us-rep.json",
+          "retrieved_at": "2026-11-20T19:46:33.242935+00:00",
+          "sha256": "c2a3a1c0f28c87803bdddf391d2b4ba3d79710f9b0e7c5094f1d9af55175ed27"
+        }
+      ]
+    },
+    "CO": {
+      "seats": 9,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://results.enr.clarityelections.com/CO/127407/387356/reports/detailxml.zip",
+          "retrieved_at": "2026-11-20T19:46:33.944983+00:00",
+          "sha256": "8305c8ba463935576a54cd21a8195570d17e9933a0c2044d07da48d5265ff0db"
+        }
+      ]
+    },
+    "DE": {
+      "seats": 2,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://data.delaware.gov/resource/4hbv-7brf.csv?electiondate=2026-11-03T00:00:00.000",
+          "retrieved_at": "2026-11-20T19:46:34.068633+00:00",
+          "sha256": "f75e9b91fceea53ce29618411c3491b1294787a1210a2b5614f88f6ba52d1fb2"
+        }
+      ]
+    },
+    "GA": {
+      "seats": 15,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "official",
+      "releases": [
+        {
+          "source_url": "https://results.sos.ga.gov/cdn/results/09378a07-e6cf-4f66-be7c-ca4aa534f99a/Total%20Votes%20Results_b4156d6b-fdd0-46b8-885a-2cb1b8c0349b.xlsx",
+          "retrieved_at": "2026-11-20T19:46:36.323678+00:00",
+          "sha256": "d7e73f159766804fa0ea3848a592429f0e3e5f8f318c80170ef07879e35ec510"
+        }
+      ]
+    },
+    "HI": {
+      "seats": 2,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://elections.hawaii.gov/wp-content/results/2026%20General/summary.txt",
+          "retrieved_at": "2026-11-20T19:46:36.972171+00:00",
+          "sha256": "b262fa9df3b4d828468dbb2ad2f28f2273455af190b79cb2948073265c835db4"
+        }
+      ]
+    },
+    "ID": {
+      "seats": 3,
+      "parser_status": "parser_cross_checked_2026",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "official",
+      "releases": [
+        {
+          "source_url": "https://results.voteidaho.gov/results/public/api/elections/id/nov2026/ballot-items",
+          "retrieved_at": "2026-11-20T19:46:37.225906+00:00",
+          "sha256": "3b80bb946a5ee0e5728225019587b1ba32115f7fee24b5d6e021b91d18e78b8e"
+        },
+        {
+          "source_url": "https://results.voteidaho.gov/results/public/api/elections/id/nov2026",
+          "retrieved_at": "2026-11-20T19:46:37.120303+00:00",
+          "sha256": "3fe67ba37d02a65d31efb7680a3322f3ec2906eb063ed0bafd4f0cf2f646ee1d"
+        }
+      ]
+    },
+    "IN": {
+      "seats": 9,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unofficial",
+      "releases": [
+        {
+          "source_url": "https://enr.indianavoters.in.gov/site/download/AllOfficeResults.csv",
+          "retrieved_at": "2026-11-20T19:46:38.059156+00:00",
+          "sha256": "fe537e140c7ac917b765cd448be070ba5ac1cda7b8a67a5dbb07a3708bdce6c6"
+        }
+      ]
+    },
+    "LA": {
+      "seats": 7,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unofficial",
+      "releases": [
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_67997.csv",
+          "retrieved_at": "2026-11-20T19:46:40.903896+00:00",
+          "sha256": "66947eb67880e3525f5c94fdb27d9b38ccfa58b883d729c164d22cdbc3a32132"
+        },
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70195.csv",
+          "retrieved_at": "2026-11-20T19:46:41.054744+00:00",
+          "sha256": "b992f91582a2387a70dd877618d2081bcf4ee53594e9071bf81ee954d83e5dee"
+        },
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70196.csv",
+          "retrieved_at": "2026-11-20T19:46:42.281953+00:00",
+          "sha256": "f3e5285db5ad49457b6a739f94d41f9278d34acd7f5f779ccd48b67207770d41"
+        },
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70197.csv",
+          "retrieved_at": "2026-11-20T19:46:44.183299+00:00",
+          "sha256": "fcabfadc356d8ccd4b63d758c2f217fc9d85027e8a23d208c90671d60156cee6"
+        },
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70198.csv",
+          "retrieved_at": "2026-11-20T19:46:44.353301+00:00",
+          "sha256": "5560e277cf3cc3ce59b6ff50a7cffd40e240da74d9e94cd1f4d72b5fbc844085"
+        },
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70199.csv",
+          "retrieved_at": "2026-11-20T19:46:44.492205+00:00",
+          "sha256": "3aaf5a2184af681e6df916a8790a7dbddde8d2aea62cacf18d7010589c0fb3f9"
+        },
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261103/csv/ByParish_70200.csv",
+          "retrieved_at": "2026-11-20T19:46:44.696267+00:00",
+          "sha256": "0462454ebf3091fdc1cc22adfa6bb8a026975fc44c0ff843b5bb7ed4d27686e4"
+        },
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261212/csv/ByParish_71423.csv",
+          "retrieved_at": "2026-11-20T19:46:46.257378+00:00",
+          "sha256": "1537937e9c46a7e0b5a494f17ea07c84e1f6d42a121d33a58c714439244437d6"
+        },
+        {
+          "source_url": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20261212/csv/ByParish_71424.csv",
+          "retrieved_at": "2026-11-20T19:46:46.484891+00:00",
+          "sha256": "77de9c2c9284dfe06cfc22000c68453087ff0d4fbc7a62cd092151cc3d411f66"
+        }
+      ]
+    },
+    "MD": {
+      "seats": 8,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unofficial",
+      "releases": [
+        {
+          "source_url": "https://elections.maryland.gov/elections/2026/general_results/gen_results_2026_4.html",
+          "retrieved_at": "2026-11-20T19:46:48.052477+00:00",
+          "sha256": "8b189ac2be66985b1d9a519ebefd58c7ec5d324280bb93740bf6a8f70cf83440"
+        }
+      ]
+    },
+    "MN": {
+      "seats": 9,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://electionresultsfiles.sos.mn.gov/20261103/ushouse.txt",
+          "retrieved_at": "2026-11-20T19:46:49.050789+00:00",
+          "sha256": "69cc9e24e88147ae4ebd1cb279cc18235a042a2237ae4a6952fde9ac43ebf4c7"
+        },
+        {
+          "source_url": "https://electionresultsfiles.sos.mn.gov/20261103/ussenate.txt",
+          "retrieved_at": "2026-11-20T19:46:49.199637+00:00",
+          "sha256": "ec68ec40dbfbbeae51e427998f85791bbe43ae056fbf6bbaa31ba106f8356824"
+        }
+      ]
+    },
+    "MT": {
+      "seats": 3,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unofficial",
+      "releases": [
+        {
+          "source_url": "https://electionresults.mt.gov/ResultsExport.aspx",
+          "retrieved_at": "2026-11-20T19:46:49.779657+00:00",
+          "sha256": "b0996f45d755112b42a252004aad212158ec3334ddcf6789f1cee725af8e34cf"
+        }
+      ]
+    },
+    "NC": {
+      "seats": 15,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://dl.ncsbe.gov/ENRS/2026_11_03/results_pct_20261103.zip",
+          "retrieved_at": "2026-11-20T19:46:50.353955+00:00",
+          "sha256": "4fcc5999bbafe8f6e3e350632fa9f7f6009e10b00e14df2d4f86d095cc90fc8c"
+        }
+      ]
+    },
+    "ND": {
+      "seats": 1,
+      "parser_status": "parser_cross_checked_2026",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "official",
+      "releases": [
+        {
+          "source_url": "https://api.resultsnd.sos.nd.gov/Contest/GetContestResults?cId=north-dakota&electionID=348&contestType=SW",
+          "retrieved_at": "2026-11-20T19:46:51.669962+00:00",
+          "sha256": "61449fb899c380a43f8880bd44310d19ea26eec7310deb10ba50b8211c168ed7"
+        },
+        {
+          "source_url": "https://api.resultsnd.sos.nd.gov/Contest/GetContestSearchList?cid=north-dakota&electionID=348",
+          "retrieved_at": "2026-11-20T19:46:52.036354+00:00",
+          "sha256": "f31d79eece58f4f39907d1c198a8c463c9a954ddd7eae3d47976b307491320dc"
+        }
+      ]
+    },
+    "NE": {
+      "seats": 4,
+      "parser_status": "parser_cross_checked_2026",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unofficial",
+      "releases": [
+        {
+          "source_url": "https://electionresults.nebraska.gov/resultsCSV.aspx?text=All&type=CG&map=DIST",
+          "retrieved_at": "2026-11-20T19:46:52.710194+00:00",
+          "sha256": "bcd3f229d0f027a9fa96eedab8f5e80fd90748a774fb09be89ff883909843812"
+        },
+        {
+          "source_url": "https://electionresults.nebraska.gov/resultsCSV.aspx?text=All&type=SW&map=CTY",
+          "retrieved_at": "2026-11-20T19:46:52.963035+00:00",
+          "sha256": "1ecb1f38a5f4931d4dcd42b3a162af5a0ea1f6cd49f4a4d8d09475d6b73131b3"
+        }
+      ]
+    },
+    "SC": {
+      "seats": 8,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://www.enr-scvotes.org/SC/127300/386661/reports/summary.zip",
+          "retrieved_at": "2026-11-20T19:46:53.578126+00:00",
+          "sha256": "910b1f0c4eaf6d4cb5a8d298acb4d165ba0ea232f8c556a37310a8cd5af47886"
+        },
+        {
+          "source_url": "https://www.enr-scvotes.org/SC/127592/386752/reports/summary.zip",
+          "retrieved_at": "2026-11-20T19:46:53.793235+00:00",
+          "sha256": "035bc0b7ba6a5c944f04e525c1b72d45f59fc984e8c0e1df47941fcc4e252cb9"
+        }
+      ]
+    },
+    "UT": {
+      "seats": 4,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://electionresults.utah.gov/cdn/results/Utah/export-General11032026.json",
+          "retrieved_at": "2026-11-20T19:46:54.960807+00:00",
+          "sha256": "7aac7753410b21ee2be279f6c62632bd070bc62ad0dd3191f779f64f7a8b50d3"
+        }
+      ]
+    },
+    "VA": {
+      "seats": 12,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unofficial",
+      "releases": [
+        {
+          "source_url": "https://enr.elections.virginia.gov/cdn/results/d2c804ee-4ec2-46bb-91d7-5b41526eab03/Election%20Results_7f7be5d7-18ce-4fe6-a3a3-69ed451307c4.csv",
+          "retrieved_at": "2026-11-20T19:46:55.864905+00:00",
+          "sha256": "da159103d2e1d36c3bcbd0eccd21753ee940400b17a465b2d00013ee5d64ed1b"
+        }
+      ]
+    },
+    "VT": {
+      "seats": 1,
+      "parser_status": "parser_tested_2024",
+      "certified": true,
+      "certification_evidence": "https://sos.vermont.gov/elections/election-info-resources/elections-results-data",
+      "certification_carried_forward": true,
+      "labelled": "official",
+      "releases": [
+        {
+          "source_url": "https://static.electionresults.vermont.gov/elections/68d61e96-1d28-4210-8c1d-8e90512ae105-f-20261117185828.json",
+          "retrieved_at": "2026-11-20T19:46:58.034962+00:00",
+          "sha256": "144361738949a56b731b9de97a04118210167940e3d55b7332c81251ccc7a31c"
+        }
+      ]
+    },
+    "WA": {
+      "seats": 10,
+      "parser_status": "parser_cross_checked_2026",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unofficial",
+      "releases": [
+        {
+          "source_url": "https://results.votewa.gov/cdn/results/01000000-f977-1a83-1ed4-08ddd69e9e69/All%20Results_7ffb55f4-51d2-49b9-ada0-8998c37ed509.xlsx",
+          "retrieved_at": "2026-11-20T19:46:58.432509+00:00",
+          "sha256": "d619fd9cdac43904c0367f4d89ed704e9ff04b8213be45ac8b3fbc3655146cc6"
+        }
+      ]
+    },
+    "WV": {
+      "seats": 3,
+      "parser_status": "parser_tested_2024",
+      "certified": false,
+      "certification_evidence": null,
+      "certification_carried_forward": false,
+      "labelled": "unknown",
+      "releases": [
+        {
+          "source_url": "https://results.enr.clarityelections.com/WV/127496/387101/reports/summary.zip",
+          "retrieved_at": "2026-11-20T19:46:58.757365+00:00",
+          "sha256": "9ee3a000215bb9a730a37ecae7b1a94fe28a2ea8e65c154198ccc1fc50c017b0"
+        }
+      ]
+    },
+    "WY": {
+      "seats": 2,
+      "parser_status": "parser_tested_2024",
+      "certified": true,
+      "certification_evidence": "https://sos.wyo.gov/",
+      "certification_carried_forward": true,
+      "labelled": "official",
+      "releases": [
+        {
+          "source_url": "https://sos.wyo.gov/Elections/Docs/2026/Results/General/2026_Wyoming_General_Results.zip",
+          "retrieved_at": "2026-11-20T19:46:59.883427+00:00",
+          "sha256": "c378306bd8df97437a3d11fac7792e23a8297a7e3eded8129a9cd61e3e654ff1"
+        }
+      ]
+    }
+  },
+  "failures": {
+    "PA": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  "snapshot_sha256": "757bb95376585827a0e745e14b9a5f1a5c00a1920f7989ff89599dccc71b904f",
+  "universe": "reports/refresh_2026-10-29/projection_seats.csv"
+}

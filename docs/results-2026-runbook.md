@@ -190,25 +190,54 @@ python scripts/capture_daily.py --certified NC=https://<certification evidence U
   | Status (2026-11-13) | States |
   |---|---|
   | Parser tested, fetcher pending the certified release | MA, WI, MO (certified files post after certification) |
-  | Blocked to automated clients (manual browser download) | AK, AZ, FL, KS, KY, ME, MI, NH, NM, NV, NY, OH, OK, RI, TN |
+  | Blocked to automated clients (manual browser download) | AK, AZ, FL, KS, KY, ME, MI, NH, NM, NV, NY, OH, OK, RI, TN; PA from 2026-11-20 (the whole site now answers the research client with an Incapsula challenge, HTTP 403; its November 15 rows stand until a manual download) |
   | 2024 release unavailable to test against | IA, OR, TX (2024 blocked or timed out) |
   | 2026 release not yet published | IL (after the December canvass), MS, NJ |
   | Other | CT (lookup file holds candidate addresses; manual), SD (no party labels in the export) |
 
   Louisiana House rows are first rounds; CD5 and CD6 are unresolved until the
   December 12 runoff. The Louisiana fetcher reads the portal's election list on every
-  run and adds the runoff's race files as soon as the state posts that election (it
-  was not posted as of 2026-11-13); runoff rows replace the first-round rows for the
-  same seats. No operator step is needed, but check the first capture after December 12.
+  run and adds the runoff's race files on or after its election day, once posted.
+  Posting an election in advance can expose empty templates, not returns. The
+  November 20 safeguard skips future elections; check the first capture after
+  December 12 before allowing runoff rows to replace first-round tallies.
 - The run refuses before fetching if today's UTC slot is taken, refuses a state whose
   races do not match the frozen universe (`reports/refresh_2026-10-29/projection_seats.csv`),
   and reports a failing state while still capturing the rest (exit 1 if any failed).
 - **Certification is never inferred.** `--certified STATE=URL` is the operator's
   attestation, with the URL of the certification evidence; it is refused if the release
   labels itself unofficial (Montana's export always does: certify MT from its canvass).
+- **An attestation carries forward.** A captured `--certified` state is written to
+  `data/reference/certifications_2026.csv` and applied to every later run, so a plain
+  `python scripts/capture_daily.py` keeps those seats certified. Without this the ledger
+  would read the next plain capture as a revocation. Commit the file with the capture
+  index. To revoke, delete the state's row and give the reason in the commit message.
+- **A recount keeps one seat unresolved.** A state can certify while one contest is
+  being recounted. List that seat in `data/reference/unresolved_seats_2026.csv`
+  (state, office, district, reason, evidence URL) and it is captured with
+  `outcome_resolved=False` and no winner, so certifying the state does not make it
+  scoreable. Remove the row when the recount is final.
 - Each run writes `reports/captures/capture_<date>.json` (seats, certification flags and
   evidence URLs, release checksums, failures): commit it, as the index of the git-ignored
   ledger, and add a line to the Capture Log below.
+
+### Scheduled run (from 2026-11-20)
+
+`scripts/run_scheduled_capture.sh` is run once a day by a launchd agent on the operator's
+Mac (`deploy/launchd/ca.savepointanalytics.elections-capture.plist`, installed under
+`~/Library/LaunchAgents/`), at 22:05 by the Mac's clock, which is 05:05 UTC. It runs
+`capture_daily.py` and then the interim scorecard for that UTC day, and logs to
+`~/Library/Logs/elections-capture/capture_<UTC date>.log`.
+
+- If the day's observation already exists it does nothing, so it coexists with a manual
+  capture or the older heartbeat job: whoever runs first takes the day.
+- It commits and pushes nothing. Review and commit `reports/captures/`,
+  `reports/scorecards/` and any change to the two reference files above.
+- It marks no new certification: that still needs `--certified STATE=URL` by hand, on a
+  day whose slot is still free (run the capture by hand before 05:05 UTC).
+- The Mac must be awake; a run missed while asleep fires at the next wake. Check the log
+  after each morning. Remove with
+  `launchctl bootout gui/$(id -u)/ca.savepointanalytics.elections-capture`.
 
 ## Interim Scorecards and the Results Page
 
@@ -238,10 +267,82 @@ The ledger lives in the git-ignored data lake; this log is its committed index.
 | 2026-11-03 to 2026-11-11 | none | 0 | 0 | none | **Gap.** The working checkout was on `post-poll-closing-updates`, cut from an unpulled pre-October `main`; the Nov 5 automation refused to capture without the evidence safeguards (`reports/results_capture_blocked_2026-11-05T192029Z.md`). Checkout restored to `origin/main` 2026-11-12. Certification first observed after this date cannot be backdated. |
 | 2026-11-12 | MT, NC | 18 | 0 | `data/raw/source=state_canvass_evidence/state={MT,NC}/retrieved=20261112T06…/` | MT statewide export (labelled unofficial, 728/728 precincts); NC `results_pct_20261103.zip` (last-modified 2026-11-11 22:21 UTC, 100/100 counties, uncertified). Both parsers reproduce 2024 certified exactly. `winner_party` recorded for every row (MT Senate has an independent in second). |
 | 2026-11-13 | MT, NC | 18 | 0 | `data/raw/source=state_canvass_evidence/state={MT,NC}/retrieved=20261113T2208…/` | Fresh official aggregate releases and NC unofficial-status page preserved with the module CLI; appended with matching source evidence. Historical parser replay and stored-byte validation passed. Counts revised in 14 NC and two MT contests versus the November 12 daily snapshot; no leading-party changes. Forty-eight states remain missing. See `reports/results_capture_2026-11-13T220413Z.md`. |
-| 2026-11-14 | AL, AR, CA, CO, DE, GA, HI, ID, IN, LA, MD, MN, MT, NC, ND, NE, PA, SC, UT, VA, VT, WA, WV, WY | 209 | 0 | `data/raw/source=state_canvass_evidence/state=<ST>/retrieved=20261114T00…/`; index `reports/captures/capture_2026-11-14.json` | First `capture_daily.py` run (00:05 UTC), no failures. 18 states at `parser_tested_2024`, 6 (AL, CA, ID, ND, NE, WA) at the weaker `parser_cross_checked_2026`. Releases label themselves: 12 unofficial, 10 no statement, 2 official (VT, WY). No state marked certified: no operator attestation was given. LA CD5 and CD6 are first rounds. Interim scorecard `reports/scorecards/scorecard_asof_2026-11-14.md`: 0 scoreable seats. |
+| 2026-11-14 | AL, AR, CA, CO, DE, GA, HI, ID, IN, LA, MD, MN, MT, NC, ND, NE, PA, SC, UT, VA, VT, WA, WV, WY | 209 | 0 | `data/raw/source=state_canvass_evidence/state=<ST>/retrieved=20261114T00…/`; index `reports/captures/capture_2026-11-14.json` | First `capture_daily.py` run (00:05 UTC), no failures. 18 states at `parser_tested_2024`, 6 (AL, CA, ID, ND, NE, WA) at the weaker `parser_cross_checked_2026`. Releases label themselves: 12 unofficial, 10 no statement, 2 official (VT, WY). No state marked certified: no operator attestation was given. LA CD5 and CD6 are first rounds. Interim scorecard `reports/scorecards/scorecard_asof_2026-11-14.md`: 0 scoreable seats. Re-verified by the November 15 scheduled run (schema, compiled hash and all 37 source receipts), which did not rewrite it. |
+| 2026-11-15 | 24 states | 209 | 3 | 40 receipts in `snapshot=2026-11-15.manifest.json` | Fresh releases preserved and captured with the module CLI. VT House and WY House/Senate accepted as certified from preserved authority evidence, first observed November 15 UTC. Only those three resolved contests scored, across every frozen run/assumption. Twenty-six states remain missing; LA-05/06 first rounds unresolved. See `reports/results_capture_2026-11-15T015048Z.md` and `reports/captures/capture_2026-11-15.json`. |
+| 2026-11-16 to 2026-11-19 | none | 0 | 0 | none | **Gap.** No observation was captured on these four UTC days; the scheduled job did not run after November 15. They cannot be backdated; a certification first seen on a later day is recorded on that day. |
+| 2026-11-20 | 23 states (the November 14 list without PA) | 192 | 3 | index `reports/captures/capture_2026-11-20.json` | `capture_daily.py` at 19:46 UTC. Pennsylvania's Report Center returned HTTP 403 to the research client and was left out; its November 15 rows stand. VT House and WY House/Senate stay certified, carried forward from `data/reference/certifications_2026.csv`. Releases label themselves: 8 unofficial, 9 no statement, 6 official (AR, GA, ID, ND, VT, WY). No new state was marked certified: an official label is not an attestation. **Flawed rows:** LA-05 and LA-06 were recorded as zero-vote December 12 runoff templates instead of their November first rounds (fetcher fault, fixed the same day). Both seats were unresolved either way; the next capture restores the first-round tallies. |
 
 One observation per UTC day: a capture early in a UTC day takes that day's slot, so
 add states to the same compiled snapshot before capturing, never in a second run.
+
+The November 15 acquisition reused the reviewed capture implementation at commit
+`5845f08680f410fc48cfcea1adb91e517cac641e` from the separate `-capture-run` worktree,
+read-only; preservation and the production append ran through the main checkout's
+module CLI. Its catalog distinguishes historical parser tests from weaker 2026
+summary cross-checks. The main checkout's catalog/code were not silently replaced
+or promoted. The capture JSON records the implementation and source catalog used.
+Integrating that broader implementation into the main automation checkout remains
+operator-reviewed work; no branch switch or merge is implied by this capture.
+
+That integration was done on 2026-11-16: the 24-state capture code, its catalog and the
+scheduled run's November 12 to 15 reports are now in this checkout, so later captures
+run `scripts/capture_daily.py` here and no longer need the `-capture-run` worktree.
+
+The later November 15 UTC heartbeat preserved a further 40 intraday source receipts
+for the same 24 states, including refreshed VT/WY certification context. Today's
+compiled observation and scores were not overwritten: no new certification,
+leading-party, coverage or Louisiana resolution change was verified. Four
+uncertified IN/MD contests had revised counts. See
+`reports/captures/intraday_2026-11-15T220056Z.json` and
+`reports/results_intraday_2026-11-15T220056Z.md`; these are not a second daily capture.
+
+**November 20 intraday review (trigger 19:39:52 UTC).** A separate capture completed
+during the review and took today's slot. Its snapshot, manifest and scorecard were
+verified and left unchanged. A further **57 source receipts** were preserved with the
+module CLI, including authority certification statements, publisher flags and two
+empty future runoff templates. The full evidence index and missing-state checks are
+in `reports/captures/intraday_2026-11-20T193952Z.json`.
+
+The review verified new certification evidence for **SC, MN and ND**, but these
+certifications are **not yet recorded in a daily snapshot**. Recheck and include them
+on the next actual UTC observation day; never backdate their ledger certification to
+this evidence review or the authority's earlier board date. Minnesota's authority
+explicitly reports a requested recount in **U.S. House District 1**, starting November
+30, with the board reconvening December 8 if necessary. Compile that seat with
+`outcome_resolved=False` while the recount remains pending. A blanket Minnesota
+`--certified` invocation without that per-seat flag would incorrectly make it
+scoreable. SC's authority also describes its recount returns as official; ND's
+announced legislative District 41 recount concerns a state office, not its federal
+at-large House seat. AR/GA/ID/LA publisher official flags were preserved separately
+and were not treated as additional certification attestations.
+
+**Two Louisiana rows in the already-saved November 20 snapshot require a later dated
+correction.** The earlier capture replaced LA-05/06 November counts with zero-filled
+December 12 templates. Those zeros are not observed runoff results. Both seats remain
+uncertified and unscoreable, so the three scored contests are unaffected. The fetcher
+now skips future elections; replay against today's preserved responses restores seven
+November contests, with LA-05/06 still unresolved first rounds. Two regression cases
+verify that future templates do not erase those counts and that actual runoff-day
+returns can subsequently replace them. Preserve the flawed daily observation as
+history and restore the verified November rows in the next dated capture.
+
+Pennsylvania's aggregate export returned HTTP 403, leaving 17 November 15 contests
+stale; the ledger still covers 209 contests in 24 states, with **26 states missing**.
+Reachable landing pages for missing states were not promoted to validated feeds.
+Today's existing four-run scorecard still scores only VT House and WY House/Senate
+under all five assumptions; its primary scores were independently reproduced from
+`data/gold/actual_2026_certified_asof_2026-11-20.csv`. Chamber evaluation remains
+incomplete. Only the September registration is sealed: other scorecard runtime
+digest checks do not create historical seals; their original files were verified
+against the frozen comparison manifest. Ninety-two focused tests passed before the
+guard change, 32 capture/extraction tests passed with it, and the two final regression
+cases and changed-file lint/format checks passed. Sealed/frozen files and previous
+observations remain unchanged. AGENTS.md and PROJECT_CONTEXT.md remain absent.
+
+This heartbeat arrived at **12:39 Vancouver**, not the intended 22:00. Scheduler
+execution remains unverified and the manual fallback remains necessary. No schedule
+change, new certification append, overwrite, merge, commit or unattended complete
+capture is claimed by this intraday review.
 
 ## State Extraction: the 11 Probe-Failure States (tested 2026-10-30)
 
